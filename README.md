@@ -3,7 +3,7 @@
 
 # Logic Penguin
 
-🐧 Logic penguin 🐧 aims to be a flexible open source and self-hostable framework for online exercises for introductory logic problems, and interfaces with LMS systems such as [moodle](https://moodle.org/) and [canvas](https://www.instructure.com/canvas) using the [LTI protocol](https://www.imsglobal.org/activity/learning-tools-interoperability).
+🐧 Logic penguin 🐧 aims to be a flexible, extensible, open source, and self-hostable framework for online exercises for introductory logic problems, and interfaces with LMS systems such as [moodle](https://moodle.org/) and [canvas](https://www.instructure.com/canvas) using the [LTI protocol](https://www.imsglobal.org/activity/learning-tools-interoperability).
 
 It is all written in JavaScript so code can be shared browser-side and server-side.
 
