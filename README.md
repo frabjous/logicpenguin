@@ -9,6 +9,8 @@ It is all written in JavaScript so code can be shared browser-side and server-si
 
 An [express.js](https://expressjs.com/)-based web-server is included to handle the LTI Tool Provider side of things, save and score exercises, submit grades, etc.
 
+The project bears some similarities to the [Carnap.io](https://carnap.io) project, but has a narrower focus on providing exercises for introductory students, and um, is not written in Haskell.
+
 🚧 It is still relatively early in its development. More documentation to come. 🚧
 
 ## Working examples
