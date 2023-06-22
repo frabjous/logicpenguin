@@ -15,6 +15,9 @@ The project bears some similarities to the [Carnap.io](https://carnap.io) projec
 
 ## Working examples
 
+<img src="/public/images/sample-deriv.gif" alt="sample-derivation" style="border: 2px solid black;">
+
+
 Working examples of the problems and their interface can be found embedded in my own publicly accessible interactive lecture notes for my [Phil 110 sections](https://logic.umasscreate.net) at UMass.
 
 For truth tables: <https://logicpenguin.com/lectures/kck/34254/2>
