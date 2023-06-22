@@ -11,12 +11,11 @@ An [express.js](https://expressjs.com/)-based web-server is included to handle t
 
 The project bears some similarities to the [Carnap.io](https://carnap.io) project, but has a narrower focus on providing exercises for introductory students, and um, is not written in Haskell.
 
+<img src="/public/images/sample-deriv.gif" alt="sample-derivation" style="border: 2px solid black;">
+
 🚧 It is still relatively early in its development. More documentation to come. 🚧
 
 ## Working examples
-
-<img src="/public/images/sample-deriv.gif" alt="sample-derivation" style="border: 2px solid black;">
-
 
 Working examples of the problems and their interface can be found embedded in my own publicly accessible interactive lecture notes for my [Phil 110 sections](https://logic.umasscreate.net) at UMass.
 
