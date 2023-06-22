@@ -1,0 +1,50 @@
+@charset 'utf-8';
+
+.logicpenguin button {
+    background-color: var(--lpblue);
+    color: var(--lpgray6);
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: inherit;
+}
+
+.logicpenguin button:hover {
+    background-color: var(--lpcyan);
+    color: var(--lpwhite);
+}
+
+.logicpenguin button:active {
+    background-color: var(--lpmagenta);
+    color: var(--lpwhite);
+}
+
+.logicpenguin button.symbarginputbutton {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    margin-right: 0.5em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+.logicpenguin button.bigbutton {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-right: 1em;
+    padding-left: 1em;
+    margin-right: 0.8em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+
+.logicpenguin .symbolicargumentinput input.error {
+    background-color: var(--lpred);
+}
+
+.logicpenguin .symbolicargumentinput table tbody td div {
+    margin-bottom: 0.5em;
+}

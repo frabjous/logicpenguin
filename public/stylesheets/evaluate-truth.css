@@ -1,0 +1,12 @@
+@charset 'utf-8';
+
+.logicpenguin evaluate-truth .radiocontainer {
+    margin-top: 0.8ex;
+    margin-bottom: 1ex;
+}
+
+/* put two options side by side */
+.logicpenguin evaluate-truth .radiocontainer > div {
+    display: inline-block;
+    margin-right: 3em;
+}

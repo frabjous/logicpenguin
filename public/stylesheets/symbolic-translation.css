@@ -1,0 +1,17 @@
+@charset 'utf-8';
+
+.logicpenguin combo-translation > div:nth-child(2),
+.logicpenguin symbolic-translation > div:nth-child(2) {
+    margin-top: 2ex;
+    margin-bottom: 2ex;
+}
+
+.logicpenguin combo-translation .transcomment,
+.logicpenguin symbolic-translation .transcomment {
+    font-style: italic;
+    background-color: var(--lpbgyellow);
+    color: var(--lpred);
+    padding: 1ex;
+    border-radius: 8px;
+    margin-bottom: 2ex;
+}

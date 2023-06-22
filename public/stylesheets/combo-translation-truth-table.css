@@ -1,0 +1,32 @@
+@charset 'utf-8';
+@import 'argument-truth-table.css';
+@import 'symbolic-translation.css';
+
+.logicpenguin combo-translation-truth-table .proseargument.choosemode .proseargstatement {
+    cursor: pointer;
+}
+.logicpenguin combo-translation-truth-table .proseargument.choosemode .proseargstatement.chosen {
+    cursor: default;
+    color: var(--lpgray4);
+}
+.logicpenguin combo-translation-truth-table .proseargument.choosemode .proseargstatement:hover {
+    color: var(--lpblue);
+    text-decoration: underline;
+}
+.logicpenguin combo-translation-truth-table .proseargument.choosemode .proseargstatement.chosen:hover {
+    color: var(--lpgray4);
+    text-decoration: none;
+}
+.logicpenguin combo-translation-truth-table .combostepinstructions {
+    margin-top: 2ex;
+    margin-bottom: 2ex;
+    color: var(--lpmagenta);
+}
+
+.logicpenguin .combocomment {
+    border-radius: 8px;
+    padding: 1ex;
+    background-color: var(--lpbgyellow);
+    margin-bottom: 2ex;
+    margin-top: 2ex;
+}

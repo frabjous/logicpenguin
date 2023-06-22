@@ -1,0 +1,85 @@
+@charset 'utf-8';
+
+.logicpenguin table.truthtable {
+    border-spacing: 0;
+    border-collapse: collapse;
+    user-select: none;
+    display: inline-table;
+}
+
+.logicpenguin table.truthtable td,
+.logicpenguin table.truthtable th {
+    border-width: 3px;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
+}
+
+.logicpenguin table.truthtable td {
+    vertical-align: middle;
+}
+
+.logicpenguin table.truthtable th {
+    vertical-align: text-top;
+}
+
+.logicpenguin table.truthtable tbody td {
+    cursor: pointer;
+}
+
+.logicpenguin table.truthtable th,
+.logicpenguin table.truthtable tbody td.ttcbcell,
+.logicpenguin table.truthtable tfoot td {
+    border-color: transparent;
+    cursor: default;
+}
+
+.logicpenguin table.truthtable tbody td.badcell {
+    background-color: var(--lpbgred);
+}
+
+.logicpenguin table.truthtable tbody td.badcell:hover,
+.logicpenguin table.truthtable tbody td:hover {
+    background-color: var(--lpbgblue);
+}
+
+.logicpenguin table.truthtable tbody td.ttcbcell:hover {
+    background-color: inherit;
+}
+
+.logicpenguin .rownumchooser {
+    margin-top: 1.5ex;
+    margin-bottom: 1.5ex;
+}
+
+.logicpenguin .ttsubquestion {
+    margin-top: 1.5ex;
+}
+
+.logicpenguin .rownumchooser label {
+    color: var(--lpblue);
+    margin-right: 0.5em;
+}
+
+.logicpenguin .rownumchooser input {
+    width: 4em;
+    text-align: center;
+    font-size: 125%;
+    margin-right: 0.5em;
+}
+
+.logicpenguin .rownumchooser.badnumber {
+    background-color: var(--lpbgred);
+}
+
+.logicpenguin .badsubquestion input {
+    accent-color: var(--lpred);
+}
+
+.logicpenguin .rownummessage {
+    color: var(--lpmagenta);
+    font-style: italic;
+    font-size: 90%;
+    margin-top: 1ex;
+}
+

@@ -1,0 +1,425 @@
+
+/* INPUT FIELDS */
+
+.logicpenguin .derivationline input.justification {
+    font-size: inherit;
+    padding: 4px;
+    width: 4.5em;
+    outline: 1px solid transparent;
+   font-family: 
+        'Fira Sans', 'Fira Sans',
+        'LogicPenguin',
+        'Noto Sans', 'Noto Sans Math',
+        'FreeSans',
+        'Segoe UI',
+        'DejaVu Sans',
+        'Libertinus Sans',
+        'Libertinus Math',
+        'STIX', 'STIXGeneral',
+        'Cambria',
+        'Lucida Sans Unicode',
+        'Droid Sans', 'Droid Sans Fallback',
+        sans-serif;
+    background-color: var(--lpwhite);
+    color: var(--lpblack);
+}
+
+.logicpenguin .derivationline input.formulainput:read-only:hover:focus,
+.logicpenguin .derivationline input.formulainput:read-only:focus,
+.logicpenguin .derivationline input.formulainput:hover:focus,
+.logicpenguin .derivationline input.formulainput:focus,
+.logicpenguin .derivationline input.justification:read-only:hover:focus,
+.logicpenguin .derivationline input.justification:read-only:focus,
+.logicpenguin .derivationline input.justification:hover:focus,
+.logicpenguin .derivationline input.justification:focus {
+    border: 2px solid var(--lpblue);
+    outline: 1px solid var(--lpblue);
+    background-color: var(--lpbgblue);
+}
+
+.logicpenguin .derivationline input.formulainput:read-only:hover,
+.logicpenguin .derivationline input.justification:read-only:hover,
+.logicpenguin .derivationline input.justification,
+.logicpenguin .derivationline input.formulainput {
+    border-top:    2px solid transparent;
+    border-left:   2px solid transparent;
+    border-right:  2px solid transparent;
+    border-bottom: 2px dashed var(--lpbgblue);
+    background-color: inherit;
+}
+
+.logicpenguin .derivationline input.justification:read-only,
+.logicpenguin .derivationline input.formulainput:read-only {
+    cursor: default;
+}
+
+/* SUBDERIVATION BUTTONS */
+
+.logicpenguin sub-derivation .subderivbuttons > div {
+    margin-right: 1ex;
+    background-color: var(--lpblue);
+    color: var(--lpbgwhite);
+    padding: 0.2ex;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.logicpenguin sub-derivation .subderivbuttons > div:hover {
+    background-color: var(--lpcyan);
+    color: var(--lpwhite);
+}
+/* LINE BUTTONS */
+
+/* common */
+.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle div,
+.logicpenguin .derivationline .derivmenubutton > .material-symbols-outlined ,
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck div {
+    border-radius: 5px;
+    padding: 2px;
+    user-select: none;
+}
+
+.logicpenguin sub-derivation .derivationline .jbwrap div {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* popup menu button */
+
+.logicpenguin sub-derivation .derivationline .jbwrap div .derivmenubutton {
+    position: relative;
+    padding-left: 0.5ex;
+    padding-top: 6px;
+    bottom: 3px;
+    user-select: none;
+}
+
+.logicpenguin sub-derivation .derivationline .derivmenubutton > .material-symbols-outlined {
+    cursor: pointer;
+    color: var(--lpbgwhite);
+    background-color: var(--lpblue);
+}
+
+.logicpenguin .derivationline .derivmenubutton:hover > .material-symbols-outlined {
+    background-color: var(--lpcyan);
+    color: var(--lpwhite);
+}
+
+/* POPUP MENU ITSELF */
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton .derivlinepopupmenu {
+    position: absolute;
+    top: 2ex;
+    left: 1ex;
+    display: none;
+    background-color: var(--lpgray5);
+    z-index: 12;
+    font-size: 85%;
+    cursor: pointer;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton .derivlinepopupmenu td:first-child {
+    color: var(--lpblue);
+    padding-left: 0.5ex;
+}
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton .derivlinepopupmenu td:last-child {
+    color: var(--lpgray1);
+    padding-right: 0.5ex;
+}
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton .derivlinepopupmenu tr:first-child td {
+    padding-top: 0.5ex;
+}
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton .derivlinepopupmenu tr:last-child td {
+    padding-bottom: 0.5ex;
+}
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton .derivlinepopupmenu tr:hover {
+    background-color: var(--lpbggreen);
+    border-radius: 10px 10px 10px 10px;
+}
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton.opened .derivlinepopupmenu {
+    display: inline-table;
+}
+
+.logicpenguin sub-derivation
+    .jbwrap div .derivmenubutton .derivlinepopupmenu input[type="number"] {
+    width: 3em;
+    margin-left: 1ex;
+    font-size: inherit;
+    text-align: center;
+}
+
+/* check toggle button */
+
+.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle {
+    padding-left: 0.5ex;
+    padding-top: 6px;
+    cursor: pointer;
+}
+
+.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckoff {
+    color: var(--lpbgwhite);
+    background-color: var(--lpgray5);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckoff:hover {
+    background-color: var(--lpgreen);
+}
+
+.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckon {
+    background-color: var(--lpmagenta);
+    color: var(--lpgray6);
+}
+
+.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckon:hover {
+    color: var(--lpgray5);
+    background-color: var(--lpbgwhite)
+}
+
+/* CHECK "BUTTON" (really an indicator, meant as a button originally) */
+
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck {
+    font-size: 125%;
+    padding: 4px;
+}
+
+/* colors, etc., for line check icon */
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .baddependency {
+    color: var(--lpyellow);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .checking {
+    animation: flip 1s infinite linear;
+    animation-direction: alternate;
+    color: var(--lpgray3);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .good {
+    color: var(--lpgreen);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .incomplete {
+    color: var(--lpgray4);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .multierror,
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .justificationerror,
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .ruleerror,
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .syntaxerror {
+    background-color: var(--lpbgred);
+    color: var(--lpred);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .malfunction {
+    color: var(--lpbgyellow);
+    background-color: var(--lpred);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .turnedoff {
+    color: var(--lpbgwhite);
+    background-color: var(--lpgray5);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck div.turnedoff:hover {
+    color: var(--lpwhite);
+    background-color: var(--lpgreen);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .unchecked {
+    color: var(--lpgray5);
+}
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck.hideunchecked .unchecked {
+    display: none;
+}
+
+.logicpenguin.rulepanel {
+    display: inline-block;
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+    background-color: var(--lpgray1);
+    color: var(--lpbgwhite);
+    padding: 1ex;
+    border-radius: 10px;
+}
+.logicpenguin .rulepanel .derivchartlabel {
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+}
+.logicpenguin .rulepanel .derivhidewidget {
+    float: right;
+    margin-right: 2px;
+    margin-left: 1.5em;
+    margin-bottom: -30px;
+    font-size: 150%;
+    display: inline-block;
+    top: -5px;
+}
+.logicpenguin .rulepanel .derivchartlabel:hover {
+    color: var(--lpbgmagenta);
+}
+.logicpenguin.rulepanel table.ruleclicktable {
+    border-spacing: 0;
+    border-collapse: collapse;
+    display: inline-table;
+}
+
+.logicpenguin.rulepanel.minimized table.ruleclicktable {
+    display: none;
+}
+
+.logicpenguin.rulepanel .ruleclicktable > thead {
+    cursor: pointer;
+}
+
+.logicpenguin.rulepanel .ruleclicktable > thead > tr > th {
+    padding-bottom: 2ex;
+    font-weight: normal;
+}
+
+.logicpenguin.rulepanel .ruleclicktable > thead > tr > th:first-child {
+    font-weight: bold;
+}
+
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td {
+    text-align: center;
+    vertical-align: middle;
+    /* width: 2.8em; height: 2.4em; */
+    padding: 10px 5px 10px 5px;
+    border: 1px solid var(--lpgray3);
+    cursor: pointer;
+}
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td:hover {
+    background-color: var(--lpblack);
+    color: var(--lpbgmagenta);
+}
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian:hover {
+    background-color: var(--lpgray1);
+    color: var(--lpgray4);
+}
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td > div {
+    position: relative;
+}
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian {
+    color: var(--lpgray4);
+    cursor: not-allowed;
+}
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -5px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--lpred);
+    font-size: 170%;
+    cursor: not-allowed;
+}
+
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian.excluded:hover span,
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian.excluded span {
+    color: var(--lpblack);
+    cursor: default;
+}
+
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian:hover span {
+    color: var(--lpred);
+}
+
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.excluded {
+    color: var(--lpbgblack);
+    cursor: default;
+}
+
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.excluded:hover {
+    color: var(--lpbgblack);
+    background-color: var(--lpgray1);
+}
+
+.logicpenguin .rulepanel .ruledisplayform {
+    display: inline-block;
+    text-align: left;
+    padding: 1ex 1em 1ex 1em;
+    border-radius: 15px;
+    background-color: var(--lpgray6);
+    color: var(--lpblack);
+    margin-top: 1ex;
+    margin-left: 1em;
+}
+
+.logicpenguin .rulepanel table > thead:hover .ruledisplayform {
+    background-color: var(--lpbgblue);
+}
+
+.logicpenguin .rulepanel .ruledisplayform:first-child  {
+    margin-left: 0;
+}
+
+.logicpenguin .rulepanel .ruledisplayargtbl tr:last-child td {
+    border-top: 2px solid var(--lpbgblack);
+}
+
+.logicpenguin .rulepanel .ruledisplayshowline span:first-child {
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    margin-right: 0.5em;
+}
+
+.logicpenguin .rulepanel .ruledisplaydrop {
+    margin-top: 6ex;
+}
+
+.logicpenguin .ruledisplayform .ruledisplaysubderiv {
+    border: 3px solid var(--lpblack);
+    padding: 1ex;
+}
+
+.logicpenguin .ruledisplayform .ruledisplaysubderiv.withblank {
+    min-height: 3ex;
+}
+
+.logicpenguin .ruledisplayform .rulenote {
+    font-size: 80%;
+}
+
+.logicpenguin .derivationcomment {
+    border-radius: 8px;
+    padding: 1ex;
+    background-color: var(--lpbgyellow);
+    margin-bottom: 2ex;
+    margin-top: 2ex;
+}
+.logicpenguin .derivationcomment .errortable {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.logicpenguin .derivationcomment .errortable td:first-child {
+    padding-right: 1em;
+    white-space: nowrap;
+    vertical-align: text-top;
+}
+
+.logicpenguin .derivationcomment .errortable td:last-child {
+    font-style: italic;
+}
+
+.logicpenguin .derivationcomment .errortable td:last-child span {
+    color: var(--lpred);
+}
+
+.logicpenguin .derivationcomment .errortable td:last-child span.dependency {
+    color: var(--lpyellow);
+}
+
+.logicpenguin .derivationcomment .regularhint span,
+.logicpenguin .derivationcomment .celebratehint span,
+.logicpenguin .derivationcomment .errorhint span {
+    color: var(--lpblue);
+}

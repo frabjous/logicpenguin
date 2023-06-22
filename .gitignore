@@ -1,0 +1,11 @@
+# changing certificates
+certs/key.pem
+certs/cert.pem
+# Node stuff
+node_modules/
+data/
+dist/
+fallback/
+public/.well-known/
+package-lock.json
+settings.json

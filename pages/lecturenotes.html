@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- standard metadata -->
+        <meta charset="utf-8" />
+        <meta name="description" content="Logic Penguin Lecture Notes" />
+        <meta name="author" content="Kevin C. Klement" />
+        <meta name="copyright" content="Copyright 2022 © Kevin C. Klement" />
+        <meta name="keywords" content="logic,lecture notes,lectures" />
+        <meta name="dcterms.date" content="2022-12-17" />
+        <meta property="og:title" content="Logic Penguin Lecture Notes" />
+        <meta property="og:image" content="/images/logicpenguin.png" />
+        <meta property="og:description" content="Logic penguin online lecture notes" />
+
+        <!-- mobile ready -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        <!-- icon and title -->
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <title>⟨logicpenguin:longtitle⟩ | ⟨logicpenguin:contextdescription⟩ | Logic Penguin</title>
+        <!-- LP stylesheet in case no exercises -->
+        <link rel="stylesheet" type="text/css" href="/stylesheets/common.css" />
+
+
+        <style>
+            #innerwrapper {
+                max-width: 1000px;
+                margin-left: 25px;
+                margin-top: 25px;
+                margin-bottom: 25px;
+                margin-right: 25px;
+            }
+            #outerwrapper {
+                margin-bottom: 4em;
+            }
+            iframe {
+                margin: 2ex;
+                margin-left: 0;
+            }
+            p.example {
+
+            }
+            .ansc {
+                border: 2px dotted var(--lpred);
+                background-color: var(--lpbgred);
+                cursor: pointer;
+            }
+            .ansc .lans {
+                visibility: hidden;
+            }
+            .ansc.shown .lans {
+                visibility: visible;
+            }
+            .definition {
+                border: 2px solid var(--lpmagenta);
+                border-radius: 50px;
+                padding-left: 1.5em;
+                padding-right: 1.5em;
+                padding-top: 1ex;
+                padding-bottom: 1ex;
+            }
+            .definition strong {
+                color: var(--lpmagenta);
+            }
+            .example {
+                background-color: var(--lpbgyellow);
+                border-top: 2px solid var(--lpyellow);
+                border-bottom: 2px solid var(--lpyellow);
+                border-left: 8px solid var(--lpyellow);
+                border-right: 8px solid var(--lpyellow);
+                padding: 1ex;
+            }
+            .extra {
+                margin-bottom: 1.5ex;
+            }
+            .proceed, .exreturn {
+                display: inline-block;
+            }
+            .exreturn {
+                float: left;
+            }
+            .proceed {
+                float: right;
+            }
+            .exreturn a,
+            .exreturn a:link,
+            .exreturn a:visited,
+            .proceed a,
+            .proceed a:link,
+            .proceed a:visited {
+                text-decoration: none;
+            }
+            .exreturn .material-symbols-outlined,
+            .proceed .material-symbols-outlined {
+                position: relative;
+                bottom: -0.15ex;
+                cursor: pointer !important;
+            }
+            div.lecturerule {
+                display : inline-block;
+                padding : 1ex;
+                border: 1px solid black;
+                border-radius: 0.5ex;
+                vertical-align: top;
+                margin-right: 0.5em;
+                margin-bottom: 1ex;
+            }
+            .lecturerule .rulevariation {
+                display: inline-block;
+                margin-right: 20px;
+            }
+            .lectrulename {
+                text-align: center;
+                font-weight: bold;
+                margin-bottom: 1ex;
+            }
+            .advicetable th {
+                text-decoration: underline;
+                font-weight: normal;
+                padding-right: 1em;
+            }
+            .advicetable td {
+                text-align: center;
+                padding-right: 1em;
+            }
+            @media print {
+                img { display: none; }
+                iframe { display: none; }
+                .logicpenguin .buttondiv { display: none; }
+                .logicpenguin .ansc .lans { visibility: visible; }
+            }
+        </style>
+        <script>
+            window.addEventListener("load", function() {
+                let aa = document.getElementsByClassName("ansc");
+                for (let a of aa) {
+                    a.onclick = function() {
+                        if (this.classList.contains("shown")) {
+                            this.classList.remove("shown");
+                        } else {
+                            this.classList.add("shown");
+                        }
+                    }
+                }
+            });
+        </script>
+    </head>
+    <body class="logicpenguin">
+        <div id="outerwrapper">
+            <!-- TODO: real website url -->
+            <a id="lplogo" href="https://logicpenguin.com"
+                title="Visit the logic penguin homepage"
+                target="_blank">
+                <span>Powered by Logic Penguin</span>
+                <img src="/images/logicpenguin.png" id="lplogo"
+                    alt="LogicPenguin">
+            </a>
+            <div id="innerwrapper">
+                <div id="pageheader">
+                    <h1 id="pagetitle">⟨logicpenguin:longtitle⟩</h1>
+                </div>
+                <div id="pagecontent">
+<!-- BEGIN INJECTED CONTENT -->
+⟨logicpenguin:lecturecontent⟩
+<!-- END INJECTED CONTENT -->
+                </div>
+                <div id="pagefooter">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

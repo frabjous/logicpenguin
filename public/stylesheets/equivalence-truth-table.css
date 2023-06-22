@@ -1,0 +1,9 @@
+@charset 'utf-8';
+@import 'truth-tables.css';
+
+.logicpenguin equivalence-truth-table .truthtableblock .ttseparator {
+    font-style: italic;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+

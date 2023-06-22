@@ -1,0 +1,50 @@
+@charset 'utf-8';
+
+td {
+    vertical-align: text-top;
+}
+
+table {
+    border-collapse: collapse;
+    display: inline-table;
+}
+
+.nlargument tbody tr:last-child td {
+    border-top: 1px solid var(--lpgray4);
+}
+
+.radiotable td:first-child {
+    padding-right: 1em;
+}
+
+.radiotable label {
+    margin-right: 1.2em;
+}
+
+.counterexample {
+    margin-top: 2ex;
+    color: var(--lpmagenta);
+}
+
+.counterexample span {
+    font-style: italic;
+    color: var(--lpgray2);
+    padding-right: 0.7em;
+}
+
+.counterexample table {
+    border: 0.5px solid var(--lpyellow);
+}
+
+.counterexample table tr:first-child td {
+    padding-top: 1ex;
+}
+
+.counterexample table tr td {
+    padding-left: 1ex;
+    padding-right: 1ex;
+}
+
+.counterexample table tr:last-child td {
+    padding-bottom: 1ex;
+}
