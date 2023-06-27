@@ -539,3 +539,26 @@ function undecided(branch) {
     return branch;
 }
 
+//////////////////////// Generate common equivalences
+
+function equivProliferate(f, switches = {}) {
+    let equivs = [];
+    // for falsum, return it and its double negation
+    if ((!f.op) || (f.op == symbols.FALSUM)) {
+
+    }
+    if (f.op == symbols.FALSUM) {
+        return [
+            f.normal,
+            Formula.from(symbols.NOT + symbols.NOT + f.normal).normal
+        ];
+    }
+    if (f.op == symbols.NOT) {
+        let g = f.right;
+
+    }
+    return equivs;
+}
+
+console.log(('⊃').codePointAt(0));
+console.log(equivProliferate(Formula.from('Fa')));
