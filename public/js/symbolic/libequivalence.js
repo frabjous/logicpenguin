@@ -542,6 +542,11 @@ function undecided(branch) {
 
 //////////////////////// Generate common equivalences
 
+function issymmetric(op) {
+    return (op == symbols.OR || op == symbols.AND ||
+        op == symbols.IFF);
+}
+
 function applyswitches(str, switches) {
     for (let sw in switches) {
         let cpoint = 120049 + switches[sw].codePointAt(0);
@@ -607,25 +612,39 @@ function equivProliferate(f, switches = {}) {
     }
     // for conjunctions p ∧ q, accept ~(~p ∨ ~q), ~(p → ~q)
     if (f.op == symbols.AND) {
-        return arrayUnion(
-            [Formula.from(applyswitches(f.normal))],
-            [Formula.from(applyswithces(
-                symbols.NOT + symbols.NOT + f.normal
-            ))],
-            proliferateCombine(f.right, f.left, symbols.AND, switches)
+        let results = (
+            proliferateCombine(f.left, f.right, symbols.AND, switches)
         );
+        return results;
     }
     return equivs;
 }
 
-function proliferateCombine(f, g, op, swithces) {
+function proliferateCombine(f, g, op, switches) {
     let results = [];
     let fequivs = equivProliferate(f, switches);
     let gequivs = equivProliferate(g, switches);
-    return [];
+    for (let fe of fequivs) {
+        for (let ge of gequivs) {
+            results.push(
+                Formula.from(fe.normal + op + ge.normal),
+                Formula.from(symbols.NOT + symbols.NOT + '(' +
+                    fe.normal + op + ge.normal + ')')
+            );
+            if (issymmetric(op)) {
+                results.push(
+                    Formula.from(ge.normal + op + fe.normal),
+                    Formula.from(symbols.NOT + symbols.NOT +
+                        '(' + ge.normal + op + fe.normal + ')')
+                );
+            }
+        }
+    }
+    return results;
 }
 
 console.log(equivProliferate(Formula.from('✖')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('Fa')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('~Fa')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('Fa & Gb')).map((f) => (f.normal)));
