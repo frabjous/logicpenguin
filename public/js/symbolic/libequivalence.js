@@ -592,6 +592,8 @@ function equivProliferate(f, switches = {}) {
         if (r.op == symbols.FALSUM) {
             return [ f ];
         }
+        // guard against nonsense
+        if (!r.right) { return []; }
         // for other negations we start by proliferating
         // what it's a negation of
         let baseEquivs = equivProliferate(r, switches);
@@ -601,21 +603,18 @@ function equivProliferate(f, switches = {}) {
         // negation of negation, return it and
         // equivalents to its un-double negative
         if (r.op == symbols.NOT) {
-            // don't bother with ill-formed things
-            if (!r.right) { return []; }
-            return arrayUnion(
-                [Formula.from(applyswitches(f.normal))],
-                equivProliferate(
-                    Formula.from(applyswitches(r.right.normal)),
-                    switches
-                )
-            );
+            //TODO
+
+        }
+
+        // guard against nonsense
+        if (!r.left) {
+            return [];
         }
         // negation of and statement
         if (r.op == symbols.AND) {
             // don't bother with ill-formed things
             if (!r.left || !r.right) { return []; }
-            return arrayUnion
         }
     }
     // for conjunctions
@@ -636,7 +635,7 @@ function proliferateCombine(f, g, op, switches) {
     for (let fe of fequivs) {
         for (let ge of gequivs) {
             results.push( Formula.from(
-                fe.wrapifneeded() + op + ge.normal.wrapifneeded()
+                fe.wrapifneeded() + op + ge.wrapifneeded()
             ));
             if (issymmetric(op)) {
                 results.push(Formula.from(
