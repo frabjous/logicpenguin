@@ -568,28 +568,36 @@ function equivProliferate(f, switches = {}) {
         String.fromCodePoint(varCP+2),
     ];
     let equivs = [];
-    // for atomics, return the switch and its double negation
+    // for atomics, return it with switches applied
     if (!f.op) {
         return [ 
             Formula.from(applyswitches(f.normal)),
-            Formula.from(symbols.NOT + symbols.NOT +
-                applyswitches(f.normal))
         ];
     }
-    // for falsum, return it and its double negation
+    // for falsum, return it
     if (f.op == symbols.FALSUM) {
-        return [
-            f,
-            Formula.from(symbols.NOT + symbols.NOT + f.normal)
-        ];
+        return [ f ];
     }
     // for negations it depends what it is a negation of
     if (f.op == symbols.NOT) {
+        // guard against nonsense
+        if (!f.right) { return []; }
         let r = f.right;
-        // negation of atomic or falsum, just return itself
-        if ((!r.op) || (r.op == symbols.FALSUM)) {
+
+        // negation of atomic, return it with switches applied
+        if (!r.op) {
             return [Formula.from(applyswitches(f.normal))];
         }
+        // negation of falsum, just return it
+        if (r.op == symbols.FALSUM) {
+            return [ f ];
+        }
+        // for other negations we start by proliferating
+        // what it's a negation of
+        let baseEquivs = equivProliferate(r, switches);
+        equivs = baseEquivs.map((f) => (Formula.from(symbols.NOT +
+            f.wrapifneeded())));
+
         // negation of negation, return it and
         // equivalents to its un-double negative
         if (r.op == symbols.NOT) {
@@ -610,10 +618,11 @@ function equivProliferate(f, switches = {}) {
             return arrayUnion
         }
     }
-    // for conjunctions p ∧ q, accept ~(~p ∨ ~q), ~(p → ~q)
-    if (f.op == symbols.AND) {
+    // for conjunctions
+    if (f.op == symbols.AND || f.op == symbols.OR ||
+        f.op == symbols.IFTHEN || f.op == symbols.IFF ) {
         let results = (
-            proliferateCombine(f.left, f.right, symbols.AND, switches)
+            proliferateCombine(f.left, f.right, f.op, switches)
         );
         return results;
     }
@@ -626,17 +635,13 @@ function proliferateCombine(f, g, op, switches) {
     let gequivs = equivProliferate(g, switches);
     for (let fe of fequivs) {
         for (let ge of gequivs) {
-            results.push(
-                Formula.from(fe.normal + op + ge.normal),
-                Formula.from(symbols.NOT + symbols.NOT + '(' +
-                    fe.normal + op + ge.normal + ')')
-            );
+            results.push( Formula.from(
+                fe.wrapifneeded() + op + ge.normal.wrapifneeded()
+            ));
             if (issymmetric(op)) {
-                results.push(
-                    Formula.from(ge.normal + op + fe.normal),
-                    Formula.from(symbols.NOT + symbols.NOT +
-                        '(' + ge.normal + op + fe.normal + ')')
-                );
+                results.push(Formula.from(
+                    ge.wrapifneeded() + op + fe.wrapifneeded()
+                ));
             }
         }
     }
@@ -648,3 +653,6 @@ console.log(equivProliferate(Formula.from('Fa')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('~Fa')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('Fa & Gb')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('Fa ∨ Gb')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('Fa ↔ Gb')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('Fa → Gb')).map((f) => (f.normal)));
