@@ -33,6 +33,7 @@ import { arrayUnion, randomString } from '../misc.js';
 const cRegEx = new RegExp( '^[' + syntax.constantsRange + ']$');
 const ncRegEx = new RegExp( '[^' + syntax.constantsRange + ']', 'g');
 const constCP = syntax.constantsRange.codePointAt(0);
+const varCP = syntax.variableRange.codePointAt(0);
 const smallInterpSize = 3;
 const termLimit = 2;
 
@@ -541,7 +542,7 @@ function undecided(branch) {
 
 //////////////////////// Generate common equivalences
 
-function applyswitch(str, switches) {
+function applyswitches(str, switches) {
     for (let sw in switches) {
         let cpoint = 120049 + switches[sw].codePointAt(0);
         let tempchar = String.fromCodePoint(cpoint);
@@ -556,24 +557,47 @@ function applyswitch(str, switches) {
 }
 
 function equivProliferate(f, switches = {}) {
+    let vars = [
+        String.fromCodePoint(varCP),
+        String.fromCodePoint(varCP+1),
+        String.fromCodePoint(varCP+2),
+    ];
     let equivs = [];
-    // for falsum, return it and its double negation
-    if ((!f.op) || (f.op == symbols.FALSUM)) {
-
-    }
-    if (f.op == symbols.FALSUM) {
-        return [
-            f.normal,
-            Formula.from(symbols.NOT + symbols.NOT + f.normal).normal
+    // for atomics, return the switch and its double negation
+    if (!f.op) {
+        return [ 
+            Formula.from(applyswitches(f.normal)),
+            Formula.from(symbols.NOT + symbols.NOT +
+                applyswitches(f.normal))
         ];
     }
+    // for falsum, return it and its double negation
+    if (f.op == symbols.FALSUM) {
+        return [
+            f,
+            Formula.from(symbols.NOT + symbols.NOT + f.normal)
+        ];
+    }
+    // for negations it depends what it is a negation of
     if (f.op == symbols.NOT) {
-        let g = f.right;
-
+        let r = f.right;
+        // negation of atomic or falsum, just return itself
+        if ((!r.op) || (r.op == symbols.FALSUM)) {
+            return [Formula.from(applyswitches(f.normal))];
+        }
+        // negation of negation, return it and its un-double negative
+        if (r.op == symbols.NOT) {
+            let rt = [Formula.from(applyswitches(f.normal))];
+            if (r.right) {
+                rt.push(Formula.from(applyswitches(r.right.normal)));
+            }
+            return rt;
+        }
     }
     return equivs;
 }
 
-console.log(applyswitch('Rxy',{}));
-console.log(applyswitch('Rxy',{'x':'y', 'y':'x'}));
-console.log(equivProliferate(Formula.from('Fa')));
+console.log(equivProliferate(Formula.from('✖')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('Fa')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~Fa')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
