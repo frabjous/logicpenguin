@@ -541,6 +541,20 @@ function undecided(branch) {
 
 //////////////////////// Generate common equivalences
 
+function applyswitch(str, switches) {
+    for (let sw in switches) {
+        let cpoint = 120049 + switches[sw].codePointAt(0);
+        let tempchar = String.fromCodePoint(cpoint);
+        str = str.replaceAll(sw, tempchar);
+    }
+    for (let sw in switches) {
+        let cpoint = 120049 + switches[sw].codePointAt(0);
+        let tempchar = String.fromCodePoint(cpoint);
+        str = str.replaceAll(tempchar, switches[sw]);
+    }
+    return str;
+}
+
 function equivProliferate(f, switches = {}) {
     let equivs = [];
     // for falsum, return it and its double negation
@@ -560,5 +574,6 @@ function equivProliferate(f, switches = {}) {
     return equivs;
 }
 
-console.log(('⊃').codePointAt(0));
+console.log(applyswitch('Rxy',{}));
+console.log(applyswitch('Rxy',{'x':'y', 'y':'x'}));
 console.log(equivProliferate(Formula.from('Fa')));

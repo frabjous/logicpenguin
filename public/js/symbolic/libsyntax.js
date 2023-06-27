@@ -21,8 +21,8 @@ syntax.usecommas = false;
 export const operators = Object.fromEntries(
     Object.entries(symbols).map(([x,y]) => ([y,x])));
 
-syntax.constantsRange = 'a-t';
-syntax.variableRange = 'u-z';
+syntax.constantsRange = 'a-w';
+syntax.variableRange = 'x-z';
 syntax.pletterRange = '=A-Z';
 const useQParens = true; // for testing; remove
 let qRegExStr = '([' + symbols.FORALL + symbols.EXISTS + '])([' +
