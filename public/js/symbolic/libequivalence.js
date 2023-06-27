@@ -585,16 +585,44 @@ function equivProliferate(f, switches = {}) {
         if ((!r.op) || (r.op == symbols.FALSUM)) {
             return [Formula.from(applyswitches(f.normal))];
         }
-        // negation of negation, return it and its un-double negative
+        // negation of negation, return it and
+        // equivalents to its un-double negative
         if (r.op == symbols.NOT) {
-            let rt = [Formula.from(applyswitches(f.normal))];
-            if (r.right) {
-                rt.push(Formula.from(applyswitches(r.right.normal)));
-            }
-            return rt;
+            // don't bother with ill-formed things
+            if (!r.right) { return []; }
+            return arrayUnion(
+                [Formula.from(applyswitches(f.normal))],
+                equivProliferate(
+                    Formula.from(applyswitches(r.right.normal)),
+                    switches
+                )
+            );
+        }
+        // negation of and statement
+        if (r.op == symbols.AND) {
+            // don't bother with ill-formed things
+            if (!r.left || !r.right) { return []; }
+            return arrayUnion
         }
     }
+    // for conjunctions p ∧ q, accept ~(~p ∨ ~q), ~(p → ~q)
+    if (f.op == symbols.AND) {
+        return arrayUnion(
+            [Formula.from(applyswitches(f.normal))],
+            [Formula.from(applyswithces(
+                symbols.NOT + symbols.NOT + f.normal
+            ))],
+            proliferateCombine(f.right, f.left, symbols.AND, switches)
+        );
+    }
     return equivs;
+}
+
+function proliferateCombine(f, g, op, swithces) {
+    let results = [];
+    let fequivs = equivProliferate(f, switches);
+    let gequivs = equivProliferate(g, switches);
+    return [];
 }
 
 console.log(equivProliferate(Formula.from('✖')).map((f) => (f.normal)));
