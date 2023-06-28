@@ -333,8 +333,8 @@ function issymmetric(op) {
 }
 
 export function loadEquivalents(wffstr) {
-    // generate list if need be
-    useMemory = true;
+    //if memory, check the equivDB object, otherwise generate it
+    //using equivProliferate
     if (useMemory) {
         if (!(wffstr in equivDB)) {
             console.log("determining");
@@ -343,6 +343,20 @@ export function loadEquivalents(wffstr) {
         }
         return equivDB[wffstr];
     }
+    // if using file database, try to load file
+    let equivdir = process.appsettings.datadir + '/equivalents';
+    let fn = equivdir + '/' + wffstr + '.json';
+    let equivs = process.lpfs.loadjson(fn);
+    // if no file, then start afresh
+    if (!equivs) { equivs = []; }
+    if (equivs.length == 0) {
+        let equivsff = equivProliferate(Formula.from(wffstr), {});
+        equivs = equivsff.map((f) =>(f.normal));
+        if (equivs.length != 0) {
+            saveEquivalents(wffstr, equivs);
+        }
+    }
+    return equivs;
 }
 
 function proliferateCombine(f, g, op, switches) {
@@ -362,4 +376,16 @@ function proliferateCombine(f, g, op, switches) {
         }
     }
     return results;
+}
+
+function saveEquivalents(wffstr, equivs) {
+    // don't crash if called incorrectly
+    if ((typeof process == 'undefined') ||
+        (!("appsettings" in process)) ||
+        (!("datadir" in process.appsettings)) ||
+        (!("lpfs" in process)) ||
+        (!("savejson" in process.lpfs))) { return false; }
+    let fn = process.appsettings.datadir + '/equivalents/' +
+        wffstr + '.json';
+    return process.lpfs.savejson(fn, equivs);
 }
