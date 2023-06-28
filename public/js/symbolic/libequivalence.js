@@ -34,6 +34,11 @@ const cRegEx = new RegExp( '^[' + syntax.constantsRange + ']$');
 const ncRegEx = new RegExp( '[^' + syntax.constantsRange + ']', 'g');
 const constCP = syntax.constantsRange.codePointAt(0);
 const varCP = syntax.variableRange.codePointAt(0);
+const someVariables = [
+    String.fromCodePoint(varCP),
+    String.fromCodePoint(varCP+1),
+    String.fromCodePoint(varCP+2)
+];
 const smallInterpSize = 3;
 const termLimit = 2;
 
@@ -548,6 +553,7 @@ function issymmetric(op) {
 }
 
 function applyswitches(str, switches) {
+    let sstr = str;
     for (let sw in switches) {
         let cpoint = 120049 + switches[sw].codePointAt(0);
         let tempchar = String.fromCodePoint(cpoint);
@@ -562,16 +568,12 @@ function applyswitches(str, switches) {
 }
 
 function equivProliferate(f, switches = {}) {
-    let vars = [
-        String.fromCodePoint(varCP),
-        String.fromCodePoint(varCP+1),
-        String.fromCodePoint(varCP+2),
-    ];
     let equivs = [];
+
     // for atomics, return it with switches applied
     if (!f.op) {
         return [ 
-            Formula.from(applyswitches(f.normal)),
+            Formula.from(applyswitches(f.normal, switches)),
         ];
     }
     // for falsum, return it
@@ -586,7 +588,7 @@ function equivProliferate(f, switches = {}) {
 
         // negation of atomic, return it with switches applied
         if (!r.op) {
-            return [Formula.from(applyswitches(f.normal))];
+            return [Formula.from(applyswitches(f.normal, switches))];
         }
         // negation of falsum, just return it
         if (r.op == symbols.FALSUM) {
@@ -707,6 +709,22 @@ function equivProliferate(f, switches = {}) {
             )
         ));
 
+        // TODO: Switches
+        if (!(v in switches)) {
+            for (let somevar of someVariables) {
+                // don't redo switch and don't switch free variables
+                if (somevar in switches) { continue; }
+                if (somevar == v) { continue; }
+                if (f.freevars.indexOf(somevar) != -1) { continue; }
+                let newswitches = {...switches};
+                newswitches[v] = somevar;
+                newswitches[somevar] = v;
+                equivs = arrayUnion(
+                    equivs, equivProliferate(f, newswitches)
+                );
+            }
+        }
+
         return equivs;
     }
 
@@ -740,3 +758,5 @@ function proliferateCombine(f, g, op, switches) {
 }
 
 console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('∀x~~Fx')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('∀x∃yRxy')).map((f) => (f.normal)));
