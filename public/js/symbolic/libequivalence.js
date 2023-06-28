@@ -581,7 +581,7 @@ function equivProliferate(f, switches = {}) {
     // for negations it depends what it is a negation of
     if (f.op == symbols.NOT) {
         // guard against nonsense
-        if (!f.right) { return equivs; }
+        if (!f?.right) { return equivs; }
         let r = f.right;
 
         // negation of atomic, return it with switches applied
@@ -592,14 +592,21 @@ function equivProliferate(f, switches = {}) {
         if (r.op == symbols.FALSUM) {
             return [ f ];
         }
+        // guard again nonense
+        if (!r?.right) { return equivs; }
         // for other negations we start by proliferating
         // what it's a negation of
         let baseEquivs = equivProliferate(r, switches);
-        equivs = baseEquivs.map((w) => {
-            let q = Formula.from(symbols.NOT + w.wrapifneeded())
-            return q;
+        equivs = baseEquivs.map((w) => 
+            (Formula.from(symbols.NOT + w.wrapifneeded())));
 
-        })
+        // negation of negation
+        // ¬¬p :: p
+        if (r.op == symbols.NOT) {
+            return arrayUnion(equivs, equivProliferate(r.right, switches));
+        }
+
+        // TODO: negations of quantififiers
 
         // guard against nonsense
         if (!r.left) { return equivs; }
@@ -622,10 +629,37 @@ function equivProliferate(f, switches = {}) {
         // negation of or statement
         if (r.op == symbols.OR) {
             // ¬(p∨q) :: ¬p&¬q
-            equivs = arrayUnion(equivProliferate(
-                Formula.from(symbols.NOT + r.left.wrapifneeded() +
-                    symbols.NOT + r.right.wrapifneeded()),
-            switches));
+            equivs = arrayUnion(equivs,
+                equivProliferate(
+                    Formula.from(symbols.NOT + r.left.wrapifneeded() +
+                        symbols.AND + symbols.NOT + r.right.wrapifneeded()),
+                switches));
+            return equivs;
+        }
+
+        // negated conditionals
+        if (r.op == symbols.IFTHEN) {
+            // ¬(p → q) :: p & ¬q
+            equivs = arrayUnion(equivs,
+                equivProliferate(
+                    Formula.from(r.left.wrapifneeded() + symbols.AND +
+                        symbols.NOT + r.right.wrapifneeded()),
+                    switches
+                )
+            );
+            return equivs;
+        }
+
+        // negated biconditionals
+        if (r.op == symbols.IFF) {
+            // ~(p↔q) :: ~p↔q
+            equivs = arrayUnion(equivs,
+                equivProliferate(
+                    Formula.from(symbols.NOT + r.left.wrapifneeded() +
+                        symbols.IFF + r.right.wrapifneeded()),
+                    switches
+                )
+            );
             return equivs;
         }
     }
@@ -634,9 +668,8 @@ function equivProliferate(f, switches = {}) {
     
     if (f.op == symbols.AND || f.op == symbols.OR ||
         f.op == symbols.IFTHEN || f.op == symbols.IFF ) {
-        equivs = (
-            proliferateCombine(f.left, f.right, f.op, switches)
-        );
+        equivs = proliferateCombine(f.left, f.right, f.op, switches);
+        // TODO
         return equivs;
     }
     return equivs;
@@ -661,12 +694,4 @@ function proliferateCombine(f, g, op, switches) {
     return results;
 }
 
-//console.log(equivProliferate(Formula.from('✖')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('Fa')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('~Fa')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('Fa & Gb')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('Fa ∨ Gb')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('Fa ↔ Gb')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('Fa → Gb')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('~(~Fa&~Ga)')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~(~P↔Q)')).map((f) => (f.normal)));
