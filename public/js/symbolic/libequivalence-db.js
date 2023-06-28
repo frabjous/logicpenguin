@@ -211,8 +211,7 @@ export function equivProliferate(f, switches = {}) {
         // ∀x(P ∧ Fx) :: P ∧ ∀xFx; ∃x(P ∧ Fx) :: P ∧ ∃xFx
         // ∀x(P ↔ Fx) :: P ↔ ∀xFx; ∃x(P ↔ Fx) :: P ↔ ∃xFx
         if (syntax.isbinaryop(r.op) && r?.left && r?.right
-            && (r.right.freevars.indexOf[v] == -1)
-        ) {
+            && (r.left.freevars.indexOf(v) == -1)) {
             equivs = arrayUnion(equivs,
                 equivProliferate(
                     Formula.from(r.left.wrapifneeded() + r.op +
@@ -221,6 +220,37 @@ export function equivProliferate(f, switches = {}) {
                 switches)
             );
         }
+
+        // ∀x(Fx ∧ P) :: ∀xFx ∧ P ; ∃x(Fx ∧ P) :: ∃xFx ∧ P
+        // ∀x(Fx ∨ P) :: ∀xFx ∨ P ; ∃x(Fx ∨ P) :: ∃xFx ∨ P
+        // ∀x(Fx ↔ P) :: ∀xFx ↔ P ; ∃x(Fx ↔ P) :: ∃xFx ↔ P
+        if ((r.op == symbols.AND || r.op == symbols.OR || r.op == symbols.IFF) &&
+            r?.left && r?.right && (r.right.freevars.indexOf(v) == -1)) {
+            equivs = arrayUnion(equivs,
+                equivProliferate(
+                    Formula.from(syntax.mkquantifier(v, f.op) +
+                        r.left.wrapifneeded() + r.op +
+                        r.right.wrapifneeded()),
+                switches)
+            );
+        }
+
+        // ∀x(Fx → P) :: ∃xFx → P ; ∃x(Fx → P) :: ∀xFx → P
+        if (r.op == symbols.IFTHEN && r?.left && r?.right
+            && (r.right.freevars.indexOf(v) == -1)) {
+            let newop = symbols.FORALL;
+            if (f.op == newop) {
+                newop = symbols.EXISTS;
+            }
+            equivs = arrayUnion(equivs,
+                equivProliferate(
+                    Formula.from(syntax.mkquantifier(v, newop) +
+                        r.left.wrapifneeded() + r.op +
+                        r.right.wrapifneeded()),
+                switches)
+            );
+        }
+
 
         // Try also with swapped out/switched bound variables
         // if not already apply a switch on that variable
@@ -377,7 +407,6 @@ export function loadEquivalents(wffstr) {
         let equivsff = equivProliferate(Formula.from(wffstr), {});
         equivs = equivsff.map((f) =>(f.normal));
         if (equivs.length != 0) {
-            console.log(
             saveEquivalents(wffstr, equivs));
         }
     }
