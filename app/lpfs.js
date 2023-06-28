@@ -135,4 +135,7 @@ lpfs.subdirs = async function(dir) {
     return rv;
 }
 
+// attach to process so can be used by public scripts
+if (process) { process.lpfs = lpfs; }
+
 export default lpfs;
