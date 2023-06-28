@@ -618,7 +618,6 @@ export function equivtest(fp, fq) {
     if (bidirectionalResult.determinate && bidirectionalResult.equiv) {
         let equivs = loadEquivalents(fp.normal);
         equivs.push(fq.normal);
-        console.log("saving bd test");
         saveEquivalents(fp.normal, equivs);
     }
     if (bidirectionalResult.determinate) {
