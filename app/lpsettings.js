@@ -86,4 +86,7 @@ if (!lpfs.ensuredir(appsettings.datadir)) {
     process.exit(1);
 }
 
+// export to process so it can be used by public scripts
+if (process) { process.appsettings = appsettings; }
+
 export default appsettings;
