@@ -52,7 +52,7 @@ let makedb = async function() {
 }
 
 console.log(equivtest(
-    Formula.from(''),
-    Formula.from('~~∃x~Rxx')
+    Formula.from('∃x∀y~Oyx'),
+    Formula.from('∃x~∃yOyx')
 ));
 
