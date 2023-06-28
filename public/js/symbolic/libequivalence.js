@@ -2,6 +2,23 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+import Formula from './formula.js';
+import { syntax, symbols } from './libsyntax.js';
+import { arrayUnion, randomString } from '../misc.js';
+import { loadEquivalents, saveEquivalents, equivProliferate } from './libequivalence-db.json';
+
+// too simple for function terms?**
+const cRegEx = new RegExp( '^[' + syntax.constantsRange + ']$');
+const ncRegEx = new RegExp( '[^' + syntax.constantsRange + ']', 'g');
+const constCP = syntax.constantsRange.codePointAt(0);
+const varCP = syntax.variableRange.codePointAt(0);
+const smallInterpSize = 3;
+const termLimit = 2;
+
+///////////////////////////////////////////////////////////////////////
+// TREE/TABLEAUX FUNCTIONS
+///////////////////////////////////////////////////////////////////////
+
 /*
 branches have the following properties:
     - growing (boolean): whether it is still growing
@@ -28,22 +45,6 @@ Possible modes:
         universals are conjunctions and existentials are disjunctions
 */
 
-import Formula from './formula.js';
-import { syntax, symbols } from './libsyntax.js';
-import { arrayUnion, randomString } from '../misc.js';
-
-// too simple for function terms?**
-const cRegEx = new RegExp( '^[' + syntax.constantsRange + ']$');
-const ncRegEx = new RegExp( '[^' + syntax.constantsRange + ']', 'g');
-const constCP = syntax.constantsRange.codePointAt(0);
-const varCP = syntax.variableRange.codePointAt(0);
-const someVariables = [
-    String.fromCodePoint(varCP),
-    String.fromCodePoint(varCP+1),
-    String.fromCodePoint(varCP+2)
-];
-const smallInterpSize = 3;
-const termLimit = 2;
 
 // applies a given rule to a branch for a particular statement
 function apply(branch, s, mode) {
@@ -307,7 +308,7 @@ function contradicts(branch, s, mode) {
     return false;
 }
 
-export function equivtest(fp, fq) {
+export function treeEquivtest(fp, fq) {
     let sprouts = [
         [ fp.normal, symbols.NOT + fq.wrapifneeded() ],
         [ fq.normal, symbols.NOT + fp.wrapifneeded() ]
@@ -546,4 +547,30 @@ function undecided(branch) {
     branch.undecided = true;
     branch.growing = false;
     return branch;
+}
+//////////////////////////////////////////////////////////////////////////
+// EQUIVALENCE DATABASE FUNCTINS
+//////////////////////////////////////////////////////////////////////////
+
+// note that because the way the checker for symbolic-translations is
+// written, it is fp that has a database, not fq, as it is a correct
+// answer and should be well-formed
+
+function quickDBCheck(fp, fq) {
+    let equivs = loadEquivalents(fp.normal);
+    let isEquiv = (equivs.indexOf(fq.normal) != -1);
+    return {
+        equiv: isEquiv,
+        method: 'quickdb',
+        determinate: isEquiv
+    }
+}
+
+function bidirectinalDBCheck(fp, fq) {
+    let equivs = loadEquivalents(fp.normal);
+    let givenequivs = equivProliferate(fq, {});
+    for (let g of givenequivs) {
+        let isEquiv = (equivs.indexOf(g.normal));
+        
+    }
 }

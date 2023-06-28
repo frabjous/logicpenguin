@@ -386,7 +386,7 @@ function proliferateCombine(f, g, op, switches) {
     return results;
 }
 
-function saveEquivalents(wffstr, equivs) {
+export function saveEquivalents(wffstr, equivs) {
     // don't crash if called incorrectly
     if ((typeof process == 'undefined') ||
         (!("appsettings" in process)) ||
