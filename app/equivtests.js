@@ -112,8 +112,35 @@ async function checkolddata() {
         }
         if (!hastrans) { continue; }
         let exnum = parts[0];
-
+        let subdirs = await lpfs.subdirs(usersdir);
+        for (let usernum of subdirs) {
+            let savedir = usersdir + '/' + usernum + '/saved';
+            let answersdir = usersdir + '/' + usernum + '/answers';
+            let savedfile = savedir + '/' + exnum + '.json';
+            let answerfile = answersdir + '/' + exnum + '.json';
+            let savedinfo = lpfs.loadjson(savedfile);
+            if (!savedinfo) { continue; }
+            let answerinfo = lpfs.loadjson(answerfile);
+            if (!answerinfo) { continue; }
+            for (let elemid in savedinfo) {
+                let elemidparts = elemid.split("problems")[1];
+                let setnum = parseInt(elemidparts.split('n')[0]);
+                let probnum = parseInt(elemidparts.split('n')[1]);
+                let rightans = answerinfo?.[setnum]?.[probnum];
+                if (!rightans) { continue; }
+                let savedans = savedinfo[elemid].ans;
+                if (savedinfo[elemid].ind.successstatus === "indeterminate" && usernum != "41809" && usernum != "58450") {
+                    console.log(usernum, exnum, savedans, rightans);
+                    process.exit(2);
+                }
+                let savedcorrect = (savedinfo[elemid].ind.successstatus == "correct");
+                console.log('I should compare ' + savedans + ' with ' +
+                    rightans);
+            }
+        }
 
     }
 
 }
+
+checkolddata();
