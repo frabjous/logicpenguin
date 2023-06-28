@@ -684,8 +684,24 @@ function equivProliferate(f, switches = {}) {
                     switches
                 )
             );
-            return equivs;
         }
+
+        // ~(p ↔ q) :: (p ∨ q) ∧ ¬(p & q)
+        if (r.op == symbols.IFF) {
+            equivs = arrayUnion(equivs,
+                proliferateCombine(
+                    Formula.from( r.left.wrapifneeded() + symbols.OR +
+                        r.right.wrapifneeded()),
+                    Formula.from( symbols.NOT + '(' +
+                        r.left.wrapifneeded() + symbols.AND +
+                        r.right.wrapifneeded() + ')'),
+                        symbols.AND,
+                        switches
+                )
+            );
+        }
+
+        return equivs;
     }
 
     // quantified statements
@@ -739,7 +755,7 @@ function equivProliferate(f, switches = {}) {
         let r = f.right; let l = f.left;
 
         // start by proliferating the parts and recombining
-        // this also handles commutativity
+        // this also handles commutativity of ∨, ∧ and ↔
         equivs = proliferateCombine(f.left, f.right, f.op, switches);
 
         // note for adding equivalences to moleculars, always use
@@ -770,18 +786,46 @@ function equivProliferate(f, switches = {}) {
             );
         }
 
+        // ¬p ↔ q :: p ↔ ¬q
+        if (f.op == symbols.IFF && l?.op && l.op == symbols.NOT
+            && l?.right) {
+            equivs = arrayUnion(equivs,
+                proliferateCombine(
+                    l.right,
+                    Formula.from(symbols.NOT + r.wrapifneeded()),
+                    symbols.IFF, switches
+                )
+            );
+        }
+
         // p ↔ q :: (p → q) ∧ (q → p)
         if (f.op == symbols.IFF) {
             equivs = arrayUnion(equivs,
                 proliferateCombine(
-                    Formula.from( '(' + l.wrapifneeded() +
-                        symbols.IFTHEN + r.wrapifneeded ')' + symbols.AND +
-                        '(' + r.wrapifneeded + symbols.IFTHEN +
-                        l.wrapifneeded + ')'
-                    )
+                    Formula.from( l.wrapifneeded() + symbols.IFTHEN +
+                        r.wrapifneeded()), 
+                    Formula.from( r.wrapifneeded() +
+                        symbols.IFTHEN + l.wrapifneeded()),
+                        symbols.AND,
+                        switches
                 )
             );
         }
+
+        // p ↔ q :: (p ∧ q) ∨ ¬(p ∨ q)
+        if (f.op == symbols.IFF) {
+            equivs = arrayUnion(equivs,
+                proliferateCombine(
+                    Formula.from( l.wrapifneeded() + symbols.AND +
+                        r.wrapifneeded()),
+                    Formula.from( symbols.NOT + '(' + l.wrapifneeded() +
+                        symbols.OR + r.wrapifneeded() + ')'),
+                        symbols.OR,
+                        switches
+                )
+            );
+        }
+
 
         return equivs;
     }
@@ -807,7 +851,7 @@ function proliferateCombine(f, g, op, switches) {
     return results;
 }
 
-console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('∀x~~Fx')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('∀x∃yRxy')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('P → Q')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('∀x~~Fx')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('∀x∃yRxy')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('P↔Q')).map((f) => (f.normal)));
