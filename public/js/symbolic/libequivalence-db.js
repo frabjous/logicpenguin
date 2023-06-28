@@ -251,6 +251,21 @@ export function equivProliferate(f, switches = {}) {
             );
         }
 
+        // ∀x(Fx ∧ Gx) :: ∀xFx ∧ ∀xGx
+        // ∃x(Fx ∨ Gx) :: ∃xFx ∨ ∃xGx
+        if (((f.op == symbols.FORALL && r.op == symbols.AND) ||
+            (f.op == symbols.EXISTS && r.op == symbols.OR)) &&
+            (r?.left && r?.right)) {
+            equivs = arrayUnion(equivs,
+                equivProliferate(
+                    Formula.from(syntax.mkquantifier(v, f.op) +
+                        r.left.wrapifneeded() + r.op +
+                        syntax.mkquantifier(v, f.op) + r.right.wrapifneeded()),
+                    switches
+                )
+            )
+        }
+
         // vacuous quantifiers can be removed
         if (r?.freevars && (r.freevars.indexOf(v) == -1)) {
             equivs = arrayUnion(equivs, equivProliferate(r, switches));
