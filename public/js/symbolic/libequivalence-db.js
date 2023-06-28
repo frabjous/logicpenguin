@@ -407,7 +407,7 @@ export function loadEquivalents(wffstr) {
         let equivsff = equivProliferate(Formula.from(wffstr), {});
         equivs = equivsff.map((f) =>(f.normal));
         if (equivs.length != 0) {
-            saveEquivalents(wffstr, equivs));
+            saveEquivalents(wffstr, equivs);
         }
     }
     return equivs;

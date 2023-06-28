@@ -50,9 +50,28 @@ let makedb = async function() {
         }
     }
 }
-
+/*
 console.log(equivtest(
     Formula.from('∀x[(Gx & Px) → ∃yLxy]'),
     Formula.from('∀x∃y((Px & Gx) → Lxy)')
 ));
-
+*/
+//makedb();
+//
+let indeterminate = lpfs.loadjson('/home/kck/tmp/indeterminate-answers.json');
+for (let ianswer of indeterminate) {
+    if (ianswer.exnum == '7g') { continue;}
+    let userdir = appsettings.datadir + '/' + ianswer.consumerkey + '/' +
+        ianswer.contextid + '/users/' + ianswer.userid;
+    let answersdir = userdir + '/answers';
+    let elemidparts = ianswer.elemid.split("problems")[1];
+    let setnum = parseInt(elemidparts.split('n')[0]);
+    let probnum = parseInt(elemidparts.split('n')[1]);
+    let fn = answersdir + '/' + ianswer.exnum + '.json';
+    let ansans = lpfs.loadjson(fn);
+    if (!ansans) {
+        continue;
+    }
+    let ans = ansans[setnum][probnum];
+    console.log(comparing, ans, ianswer.state.ans);
+}
