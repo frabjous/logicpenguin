@@ -10,6 +10,7 @@ import { equivtest, quickDBCheck, bidirectionalDBCheck } from '../public/js/symb
 
 const datadir = appsettings.datadir;
 const assignmentdir = datadir + '/kck/34254/exercises';
+const usersdir = datadir + '/kck/34254/users';
 
 let makedb = async function() {
     const jsonfiles = await lpfs.filesin(assignmentdir);
@@ -58,27 +59,61 @@ console.log(equivtest(
 */
 //makedb();
 //
-let indeterminate = lpfs.loadjson('/home/kck/tmp/indeterminate-answers.json');
-for (let ianswer of indeterminate) {
-    if (ianswer.exnum == '7g') { continue;}
-    let userdir = appsettings.datadir + '/' + ianswer.consumerkey + '/' +
-        ianswer.contextid + '/users/' + ianswer.userid;
-    let answersdir = userdir + '/answers';
-    let elemidparts = ianswer.elemid.split("problems")[1];
-    let setnum = parseInt(elemidparts.split('n')[0]);
-    let probnum = parseInt(elemidparts.split('n')[1]);
-    let fn = answersdir + '/' + ianswer.exnum + '.json';
-    let ansans = lpfs.loadjson(fn);
-    if (!ansans) {
-        continue;
+function checkindeterminate() {
+    let indeterminate = lpfs.loadjson('/home/kck/tmp/indeterminate-answers.json');
+    for (let ianswer of indeterminate) {
+        if (ianswer.exnum == '7g') { continue;}
+        let userdir = appsettings.datadir + '/' + ianswer.consumerkey + '/' +
+            ianswer.contextid + '/users/' + ianswer.userid;
+        let answersdir = userdir + '/answers';
+        let elemidparts = ianswer.elemid.split("problems")[1];
+        let setnum = parseInt(elemidparts.split('n')[0]);
+        let probnum = parseInt(elemidparts.split('n')[1]);
+        let fn = answersdir + '/' + ianswer.exnum + '.json';
+        let ansans = lpfs.loadjson(fn);
+        if (!ansans) {
+            continue;
+        }
+        let ans = ansans[setnum][probnum];
+        let whatcheck = (ans + ' :: ' + ianswer.state.ans);
+        let results = equivtest(
+            Formula.from(ans), Formula.from(ianswer.state.ans)
+        );
+        if (!results.equiv) {
+            console.log(whatcheck, results);
+        }
     }
-    let ans = ansans[setnum][probnum];
-    let whatcheck = (ans + ' :: ' + ianswer.state.ans);
-    let results = equivtest(
-        Formula.from(ans), Formula.from(ianswer.state.ans)
-    );
-    if (!results.equiv) {
-        console.log(whatcheck, results);
+}
+
+async function checkolddata() {
+
+    const jsonfiles = await lpfs.filesin(assignmentdir);
+
+    for (let jsonfile of jsonfiles) {
+        let parts = jsonfile.split('-info');
+        if (parts.length < 2) {
+            continue;
+        }
+        let probleminfo = lpfs.loadjson(assignmentdir + '/' + jsonfile);
+        if (!probleminfo) {
+            console.error('Could not load json in ' + jsonfile);
+            process.exit(1);
+        }
+        if (!("problemsets" in probleminfo)) {
+            console.error('No problem sets in ' + jsonfile);
+            process.exit(1);
+        }
+        let hastrans = false;
+        for (let pset of probleminfo.problemsets) {
+            if (pset?.problemtype == 'symbolic-translation') {
+                hastrans = true;
+                break;
+            }
+        }
+        if (!hastrans) { continue; }
+        let exnum = parts[0];
+
+
     }
 
 }
