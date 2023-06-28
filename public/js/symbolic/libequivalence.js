@@ -595,13 +595,11 @@ function equivProliferate(f, switches = {}) {
         // for other negations we start by proliferating
         // what it's a negation of
         let baseEquivs = equivProliferate(r, switches);
-        equivs = baseEquivs.map((f) => (Formula.from(symbols.NOT +
-            f.wrapifneeded())));
+        equivs = baseEquivs.map((w) => {
+            let q = Formula.from(symbols.NOT + w.wrapifneeded())
+            return q;
 
-        // p :: ¬¬p
-        if (r.op == symbols.NOT) {
-            return arrayUnion(equivs, equivProliferate(r.right, switches));
-        }
+        })
 
         // guard against nonsense
         if (!r.left) { return equivs; }
@@ -633,11 +631,13 @@ function equivProliferate(f, switches = {}) {
     }
     // TODO: quantified statements
     // moleculars
+    
     if (f.op == symbols.AND || f.op == symbols.OR ||
         f.op == symbols.IFTHEN || f.op == symbols.IFF ) {
-        let equivs = (
+        equivs = (
             proliferateCombine(f.left, f.right, f.op, switches)
         );
+        return equivs;
     }
     return equivs;
 }
@@ -664,9 +664,9 @@ function proliferateCombine(f, g, op, switches) {
 //console.log(equivProliferate(Formula.from('✖')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('Fa')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('~Fa')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('Fa & Gb')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('Fa ∨ Gb')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('Fa ↔ Gb')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('Fa → Gb')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~(~Fa&~Ga)')).map((f) => (f.normal)));
