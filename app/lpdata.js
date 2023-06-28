@@ -1,3 +1,8 @@
+// LICENSE: GNU GPL v3 You should have received a copy of the GNU General
+// Public License along with this program. If not, see
+// https://www.gnu.org/licenses/.
+
+
 import fs from 'node:fs';
 import path from 'node:path';
 import lpfs from './lpfs.js';
