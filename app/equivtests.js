@@ -73,5 +73,12 @@ for (let ianswer of indeterminate) {
         continue;
     }
     let ans = ansans[setnum][probnum];
-    console.log(comparing, ans, ianswer.state.ans);
+    let whatcheck = (ans + ' :: ' + ianswer.state.ans);
+    let results = equivtest(
+        Formula.from(ans), Formula.from(ianswer.state.ans)
+    );
+    if (!results.equiv) {
+        console.log(whatcheck, results);
+    }
+
 }

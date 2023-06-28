@@ -573,7 +573,6 @@ export function quickDBCheck(fp, fq) {
 export function bidirectionalDBCheck(fp, fq) {
     let equivs = loadEquivalents(fp.normal);
     let givenequivs = equivProliferate(fq, {});
-    console.log(givenequivs.map((x)=>(x.normal)));
     for (let g of givenequivs) {
         let isEquiv = (equivs.indexOf(g.normal) != -1);
         if (isEquiv) {

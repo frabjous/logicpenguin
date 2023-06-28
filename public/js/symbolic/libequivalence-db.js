@@ -251,6 +251,10 @@ export function equivProliferate(f, switches = {}) {
             );
         }
 
+        // vacuous quantifiers can be removed
+        if (r?.freevars && (r.freevars.indexOf(v) == -1)) {
+            equivs = arrayUnion(equivs, equivProliferate(r, switches));
+        }
 
         // Try also with swapped out/switched bound variables
         // if not already apply a switch on that variable
