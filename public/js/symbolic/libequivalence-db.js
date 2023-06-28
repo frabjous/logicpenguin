@@ -206,6 +206,22 @@ export function equivProliferate(f, switches = {}) {
             )
         ));
 
+        // ∀x(P → Fx) :: P → ∀xFx; ∃x(P → Fx) :: P → ∃xFx
+        // ∀x(P ∨ Fx) :: P ∨ ∀xFx; ∃x(P ∨ Fx) :: P ∨ ∃xFx
+        // ∀x(P ∧ Fx) :: P ∧ ∀xFx; ∃x(P ∧ Fx) :: P ∧ ∃xFx
+        // ∀x(P ↔ Fx) :: P ↔ ∀xFx; ∃x(P ↔ Fx) :: P ↔ ∃xFx
+        if (syntax.isbinaryop(r.op) && r?.left && r?.right
+            && (r.right.freevars.indexOf[v] == -1)
+        ) {
+            equivs = arrayUnion(equivs,
+                equivProliferate(
+                    Formula.from(r.left.wrapifneeded() + r.op +
+                        syntax.mkquantifier(v, f.op) +
+                        r.right.wrapifneeded()),
+                switches)
+            );
+        }
+
         // Try also with swapped out/switched bound variables
         // if not already apply a switch on that variable
         if (!(v in switches)) {
