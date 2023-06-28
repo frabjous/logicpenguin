@@ -19,6 +19,7 @@ const someVariables = [
 
 let equivDB = {};
 
+
 // create object in window if need be
 if ((typeof window != 'undefined') && !window?.equivDB) {
     window.equivDB = equivDB;
@@ -45,7 +46,7 @@ function applyswitches(str, switches) {
     return str;
 }
 
-function equivProliferate(f, switches = {}) {
+export function equivProliferate(f, switches = {}) {
     let equivs = [];
 
     // for atomics, return it with switches applied
@@ -345,7 +346,6 @@ export function loadEquivalents(wffstr) {
     //using equivProliferate
     if (useMemory) {
         if (!(wffstr in equivDB)) {
-            console.log("determining");
             let equivs = equivProliferate(Formula.from(wffstr), {});
             equivDB[wffstr] = equivs.map((f)=>(f.normal));
         }
@@ -361,7 +361,8 @@ export function loadEquivalents(wffstr) {
         let equivsff = equivProliferate(Formula.from(wffstr), {});
         equivs = equivsff.map((f) =>(f.normal));
         if (equivs.length != 0) {
-            saveEquivalents(wffstr, equivs);
+            console.log(
+            saveEquivalents(wffstr, equivs));
         }
     }
     return equivs;

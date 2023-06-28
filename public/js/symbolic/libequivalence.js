@@ -5,7 +5,7 @@
 import Formula from './formula.js';
 import { syntax, symbols } from './libsyntax.js';
 import { arrayUnion, randomString } from '../misc.js';
-import { loadEquivalents, saveEquivalents, equivProliferate } from './libequivalence-db.json';
+import { loadEquivalents, saveEquivalents, equivProliferate } from './libequivalence-db.js';
 
 // too simple for function terms?**
 const cRegEx = new RegExp( '^[' + syntax.constantsRange + ']$');
@@ -556,7 +556,9 @@ function undecided(branch) {
 // written, it is fp that has a database, not fq, as it is a correct
 // answer and should be well-formed
 
-function quickDBCheck(fp, fq) {
+// just checks if provided answer as is in the right answer's database
+// of equivalents
+export function quickDBCheck(fp, fq) {
     let equivs = loadEquivalents(fp.normal);
     let isEquiv = (equivs.indexOf(fq.normal) != -1);
     return {
@@ -566,11 +568,25 @@ function quickDBCheck(fp, fq) {
     }
 }
 
-function bidirectinalDBCheck(fp, fq) {
+// look at all normal equivalents of provided answer and looks for each
+// one in the database for the right answer
+export function bidirectionalDBCheck(fp, fq) {
     let equivs = loadEquivalents(fp.normal);
     let givenequivs = equivProliferate(fq, {});
     for (let g of givenequivs) {
-        let isEquiv = (equivs.indexOf(g.normal));
-        
+        let isEquiv = (equivs.indexOf(g.normal) != -1);
+        if (isEquiv) {
+            return {
+                equiv: true,
+                method: 'bidirectionaldb',
+                determinate: true
+            }
+        }
+    }
+    return {
+        equiv: false,
+        method: 'bidirectionaldb',
+        determinate: false
     }
 }
+
