@@ -582,7 +582,8 @@ function equivProliferate(f, switches = {}) {
     }
     // for negations it depends what it is a negation of
     if (f.op == symbols.NOT) {
-        // guard against nonsense
+
+        // guard against nonsense if not a negation of anything
         if (!f?.right) { return equivs; }
         let r = f.right;
 
@@ -592,10 +593,11 @@ function equivProliferate(f, switches = {}) {
         }
         // negation of falsum, just return it
         if (r.op == symbols.FALSUM) {
-            return [ f ];
+            return [f];
         }
-        // guard again nonense
+        // guard again nonsense
         if (!r?.right) { return equivs; }
+
         // for other negations we start by proliferating
         // what it's a negation of
         let baseEquivs = equivProliferate(r, switches);
@@ -630,17 +632,17 @@ function equivProliferate(f, switches = {}) {
             return equivs;
         }
 
-        // guard against nonsense
+        // need there to be a right side, so let's guard against nonsense
         if (!r.left) { return equivs; }
 
         // negation of and statement
         if (r.op == symbols.AND) {
-            // ¬(p∧q) :: ¬p∨¬q
+            // ¬(p ∧ q) :: ¬p ∨ ¬q
             equivs = arrayUnion(equivs, equivProliferate(
                 Formula.from(symbols.NOT + r.left.wrapifneeded() +
                     symbols.OR + symbols.NOT + r.right.wrapifneeded()),
             switches));
-            // ¬(p∧q) :: p→¬q
+            // ¬(p ∧ q) :: p → ¬q
             equivs = arrayUnion(equivs, equivProliferate(
                 Formula.from(r.left.wrapifneeded() + symbols.IFTHEN +
                     symbols.NOT + r.right.wrapifneeded()),
@@ -650,7 +652,7 @@ function equivProliferate(f, switches = {}) {
 
         // negation of or statement
         if (r.op == symbols.OR) {
-            // ¬(p∨q) :: ¬p&¬q
+            // ¬(p ∨ q) :: ¬p ∧ ¬q
             equivs = arrayUnion(equivs,
                 equivProliferate(
                     Formula.from(symbols.NOT + r.left.wrapifneeded() +
@@ -661,7 +663,7 @@ function equivProliferate(f, switches = {}) {
 
         // negated conditionals
         if (r.op == symbols.IFTHEN) {
-            // ¬(p → q) :: p & ¬q
+            // ¬(p → q) :: p ∧ ¬q
             equivs = arrayUnion(equivs,
                 equivProliferate(
                     Formula.from(r.left.wrapifneeded() + symbols.AND +
@@ -674,7 +676,7 @@ function equivProliferate(f, switches = {}) {
 
         // negated biconditionals
         if (r.op == symbols.IFF) {
-            // ~(p↔q) :: ~p↔q
+            // ~(p ↔ q) :: ~p ↔ q
             equivs = arrayUnion(equivs,
                 equivProliferate(
                     Formula.from(symbols.NOT + r.left.wrapifneeded() +
@@ -709,7 +711,8 @@ function equivProliferate(f, switches = {}) {
             )
         ));
 
-        // TODO: Switches
+        // Try also with swapped out/switched bound variables
+        // if not already apply a switch on that variable
         if (!(v in switches)) {
             for (let somevar of someVariables) {
                 // don't redo switch and don't switch free variables
@@ -731,8 +734,55 @@ function equivProliferate(f, switches = {}) {
     // moleculars
     if (f.op == symbols.AND || f.op == symbols.OR ||
         f.op == symbols.IFTHEN || f.op == symbols.IFF ) {
+        // guard against nonsense
+        if (!f?.right || !f?.left) { return equivs; }
+        let r = f.right; let l = f.left;
+
+        // start by proliferating the parts and recombining
+        // this also handles commutativity
         equivs = proliferateCombine(f.left, f.right, f.op, switches);
-        // TODO
+
+        // note for adding equivalences to moleculars, always use
+        // proliferateCombine on parts to avoid circles
+
+        // ¬p ∨ q :: p → q
+        if (f.op == symbols.OR && l?.op && l.op == symbols.NOT
+            && l.right) {
+            equivs = arrayUnion(equivs,
+                proliferateCombine(l.right, r, symbols.IFTHEN, switches));
+        }
+
+        // ¬p → q :: p ∨ q
+        if (f.op == symbols.IFTHEN && l?.op && l.op == symbols.NOT
+            && l.right) {
+            equivs = arrayUnion(equivs,
+                proliferateCombine(l.right, r, symbols.OR, switches));
+        }
+
+        // p → q :: ¬q → ¬p
+        if (f.op == symbols.IFTHEN) {
+            equivs = arrayUnion(equivs,
+                proliferateCombine(
+                    Formula.from(symbols.NOT + r.wrapifneeded()),
+                    Formula.from(symbols.NOT + l.wrapifneeded()),
+                    symbols.IFTHEN, switches
+                )
+            );
+        }
+
+        // p ↔ q :: (p → q) ∧ (q → p)
+        if (f.op == symbols.IFF) {
+            equivs = arrayUnion(equivs,
+                proliferateCombine(
+                    Formula.from( '(' + l.wrapifneeded() +
+                        symbols.IFTHEN + r.wrapifneeded ')' + symbols.AND +
+                        '(' + r.wrapifneeded + symbols.IFTHEN +
+                        l.wrapifneeded + ')'
+                    )
+                )
+            );
+        }
+
         return equivs;
     }
     return equivs;
@@ -760,4 +810,4 @@ function proliferateCombine(f, g, op, switches) {
 console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('∀x~~Fx')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('∀x∃yRxy')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('∀y∃zRyz')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('P → Q')).map((f) => (f.normal)));
