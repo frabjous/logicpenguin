@@ -606,7 +606,27 @@ function equivProliferate(f, switches = {}) {
             return arrayUnion(equivs, equivProliferate(r.right, switches));
         }
 
-        // TODO: negations of quantififiers
+        // negation of universal
+        if (r.op == symbols.FORALL) {
+            // ¬∀x :: ∃x¬
+            equivs = arrayUnion(equivs, equivProliferate(
+                Formula.from(syntax.mkexistential(r.boundvar) +
+                    symbols.NOT + r.right.wrapifneeded()),
+                switches
+            ));
+            return equivs;
+        }
+
+        // negation of existential
+        if (r.op == symbols.FORALL) {
+            // ¬∃x :: ∀x¬
+            equivs = arrayUnion(equivs, equivProliferate(
+                Formula.from(syntax.mkuniversal(r.boundvar) +
+                    symbols.NOT + r.right.wrapifneeded()),
+                switches
+            ));
+            return equivs;
+        }
 
         // guard against nonsense
         if (!r.left) { return equivs; }

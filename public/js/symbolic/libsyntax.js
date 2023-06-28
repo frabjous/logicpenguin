@@ -24,17 +24,16 @@ export const operators = Object.fromEntries(
 syntax.constantsRange = 'a-w';
 syntax.variableRange = 'x-z';
 syntax.pletterRange = '=A-Z';
-const useQParens = true; // for testing; remove
+syntax.useQParens = false;
 let qRegExStr = '([' + symbols.FORALL + symbols.EXISTS + '])([' +
     syntax.variableRange + '])';
-if (useQParens) {
+if (syntax.useQParens) {
     qRegExStr = '\\(' + qRegExStr + '\\)';
 }
 // quantifier regeex
 syntax.qRegEx = new RegExp(qRegExStr);
 // global version
 syntax.gqRegEx = new RegExp(qRegExStr, 'g');
-// anchored version
 
 // variable regex
 syntax.varRegEx = new RegExp('^[' + syntax.variableRange + ']$');
@@ -88,6 +87,23 @@ syntax.isop = function(c) {
 
 syntax.isvar = function(c) {
     return syntax.varRegEx.test(c);
+}
+
+// syntax: make quantifiers
+syntax.mkquantifier = function(v, q) {
+    let r = q + v;
+    if (syntax.useQParens) {
+        r = '(' + r + ')';
+    }
+    return r;
+}
+
+syntax.mkuniversal = function(v) {
+    return syntax.mkquantifier(v, symbols.FORALL);
+}
+
+syntax.mkexistential = function(v) {
+    return syntax.mkquantifier(v, symbols.EXISTS);
 }
 
 // changes to input string you'd be all right applying even to
