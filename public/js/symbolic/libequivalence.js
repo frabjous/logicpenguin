@@ -581,7 +581,7 @@ function equivProliferate(f, switches = {}) {
     // for negations it depends what it is a negation of
     if (f.op == symbols.NOT) {
         // guard against nonsense
-        if (!f.right) { return []; }
+        if (!f.right) { return equivs; }
         let r = f.right;
 
         // negation of atomic, return it with switches applied
@@ -603,27 +603,45 @@ function equivProliferate(f, switches = {}) {
         // negation of negation, return it and
         // equivalents to its un-double negative
         if (r.op == symbols.NOT) {
-            //TODO
-
+            return arrayUnion(equivs, equivProliferate(r.right, switches));
         }
 
         // guard against nonsense
         if (!r.left) {
             return [];
         }
+
         // negation of and statement
         if (r.op == symbols.AND) {
-            // don't bother with ill-formed things
-            if (!r.left || !r.right) { return []; }
+            // both sides are negated, so by DeMorgan's, same as disjunction
+            if (((r.left?.op == symbols.NOT) && (r.right?.op == symbols.NOT)) &&
+                (r.left?.right && r.right?.right)) {
+                equivs = arrayUnion(equivs, proliferateCombine(
+                    r.left.right, r.right.right, symbols.OR, switches
+                ));
+            }
+            // left side is negated, so it's the same as q→p
+            if (r.left?.op == symbols.NOT && r.left?.right) {
+                equivs = arrayUnion(equivs, proliferateCombine(
+                    r.right, r.left.right, symbols.IFTHEN, switches
+                ));
+            }
+            // right side is negated, so it's the same as p→q
+            if (r.right?.op == symbols.NOT && r.right?.right) {
+                equivs = arrayUnion(equivs, proliferateCombine(
+                    r.left, r.right.right, symbols.IFTHEN, switches
+                ));
+            }
+
+            return equivs;
         }
     }
-    // for conjunctions
+    // moleculars
     if (f.op == symbols.AND || f.op == symbols.OR ||
         f.op == symbols.IFTHEN || f.op == symbols.IFF ) {
-        let results = (
+        let equivs = (
             proliferateCombine(f.left, f.right, f.op, switches)
         );
-        return results;
     }
     return equivs;
 }
@@ -647,11 +665,13 @@ function proliferateCombine(f, g, op, switches) {
     return results;
 }
 
-console.log(equivProliferate(Formula.from('✖')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('Fa')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('~Fa')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('Fa & Gb')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('Fa ∨ Gb')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('Fa ↔ Gb')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('Fa → Gb')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('✖')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('Fa')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('~Fa')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('~~Fa')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('Fa & Gb')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('Fa ∨ Gb')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('Fa ↔ Gb')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('Fa → Gb')).map((f) => (f.normal)));
+//console.log(equivProliferate(Formula.from('~(~Fa & ~Gb)')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~(Fa & ~Gb)')).map((f) => (f.normal)));
