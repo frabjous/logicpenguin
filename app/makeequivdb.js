@@ -22,8 +22,25 @@ let go = async function() {
             console.error('No problem sets in ' + jsonfile);
             process.exit(1);
         }
+        let hastrans = false;
         for (let pset of probleminfo.problemsets) {
-            console.log(pset.problemtype);
+            if (pset?.problemtype == 'symbolic-translation') {
+                hastrans = true;
+                break;
+            }
+        }
+        if (!hastrans) { continue; }
+        let ansfile = assignmentdir + '/' + parts[0] + '-answers.json';
+        let ansans = lpfs.loadjson(ansfile);
+        if (!ansans) {
+            console.error('Could not read json in ' + ansfile);
+            process.exit(1);
+        }
+        for (let ansset of ansans) {
+            for (let t of ansset) {
+                console.log('processing wff', t);
+                loadEquivalents(t);
+            }
         }
     }
 }

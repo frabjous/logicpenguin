@@ -9,6 +9,14 @@ import Formula from './formula.js';
 import { syntax, symbols } from './libsyntax.js';
 import { arrayUnion } from '../misc.js';
 
+const varCP = syntax.variableRange.codePointAt(0);
+const someVariables = [
+    String.fromCodePoint(varCP),
+    String.fromCodePoint(varCP+1),
+    String.fromCodePoint(varCP+2)
+];
+
+
 let equivDB = {};
 
 // create object in window if need be
