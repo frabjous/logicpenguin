@@ -760,3 +760,4 @@ function proliferateCombine(f, g, op, switches) {
 console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('∀x~~Fx')).map((f) => (f.normal)));
 console.log(equivProliferate(Formula.from('∀x∃yRxy')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('∀y∃zRyz')).map((f) => (f.normal)));
