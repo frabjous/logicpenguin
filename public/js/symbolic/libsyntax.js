@@ -57,7 +57,7 @@ const maxopadicity = 2;
 syntax.allsoftparens = function(s) {
     // should also remove parentheses around quantifier
     s=s.replace(/[\{\[]/g,'(').replace(/[}\]]/g,')');
-    if (useQParens) {
+    if (syntax.useQParens) {
         // TODO: will (x) be a problem?; it won't remove it
         s=s.replace(syntax.gqRegEx, '$1$2');
     }

@@ -618,7 +618,7 @@ function equivProliferate(f, switches = {}) {
         }
 
         // negation of existential
-        if (r.op == symbols.FORALL) {
+        if (r.op == symbols.EXISTS) {
             // ¬∃x :: ∀x¬
             equivs = arrayUnion(equivs, equivProliferate(
                 Formula.from(syntax.mkuniversal(r.boundvar) +
@@ -683,9 +683,34 @@ function equivProliferate(f, switches = {}) {
             return equivs;
         }
     }
-    // TODO: quantified statements
+
+    // quantified statements
+    if (syntax.isquant(f.op)) {
+        // guard against nonsense
+        if (!f?.right) { return equivs; }
+        let r = f.right;
+
+        // get bound variable
+        let v = f.boundvar
+
+        // real bound var after switches
+        let v_to_use = v;
+        if (v in switches) {
+            v_to_use = switches[v];
+        }
+
+        // proliferate on base
+        let baseEquivs = equivProliferate(r, switches);
+        equivs = baseEquivs.map((w) => (
+            Formula.from(
+                syntax.mkquantifier(v_to_use, f.op) + w.wrapifneeded()
+            )
+        ));
+
+        return equivs;
+    }
+
     // moleculars
-    
     if (f.op == symbols.AND || f.op == symbols.OR ||
         f.op == symbols.IFTHEN || f.op == symbols.IFF ) {
         equivs = proliferateCombine(f.left, f.right, f.op, switches);
@@ -714,4 +739,4 @@ function proliferateCombine(f, g, op, switches) {
     return results;
 }
 
-console.log(equivProliferate(Formula.from('~(~P↔Q)')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
