@@ -876,7 +876,4 @@ function proliferateCombine(f, g, op, switches) {
     return results;
 }
 
-//console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('∀x~~Fx')).map((f) => (f.normal)));
-//console.log(equivProliferate(Formula.from('∀x∃yRxy')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('~(P → P)')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~∃x[Fx & ∀y(Gy → ~Rxy)]')).map((f) => (f.normal)));
