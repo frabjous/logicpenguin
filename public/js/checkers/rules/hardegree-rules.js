@@ -1,3 +1,7 @@
+// LICENSE: GNU GPL v3 You should have received a copy of the GNU General
+// Public License along with this program. If not, see
+// https://www.gnu.org/licenses/.
+
 export default {
     "→I"  : { meinongian: true, hint: "To establish a →-statement, use CD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
     "∨I"  : { forms: [ { prems: ["A"], conc: "A ∨ B" }, { prems: ["A"], conc: "B ∨ A" } ] },
