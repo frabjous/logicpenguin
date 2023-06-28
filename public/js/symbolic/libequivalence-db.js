@@ -12,9 +12,13 @@ import { arrayUnion } from '../misc.js';
 let equivDB = {};
 
 // create object in window if need be
-if (window && !window?.equivDB) {
+if ((typeof window != 'undefined') && !window?.equivDB) {
     window.equivDB = equivDB;
 }
+
+let useMemory = ((typeof process === 'undefined') ||
+    !process?.appsettings ||
+    !process?.lpfs);
 
 /// FUNCTIONS ///
 
@@ -301,13 +305,13 @@ function equivProliferate(f, switches = {}) {
         // ¬p → p :: p
         if (f.op == symbols.IFTHEN && l?.op && l?.right && 
             l.op == symbols.NOT && (l.right.normal == r.normal)) {
-            equivs = arrayUnion(equivs, equivProfilferate(r, switches));
+            equivs = arrayUnion(equivs, equivProliferate(r, switches));
         }
 
         // p → ¬p :: ¬p
         if (f.op == symbols.IFTHEN && r?.op && r?.right && 
             r.op == symbols.NOT && (l.normal == r.right.normal)) {
-            equivs = arrayUnion(equivs, equivProfilferate(r, switches));
+            equivs = arrayUnion(equivs, equivProliferate(r, switches));
         }
 
         // p ∧ ¬p :: ✖
@@ -330,7 +334,15 @@ function issymmetric(op) {
 
 export function loadEquivalents(wffstr) {
     // generate list if need be
-    let useMemory = (!process || 
+    useMemory = true;
+    if (useMemory) {
+        if (!(wffstr in equivDB)) {
+            console.log("determining");
+            let equivs = equivProliferate(Formula.from(wffstr), {});
+            equivDB[wffstr] = equivs.map((f)=>(f.normal));
+        }
+        return equivDB[wffstr];
+    }
 }
 
 function proliferateCombine(f, g, op, switches) {
