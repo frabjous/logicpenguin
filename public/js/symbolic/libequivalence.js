@@ -348,7 +348,7 @@ export function treeEquivtest(fp, fq) {
     // if we fell through here, it's indeterminate!
     return {
         equiv: fullresult.closed,
-        method: 'all',
+        method: 'alltrees',
         determinate: false
     }
 }
@@ -586,6 +586,48 @@ export function bidirectionalDBCheck(fp, fq) {
     return {
         equiv: false,
         method: 'bidirectionaldb',
+        determinate: false
+    }
+}
+
+// the key function for testing equivalence, used in symbolic translation
+// problem checking
+export function equivtest(fp, fq) {
+    // check if on the nose
+    if (fp.normal == fq.normal) {
+        return {
+            equiv: true,
+            method: 'exactanswer',
+            determinate: true
+        }
+    }
+    // check if already in database
+    let quickResult = quickDBCheck(fp, fq);
+    if (quickResult.determinate) { return quickResult; }
+
+    // do a tree check
+    let treeResult = treeEquivtest(fp, fq);
+    // if found a new equivalent, save it
+    if (treeResult.determinate && treeResult.equiv) {
+        let equivs = loadEquivalents(fp.normal);
+        equivs.push(fq.normal);
+        saveEquivalents(fp.normal, equivs);
+    }
+    if (treeResult.determinate) { return treeResult; }
+    let bidirectionalResult = bidirectionalDBCheck(fp, fq);
+    if (bidirectionalResult.determinate && bidirectionalResult.equiv) {
+        let equivs = loadEquivalents(fp.normal);
+        equivs.push(fq.normal);
+        console.log("saving bd test");
+        saveEquivalents(fp.normal, equivs);
+    }
+    if (bidirectionalResult.determinate) {
+        return bidirectionalResult;
+    }
+    // no test worked!
+    return {
+        equiv: false,
+        method: 'all',
         determinate: false
     }
 }

@@ -4,12 +4,14 @@
 
 import appsettings from './lpsettings.js';
 import lpfs from './lpfs.js';
+import Formula from '../public/js/symbolic/formula.js';
 import { loadEquivalents } from '../public/js/symbolic/libequivalence-db.js';
+import { equivtest, quickDBCheck, bidirectionalDBCheck } from '../public/js/symbolic/libequivalence.js';
 
 const datadir = appsettings.datadir;
 const assignmentdir = datadir + '/kck/34254/exercises';
 
-let go = async function() {
+let makedb = async function() {
     const jsonfiles = await lpfs.filesin(assignmentdir);
 
     for (let jsonfile of jsonfiles) {
@@ -49,4 +51,8 @@ let go = async function() {
     }
 }
 
-go();
+console.log(equivtest(
+    Formula.from('∃x~Rxx'),
+    Formula.from('~~∃x~Rxx')
+));
+
