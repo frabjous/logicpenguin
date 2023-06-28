@@ -826,9 +826,34 @@ function equivProliferate(f, switches = {}) {
             );
         }
 
+        // p ∧ p :: p and p ∨ p :: p
+        if ((f.op == symbols.AND || f.op == symbols.OR) &&
+            l.normal == r.normal) {
+            equivs = arrayUnion(equivs, equivProliferate(l, switches));
+        }
+
+        // ¬p → p :: p
+        if (f.op == symbols.IFTHEN && l?.op && l?.right && 
+            l.op == symbols.NOT && (l.right.normal == r.normal)) {
+            equivs = arrayUnion(equivs, equivProfilferate(r, switches));
+        }
+
+        // p → ¬p :: ¬p
+        if (f.op == symbols.IFTHEN && r?.op && r?.right && 
+            r.op == symbols.NOT && (l.normal == r.right.normal)) {
+            equivs = arrayUnion(equivs, equivProfilferate(r, switches));
+        }
+
+        // p ∧ ¬p :: ✖
+        if (f.op == symbols.AND && r?.op && r?.right &&
+            r.op == symbols.NOT && (l.normal == r.right.normal)) {
+            equivs = arrayUnion(equivs, [Formula.from('✖')]);
+        }
 
         return equivs;
+
     }
+    // shouldn't be here but whatevs
     return equivs;
 }
 
@@ -838,13 +863,13 @@ function proliferateCombine(f, g, op, switches) {
     let gequivs = equivProliferate(g, switches);
     for (let fe of fequivs) {
         for (let ge of gequivs) {
-            results.push( Formula.from(
-                fe.wrapifneeded() + op + ge.wrapifneeded()
-            ));
+            results = arrayUnion(results,
+                [Formula.from(fe.wrapifneeded() + op + ge.wrapifneeded())]
+            );
             if (issymmetric(op)) {
-                results.push(Formula.from(
-                    ge.wrapifneeded() + op + fe.wrapifneeded()
-                ));
+                results = arrayUnion(results,
+                    [Formula.from(ge.wrapifneeded() + op + fe.wrapifneeded())]
+                );
             }
         }
     }
@@ -854,4 +879,4 @@ function proliferateCombine(f, g, op, switches) {
 //console.log(equivProliferate(Formula.from('~∃x(Fx & Gx)')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('∀x~~Fx')).map((f) => (f.normal)));
 //console.log(equivProliferate(Formula.from('∀x∃yRxy')).map((f) => (f.normal)));
-console.log(equivProliferate(Formula.from('P↔Q')).map((f) => (f.normal)));
+console.log(equivProliferate(Formula.from('~(P → P)')).map((f) => (f.normal)));
