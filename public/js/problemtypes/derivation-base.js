@@ -273,14 +273,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 }
 
                 for (let category in ind.errors[lnstr]) {
-                    if (category != 'justification' && category != 'completion') {
+                    if (category != 'justification' && category != 'completion' && category != 'dependency') {
                         onlygooderrors = false;
                         break;
                     }
                 }
                 if (!onlygooderrors) { break; }
             }
-
+            if(!onlygooderrors){console.log(ind.errors);}
             // regular checking
             let ch = '';
             for (let line of this.linesByNum) {
@@ -329,7 +329,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
                     if (lsupdate == '') {
                         line.checkButton.update('good');
                     } else {
-                        if (onlygooderrors && lsupdate == 'justificationerror') {
+                        if (onlygooderrors && (lsupdate == 'justificationerror' || lsupdate == 'baddependency')) {
                             line.checkButton.update('incomplete');
                         } else {
                             line.checkButton.update(lsupdate);
