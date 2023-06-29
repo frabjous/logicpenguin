@@ -261,31 +261,26 @@ export default class DerivationExercise extends LogicPenguinProblem {
         super.setIndicator(ind);
         // report errors
         if (ind.errors) {
-            // if there is only one error, on the main conclusion, then
-            // don't report anything
-            let lineswitherrors = 0;
-            let linenumwitherror = '';
+            // if there is only errors on showlines, any they're all
+            // justification or completion, don't report anything
+            let onlygooderrors = true;
             for (let lnstr in ind.errors) {
-                lineswitherrors++;
-                linenumwitherror = lnstr;
-            }
-            if (lineswitherrors == 1 ) {
-                let onlygooderrors = true;
-                for (let category in ind.errors[linenumwitherror]) {
+                let errline = this.linesByNum[parseInt(lnstr)];
+                if (!errline) { continue; }
+                if (!errline.classList.contains("derivationshowline")) {
+                    onlygooderrors = false;
+                    break;
+                }
+
+                for (let category in ind.errors[lnstr]) {
                     if (category != 'justification' && category != 'completion') {
                         onlygooderrors = false;
                         break;
                     }
                 }
-                if (onlygooderrors) {
-                    let errline = this.linesByNum[parseInt(linenumwitherror)];
-                    if ((errline) && (errline.classList.contains("derivationshowline")) &&
-                        errline.mysubderiv.classList.contains("mainderivation")) {
-                        errline.checkButton.update('incomplete');
-                        return;
-                    }
-                }
+                if (!onlygooderrors) { break; }
             }
+
             // regular checking
             let ch = '';
             for (let line of this.linesByNum) {
@@ -334,13 +329,21 @@ export default class DerivationExercise extends LogicPenguinProblem {
                     if (lsupdate == '') {
                         line.checkButton.update('good');
                     } else {
-                        line.checkButton.update(lsupdate);
+                        if (onlygooderrors && lsupdate == 'justificationerror') {
+                            line.checkButton.update('incomplete');
+                        } else {
+                            line.checkButton.update(lsupdate);
+                        }
                     }
                 }
 
             }
             if (ch != '') { ch += '</tbody></table>' };
-            this.setComment(ch);
+            if (onlygooderrors) {
+                this.setComment('');
+            } else {
+                this.setComment(ch);
+            }
         } else { this.setComment(''); }
         // auto close if correct -- made a timer to avoid reopening when clicked
         if (ind.successstatus == "correct") {
