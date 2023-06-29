@@ -49,7 +49,6 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [x] Provide flexible mechanisms for determining if and when students are given feedback about the correctness of their answers and see correct answers
 - [x] Provide working LTI 1.1 integration with LMS systems using OAuth1
 - [x] Allow arbitrary specification for how often the server “grades” exercises and submits scores to the LMS
-- [x] Improve the equivalence checker for predicate logic to reduce the number of indeterminate answers when there are multiple quantifiers
 - [ ] Adapt derivation UI for Fitch-style natural deduction proofs and the various [forall x](https://www.fecundity.com/logic/) type systems (partly done)
 - [ ] Provide an instructor panel for certain things so they don’t have to be done server-side
     - [ ] granting extensions
@@ -69,6 +68,7 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [ ] Create [the website](https://logicpenguin.com) and advertise the project and its goals
 - [ ] Possibly upgrade from LTI 1.1 to 1.3 if it can be done without involving Google, Facebook, Microsoft et al. for OAuth2
 - [ ] Write good documentation generally, including explaining to others how to self-host their own instance
+- [x] Improve the equivalence checker for predicate logic to reduce the number of indeterminate answers when there are multiple quantifiers and polyadic predicates (already done multiple times, but can always be better)
 
 ## License
 
