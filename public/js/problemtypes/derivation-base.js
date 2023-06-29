@@ -261,6 +261,25 @@ export default class DerivationExercise extends LogicPenguinProblem {
         super.setIndicator(ind);
         // report errors
         if (ind.errors) {
+            // if there is only one error, on the main conclusion, then
+            // don't report anything
+            let lineswitherrors = 0;
+            let linenumwitherror = '';
+            for (let lnstr in ind.errors) {
+                lineswitherrors++;
+                linenumwitherror = lnstr;
+            }
+            if (lineswitherrors == 1) {
+                let onlygooderrors = true;
+                for (let category in ind.errors[linenumwitherror]) {
+                    if (category != 'justification' && category != 'completion') {
+                        onlygooderrors = false;
+                        break;
+                    }
+                }
+                if (onlygooderrors) { return; }
+            }
+            // regular checking
             let ch = '';
             for (let line of this.linesByNum) {
                 if (line == 'offbyone') { continue; }
@@ -736,9 +755,11 @@ export class SubDerivation extends HTMLElement {
                 changed = true;
             }
         });
+        
         if (!this.classList.contains("closed")) {
             this.classList.add('closed');
-            changed = true;
+            // EDITED: don't mark as changed just for marking closed
+            // changed = true;
         }
         if (changed) {
             this.myprob.renumberLines();
