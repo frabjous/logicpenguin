@@ -683,7 +683,7 @@ export default class hardegreeDerivationHint {
     }
 
     regularHint() {
-        // determine last incompleted derivation
+        // determine last incomplete derivation
         let [workingsubderiv, whatisneeded, showlineneeded] =
             this.getWorkingSubderiv(this.deriv);
         // if not set up right; we give a hint about that
@@ -739,6 +739,10 @@ export default class hardegreeDerivationHint {
             // check if rule is available
             let rule = (f.op + 'O');
             if (f.op == '~') {
+                // add 
+                if (f.right) {
+                    console.log(this.wouldBeNice);
+                }
                 if (!f.right.op) {
                     // no out rule for negations of atomics
                     continue;
