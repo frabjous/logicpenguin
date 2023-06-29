@@ -316,11 +316,13 @@ export default class DerivationExercise extends LogicPenguinProblem {
             if (ch != '') { ch += '</tbody></table>' };
             this.setComment(ch);
         } else { this.setComment(''); }
-        // auto close if correct
+        // auto close if correct -- made a timer to avoid reopening when clicked
         if (ind.successstatus == "correct") {
-            for (let sd of this.getElementsByTagName("sub-derivation")) {
-                sd.classList.add("closed")
-            }
+            setTimeout( () => {
+                for (let sd of this.getElementsByTagName("sub-derivation")) {
+                    sd.classList.add("closed")
+                }
+            }, 100);
         }
     }
 
