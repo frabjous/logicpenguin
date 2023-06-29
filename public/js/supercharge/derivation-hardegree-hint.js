@@ -739,9 +739,13 @@ export default class hardegreeDerivationHint {
             // check if rule is available
             let rule = (f.op + 'O');
             if (f.op == '~') {
-                // add 
-                if (f.right) {
-                    console.log(this.wouldBeNice);
+                // add to wouldBeNice if whatisneeded is ✖
+                if (f.right && whatisneeded == '✖') {
+                    this.wouldBeNice.push({
+                        want: f.right.normal,
+                        reason: 'to get a contradiction with what you already have',
+                        dmable: false
+                    });
                 }
                 if (!f.right.op) {
                     // no out rule for negations of atomics
