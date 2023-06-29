@@ -29,26 +29,27 @@ Obviously, the examples do not allow for saving answers since they do not use th
 
 ## Progress roadmap and todo
 
-- [X] Implement the core ES6 Javascript Class modules shared by all the exercise types
-- [X] Implement all exercise types necessary for Hardegree’s [*Symbolic Logic: A First Course*](https://courses.umass.edu/phil110-gmh/MAIN/IHome-5.htm) for [UMass Phil 110 (Intro to Logic)](https://logic.umasscreate.net), including correctness checkers for all problem types
-    - [X] Multiple choice, including true/false
-    - [X] Conclusion identification in prose arguments
-    - [X] Validity/factually correctness/sound identification for simple arguments
-    - [X] Truth tables
-    - [X] Symbolic translations for sentential and predicate logic, with feedback useful to students, including equivalence checker
-    - [X] Combined conclusion identification, translation, and truth table problems for prose arguments
-    - [X] Kalish-Montague style derivations for sentential and predicate logic, including proof checker, optional line by line feedback and optional hints
-- [X] Allow different notations to be used
-- [X] Allow arbitrary rule sets for derivations to be used
-- [X] Implement UI for inserting logical symbols easily both with the keyboard and mouse
-- [X] Create a web-font containing all symbols likely to be necessary for any common logical notation by modifying and combining existing open license/source fonts, with the symbols in the appropriate Unicode codepoints
-- [X] Provide a mechanism for embedding problems in lecture notes or other random web pages
-- [X] Allow the express.js server to also serve lecture notes for courses whose problems it hosts
-- [X] Allow the express.js server to serve arbitrary additional static content (e.g., a syllabus, other materials)
-- [X] Activate CORS and allow SSL certs (for https) in the server; allow user-specifiable ports for both http and https
-- [X] Provide flexible mechanisms for determining if and when students are given feedback about the correctness of their answers and see correct answers
-- [X] Provide working LTI 1.1 integration with LMS systems using OAuth1
-- [X] Allow arbitrary specification for how often the server “grades” exercises and submits scores to the LMS
+- [x] Implement the core ES6 Javascript Class modules shared by all the exercise types
+- [x] Implement all exercise types necessary for Hardegree’s [*Symbolic Logic: A First Course*](https://courses.umass.edu/phil110-gmh/MAIN/IHome-5.htm) for [UMass Phil 110 (Intro to Logic)](https://logic.umasscreate.net), including correctness checkers for all problem types
+    - [x] Multiple choice, including true/false
+    - [x] Conclusion identification in prose arguments
+    - [x] Validity/factually correctness/sound identification for simple arguments
+    - [x] Truth tables
+    - [x] Symbolic translations for sentential and predicate logic, with feedback useful to students, including equivalence checker
+    - [x] Combined conclusion identification, translation, and truth table problems for prose arguments
+    - [x] Kalish-Montague style derivations for sentential and predicate logic, including proof checker, optional line by line feedback and optional hints
+- [x] Allow different notations to be used
+- [x] Allow arbitrary rule sets for derivations to be used
+- [x] Implement UI for inserting logical symbols easily both with the keyboard and mouse
+- [x] Create a web-font containing all symbols likely to be necessary for any common logical notation by modifying and combining existing open license/source fonts, with the symbols in the appropriate Unicode codepoints
+- [x] Provide a mechanism for embedding problems in lecture notes or other random web pages
+- [x] Allow the express.js server to also serve lecture notes for courses whose problems it hosts
+- [x] Allow the express.js server to serve arbitrary additional static content (e.g., a syllabus, other materials)
+- [x] Activate CORS and allow SSL certs (for https) in the server; allow user-specifiable ports for both http and https
+- [x] Provide flexible mechanisms for determining if and when students are given feedback about the correctness of their answers and see correct answers
+- [x] Provide working LTI 1.1 integration with LMS systems using OAuth1
+- [x] Allow arbitrary specification for how often the server “grades” exercises and submits scores to the LMS
+- [x] Improve the equivalence checker for predicate logic to reduce the number of indeterminate answers when there are multiple quantifiers
 - [ ] Adapt derivation UI for Fitch-style natural deduction proofs and the various [forall x](https://www.fecundity.com/logic/) type systems (partly done)
 - [ ] Provide an instructor panel for certain things so they don’t have to be done server-side
     - [ ] granting extensions
@@ -64,7 +65,6 @@ Obviously, the examples do not allow for saving answers since they do not use th
     - [ ] Venn diagrams
     - [ ] Counterexample problems for simple categorical syllogisms
     - [ ] Others?
-- [ ] Improve the equivalence checker for predicate logic to reduce the number of indeterminate answers when there are multiple quantifiers
 - [ ] Improve the partial credit calculations for derivations and translations
 - [ ] Create [the website](https://logicpenguin.com) and advertise the project and its goals
 - [ ] Possibly upgrade from LTI 1.1 to 1.3 if it can be done without involving Google, Facebook, Microsoft et al. for OAuth2
