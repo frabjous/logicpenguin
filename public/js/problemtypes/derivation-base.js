@@ -269,7 +269,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 lineswitherrors++;
                 linenumwitherror = lnstr;
             }
-            if (lineswitherrors == 1) {
+            if (lineswitherrors == 1 ) {
                 let onlygooderrors = true;
                 for (let category in ind.errors[linenumwitherror]) {
                     if (category != 'justification' && category != 'completion') {
@@ -277,7 +277,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
                         break;
                     }
                 }
-                if (onlygooderrors) { return; }
+                if (onlygooderrors) {
+                    let errline = this.linesByNum[parseInt(linenumwitherror)];
+                    if ((errline) && (errline.classList.contains("derivationshowline")) &&
+                        errline.mysubderiv.classList.contains("mainderivation")) {
+                        errline.checkButton.update('incomplete');
+                        return;
+                    }
+                }
             }
             // regular checking
             let ch = '';
@@ -755,7 +762,7 @@ export class SubDerivation extends HTMLElement {
                 changed = true;
             }
         });
-        
+
         if (!this.classList.contains("closed")) {
             this.classList.add('closed');
             // EDITED: don't mark as changed just for marking closed
