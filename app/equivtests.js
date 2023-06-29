@@ -114,6 +114,7 @@ async function checkolddata() {
         let exnum = parts[0];
         let subdirs = await lpfs.subdirs(usersdir);
         for (let usernum of subdirs) {
+            console.log("processing usernum ", usernum);
             let savedir = usersdir + '/' + usernum + '/saved';
             let answersdir = usersdir + '/' + usernum + '/answers';
             let savedfile = savedir + '/' + exnum + '.json';
@@ -129,13 +130,18 @@ async function checkolddata() {
                 let rightans = answerinfo?.[setnum]?.[probnum];
                 if (!rightans) { continue; }
                 let savedans = savedinfo[elemid].ans;
-                if (savedinfo[elemid].ind.successstatus === "indeterminate" && usernum != "41809" && usernum != "58450") {
-                    console.log(usernum, exnum, savedans, rightans);
-                    process.exit(2);
+                let sf = Formula.from(savedans);
+                if (!sf.wellformed) { continue; }
+                if (savedinfo[elemid].ind.successstatus === "indeterminate" || usernum == "41809" || usernum == "58450" || usernum == "80084" ) {
+                    continue;
                 }
                 let savedcorrect = (savedinfo[elemid].ind.successstatus == "correct");
-                console.log('I should compare ' + savedans + ' with ' +
-                    rightans);
+                let checkresult=equivtest(Formula.from(rightans), sf);
+                if (savedcorrect != checkresult.equiv) {
+                    console.log('comparing ', savedans, ' to ', rightans, ' for ', usernum);
+                    console.log(checkresult);
+                    console.log(savedinfo[elemid]);
+                }
             }
         }
 
