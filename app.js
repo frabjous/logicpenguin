@@ -2,6 +2,13 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+//////////////////////// app.js /////////////////////////////////
+// This is the main executable for the server that provides the
+// tool provider, etc. Can be run using npm scripts, as either:
+// npm run develop
+// npm run production
+// //////////////////////////////////////////////////////////////
+
 // import external modules
 import cors    from 'cors';
 import debugM  from 'debug';
@@ -65,7 +72,7 @@ app.use(morgan(
     "in :response-time ms"
 ));
 
-// redirect http to https
+// redirect http to https if both are enabled
 app.enable('trust proxy');
 if (httpsenabled && httpenabled) {
     app.use(function(req, res, next) {
@@ -177,7 +184,6 @@ app.get('/developmenttest/:exnum',
     }
 );
 
-
 // regular exercises page typically redirected from launch by lti
 app.get('/exercises/:consumerkey/:contextid/:userid/:exnum/:launchid',
     async function(req, res) {
@@ -235,6 +241,7 @@ if (lpfs.isdir('fallback')) {
     app.use(express.static('fallback'));
 }
 
+// serve "index.html" when no filename is given to fallback
 if (lpfs.isfile(path.join('fallback','index.html'))) {
     app.get('/', function(req, res) {
         res.sendfile(path.join('fallback','index.html'));
@@ -259,23 +266,29 @@ app.disable('x-powered-by');
 let httpserver = {};
 let httpsserver = {};
 
+// listen on https port
 if (httpsenabled) {
     httpsserver = https.createServer({
         key: fs.readFileSync(path.join('certs', 'key.pem')),
         cert: fs.readFileSync(path.join('certs', 'cert.pem'))
     }, app);
     httpsserver.listen(appsettings.httpsport);
+    // report errors
     httpsserver.on('error', onError);
+    // report listening to stdout
     httpsserver.on('listening', () => {
         let addr = httpsserver.address();
         debug('HTTPS server listening on ' + addr.port.toString());
     });
 }
 
+// listen on http port
 if (httpenabled) {
     httpserver = http.createServer(app);
     httpserver.listen(appsettings.httpport);
+    // report errors
     httpserver.on('error', onError);
+    // report listening to stderr
     httpserver.on('listening', () => {
         let addr = httpserver.address();
         debug('HTTP server listening on ' + addr.port.toString());
