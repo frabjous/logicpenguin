@@ -1,0 +1,9 @@
+{
+  "datadir": "/home/logicpenguin",
+  "defaultsymbols": "¬∨∧→↔⊥∃∀",
+  "gradeinterval": 86400000,
+  "httpport": 80,
+  "httpsport": 443,
+  "starthour": 1,
+  "startmin": 20
+}
