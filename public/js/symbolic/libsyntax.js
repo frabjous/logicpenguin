@@ -66,8 +66,9 @@ function mkquantifier(v, q) {
     // determine whether or not to use parentheses for quantifiers
     const useParens = (this.notation.quantifierForm.charAt(0) == '(');
     // determine whether the universal quantifier is hidden
-    const hideUniv = (this.notation.quantifierForm.search('Q?') >= 0);
+    const hideUniv = (this.notation.quantifierForm.search('Q\?') >= 0);
     // by default we have a quantifier and variale
+    console.log(this.notation.quantifierForm);
     let r = q + v;
     // remove quantifier if it is universal and no quantifier
     // symbol is used
@@ -75,7 +76,7 @@ function mkquantifier(v, q) {
         r = v;
     }
     // add parentheses if appropriate
-    if (this.useParens) {
+    if (useParens) {
         r = '(' + r + ')';
     }
     //return result
@@ -160,7 +161,7 @@ function generateSyntax(notationname) {
 
     // symbols are those things in notation also in symbolcat
     const symbols = {}
-    for (let sym in symbols) {
+    for (let sym in syntax.notation) {
         if (sym in symbolcat) { symbols[sym] = syntax.notation[sym]; }
     }
     syntax.symbols = symbols;
@@ -175,19 +176,19 @@ function generateSyntax(notationname) {
 
     // generate regex description for quantifiers from
     // quantifierForm
-    let qRegExStr = symbols.quantifierForm
+    syntax.qRegExStr = syntax.notation.quantifierForm
         .replaceAll('(',"\\(").replaceAll(')',"\\)")
         .replaceAll('Q?',symbols.EXISTS + '?')
         .replaceAll('Q','[' + symbols.EXISTS + symbols.FORALL + ']');
 
     // regular quantifier regex
-    syntax.qRegEx = new RegExp(qRegExStr);
+    syntax.qRegEx = new RegExp(syntax.qRegExStr);
     // global version
-    syntax.gqRegEx = new RegExp(qRegExStr, 'g');
+    syntax.gqRegEx = new RegExp(syntax.qRegExStr, 'g');
     // anchored to start
-    syntax.qaRegEx = new RegExp('^' + qRegExStr);
+    syntax.qaRegEx = new RegExp('^' + syntax.qRegExStr);
     // variable regex
-    syntax.varRegEx = new RegExp('^[' + symbols.variableRange + ']$');
+    syntax.varRegEx = new RegExp('^[' + syntax.notation.variableRange + ']$');
 
     // BIND SYNTAX FUNCTIONS TO THIS SYNTAX
     syntax.allsoftparens = allsoftparens;
@@ -203,6 +204,8 @@ function generateSyntax(notationname) {
     syntax.mkuniversal = mkuniversal;
     syntax.mkexistential = mkexistential;
     syntax.stripmatching = stripmatching;
+
+    return syntax;
 }
 //
 // EXPORTED FUNCTION
@@ -223,4 +226,7 @@ export default function getSyntax(notationname) {
 }
 
 const hsyntax = getSyntax('hardegree');
-console.log(hsyntax.symbols);
+console.log(hsyntax.mkuniversal('y'));
+
+const csyntax = getSyntax('copi');
+console.log(csyntax.mkuniversal('x'));

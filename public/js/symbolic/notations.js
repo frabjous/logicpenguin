@@ -22,7 +22,7 @@
 // Q, then the symbol chosen for FORALL will be suppressed
 // and need not appear in the formula when parsed.
 
-export default notations = {
+const notations = {
     "cambridge": {
         OR      : '∨',
         AND     : '∧',
@@ -80,4 +80,4 @@ export default notations = {
         variableRange: 'x-z'
     }
 }
-
+export default notations;
