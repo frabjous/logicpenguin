@@ -280,7 +280,6 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 }
                 if (!onlygooderrors) { break; }
             }
-            if(!onlygooderrors){console.log(ind.errors);}
             // regular checking
             let ch = '';
             for (let line of this.linesByNum) {
