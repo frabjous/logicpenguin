@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////////////lplti.js/////////////////////////////////////
+// This script handles logic penguin's interactions with LMSes through
+// the LTI protocol
+//////////////////////////////////////////////////////////////////////
+
 // import other modules
 import fs from 'node:fs';
 import path from 'node:path';
@@ -11,6 +16,8 @@ import lpfs from './lpfs.js';
 // read lti
 import lti from 'ims-lti';
 
+// get the secret for a given consumer
+// return false if none or error with filesystem
 lti.getConsumerSecret = async function(consumerkey, datadir) {
     let consumersecret = false;
     try {
@@ -24,6 +31,7 @@ lti.getConsumerSecret = async function(consumerkey, datadir) {
     return consumersecret;
 }
 
+// get the most recent launch for a user for the given exercise
 lti.getLatestLaunch = async function(
     datadir, consumerkey, contextid, userid, exnum, keyonly
 ) {
@@ -31,11 +39,13 @@ lti.getLatestLaunch = async function(
         datadir, consumerkey, contextid, userid, false
     );
     if (!userdir) { return false; }
+    // read the launches by the user
     let launchesdir = path.join(userdir, 'launches');
     let newest = '';
     let newestts = 0;
     let launches = await lpfs.filesin(launchesdir);
     if (!launches) { return false; }
+    // loop over the launches looking for the right one
     for (const fn of launches) {
         let l = exnum.length + 1;
         // skip if a different exercise's launch
@@ -47,6 +57,8 @@ lti.getLatestLaunch = async function(
         // skip filenames not of right length
         if (s.length != 40) { continue; }
         let ffn = path.join(launchesdir, fn);
+        // compare times to see if this one is more recent than any
+        // already found
         let mtime = await lpfs.mtime(ffn);
         if (mtime > newestts) {
             newestts = mtime;
@@ -55,13 +67,20 @@ lti.getLatestLaunch = async function(
     }
     // return false if none found
     if (newest == '') { return false; }
+    // might want just the key itself, rather than the name of the
+    // launch json, allow it to be returned instead
     if (keyonly) {
+        // 40 characters for launch id + 5 for '.json';
         newest = newest.substr(-45);
+        // get rid of the '.json' at end
         newest = newest.substr(0,40);
     }
+    // returns either the filename, or just the key depending on keyonly
     return newest;
 }
 
+// get the most relevant URL for a given launch for a given user and
+// exercise; useful for instructors to keep track of students
 lti.launchUrlFor = async function(
     datadir, consumerkey, contextid, userid, exnum
 ) {
@@ -73,9 +92,11 @@ lti.launchUrlFor = async function(
         userid + '/' + exnum + '/' + launchid;
 }
 
+// send a given score back to the LTI
 lti.sendScore = async function(
     datadir, consumerkey, contextid, userid, exnum, score
 ) {
+    // get the secret for the consumer
     let consumersecret = await lti.getConsumerSecret(consumerkey, datadir);
     if (!consumersecret) { return false; }
     // get latest launch file
@@ -133,31 +154,7 @@ lti.sendScore = async function(
     return lpfs.savejson(scorefile, score);
 }
 
+//export the library object with the functions attached
 export default lti;
 
-/*
-// TODO: fix this
-app.get('/update', function(req, res) {
-    const reqInfo = JSON.parse(
-        fs.readFileSync('/tmp/request.json','utf8'));
-    const oauthkey = reqInfo.oauth_consumer_key;
-    const oauthsecret = get_consumer_secret(cokey);
-    const provider = new lplti.Provider(oauthkey,oauthsecret);
-    var resptext = 'got';
-    const outcome_service = new lplti.OutcomeService({
-        consumer_key: oauthkey,
-        consumer_secret: oauthsecret,
-        service_url: reqInfo.lis_outcome_service_url,
-        source_did: reqInfo.lis_result_sourcedid,
-        language: 'en'
-    });
-    outcome_service.send_replace_result(0.31, function(e, r) {
-        if (r) {
-            resptext += ' success';
-        } else {
-            respect += ' failure';
-        }
-    });
-    res.send('Here with ' + resptext);
-});
-*/
+

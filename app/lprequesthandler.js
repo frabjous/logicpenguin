@@ -2,22 +2,33 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////////////lprequesthandler.js//////////////////////////
+// Functions for reacting appropriately to json-based requests
+// such as saving an answer, etc.
+//////////////////////////////////////////////////////////////////////
+
+// load modules
 import lpdata from './lpdata.js';
 import lpfs from './lpfs.js';
 import lpauth from './lpauth.js';
 import libgrade from '../public/js/libgrade.js';
 import path from 'node:path';
 
+// initialize return object
 let lprequesthandler = {};
 
+// generic function for returning an error
 function errResponse(msg){
     return { error: true, errMsg: msg };
 }
 
+// core function for responding to kinds of requests
 lprequesthandler.respond = function(datadir, reqobj) {
+    // sanity check
     if (!reqobj.reqtype) {
         return errResponse('Request type not specified.');
     }
+    // react appropriately depending on request type
     switch(reqobj.reqtype) {
         case 'saveans':
             return lprequesthandler.saveAnswer(datadir, reqobj);
@@ -25,6 +36,7 @@ lprequesthandler.respond = function(datadir, reqobj) {
         default:
             return errResponse('Unsupported request type.');
     }
+    // shouldn't get here, but in case of bug …
     return errResponse('Unable to handle request.');
 }
 
@@ -85,6 +97,7 @@ lprequesthandler.saveAnswer = async function(datadir, reqobj) {
     let { immediateresult, manuallygraded, problemtype, partialcredit,
         points } = setinfo;
     if (servergraded && immediateresult) {
+        // sanity checks
         if (!("ans" in state)) {
             return errResponse('No answer provided to save.');
         }
@@ -98,9 +111,12 @@ lprequesthandler.saveAnswer = async function(datadir, reqobj) {
             return errResponse(
                 'Unable to find question or answer data on server');
         }
+        // actually check the answer and get what should go in the
+        // problem indicator (ind)
         state.ind = await libgrade.checkAnswer( problemtype, question,
             answer, state.ans, partialcredit, points, (setinfo.cheat ?? false),
             (setinfo.options ?? {}));
+        // if previous function returned false or null, that's a malfunction
         if (!state.ind) {
             state.ind = {
                 savestatus: "malfunction",
@@ -110,12 +126,12 @@ lprequesthandler.saveAnswer = async function(datadir, reqobj) {
             }
         }
     }
-
     // save/record the answer; set status to saved assuming it will
     // save; if it does not, there is no harm
     if (state.ind.savestatus != "malfunction") {
         state.ind.savestatus = "saved";
     }
+    // actually do the saving
     let saveRes = lpdata.recordAnswer(datadir, consumerkey, contextid,
         userid, exnum, elemid, state);
     if (!saveRes) {
@@ -135,6 +151,9 @@ lprequesthandler.saveAnswer = async function(datadir, reqobj) {
     }
 }
 
+/*
+ * NOTE: I don't know why this was here, so I'm commenting out
+ * and seeing if breaks anything
 function removeMarks(deriv) {
     if (!("parts" in deriv)) { return; }
     for (let p of deriv.parts) {
@@ -150,5 +169,7 @@ function removeMarks(deriv) {
         }
     }
 }
+*/
 
+//export the library object with the functions
 export default lprequesthandler;

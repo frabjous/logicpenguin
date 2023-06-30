@@ -2,13 +2,18 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-// modules
+/////////////////////////lpages.js/////////////////////////////////////
+// Serves the HTML files and fills in their templates with the 
+// relevant data
+//////////////////////////////////////////////////////////////////////
+
+// loads modules
 import fs from 'node:fs';
 import lpfs from './lpfs.js';
 import lpdata from './lpdata.js';
 import path from 'node:path';
 
-// fills a templated string
+// fills a templated string from list of fillins
 export function filltemplate(template, fillins) {
     let rv = template;
     for (const k in fillins) {
@@ -42,6 +47,7 @@ export async function getexercise(datadir, consumerkey,
     if (!exinfo || !exinfo.problemsets) {
         return false;
     }
+    // fill in some additional info for the exercise
     fillins.exerciseinfo = exinfojson.trim();
     if (exinfo.longtitle) {
         fillins.longtitle = exinfo.longtitle;
@@ -53,6 +59,7 @@ export async function getexercise(datadir, consumerkey,
     // whether to send answers for cheating purposes
     let numprobslist = [];
     let allowscheating = [];
+    // loop over info for problem sets and see if it allows cheating
     for (const probsetinfo of exinfo.problemsets) {
         const probtype = probsetinfo.problemtype;
         if (!probtype) { continue; }
@@ -80,11 +87,16 @@ export async function getexercise(datadir, consumerkey,
         userid, exnum, exinfo.duetime);
     let pastdue = false; 
     if (duetime) {
-        pastdue = ((new Date()).getTime() > duetime + 300000);
+        // add graceperiod or default of 300 secs = 5 minutes
+        let graceperiod = process?.appsettings?.graceperiod ?? 300000;
+        pastdue = ((new Date()).getTime() > duetime + graceperiod);
     }
+    // determine whether cheating is allowed at all for anything
     let anycheats = allowscheating.reduce((a,b) => (a||b));
     // make the duetime a string for filling in template
     fillins.duetime = duetime.toString();
+    // determine if problems already generated for user, if so read it,
+    // if not, create it
     if (lpfs.isfile(userprobfile)) {
         try {
             exerciseproblems = await fs.promises.readFile(
@@ -118,6 +130,7 @@ export async function getexercise(datadir, consumerkey,
     if (pastdue) {
         exerciseanswers = allanswersjson;
     } else if (anycheats) {
+        // otherwise just include answers for those allowing cheats
         let allowedanswers = [];
         let allanswers = [];
         try {
@@ -125,13 +138,16 @@ export async function getexercise(datadir, consumerkey,
         } catch(err) {
             return false;
         }
+        // check for each problem set whether answers should be included
         for (let i=0; i<allanswers.length; i++) {
             if (allowscheating[i]) {
                 allowedanswers.push(allanswers[i]);
             } else {
+                // pass empty arrays for problems not allowing cheats
                 allowedanswers.push([]);
             }
         }
+        // stringify the answers for inclusion in html document
         try {
             exerciseanswers = JSON.stringify(allowedanswers);
         } catch(err) {
@@ -165,16 +181,21 @@ export async function getexercise(datadir, consumerkey,
     return getpagetext('exercise.html', fillins);
 }
 
+// gets a lecture html file for a given unit
 export async function getlecture(datadir, consumerkey, contextid, unit) {
+    // initialize what should be filled in in temmplate
     let fillins = {};
     let lectdir = path.join(datadir, consumerkey, contextid, 'lectures');
     // read metadata about all lectures; ensure it and entry exist
     let lectdata = lpfs.loadjson(path.join(lectdir, 'lectureinfo.json'));
+    // sanity checks
     if (!lectdata) { return false; }
     if (!("contextdescription" in lectdata)) { return false; }
     if (!(unit in lectdata)) { return false; }
+    // some fields to fill in
     fillins.longtitle = lectdata[unit];
     fillins.contextdescription = lectdata.contextdescription;
+    // get html for this particular lecture unit
     try {
         fillins.lecturecontent = fs.readFileSync(
             path.join(lectdir, unit + '.html'),
@@ -182,6 +203,7 @@ export async function getlecture(datadir, consumerkey, contextid, unit) {
     } catch(err) {
         return false;
     }
+    // fill everything in in general template and return
     return getpagetext('lecturenotes.html', fillins);
 }
 
@@ -198,6 +220,7 @@ export function getpagetext(filename, fillins) {
     return filltemplate(template, fillins);
 }
 
+// generate new problem sets for a given user from the random pool
 function makeProblemSets(userdir, exdir, exnum, numprobslist) {
 
     // read exercise problem pool
