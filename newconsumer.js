@@ -4,6 +4,11 @@
 // https://www.gnu.org/licenses/.
 
 
+////////////////////// newconsumer.js //////////////////////////
+// Creates a new consumer and saves and/or generates its secret
+// Should be executed from command line on the server
+////////////////////////////////////////////////////////////////
+
 // node modules
 import fs from 'node:fs';
 import path from 'node:path';
