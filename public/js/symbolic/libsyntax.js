@@ -7,7 +7,10 @@
 // "syntax" object for an appropriate notation
 //////////////////////////////////////////////////////////
 
+// import notations
 import notations from './notations.js';
+
+// this object will hold all generated "syntax" objects
 const syntaxes = {};
 
 // adicities for operators
@@ -22,44 +25,45 @@ const symbolcat = {
     FALSUM  : 0
 }
 
-// TODO fix this so it doesn't script things up with parens
-allsoftparens = function(s, syntax) {
-    // should also remove parentheses around quantifier
-    s=s.replace(/[\{\[]/g,'(').replace(/[}\]]/g,')');
-    if (syntax.useQParens) {
-        // TODO: will (x) be a problem?; it won't remove it
-        s=s.replace(syntax.gqRegEx, '$1$2');
-    }
-    return s;
+// changes all soft parentheses
+const allsoftparens = function(s) {
+    return s.replace(/[\{\[]/g,'(').replace(/[}\]]/g,')');
 }
 
-isbinaryop = function(c, syntax) {
+// tests if the character is a binary operator
+const isbinaryop = function(c, syntax) {
     return (syntax.isop(c) && (symbolcat[operators[c]] == 2));
 }
 
-ismonop = function(c, syntax) {
+// tests if the character is a monadic operator
+const ismonop = function(c, syntax) {
     return (syntax.isop(c) && (symbolcat[operators[c]] == 1));
 }
 
-isquant = function(c, syntax) {
+// tests if a single character is a quantifier symbol;
+// note this is the just the symbols, without the variable or parentheses
+const isquant = function(c, syntax) {
     return (c == symbols.FORALL || c == symbols.EXISTS);
 }
 
-ispropconst = function(c, syntax) {
+// tests if a character is a propositional constant/zero-place operator
+const ispropconst = function(c, syntax) {
     return (syntax.isop(c) && (symbolcat[operators[c]] == 0));
 }
 
-// check if operator
-isop = function(c, syntax) {
+// check if symbols is an operator
+const isop = function(c, syntax) {
     return (c in syntax.operators);
 }
 
-isvar = function(c, syntax) {
+// tests if a given character is a variable
+const isvar = function(c, syntax) {
     return syntax.varRegEx.test(c);
 }
 
+//TODO ***HERE***
 // syntax: make quantifiers
-mkquantifier = function(v, q) {
+const mkquantifier = function(v, q, syntax) {
     let r = q + v;
     if (syntax.useQParens) {
         r = '(' + r + ')';
@@ -67,11 +71,11 @@ mkquantifier = function(v, q) {
     return r;
 }
 
-mkuniversal = function(v) {
+const mkuniversal = function(v, syntax) {
     return syntax.mkquantifier(v, symbols.FORALL);
 }
 
-mkexistential = function(v) {
+const mkexistential = function(v, syntax) {
     return syntax.mkquantifier(v, symbols.EXISTS);
 }
 
@@ -164,20 +168,25 @@ function generateSyntax(notationname) {
     syntax.gqRegEx = new RegExp(qRegExStr, 'g');
     // anchored to start
     syntax.qaRegEx = new RegExp('^' + qRegExStr);
-
     // variable regex
     syntax.varRegEx = new RegExp('^[' + symbols.variableRange + ']$');
 
-    // SYNTACTIC CATEGORIES
-    // assign categories (adicity) of operators
 
-    ///////////////////////
-    // SYNTAX FUNCTIONS
-    ///////////////////////
 
+    // BIND SYNTAX FUNCTIONS TO THIS SYNTAX
+    syntax.allsoftparens = allsoftparens;
+    syntax.isbinaryop = (c) => isbinaryop(c, syntax);
+    syntax.ismonop = (c) => ismonop(c, syntax);
+    syntax.isquant = (c) => isquant(c, syntax);
+    syntax.ispropconst = (c) => ispropconst(c, syntax);
+    syntax.isop = (c) => isop(c, syntax);
+    syntax.isvar = (c) => isvar(c, syntax);
+    syntax.mkquantifier = (v, q) => mkquantifier(v, q, syntax);
+    syntax.mkuniversal = (v) => mkuniversal(v, syntax);
+    syntax.mkexistential = (v) => mkexistential(v, syntax);
 }
 //
-// Export
+// EXPORTED FUNCTION
 //
 // returns the appropriate 'syntax' for the notation
 // in question
