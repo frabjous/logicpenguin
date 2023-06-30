@@ -61,33 +61,45 @@ function isvar(c) {
     return this.varRegEx.test(c);
 }
 
-//TODO ***HERE***
-// this: make quantifiers
+// this: make quantifier with proper notation
 function mkquantifier(v, q) {
+    // determine whether or not to use parentheses for quantifiers
+    const useParens = (this.notation.quantifierForm.charAt(0) == '(');
+    // determine whether the universal quantifier is hidden
+    const hideUniv = (this.notation.quantifierForm.search('Q?') >= 0);
+    // by default we have a quantifier and variale
     let r = q + v;
-    if (this.useQParens) {
+    // remove quantifier if it is universal and no quantifier
+    // symbol is used
+    if (hideUniv && q == this.symbols.FORALL) {
+        r = v;
+    }
+    // add parentheses if appropriate
+    if (this.useParens) {
         r = '(' + r + ')';
     }
+    //return result
     return r;
 }
 
 function mkuniversal(v) {
-    return this.mkquantifier(v, symbols.FORALL);
+    return this.mkquantifier(v, this.symbols.FORALL);
 }
 
 function mkexistential(v) {
-    return this.mkquantifier(v, symbols.EXISTS);
+    return this.mkquantifier(v, this.symbols.EXISTS);
 }
 
 // changes to input string you'd be all right applying even to
 // input fields, here we remove redundant spaces
-this.inputfix = function(s) {
+function inputfix(s) {
     // remove spaces
     let rv = s.replace(/\s/g,'');
     // spaces only surround binary operators …
     for (const op in symbolcat) {
         if (symbolcat[op] == 2) {
-            rv = rv.replaceAll(symbols[op], ' ' + symbols[op] + ' ');
+            rv = rv.replaceAll(this.symbols[op],
+                ' ' + this.symbols[op] + ' ');
         }
     }
     // … and identity
@@ -95,7 +107,7 @@ this.inputfix = function(s) {
     return rv;
 }
 
-this.stripmatching = function(s) {
+function stripmatching(s) {
     let depth = 0;
     if (s.length < 2) { return s; }
     for (let i=0; i< (s.length - 1); i++) {
@@ -111,20 +123,27 @@ this.stripmatching = function(s) {
         return s;
     }
     // matching; return strip recursively
-    return this.stripmatching(s.substring(1,s.length-1));
+    return this.stripmatching(s.substring(1, s.length - 1));
 }
 
-export function isInstanceOf(i, f) {
+// function for checking if something is an instance
+// of a qauntified formula
+function isInstanceOf(i, f) {
+    // formula must apply the quantifier to something
+    if (!f.right) { return false; }
+    // filter to terms that are not variables
     let tt = i.terms.split('');
     tt = tt.filter((t) => (!this.isvar(t)));
+    // see if instance can be got by replacing the formula's
+    // bound variable with that term
     for (let c of tt) {
         if (i.normal == f.right.instantiate(f.boundvar, c)) {
             return true;
         }
     }
+    // fell through so it is not an instance
     return false;
 }
-
 
 //////////// Main function for generating new syntax
 function generateSyntax(notationname) {
@@ -142,7 +161,7 @@ function generateSyntax(notationname) {
     // symbols are those things in notation also in symbolcat
     const symbols = {}
     for (let sym in symbols) {
-        if (sym in symbolcat) { justsymbols[sym] = symbols[sym]; }
+        if (sym in symbolcat) { symbols[sym] = syntax.notation[sym]; }
     }
     syntax.symbols = symbols;
 
@@ -158,7 +177,7 @@ function generateSyntax(notationname) {
     // quantifierForm
     let qRegExStr = symbols.quantifierForm
         .replaceAll('(',"\\(").replaceAll(')',"\\)")
-        .replaceAll('Q?',symbols.EXISTS + '?').
+        .replaceAll('Q?',symbols.EXISTS + '?')
         .replaceAll('Q','[' + symbols.EXISTS + symbols.FORALL + ']');
 
     // regular quantifier regex
@@ -172,15 +191,18 @@ function generateSyntax(notationname) {
 
     // BIND SYNTAX FUNCTIONS TO THIS SYNTAX
     syntax.allsoftparens = allsoftparens;
+    syntax.inputfix = inputfix;
     syntax.isbinaryop = isbinaryop;
     syntax.ismonop = ismonop;
     syntax.isquant = isquant;
     syntax.ispropconst = ispropconst;
+    syntax.isInstanceOf = isInstanceOf;
     syntax.isop = isop;
     syntax.isvar = isvar;
     syntax.mkquantifier = mkquantifier;
     syntax.mkuniversal = mkuniversal;
     syntax.mkexistential = mkexistential;
+    syntax.stripmatching = stripmatching;
 }
 //
 // EXPORTED FUNCTION
@@ -193,10 +215,12 @@ export default function getSyntax(notationname) {
         return syntaxes[notationname];
     }
     // generate the syntax from the notation
-    let syntax = generateSyntax(notationname);
+    const syntax = generateSyntax(notationname);
     // save the syntax in syntaxes so it doesn't
     // have to be regenerated each time it is called
     syntaxes[notationname] = syntax;
     return syntax;
 }
 
+const hsyntax = getSyntax('hardegree');
+console.log(hsyntax.symbols);

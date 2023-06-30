@@ -22,7 +22,7 @@
 // Q, then the symbol chosen for FORALL will be suppressed
 // and need not appear in the formula when parsed.
 
-export default const notations = {
+export default notations = {
     "cambridge": {
         OR      : '∨',
         AND     : '∧',
@@ -34,7 +34,7 @@ export default const notations = {
         FALSUM  : '⊥',
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z'
+        predicatesRange: '=A-Z',
         variableRange: 'x-zs-w'
     },
     "copi": {
@@ -62,7 +62,7 @@ export default const notations = {
         FALSUM  : '✖',
         constantsRange: 'a-w',
         predicatesRange: '=A-Z',
-        quantifierForm: 'Qx'
+        quantifierForm: 'Qx',
         variableRange: 'x-z'
     },
     "magnus": {
@@ -76,7 +76,7 @@ export default const notations = {
         FALSUM  : '※',
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z'
+        predicatesRange: '=A-Z',
         variableRange: 'x-z'
     }
 }
