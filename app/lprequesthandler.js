@@ -151,7 +151,7 @@ lprequesthandler.saveAnswer = async function(datadir, reqobj) {
     }
 }
 
-/*
+/* TODO:
  * NOTE: I don't know why this was here, so I'm commenting out
  * and seeing if breaks anything
 function removeMarks(deriv) {

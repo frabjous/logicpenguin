@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////////////lpsettings.js////////////////////////////////
+// Reads the settings for the logic penguin instance and fills in
+// defaults, etc., if not specified
+//////////////////////////////////////////////////////////////////////
+
 // load necessary modules
 import fs from 'node:fs';
 import lpfs from './lpfs.js';
@@ -19,7 +24,7 @@ if (!appsettings) {
     appsettings = {}
 }
 
-// override with environmental variables
+// settings can be overridden with environmental variables
 if ("LOGIC_PENGUIN_HTTP_PORT" in process.env) {
     appsettings.httpport = parseInt(
         process.env.LOGIC_PENGUIN_HTTP_PORT
@@ -53,7 +58,6 @@ if ("LOGIC_PENGUIN_GRADING_INTERVAL" in process.env) {
         process.env.LOGIC_PENGUIN_GRADING_INTERVAL
     );
 }
-
 
 // default ports at 8084 (dev)/80 (prod) or 4344/443
 if (!("httpport" in appsettings)) {

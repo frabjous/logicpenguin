@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////////////lpauth.js/////////////////////////////////////
+// Deals with authenticating access to exercises and whether they are
+// appropriate given the launch data for the user
+//////////////////////////////////////////////////////////////////////
+
 // load modules
 import fs from 'node:fs';
 import lpdata from './lpdata.js';
@@ -66,4 +71,5 @@ lpauth.verifylaunch = function (datadir, consumerkey, contextid,
         exnum + '-' + launchid + '.json'));
 }
 
+// return library object with the functions
 export default lpauth;
