@@ -70,6 +70,15 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [ ] Write good documentation generally, including explaining to others how to self-host their own instance
 - [x] Improve the equivalence checker for predicate logic to reduce the number of indeterminate answers when there are multiple quantifiers and polyadic predicates (already done multiple times, but can always be better)
 
+<!--
+Private todo:
+
+[ ] - Archive convertold
+[ ] = Archive equiv tests, or update for initial generation
+
+
+-->
+
 ## License
 
 Logic penguin is copyright © 2023 by Kevin C. Klement. This is free software, which can be redistributed and/or modified under the terms of the [GNU General Public License (GPL), version 3](https://www.gnu.org/licenses/gpl.html).

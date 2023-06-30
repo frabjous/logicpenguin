@@ -2,18 +2,24 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////////////lpdata.js//////////////////////////////////
+// This script handles dealing with the data of an individual user
+///////////////////////////////////////////////////////////////////
 
+// load modules
 import fs from 'node:fs';
 import path from 'node:path';
 import lpfs from './lpfs.js';
 
 let lpdata = {};
 
+// script to determine when exercises are past due
 lpdata.determinePastDue = function(datadir, consumerkey, contextid, userid,
     exnum, duetime) {
     if (duetime === false) { return false; }
     let currtime = (new Date()).getTime();
     // 5 minute grace period
+    let graceperiod = process?.appsettings?.graceperiod ?? 300000;
     return (currtime > (lpdata.whenPastDue(datadir, consumerkey,
         contextid, userid, exnum, duetime) + 300000));
 }

@@ -103,6 +103,7 @@ app.use(express.static('public'));
 
 // exercise launch request
 app.post('/launch/:exnum', async function(req, res) {
+    // check consumerkey and check against consumer secret
     const consumerkey = req.body.oauth_consumer_key;
     if (!consumerkey) {
         return res.status(403).send(getpagetext('403.html', {
@@ -117,6 +118,7 @@ app.post('/launch/:exnum', async function(req, res) {
             message: 'Invalid consumer key provided'
         }));
     }
+    // read contextid, userid
     const contextid = req.body.context_id;
     const userid = req.body.user_id ?? req.body.ext_user_username;
     if (!contextid || !userid) {
@@ -124,6 +126,7 @@ app.post('/launch/:exnum', async function(req, res) {
             message: 'Inadequate course or user information provided'
         }));
     }
+    // validate request
     const provider = new lplti.Provider(consumerkey, consumersecret);
     provider.valid_request(req, function(err, isValid) {
         if (!isValid) {
@@ -131,6 +134,7 @@ app.post('/launch/:exnum', async function(req, res) {
                 message: err.toString()
             }));
         }
+        // save launch information in user's data folder
         let launchid = lpauth.newlaunch(appsettings.datadir, req.body,
             req.params.exnum);
         if (launchid === false) {
@@ -138,6 +142,7 @@ app.post('/launch/:exnum', async function(req, res) {
                 message: 'Server unable to make record of launch'
             }));
         }
+        // redirect to actual exercise
         let redirectloc = 'https://' + req.headers.host +
             '/exercises/' + consumerkey + '/' + contextid + '/' +
             userid + '/' + req.params.exnum + '/'  + launchid;
@@ -145,17 +150,18 @@ app.post('/launch/:exnum', async function(req, res) {
     });
 });
 
-app.get('/zyzzyva/:exnum',
+// allow direct access to exercises for test consumer and context
+app.get('/developmenttest/:exnum',
     async function(req, res) {
         if (process.env.NODE_ENV != 'development') {
             res.send("not in development");
             return;
         }
-        const consumerkey = 'kck';
-        const contextid = '34254';
+        const consumerkey = 'lpdeveloper';
+        const contextid = 'testcontext';
         const exnum = req.params.exnum;
-        const userid = '9175';
-        const launchid = 'zyzzyvatest';
+        const userid = 'teststudent';
+        const launchid = 'developmenttest';
         if (!lpauth.verifylaunch(appsettings.datadir, consumerkey,
             contextid, userid, exnum, launchid)) {
             return res.status(403).send(getpagetext('403.html', {

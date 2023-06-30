@@ -1,6 +1,7 @@
 {
   "datadir": "/home/logicpenguin",
   "defaultsymbols": "¬∨∧→↔⊥∃∀",
+  "graceperiod": 300000,
   "gradeinterval": 86400000,
   "httpport": 80,
   "httpsport": 443,
