@@ -68,6 +68,7 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [ ] Create [the website](https://logicpenguin.com) and advertise the project and its goals
 - [ ] Possibly upgrade from LTI 1.1 to 1.3 if it can be done without involving Google, Facebook, Microsoft et al. for OAuth2
 - [ ] Write good documentation generally, including explaining to others how to self-host their own instance
+- [ ] Enforce choice of parentheses around terms and commas between them? Or is laissez faire better?
 - [x] Improve the equivalence checker for predicate logic to reduce the number of indeterminate answers when there are multiple quantifiers and polyadic predicates (already done multiple times, but can always be better)
 
 <!--

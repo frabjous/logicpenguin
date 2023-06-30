@@ -22,7 +22,7 @@
 // Q, then the symbol chosen for FORALL will be suppressed
 // and need not appear in the formula when parsed.
 
-export const symbolsets = {
+export default const notations = {
     "cambridge": {
         OR      : '∨',
         AND     : '∧',
