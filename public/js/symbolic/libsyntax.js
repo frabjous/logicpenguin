@@ -66,9 +66,8 @@ function mkquantifier(v, q) {
     // determine whether or not to use parentheses for quantifiers
     const useParens = (this.notation.quantifierForm.charAt(0) == '(');
     // determine whether the universal quantifier is hidden
-    const hideUniv = (this.notation.quantifierForm.search('Q\?') >= 0);
+    const hideUniv = (this.notation.quantifierForm.search('Q\\?') >= 0);
     // by default we have a quantifier and variale
-    console.log(this.notation.quantifierForm);
     let r = q + v;
     // remove quantifier if it is universal and no quantifier
     // symbol is used
@@ -127,25 +126,6 @@ function stripmatching(s) {
     return this.stripmatching(s.substring(1, s.length - 1));
 }
 
-// function for checking if something is an instance
-// of a qauntified formula
-function isInstanceOf(i, f) {
-    // formula must apply the quantifier to something
-    if (!f.right) { return false; }
-    // filter to terms that are not variables
-    let tt = i.terms.split('');
-    tt = tt.filter((t) => (!this.isvar(t)));
-    // see if instance can be got by replacing the formula's
-    // bound variable with that term
-    for (let c of tt) {
-        if (i.normal == f.right.instantiate(f.boundvar, c)) {
-            return true;
-        }
-    }
-    // fell through so it is not an instance
-    return false;
-}
-
 //////////// Main function for generating new syntax
 function generateSyntax(notationname) {
     // initialize return value
@@ -197,7 +177,6 @@ function generateSyntax(notationname) {
     syntax.ismonop = ismonop;
     syntax.isquant = isquant;
     syntax.ispropconst = ispropconst;
-    syntax.isInstanceOf = isInstanceOf;
     syntax.isop = isop;
     syntax.isvar = isvar;
     syntax.mkquantifier = mkquantifier;
@@ -226,7 +205,5 @@ export default function getSyntax(notationname) {
 }
 
 const hsyntax = getSyntax('hardegree');
-console.log(hsyntax.mkuniversal('y'));
-
 const csyntax = getSyntax('copi');
-console.log(csyntax.mkuniversal('x'));
+console.log(hsyntax.inputfix('Fx     &y=z'));

@@ -465,6 +465,27 @@ export default class Formula {
         if (terms && syntax.termparens) { terms = '(' + terms + ')'; };
         return pletter + terms;
     }
+
+    // function for checking if something is an instance
+    // of a qauntified formula
+    isInstanceOf(i, f) {
+        // formula must apply the quantifier to something
+        if (!f.right) { return false; }
+        // filter to terms that are not variables
+        let tt = i.terms.split('');
+        tt = tt.filter((t) => (!syntax.isvar(t)));
+        // see if instance can be got by replacing the formula's
+        // bound variable with that term
+        for (let c of tt) {
+            if (i.normal == f.right.instantiate(f.boundvar, c)) {
+                return true;
+            }
+        }
+        // fell through so it is not an instance
+        return false;
+    }
+
+    
     syntaxError(reason) {
         this._syntaxerrors[reason] = true;
         this._wellformed = false;
