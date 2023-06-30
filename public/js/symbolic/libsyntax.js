@@ -26,62 +26,62 @@ const symbolcat = {
 }
 
 // changes all soft parentheses
-const allsoftparens = function(s) {
+function allsoftparens(s) {
     return s.replace(/[\{\[]/g,'(').replace(/[}\]]/g,')');
 }
 
 // tests if the character is a binary operator
-const isbinaryop = function(c, syntax) {
-    return (syntax.isop(c) && (symbolcat[operators[c]] == 2));
+function isbinaryop(c) {
+    return (this.isop(c) && (symbolcat[operators[c]] == 2));
 }
 
 // tests if the character is a monadic operator
-const ismonop = function(c, syntax) {
-    return (syntax.isop(c) && (symbolcat[operators[c]] == 1));
+function ismonop(c) {
+    return (this.isop(c) && (symbolcat[operators[c]] == 1));
 }
 
 // tests if a single character is a quantifier symbol;
 // note this is the just the symbols, without the variable or parentheses
-const isquant = function(c, syntax) {
-    return (c == symbols.FORALL || c == symbols.EXISTS);
+function isquant(c) {
+    return (c == this.symbols.FORALL || c == this.symbols.EXISTS);
 }
 
 // tests if a character is a propositional constant/zero-place operator
-const ispropconst = function(c, syntax) {
-    return (syntax.isop(c) && (symbolcat[operators[c]] == 0));
+function ispropconst(c) {
+    return (this.isop(c) && (symbolcat[operators[c]] == 0));
 }
 
 // check if symbols is an operator
-const isop = function(c, syntax) {
-    return (c in syntax.operators);
+function isop(c) {
+    return (c in this.operators);
 }
 
 // tests if a given character is a variable
-const isvar = function(c, syntax) {
-    return syntax.varRegEx.test(c);
+function isvar(c) {
+    return this.varRegEx.test(c);
 }
 
 //TODO ***HERE***
-// syntax: make quantifiers
-const mkquantifier = function(v, q, syntax) {
+// this: make quantifiers
+function mkquantifier(v, q) {
     let r = q + v;
-    if (syntax.useQParens) {
+    if (this.useQParens) {
         r = '(' + r + ')';
     }
     return r;
 }
 
-const mkuniversal = function(v, syntax) {
-    return syntax.mkquantifier(v, symbols.FORALL);
+function mkuniversal(v) {
+    return this.mkquantifier(v, symbols.FORALL);
 }
 
-const mkexistential = function(v, syntax) {
-    return syntax.mkquantifier(v, symbols.EXISTS);
+function mkexistential(v) {
+    return this.mkquantifier(v, symbols.EXISTS);
 }
 
 // changes to input string you'd be all right applying even to
 // input fields, here we remove redundant spaces
-syntax.inputfix = function(s) {
+this.inputfix = function(s) {
     // remove spaces
     let rv = s.replace(/\s/g,'');
     // spaces only surround binary operators …
@@ -95,7 +95,7 @@ syntax.inputfix = function(s) {
     return rv;
 }
 
-syntax.stripmatching = function(s) {
+this.stripmatching = function(s) {
     let depth = 0;
     if (s.length < 2) { return s; }
     for (let i=0; i< (s.length - 1); i++) {
@@ -111,12 +111,12 @@ syntax.stripmatching = function(s) {
         return s;
     }
     // matching; return strip recursively
-    return syntax.stripmatching(s.substring(1,s.length-1));
+    return this.stripmatching(s.substring(1,s.length-1));
 }
 
 export function isInstanceOf(i, f) {
     let tt = i.terms.split('');
-    tt = tt.filter((t) => (!syntax.isvar(t)));
+    tt = tt.filter((t) => (!this.isvar(t)));
     for (let c of tt) {
         if (i.normal == f.right.instantiate(f.boundvar, c)) {
             return true;
@@ -147,10 +147,9 @@ function generateSyntax(notationname) {
     syntax.symbols = symbols;
 
     // reverse list of symbols to get operators
-    syntax.operators = Object.fromEntries(
+    const operators = Object.fromEntries(
         Object.entries(symbols).map(([x,y]) => ([y,x])));
-    let operators = syntax.operators;
-    
+    syntax.operators = operators;
     //
     // Syntax Regular Expressions (RegExp)
     //
@@ -171,19 +170,17 @@ function generateSyntax(notationname) {
     // variable regex
     syntax.varRegEx = new RegExp('^[' + symbols.variableRange + ']$');
 
-
-
     // BIND SYNTAX FUNCTIONS TO THIS SYNTAX
     syntax.allsoftparens = allsoftparens;
-    syntax.isbinaryop = (c) => isbinaryop(c, syntax);
-    syntax.ismonop = (c) => ismonop(c, syntax);
-    syntax.isquant = (c) => isquant(c, syntax);
-    syntax.ispropconst = (c) => ispropconst(c, syntax);
-    syntax.isop = (c) => isop(c, syntax);
-    syntax.isvar = (c) => isvar(c, syntax);
-    syntax.mkquantifier = (v, q) => mkquantifier(v, q, syntax);
-    syntax.mkuniversal = (v) => mkuniversal(v, syntax);
-    syntax.mkexistential = (v) => mkexistential(v, syntax);
+    syntax.isbinaryop = isbinaryop;
+    syntax.ismonop = ismonop;
+    syntax.isquant = isquant;
+    syntax.ispropconst = ispropconst;
+    syntax.isop = isop;
+    syntax.isvar = isvar;
+    syntax.mkquantifier = mkquantifier;
+    syntax.mkuniversal = mkuniversal;
+    syntax.mkexistential = mkexistential;
 }
 //
 // EXPORTED FUNCTION
