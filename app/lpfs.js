@@ -2,16 +2,24 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////////////lpfs.js///////////////////////////////////
+// This script handles lp's interacting with the file system (fs)
+// by reading and writing files, directory contents, etc.
+///////////////////////////////////////////////////////////////////
+
+
 import fs from 'node:fs';
 import path from 'node:path';
 
 let lpfs = {};
 
+// returns true if the directory already exists, otherwise creates it
 lpfs.ensuredir = function(dir) {
     if (lpfs.isdir(dir)) { return true; }
     return lpfs.mkdir(dir);
 }
 
+// true or false depending on whether argument is a directory
 lpfs.isdir = function(dir) {
     var stats;
     try {
@@ -22,6 +30,8 @@ lpfs.isdir = function(dir) {
     return stats.isDirectory();
 }
 
+// true or false depending on whether argument is a filename of an
+// exiting file
 lpfs.isfile = function(dir) {
     var stats;
     try {
@@ -32,6 +42,7 @@ lpfs.isfile = function(dir) {
     return stats.isFile();
 }
 
+// returns (Promise of) an array with the files in a given directory
 lpfs.filesin = async function(dir) {
     let rv = [];
     try {
@@ -53,6 +64,7 @@ lpfs.filesin = async function(dir) {
     return rv;
 }
 
+// loads a json file and return its content as an object after parsing it
 lpfs.loadjson = function(filename) {
     try {
         return JSON.parse(
@@ -63,6 +75,7 @@ lpfs.loadjson = function(filename) {
     }
 }
 
+// same as above, but asynchronous, yielding a Promise
 lpfs.loadjsonAsync = async function(filename) {
     try {
         let json = await fs.promises.readFile(filename,
@@ -73,6 +86,7 @@ lpfs.loadjsonAsync = async function(filename) {
     }
 }
 
+// creates a directory
 lpfs.mkdir = function(dir) {
     try {
         fs.mkdirSync(dir,
@@ -83,6 +97,8 @@ lpfs.mkdir = function(dir) {
     return true;
 }
 
+// gets the modification time of a given file, in milliseconds since
+// the start of the epoch (1970)
 lpfs.mtime = async function(filename) {
     let rv = false;
     try {
@@ -94,6 +110,7 @@ lpfs.mtime = async function(filename) {
     return rv;
 }
 
+// serializes an object as json and saves it as a file
 lpfs.savejson = function(filename, obj) {
     try {
         fs.writeFileSync(filename, JSON.stringify(obj),
@@ -104,6 +121,7 @@ lpfs.savejson = function(filename, obj) {
     return true;
 }
 
+// as above, but asynchronous, yielding a Promise
 lpfs.savejsonAsync = async function(filename, obj) {
     try {
         await fs.promises.writeFile(filename, JSON.stringify(obj),
@@ -114,6 +132,7 @@ lpfs.savejsonAsync = async function(filename, obj) {
     return true;
 }
 
+// gets a (Promise of) a list of subdirectories of a directory
 lpfs.subdirs = async function(dir) {
     let rv = [];
     try {
@@ -135,7 +154,8 @@ lpfs.subdirs = async function(dir) {
     return rv;
 }
 
-// attach to process so can be used by public scripts
+// attach return value to process so can be used by public scripts
 if (process) { process.lpfs = lpfs; }
 
+// export the object containing the functions
 export default lpfs;
