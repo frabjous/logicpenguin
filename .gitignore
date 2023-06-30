@@ -5,6 +5,7 @@ certs/cert.pem
 node_modules/
 data/
 dist/
+fallback
 fallback/
 public/.well-known/
 package-lock.json
