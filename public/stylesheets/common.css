@@ -101,6 +101,23 @@
     color: var(--lpcyan);
 }
 
+.logicpenguin button {
+    font-family:
+        'Fira Sans', 'Fira Sans',
+        'LogicPenguin',
+        'Noto Sans', 'Noto Sans Math',
+        'FreeSans',
+        'Segoe UI',
+        'DejaVu Sans',
+        'Libertinus Sans',
+        'Libertinus Math',
+        'STIX', 'STIXGeneral',
+        'Cambria',
+        'Lucida Sans Unicode',
+        'Droid Sans', 'Droid Sans Fallback',
+        sans-serif;
+}
+
 /* use LogicPenguin font in symbolic contexts */
 .logicpenguin .symbolic {
     font-family: 'LogicPenguin', 'Fira Sans',
