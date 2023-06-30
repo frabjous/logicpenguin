@@ -75,7 +75,7 @@ Private todo:
 
 [ ] - Archive convertold
 [ ] = Archive equiv tests, or update for initial generation
-
+[ ] = figure out what to do with scripty.js
 
 -->
 

@@ -3,6 +3,12 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+//////////////////////////////////////////////////////////////////////
+// This is a script created by Kevin for his own use for doing things
+// like granting extensions server side; it should be improved to make
+// it more generic, or scrapped once instructor thingy is in place
+/////////////////////////////////////////////////////////////////////
+
 // node modules
 //import fs from 'node:fs';
 import path from 'node:path';
@@ -20,9 +26,9 @@ import lplti from './app/lplti.js';
 
 // set constants
 const datadir = appsettings.datadir;
-const consumerkey = 'kck';
-const contextid = '34254';
-const urlRoot = 'https://logicpenguin.com';
+const consumerkey = appsettings.defaultconsumer;
+const contextid = appsettings.defaultcontext;
+const urlRoot = appsettings.defaulturl;
 
 async function printURL(datadir, consumerkey, contextid, userid, exnum) {
     let url = await lplti.launchUrlFor(

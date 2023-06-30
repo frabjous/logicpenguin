@@ -1,10 +1,13 @@
 {
-  "datadir": "/home/logicpenguin",
-  "defaultsymbols": "¬∨∧→↔⊥∃∀",
-  "graceperiod": 300000,
-  "gradeinterval": 86400000,
-  "httpport": 80,
-  "httpsport": 443,
-  "starthour": 1,
-  "startmin": 20
+    "datadir": "/home/logicpenguin",
+    "defaultconsumer": "lpdeveloper",
+    "defaultcontext": "testcontext",
+    "defaultsymbols": "¬∨∧→↔⊥∃∀",
+    "defaulturl": "https://logicpenguin.com",
+    "graceperiod": 300000,
+    "gradeinterval": 86400000,
+    "httpport": 80,
+    "httpsport": 443,
+    "starthour": 1,
+    "startmin": 20
 }
