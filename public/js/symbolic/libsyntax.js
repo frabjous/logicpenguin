@@ -203,7 +203,3 @@ export default function getSyntax(notationname) {
     syntaxes[notationname] = syntax;
     return syntax;
 }
-
-const hsyntax = getSyntax('hardegree');
-const csyntax = getSyntax('copi');
-console.log(hsyntax.inputfix('Fx     &y=z'));
