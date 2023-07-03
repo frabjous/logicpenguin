@@ -230,17 +230,18 @@ function generateFormulaClass(notationname) {
             }
             // join terms into single string
             let termsstr = this.terms.join(joiner);
-            // identity is different
-            if ((terms.length == 2) && (pletter == '=')) {
-                termsstr = this.terms[0] + ' = ' + this.terms[1];
-            }
             // add parentheses around terms if need be
             if ((Formula.syntax.notation.useTermParensCommas) &&
                 (this.terms.length > 0)) {
                 termsstr = '(' + termsstr + ')';
             }
+            let atomicstr = pletter + termsstr;
+            // identity is different
+            if ((terms.length == 2) && (pletter == '=')) {
+                atomicstr = this.terms[0] + ' = ' + this.terms[1];
+            }
             // put terms after predicate letter
-            this._normal = pletter + termsstr;
+            this._normal = atomicstr;
             return this._normal;
         }
 
@@ -314,7 +315,7 @@ function generateFormulaClass(notationname) {
                 // if we're at the start of a quantifier
                 const isop = Formula.syntax.isop(c);
                 const startswithq = remainder.match(Formula.syntax.qaRegEx);
-                const thisop = c;
+                let thisop = c;
                 if (startswithq) {
                     let m = startswithq[0];
                     if (m.search(Formula.syntax.symbols.EXISTS)) {
@@ -394,7 +395,8 @@ function generateFormulaClass(notationname) {
                 return this._right;
             }
             // if no main op, return something falsy
-            if (this.opspot == -1 || symbolcat[operators[this.op]] == 0) {
+            if (this.opspot == -1 || Formula.syntax.symbolcat[
+                Formula.syntax.operators[this.op]] == 0) {
                 this._right = false;
                 return this._right;
             }
@@ -542,7 +544,7 @@ function generateFormulaClass(notationname) {
             // shouldn't have any errors from checking pletter and terms
             for (let prob in this._syntaxerrors) {
                 this._wellformed = false;
-                break
+                break;
             }
             // if got here all was OK
             return this._wellformed;
@@ -565,29 +567,49 @@ function generateFormulaClass(notationname) {
                 if (Formula.syntax.isquant(this.op) && (this.boundvar == variable)) {
                     return this.normal;
                 }
+                // instantiate in right side
                 let r = Formula.from(this.right.instantiate(variable, term));
-                return this.op +
-                    ((Formula.syntax.isquant(this.op)) ? (this.boundvar ?? '') : '' )
-                    + r.wrapifneeded();
+                // put quantifier with different variable back on right side
+                if (Formula.syntax.isquant(this.op)) {
+                    return Formula.syntax.mkquantifier(
+                        this.boundvar, this.op
+                    ) + r.wrapifneeded();
+                }
+                // monadic operator not a quantifier is just it plus right side.
+                return this.op + r.wrapifneeded();
             }
+            // zero place op, nothing to do
             if (this.op) { return this.normal; }
             // should be atomic
             let pletter = this.pletter ?? '';
-            let terms = this.terms ?? ''
+            let terms = (this.terms ?? []).map(
+                (t) => ((t == variable) ? term : t)
+            );
             // too simplistic for function terms**
-            terms = terms.replaceAll(variable, term);
-            if (Formula.syntax.usecommas) { terms = terms.split('').join(','); }
-            if (terms && Formula.syntax.termparens) { terms = '(' + terms + ')'; };
-            return pletter + terms;
+            let joiner = '';
+            if (Formula.syntax.notation.useTermParensCommas) {
+                joiner = ',';
+            }
+            let termstr = terms.join(joiner);
+            if ((Formula.syntax.notation.useTermParensCommas)
+                && (terms.length > 0)) {
+                termstr = '(' + termstr + ')';
+            }
+            let atomicstr = pletter + termstr;
+            // identity is different
+            if (terms.length == 2 && pletter == '=') {
+                atomicstr = terms[0] + ' = ' + terms[1];
+            }
+            return atomicstr;
         }
 
         // function for checking if something is an instance
         // of a qauntified formula
-        isInstanceOf(i, f) {
+        static isInstanceOf(i, f) {
             // formula must apply the quantifier to something
             if (!f.right) { return false; }
             // filter to terms that are not variables
-            let tt = i.terms.split('');
+            let tt = i.terms;
             tt = tt.filter((t) => (!syntax.isvar(t)));
             // see if instance can be got by replacing the formula's
             // bound variable with that term
@@ -636,7 +658,28 @@ export default function getFormulaClass(notationname) {
     if (notationname in formulaClasses) {
         return formulaClasses[notationname];
     }
-    let fClass = generateFormulaClass(notationname);
+    const fClass = generateFormulaClass(notationname);
     formulaClasses[notationname] = fClass;
     return fClass;
 }
+
+let Fml = getFormulaClass("cambridge");
+let f = Fml.from('∀x∃y[(Fx ∨ Gx) → x=y]');
+console.log('normal',f.normal);
+console.log('plleters',f.allpletters);
+console.log('boundvar',f.boundvar);
+console.log('depth',f.depth);
+console.log('freevars',f.freevars);
+console.log('left',f?.left?.normal);
+console.log('right',f?.right?.normal);
+console.log('op',f.op);
+console.log('opspot',f.opspot);
+console.log('pletter',f.pletter);
+console.log('syntaxerrs',f.syntaxerrors);
+console.log('terms',f.terms);
+console.log('wellformed',f.wellformed);
+console.log('instantiate to a',f.instantiate('x','a'));
+console.log('is instance of',Fml.isInstanceOf(f.right.instantiate('x','a'),f))
+console.log('wrapifneeded',f.wrapifneeded());
+console.log('wrapit',f.wrapit());
+

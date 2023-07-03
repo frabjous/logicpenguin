@@ -32,12 +32,12 @@ function allsoftparens(s) {
 
 // tests if the character is a binary operator
 function isbinaryop(c) {
-    return (this.isop(c) && (symbolcat[operators[c]] == 2));
+    return (this.isop(c) && (symbolcat[this.operators[c]] == 2));
 }
 
 // tests if the character is a monadic operator
 function ismonop(c) {
-    return (this.isop(c) && (symbolcat[operators[c]] == 1));
+    return (this.isop(c) && (symbolcat[this.operators[c]] == 1));
 }
 
 // tests if a single character is a quantifier symbol;
@@ -172,7 +172,7 @@ function generateSyntax(notationname) {
     // terms regex
     syntax.termsRegEx = new RegExp('[' + syntax.notation.variableRange +
         syntax.notation.constantsRange + ']', 'g');
-    syntax.pletterRegEx new RegExp ('[' + Formula.syntax.notation
+    syntax.pletterRegEx = new RegExp ('[' + syntax.notation
         .predicatesRange + ']');
 
     // BIND SYNTAX FUNCTIONS TO THIS SYNTAX
