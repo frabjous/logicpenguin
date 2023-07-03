@@ -3,8 +3,8 @@
 // https://www.gnu.org/licenses/.
 
 //////////////////// libsyntax.js ////////////////////////
-// defines a function that can be used to generate a
-// "syntax" object for an appropriate notation
+// defines a function that can be used to generate a    //
+// "syntax" object for an appropriate notation          //
 //////////////////////////////////////////////////////////
 
 // import notations

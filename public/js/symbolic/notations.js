@@ -23,6 +23,21 @@
 // and need not appear in the formula when parsed.
 
 const notations = {
+    "calgary": {
+        OR      : '∨',
+        AND     : '∧',
+        IFTHEN  : '→',
+        IFF     : '↔',
+        NOT     : '¬',
+        FORALL  : '∀',
+        EXISTS  : '∃',
+        FALSUM  : '⊥',
+        constantsRange: 'a-r',
+        quantifierForm: 'Qx',
+        predicatesRange: '=A-Z',
+        useTermParensCommas: true,
+        variableRange: 'x-zs-w'
+    },
     "cambridge": {
         OR      : '∨',
         AND     : '∧',
@@ -35,6 +50,7 @@ const notations = {
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
         predicatesRange: '=A-Z',
+        useTermParensCommas: false,
         variableRange: 'x-zs-w'
     },
     "copi": {
@@ -49,6 +65,7 @@ const notations = {
         constantsRange: 'a-w',
         predicatesRange: '=A-Z',
         quantifierForm: '(Q?x)',
+        useTermParensCommas: false,
         variableRange: 'x-z'
     },
     "hardegree": {
@@ -63,6 +80,7 @@ const notations = {
         constantsRange: 'a-w',
         predicatesRange: '=A-Z',
         quantifierForm: 'Qx',
+        useTermParensCommas: false,
         variableRange: 'x-z'
     },
     "magnus": {
@@ -77,6 +95,7 @@ const notations = {
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
         predicatesRange: '=A-Z',
+        useTermParensCommas: false,
         variableRange: 'x-z'
     }
 }

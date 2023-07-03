@@ -2,7 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-// TODO: make this configurable and import it
+////////////////////////// formula.js ///////////////////////////////////
+// defines the Formula class and its main methods                      //
+/////////////////////////////////////////////////////////////////////////
+
 
 import getSyntax from './libsyntax.js';
 import { arrayUnion } from '../misc.js';
@@ -18,19 +21,21 @@ function generateFormulaClass(notationname) {
             // parentheses, extra spaces and matching outer parens removed
             this.parsedstr = s
             this._syntaxerrors = {};
-            this.syntax = getSyntax(notationname);
         }
 
         // we keep a repository of Formulas that have been parsed or are
         // being parsed, etc. to avoid duplicating them in memory, or
         // having to redo work that was already done
         static repository = {};
+
+        // each Formula class has a syntax defined by its notationname
+        static syntax = getSyntax(notationname);
+
         // main function for fetching from the repository or adding to it
         // if necessary
-
         static from = function(s) {
-            let toparse = syntax.stripmatching(
-                syntax.allsoftparens(syntax.inputfix(s)).trim()
+            let toparse = Formula.syntax.stripmatching(
+                Formula.syntax.allsoftparens(syntax.inputfix(s)).trim()
             );
             if (Formula.repository[toparse]) {
                 return Formula.repository[toparse];
@@ -40,8 +45,8 @@ function generateFormulaClass(notationname) {
         }
 
         ///////////////////////
-        // getter functions //
-        /////////////////////
+        // getter functions  //
+        ///////////////////////
         // all propositional letters / predicates in a Formula
         get allpletters() {
             if ("_allpletters" in this) { return this._allpletters; }
@@ -57,17 +62,21 @@ function generateFormulaClass(notationname) {
             if ("_boundvar" in this) {
                 return this._boundvar;
             }
-            if (!syntax.isquant(this.op)) {
+            if (!Formula.syntax.isquant(this.op)) {
                 this._boundvar = false;
                 return this._boundvar;
             }
-            if (syntax.isvar(this.parsedstr[1])) {
-                this._boundvar = this.parsedstr[1];
-                return this._boundvar;
+            const q = this.parsedstr.match(Formula.syntax.qaRegEx);
+            if (q) {
+                const v = q[0].match(syntax.varRegEx);
+                if (v) {
+                    this._boundar = v[0];
+                    return this._boundvar;
+                }
             }
             this._boundvar = false;
-            this.syntaxError('a quantifier is used without a ' +
-                'variable in the range ' + syntax.variableRange +
+            Formula.syntaxError('a quantifier is used without a ' +
+                'variable in the range ' + Formula.syntax.variableRange +
                 ' following it');
             return this._boundvar;
         }
@@ -129,7 +138,7 @@ function generateFormulaClass(notationname) {
             if (this.opspot < 1) {
                 if (syntax.isbinaryop(this.op)) {
                     // SHOULD have a left, but does not
-                    this.syntaxError('nothing to the left of ' +
+                    Formula.syntaxError('nothing to the left of ' +
                         this.op);
                 }
                 this._left = false;
@@ -190,7 +199,7 @@ function generateFormulaClass(notationname) {
             let pletter = this.pletter ?? '';
             // too simplistic for function terms**
             if (syntax.usecommas) { terms = terms.split('').join(','); }
-            if (terms && syntax.termparens) { terms = '(' + terms + ')'; };
+            if (terms && Formula.syntax.termparens) { terms = '(' + terms + ')'; };
             this._normal = pletter + terms;
             return this._normal;
         }
@@ -234,7 +243,7 @@ function generateFormulaClass(notationname) {
                     currdepth--;
                 }
                 if (currdepth < 0) {
-                    this.syntaxError("unbalanced parentheses");
+                    Formula.syntaxError("unbalanced parentheses");
                 }
                 // possible main op must have depth 0, which
                 // should always be true since we stripped parens
@@ -249,7 +258,7 @@ function generateFormulaClass(notationname) {
                         let newopcat = symbolcat[operators[c]];
                         let oldopcat = symbolcat[operators[this.parsedstr[this._opspot]]];
                         if (newopcat == 2 && oldopcat == 2) {
-                            this.syntaxError('two binary operators occur ' +
+                            Formula.syntaxError('two binary operators occur ' +
                                 'without enough parentheses to ' +
                                 'determine which has wider scope');
                         }
@@ -261,7 +270,7 @@ function generateFormulaClass(notationname) {
                 }
             }
             if (mainopdepth > 0) {
-                this.syntaxError('unbalanced parentheses');
+                Formula.syntaxError('unbalanced parentheses');
             }
             return this._opspot;
         }
@@ -279,12 +288,12 @@ function generateFormulaClass(notationname) {
             }
             // look for first character which is a predicate
             let match = this.parsedstr.match(
-                new RegExp('[' + syntax.pletterRange + ']'));
+                new RegExp('[' + Formula.syntax.pletterRange + ']'));
             // has no pletter, which is not ok
             if (!match) {
                 this._pletter = false;
-                this.syntaxError('an atomic (sub)formula must use a letter in '
-                    + 'the range ' + syntax.pletterRange +
+                Formula.syntaxError('an atomic (sub)formula must use a letter in '
+                    + 'the range ' + Formula.syntax.pletterRange +
                     ' and this does not');
                 return this._pletter;
             }
@@ -292,11 +301,11 @@ function generateFormulaClass(notationname) {
             this._pletter = match[0];
             let pos = match.index;
             if (pos != 0 && this._pletter != '=') {
-                this.syntaxError('unexpected characters appear before the ' +
+                Formula.syntaxError('unexpected characters appear before the ' +
                     'letter ' + this._pletter);
             }
             if (pos != 2 && this._pletter == '=') {
-                this.syntaxError('the identity relation symbol = occurs ' +
+                Formula.syntaxError('the identity relation symbol = occurs ' +
                     'in an unexpected place');
             }
             return this._pletter;
@@ -313,12 +322,12 @@ function generateFormulaClass(notationname) {
                 return this._right;
             }
             // for quantifiers one must remove the variable too
-            let skip = syntax.isquant(this.op) ? 2 : 1;
+            let skip = Formula.syntax.isquant(this.op) ? 2 : 1;
             // break the string
             let rightstring =
                 this.parsedstr.substring(this.opspot+skip).trim();
             if (rightstring == '') {
-                this.syntaxError('nothing to the right of the operator ' +
+                Formula.syntaxError('nothing to the right of the operator ' +
                     this.op);
                 this._right = false;
                 return this._right;
@@ -357,7 +366,7 @@ function generateFormulaClass(notationname) {
                 nopred = nopred.replace(this.pletter,'').trim();
             }
             // strip outer parens, record having done so
-            let nopredstripped = syntax.stripmatching(nopred);
+            let nopredstripped = Formula.syntax.stripmatching(nopred);
             if (nopred != nopredstripped) {
                 this._termshadparens = true;
             }
@@ -367,12 +376,12 @@ function generateFormulaClass(notationname) {
                 this._termshadcommas = true;
             }
             // strip everything else**
-            let r = new RegExp('[^' + syntax.variableRange +
-                syntax.constantsRange + ']','g');
+            let r = new RegExp('[^' + Formula.syntax.variableRange +
+                Formula.syntax.constantsRange + ']','g');
             this._terms = nocommas.replace(r,'');
             // atomic formulas should not have junk
             if ((!this.op) && (nocommas != this._terms)) {
-                this.syntaxError('unexpected symbols occur within an ' +
+                Formula.syntaxError('unexpected symbols occur within an ' +
                     'atomic (sub)formula');
             }
             return this._terms;
@@ -404,7 +413,7 @@ function generateFormulaClass(notationname) {
                 Object.assign(this._syntaxerrors, this.right._syntaxerrors);
                 let garbagebefore = (this.opspot != 0);
                 if (garbagebefore) {
-                    this.syntaxError('unexpected character(s) appear before ' +
+                    Formula.syntaxError('unexpected character(s) appear before ' +
                         'the operator ' + this.op);
                     this._wellformed = false;
                     // boundvar error may be misleading in case of garbage
@@ -424,7 +433,7 @@ function generateFormulaClass(notationname) {
             if (this.op) {
                 // should consist of operator alone
                 if (this.parsedstr != this.op) {
-                    this.syntaxError('unexpected character(s) appear ' +
+                    Formula.syntaxError('unexpected character(s) appear ' +
                         'surrounding the symbol ' + this.op);
                     this._wellformed = false;
                     return this._wellformed;
@@ -483,7 +492,7 @@ function generateFormulaClass(notationname) {
             // too simplistic for function terms**
             terms = terms.replaceAll(variable, term);
             if (syntax.usecommas) { terms = terms.split('').join(','); }
-            if (terms && syntax.termparens) { terms = '(' + terms + ')'; };
+            if (terms && Formula.syntax.termparens) { terms = '(' + terms + ')'; };
             return pletter + terms;
         }
 
@@ -512,7 +521,7 @@ function generateFormulaClass(notationname) {
         }
 
         wrapifneeded() {
-            if (this.op && syntax.isbinaryop(this.op)) {
+            if (this.op && Formula.syntax.isbinaryop(this.op)) {
                 return this.wrapit();
             }
             return this.normal;
