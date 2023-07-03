@@ -6,15 +6,8 @@
 // making use of either 'window' or 'process' appropriately
 
 import getFormulaClass from './formula.js';
-import { syntax, symbols } from './libFormula.syntax.js';
 import { arrayUnion } from '../misc.js';
 
-const varCP = Formula.syntax.variableRange.codePointAt(0);
-const someVariables = [
-    String.fromCodePoint(varCP),
-    String.fromCodePoint(varCP+1),
-    String.fromCodePoint(varCP+2)
-];
 
 
 let equivDB = {};
@@ -48,6 +41,14 @@ function applyswitches(str, switches) {
 export function equivProliferate(f, switches = {}, notationname) {
     const Formula = getFormulaClass(notationname);
 
+    const varCP = Formula.syntax.notation.variableRange.codePointAt(0);
+    const someVariables = [
+        String.fromCodePoint(varCP),
+        String.fromCodePoint(varCP+1),
+        String.fromCodePoint(varCP+2)
+    ];
+
+    
     let equivs = [];
 
     // for atomics, return it with switches applied
@@ -80,14 +81,14 @@ export function equivProliferate(f, switches = {}, notationname) {
 
         // for other negations we start by proliferating
         // what it's a negation of
-        let baseEquivs = equivProliferate(r, switches);
+        let baseEquivs = equivProliferate(r, switches, notationname);
         equivs = baseEquivs.map((w) => 
             (Formula.from(Formula.syntax.symbols.NOT + w.wrapifneeded())));
 
         // negation of negation
         // ¬¬p :: p
         if (r.op == Formula.syntax.symbols.NOT) {
-            return arrayUnion(equivs, equivProliferate(r.right, switches));
+            return arrayUnion(equivs, equivProliferate(r.right, switches, notationname));
         }
 
         // negation of universal
@@ -96,7 +97,7 @@ export function equivProliferate(f, switches = {}, notationname) {
             equivs = arrayUnion(equivs, equivProliferate(
                 Formula.from(Formula.syntax.mkexistential(r.boundvar) +
                     Formula.syntax.symbols.NOT + r.right.wrapifneeded()),
-                switches
+                switches, notationname
             ));
             return equivs;
         }
@@ -107,7 +108,7 @@ export function equivProliferate(f, switches = {}, notationname) {
             equivs = arrayUnion(equivs, equivProliferate(
                 Formula.from(Formula.syntax.mkuniversal(r.boundvar) +
                     Formula.syntax.symbols.NOT + r.right.wrapifneeded()),
-                switches
+                switches, notationname
             ));
             return equivs;
         }
@@ -121,12 +122,12 @@ export function equivProliferate(f, switches = {}, notationname) {
             equivs = arrayUnion(equivs, equivProliferate(
                 Formula.from(Formula.syntax.symbols.NOT + r.left.wrapifneeded() +
                     Formula.syntax.symbols.OR + Formula.syntax.symbols.NOT + r.right.wrapifneeded()),
-            switches));
+            switches, notationname));
             // ¬(p ∧ q) :: p → ¬q
             equivs = arrayUnion(equivs, equivProliferate(
                 Formula.from(r.left.wrapifneeded() + Formula.syntax.symbols.IFTHEN +
                     Formula.syntax.symbols.NOT + r.right.wrapifneeded()),
-            switches));
+            switches, notationname));
             return equivs;
         }
 
@@ -137,7 +138,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                 equivProliferate(
                     Formula.from(Formula.syntax.symbols.NOT + r.left.wrapifneeded() +
                         Formula.syntax.symbols.AND + Formula.syntax.symbols.NOT + r.right.wrapifneeded()),
-                switches));
+                switches, notationname));
             return equivs;
         }
 
@@ -148,7 +149,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                 equivProliferate(
                     Formula.from(r.left.wrapifneeded() + Formula.syntax.symbols.AND +
                         Formula.syntax.symbols.NOT + r.right.wrapifneeded()),
-                    switches
+                    switches, notationname
                 )
             );
             return equivs;
@@ -161,7 +162,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                 equivProliferate(
                     Formula.from(Formula.syntax.symbols.NOT + r.left.wrapifneeded() +
                         Formula.syntax.symbols.IFF + r.right.wrapifneeded()),
-                    switches
+                    switches, notationname
                 )
             );
         }
@@ -176,7 +177,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                         r.left.wrapifneeded() + Formula.syntax.symbols.AND +
                         r.right.wrapifneeded() + ')'),
                         Formula.syntax.symbols.AND,
-                        switches
+                        switches, notationname
                 )
             );
         }
@@ -200,7 +201,7 @@ export function equivProliferate(f, switches = {}, notationname) {
         }
 
         // proliferate on base
-        let baseEquivs = equivProliferate(r, switches);
+        let baseEquivs = equivProliferate(r, switches, notationname);
         equivs = baseEquivs.map((w) => (
             Formula.from(
                 Formula.syntax.mkquantifier(v_to_use, f.op) + w.wrapifneeded()
@@ -218,7 +219,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                     Formula.from(r.left.wrapifneeded() + r.op +
                         Formula.syntax.mkquantifier(v, f.op) +
                         r.right.wrapifneeded()),
-                switches)
+                switches, notationname)
             );
         }
 
@@ -232,7 +233,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                     Formula.from(Formula.syntax.mkquantifier(v, f.op) +
                         r.left.wrapifneeded() + r.op +
                         r.right.wrapifneeded()),
-                switches)
+                switches, notationname)
             );
         }
 
@@ -248,7 +249,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                     Formula.from(Formula.syntax.mkquantifier(v, newop) +
                         r.left.wrapifneeded() + r.op +
                         r.right.wrapifneeded()),
-                switches)
+                switches, notationname)
             );
         }
 
@@ -262,14 +263,14 @@ export function equivProliferate(f, switches = {}, notationname) {
                     Formula.from(Formula.syntax.mkquantifier(v, f.op) +
                         r.left.wrapifneeded() + r.op +
                         Formula.syntax.mkquantifier(v, f.op) + r.right.wrapifneeded()),
-                    switches
+                    switches, notationname
                 )
             )
         }
 
         // vacuous quantifiers can be removed
         if (r?.freevars && (r.freevars.indexOf(v) == -1)) {
-            equivs = arrayUnion(equivs, equivProliferate(r, switches));
+            equivs = arrayUnion(equivs, equivProliferate(r, switches, notationname));
         }
 
         // Try also with swapped out/switched bound variables
@@ -284,7 +285,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                 newswitches[v] = somevar;
                 newswitches[somevar] = v;
                 equivs = arrayUnion(
-                    equivs, equivProliferate(f, newswitches)
+                    equivs, equivProliferate(f, newswitches, notationname)
                 );
             }
         }
@@ -301,7 +302,7 @@ export function equivProliferate(f, switches = {}, notationname) {
 
         // start by proliferating the parts and recombining
         // this also handles commutativity of ∨, ∧ and ↔
-        equivs = proliferateCombine(f.left, f.right, f.op, switches);
+        equivs = proliferateCombine(f.left, f.right, f.op, switches, notationname);
 
         // note for adding equivalences to moleculars, always use
         // proliferateCombine on parts to avoid circles
@@ -310,14 +311,14 @@ export function equivProliferate(f, switches = {}, notationname) {
         if (f.op == Formula.syntax.symbols.OR && l?.op && l.op == Formula.syntax.symbols.NOT
             && l.right) {
             equivs = arrayUnion(equivs,
-                proliferateCombine(l.right, r, Formula.syntax.symbols.IFTHEN, switches));
+                proliferateCombine(l.right, r, Formula.syntax.symbols.IFTHEN, switches, notationname));
         }
 
         // ¬p → q :: p ∨ q
         if (f.op == Formula.syntax.symbols.IFTHEN && l?.op && l.op == Formula.syntax.symbols.NOT
             && l.right) {
             equivs = arrayUnion(equivs,
-                proliferateCombine(l.right, r, Formula.syntax.symbols.OR, switches));
+                proliferateCombine(l.right, r, Formula.syntax.symbols.OR, switches, notationname));
         }
 
         // p → q :: ¬q → ¬p
@@ -326,7 +327,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                 proliferateCombine(
                     Formula.from(Formula.syntax.symbols.NOT + r.wrapifneeded()),
                     Formula.from(Formula.syntax.symbols.NOT + l.wrapifneeded()),
-                    Formula.syntax.symbols.IFTHEN, switches
+                    Formula.syntax.symbols.IFTHEN, switches, notationname
                 )
             );
         }
@@ -338,7 +339,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                 proliferateCombine(
                     l.right,
                     Formula.from(Formula.syntax.symbols.NOT + r.wrapifneeded()),
-                    Formula.syntax.symbols.IFF, switches
+                    Formula.syntax.symbols.IFF, switches, notationname
                 )
             );
         }
@@ -352,7 +353,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                     Formula.from( r.wrapifneeded() +
                         Formula.syntax.symbols.IFTHEN + l.wrapifneeded()),
                         Formula.syntax.symbols.AND,
-                        switches
+                        switches, notationname
                 )
             );
         }
@@ -366,7 +367,7 @@ export function equivProliferate(f, switches = {}, notationname) {
                     Formula.from( Formula.syntax.symbols.NOT + '(' + l.wrapifneeded() +
                         Formula.syntax.symbols.OR + r.wrapifneeded() + ')'),
                         Formula.syntax.symbols.OR,
-                        switches
+                        switches, notationname
                 )
             );
         }
@@ -374,19 +375,19 @@ export function equivProliferate(f, switches = {}, notationname) {
         // p ∧ p :: p and p ∨ p :: p
         if ((f.op == Formula.syntax.symbols.AND || f.op == Formula.syntax.symbols.OR) &&
             l.normal == r.normal) {
-            equivs = arrayUnion(equivs, equivProliferate(l, switches));
+            equivs = arrayUnion(equivs, equivProliferate(l, switches, notationname));
         }
 
         // ¬p → p :: p
         if (f.op == Formula.syntax.symbols.IFTHEN && l?.op && l?.right && 
             l.op == Formula.syntax.symbols.NOT && (l.right.normal == r.normal)) {
-            equivs = arrayUnion(equivs, equivProliferate(r, switches));
+            equivs = arrayUnion(equivs, equivProliferate(r, switches, notationname));
         }
 
         // p → ¬p :: ¬p
         if (f.op == Formula.syntax.symbols.IFTHEN && r?.op && r?.right && 
             r.op == Formula.syntax.symbols.NOT && (l.normal == r.right.normal)) {
-            equivs = arrayUnion(equivs, equivProliferate(r, switches));
+            equivs = arrayUnion(equivs, equivProliferate(r, switches, notationname));
         }
 
         // p ∧ ¬p :: ✖
@@ -407,12 +408,12 @@ function issymmetric(op, Formula) {
         op == Formula.syntax.symbols.IFF);
 }
 
-export function loadEquivalents(wffstr) {
+export function loadEquivalents(wffstr, notationname) {
     //if memory, check the equivDB object, otherwise generate it
     //using equivProliferate
     if (useMemory) {
         if (!(wffstr in equivDB)) {
-            let equivs = equivProliferate(Formula.from(wffstr), {});
+            let equivs = equivProliferate(Formula.from(wffstr), {}, notationname);
             equivDB[wffstr] = equivs.map((f)=>(f.normal));
         }
         return equivDB[wffstr];
@@ -424,7 +425,7 @@ export function loadEquivalents(wffstr) {
     // if no file, then start afresh
     if (!equivs) { equivs = []; }
     if (equivs.length == 0) {
-        let equivsff = equivProliferate(Formula.from(wffstr), {});
+        let equivsff = equivProliferate(Formula.from(wffstr), {}, notationname);
         equivs = equivsff.map((f) =>(f.normal));
         if (equivs.length != 0) {
             saveEquivalents(wffstr, equivs);
@@ -433,10 +434,11 @@ export function loadEquivalents(wffstr) {
     return equivs;
 }
 
-function proliferateCombine(f, g, op, switches) {
+function proliferateCombine(f, g, op, switches, notationname) {
+    let Formula = getFormulaClass(notationname);
     let results = [];
-    let fequivs = equivProliferate(f, switches);
-    let gequivs = equivProliferate(g, switches);
+    let fequivs = equivProliferate(f, switches, notationname);
+    let gequivs = equivProliferate(g, switches, notationname);
     for (let fe of fequivs) {
         for (let ge of gequivs) {
             results = arrayUnion(results,
@@ -463,3 +465,8 @@ export function saveEquivalents(wffstr, equivs) {
         wffstr + '.json';
     return process.lpfs.savejson(fn, equivs);
 }
+
+const Frml = getFormulaClass('hardegree');
+//console.log(equivProliferate(Frml.from('∀x(Fx → ~~Gx)'),{},'hardegree'));
+console.log(Frml.from('~Fx → ~Gx').opspot,{},'hardegree');
+
