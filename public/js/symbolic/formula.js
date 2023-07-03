@@ -345,9 +345,9 @@ function generateFormulaClass(notationname) {
                 if (isop || startswithq) {
                     // if "more main" or first one found, then it
                     // becomes our candidate
-                    console.log(thisop);
-                    let newopcat = Formula.syntax.symbolcat[thisop];
-                    console.log(newopcat);
+                    let newopcat = Formula.syntax.symbolcat[
+                        Formula.syntax.operators[thisop]
+                    ];
                     if ((realdepth < mainopdepth) || (mainopdepth == -1)) {
                         this._opspot = i;
                         mainopdepth = realdepth;

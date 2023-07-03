@@ -466,7 +466,3 @@ export function saveEquivalents(wffstr, equivs) {
     return process.lpfs.savejson(fn, equivs);
 }
 
-const Frml = getFormulaClass('hardegree');
-//console.log(equivProliferate(Frml.from('∀x(Fx → ~~Gx)'),{},'hardegree'));
-console.log(Frml.from('~Fx → ~Gx').opspot,{},'hardegree');
-
