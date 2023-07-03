@@ -169,6 +169,11 @@ function generateSyntax(notationname) {
     syntax.qaRegEx = new RegExp('^' + syntax.qRegExStr);
     // variable regex
     syntax.varRegEx = new RegExp('^[' + syntax.notation.variableRange + ']$');
+    // terms regex
+    syntax.termsRegEx = new RegExp('[' + syntax.notation.variableRange +
+        syntax.notation.constantsRange + ']', 'g');
+    syntax.pletterRegEx new RegExp ('[' + Formula.syntax.notation
+        .predicatesRange + ']');
 
     // BIND SYNTAX FUNCTIONS TO THIS SYNTAX
     syntax.allsoftparens = allsoftparens;
@@ -183,7 +188,7 @@ function generateSyntax(notationname) {
     syntax.mkuniversal = mkuniversal;
     syntax.mkexistential = mkexistential;
     syntax.stripmatching = stripmatching;
-
+    syntax.symbolcat = symbolcat;
     return syntax;
 }
 //

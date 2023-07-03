@@ -230,6 +230,10 @@ function generateFormulaClass(notationname) {
             }
             // join terms into single string
             let termsstr = this.terms.join(joiner);
+            // identity is different
+            if ((terms.length == 2) && (pletter == '=')) {
+                termstr = this.terms[0] + ' = ' + this.terms[1];
+            }
             // add parentheses around terms if need be
             if ((Formula.syntax.notation.useTermParensCommas) &&
                 (this.terms.length > 0)) {
@@ -290,8 +294,9 @@ function generateFormulaClass(notationname) {
             // not be if formula is unbalanced, but we soldier on
             // in case it's a "recoverable error"
             let mainopdepth = -1;
+            let mainopcat = -1;
             for (let i=0; i<this.parsedstr.length; i++) {
-                // get this character
+                // get this character, and the remainder of the string
                 const c = this.parsedstr.at(i);
                 const remainder = this.parsedstr.substring(i);
                 if (c == '(') {
@@ -305,9 +310,20 @@ function generateFormulaClass(notationname) {
                 if (currdepth < 0) {
                     Formula.syntaxError("unbalanced parentheses");
                 }
-                // possible main op must have depth 0, which
-                // should always be true since we stripped parens
-                if (Formula.syntax.isop(c)) {
+                // check if we're right at an operator, or if not,
+                // if we're at the start of a quantifier
+                const isop = Formula.syntax.isop(c);
+                const startswithq = remainder.match(Formula.syntax.qaRegEx);
+                const thisop = c;
+                if (startswithq) {
+                    let m = startswithq[0];
+                    if (m.search(Formula.syntax.symbols.EXISTS)) {
+                        thisop = Formula.syntax.symbols.EXISTS;
+                    } else {
+                        thisop = Formula.syntax.symbols.FORALL;
+                    }
+                }
+                if (isop || startswithq) {
                     // if "more main" or first one found, then it
                     // becomes our candidate
                     if ((currdepth < mainopdepth) || (mainopdepth == -1)) {
@@ -315,16 +331,16 @@ function generateFormulaClass(notationname) {
                         mainopdepth = currdepth;
                     } else if (currdepth == mainopdepth) {
                         // or it depends on adicity
-                        let newopcat = symbolcat[operators[c]];
-                        let oldopcat = symbolcat[operators[this.parsedstr[this._opspot]]];
-                        if (newopcat == 2 && oldopcat == 2) {
+                        let newopcat = Formula.syntax.symbolcat[thisop];
+                        if (newopcat == 2 && mainopcat == 2) {
                             Formula.syntaxError('two binary operators occur ' +
                                 'without enough parentheses to ' +
                                 'determine which has wider scope');
                         }
-                        if (newopcat > oldopcat) {
+                        if (newopcat > mainopcat) {
                             this._opspot = i;
                             mainopdepth = currdepth;
+                            mainopcat = newopcat;
                         }
                     }
                 }
@@ -338,6 +354,7 @@ function generateFormulaClass(notationname) {
         // "pletter" is a generic term covering both predicates and the
         // letter used in propositional atomic formulas (=0-place predicate)
         get pletter() {
+            // return value if saved
             if ("_pletter" in this) {
                 return this._pletter;
             }
@@ -347,17 +364,17 @@ function generateFormulaClass(notationname) {
                 return this._pletter;
             }
             // look for first character which is a predicate
-            let match = this.parsedstr.match(
-                new RegExp('[' + Formula.syntax.pletterRange + ']'));
+            let match = this.parsedstr.match(Formula.syntax.pletterRegEx);
             // has no pletter, which is not ok
             if (!match) {
                 this._pletter = false;
                 Formula.syntaxError('an atomic (sub)formula must use a letter in '
-                    + 'the range ' + Formula.syntax.pletterRange +
+                    + 'the range ' + Formula.syntax.notation.predicatesRange +
                     ' and this does not');
                 return this._pletter;
             }
-            // position should be 0, or 2 in the case of =
+            // position should be 0, or 2 in the case of =; may need to
+            // change this to accommodate complex terms
             this._pletter = match[0];
             let pos = match.index;
             if (pos != 0 && this._pletter != '=') {
