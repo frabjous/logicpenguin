@@ -452,6 +452,8 @@ function generateFormulaClass(notationname) {
                 // replace (as opposed to replaceAll, to remove first only)
                 nopred = nopred.replace(this.pletter,'').trim();
             }
+            // remove spaces
+            nopred = nopred.replaceAll(' ','');
             // strip outer parens, record having done so
             const nopredstripped = Formula.syntax.stripmatching(nopred);
             if (nopred != nopredstripped) {
@@ -466,6 +468,7 @@ function generateFormulaClass(notationname) {
             const r = new RegExp('[^' + Formula.syntax.notation.variableRange +
                 Formula.syntax.notation.constantsRange + ']','g');
             const termstr = nocommas.replace(r,'');
+            console.log(termstr, nocommas, 'here');
             // atomic formulas should not have junk
             if ((!this.op) && (nocommas != termstr)) {
                 this.syntaxError('unexpected symbols occur within an ' +
@@ -666,15 +669,8 @@ export default function getFormulaClass(notationname) {
 }
 
 let Fml = getFormulaClass("cambridge");
-let f = Fml.from('∀x∃y[(Fx ∨ Gx) → x=y]');
-let r = f.right;
-let rr = f.right.right;
-let rrl = rr.left;
-let rrr = rr.right;
-let rrrr = rrr.right;
-let rrrl = rrr.left;
+let f = Fml.from('∀x∃y[(XFx ∨ Gx) → x=yz]');
 
-console.log([f,r,rr,rrl,rrr,rrrr,rrrl].map((x)=>(x.normal)));
 
 console.log('normal',f.normal);
 console.log('normal r',f.right.normal);
