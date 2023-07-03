@@ -232,7 +232,7 @@ function generateFormulaClass(notationname) {
             let termsstr = this.terms.join(joiner);
             // identity is different
             if ((terms.length == 2) && (pletter == '=')) {
-                termstr = this.terms[0] + ' = ' + this.terms[1];
+                termsstr = this.terms[0] + ' = ' + this.terms[1];
             }
             // add parentheses around terms if need be
             if ((Formula.syntax.notation.useTermParensCommas) &&
@@ -398,8 +398,14 @@ function generateFormulaClass(notationname) {
                 this._right = false;
                 return this._right;
             }
-            // for quantifiers one must remove the variable too
-            let skip = Formula.syntax.isquant(this.op) ? 2 : 1;
+            // by default we remove one character
+            let skip = 1;
+            // for quantifiers one must remove the whole thing
+            if (Formula.syntax.isquant(this.op)) {
+                // determine how many characters to remove
+                let m = this.parsedstr.match(Formula.syntax.qaRegEx);
+                if (m) { skip = m[0].length; }
+            }
             // break the string
             let rightstring =
                 this.parsedstr.substring(this.opspot+skip).trim();
@@ -443,24 +449,26 @@ function generateFormulaClass(notationname) {
                 nopred = nopred.replace(this.pletter,'').trim();
             }
             // strip outer parens, record having done so
-            let nopredstripped = Formula.syntax.stripmatching(nopred);
+            const nopredstripped = Formula.syntax.stripmatching(nopred);
             if (nopred != nopredstripped) {
                 this._termshadparens = true;
             }
             // strip commas
-            let nocommas = nopredstripped.replaceAll(',','');
+            const nocommas = nopredstripped.replaceAll(',','');
             if (nocommas != nopredstripped) {
                 this._termshadcommas = true;
             }
             // strip everything else**
-            let r = new RegExp('[^' + Formula.syntax.variableRange +
-                Formula.syntax.constantsRange + ']','g');
-            this._terms = nocommas.replace(r,'');
+            const r = new RegExp('[^' + Formula.syntax.notation.variableRange +
+                Formula.syntax.notation.constantsRange + ']','g');
+            const termstr = nocommas.replace(r,'');
             // atomic formulas should not have junk
-            if ((!this.op) && (nocommas != this._terms)) {
+            if ((!this.op) && (nocommas != termstr)) {
                 Formula.syntaxError('unexpected symbols occur within an ' +
                     'atomic (sub)formula');
             }
+            this._terms = termstr.match(Formula.syntax.termsRegEx);
+            if (!this._terms) { this._terms = []; }
             return this._terms;
         }
 
