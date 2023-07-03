@@ -511,7 +511,7 @@ export default class hardegreeDerivationHint {
         }
         for (let line of this.workingAvailLines.concat(revShowLines)) {
             if (!line.s) { continue; }
-            let tt = Formula.from(line.s).terms.split('');
+            let tt = Formula.from(line.s).terms;
             tt = tt.filter((t) => (!syntax.isvar(t)));
             rv = arrayUnion(rv, tt);
         }
@@ -563,7 +563,7 @@ export default class hardegreeDerivationHint {
                     let g = Formula.from(p.showline.s);
                     let tt = g.terms;
                     for (let i=0; i<tt.length; i++) {
-                        let t = g.terms.at(i);
+                        let t = g.terms[i];
                         if (f.right.instantiate(f.boundvar, t)
                             == g.normal) {
                             return this.getWorkingSubderiv(p);

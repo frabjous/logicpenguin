@@ -35,7 +35,7 @@ function generateFormulaClass(notationname) {
         // if necessary
         static from = function(s) {
             let toparse = Formula.syntax.stripmatching(
-                Formula.syntax.allsoftparens(syntax.inputfix(s)).trim()
+                Formula.syntax.allsoftparens(Formula.syntax.inputfix(s)).trim()
             );
             if (Formula.repository[toparse]) {
                 return Formula.repository[toparse];
@@ -49,65 +49,86 @@ function generateFormulaClass(notationname) {
         ///////////////////////
         // all propositional letters / predicates in a Formula
         get allpletters() {
+            // return old result if already calculated
             if ("_allpletters" in this) { return this._allpletters; }
+            // get left and right letters
             let l = (this.left) ? this.left.allpletters : [];
             let r = (this.right) ? this.right.allpletters : [];
+            // add the one for this if atomic
             if (this.pletter) { r.push(this.pletter); }
+            // combine them
             this._allpletters = arrayUnion(l, r);
             return this._allpletters;
         }
 
         // gets the variable a quantifier main-opped formula binds, if any
         get boundvar() {
+            // return old result if already calculated
             if ("_boundvar" in this) {
                 return this._boundvar;
             }
+            // only quantified formulas have bound variables
             if (!Formula.syntax.isquant(this.op)) {
                 this._boundvar = false;
                 return this._boundvar;
             }
+            // look for string matching quantifier at start
             const q = this.parsedstr.match(Formula.syntax.qaRegEx);
+            // if one is found look for variable
             if (q) {
-                const v = q[0].match(syntax.varRegEx);
+                const v = q[0].match(Formula.syntax.varRegEx);
+                // if variable found, return it
                 if (v) {
                     this._boundar = v[0];
                     return this._boundvar;
                 }
             }
+            // no quantifier or variable was found, but not returned
+            // already means this is poorly formed
             this._boundvar = false;
             Formula.syntaxError('a quantifier is used without a ' +
                 'variable in the range ' + Formula.syntax.variableRange +
-                ' following it');
+                ' following it or has stray characters before it');
             return this._boundvar;
         }
 
+        // gets how many parentheses levels this descends into
         get depth() {
+            // return old result if found already
             if ("_depth" in this) {
                 return this._depth;
             }
-            if (syntax.isbinaryop(this.op)) {
+            // binary operators add a layer
+            if (Formula.syntax.isbinaryop(this.op)) {
                 this._depth = Math.max(this.left.depth, this.right.depth) + 1;
                 return this._depth;
             }
-            if (syntax.ismonop(this.op)) {
+            // monadic operators do not
+            if (Formula.syntax.ismonop(this.op)) {
                 this._depth = this.right.depth;
                 return this.depth;
             }
+            // zero-place operators and atomic formulae have no depth
             this._depth = 0;
             return this._depth;
         }
 
+        // gets all free variables in a formula
         get freevars() {
+            // return old result if already calculated
             if ("_freevars" in this) {
                 return this._freevars;
             }
-            if (syntax.isbinaryop(this.op)) {
+            // for moleculars, combine the two sides
+            if (Formula.syntax.isbinaryop(this.op)) {
                 let lfv = (this.left) ? this.left.freevars : [];
                 let rfv = (this.right) ? this.right.freevars : [];
                 this._freevars = arrayUnion(lfv, rfv);
                 return this._freevars;
             }
-            if (syntax.isquant(this.op)) {
+            // for quantifiers, return everything minus the one bound
+            // by this quantifier
+            if (Formula.syntax.isquant(this.op)) {
                 let rfv = (this.right) ? this.right.freevars : [];
                 let filtered = rfv;
                 if (this.boundvar) {
@@ -116,27 +137,30 @@ function generateFormulaClass(notationname) {
                 this._freevars = filtered;
                 return this._freevars;
             }
-            if (syntax.ismonop(this.op)) {
+            // for other monadic ops, just return what it applies to
+            if (Formula.syntax.ismonop(this.op)) {
                 this._freevars = ((this.right) ? this.right.freevars : []);
                 return this._freevars;
             }
+            // for zero-place ops, return empty array
             if (this.op) {
                 this._freevars = [];
                 return this._freevars;
             }
             // atomic; too simple for functions **
-            this._freevars = this.terms.split('').filter(syntax.isvar);
+            this._freevars = this.terms.filter(Formula.syntax.isvar);
             return this._freevars;
         }
 
         // reads formula to left of main operator
         get left() {
+            // return saved value if already calculated
             if ("_left" in this) {
                 return this._left;
             }
             // if nothing on left, or no main op, return something falsy
             if (this.opspot < 1) {
-                if (syntax.isbinaryop(this.op)) {
+                if (Formula.syntax.isbinaryop(this.op)) {
                     // SHOULD have a left, but does not
                     Formula.syntaxError('nothing to the left of ' +
                         this.op);
@@ -144,6 +168,7 @@ function generateFormulaClass(notationname) {
                 this._left = false;
                 return this._left;
             }
+            // cut string at the operator spot
             let leftstring =
                 this.parsedstr.substring(0,this.opspot).trim();
             // use repository if already one for string in question
@@ -160,7 +185,7 @@ function generateFormulaClass(notationname) {
             // add parentheses if needed
             let leftstr = '';
             if (this.left) {
-                if (syntax.isbinaryop(this.left.op)) {
+                if (Formula.syntax.isbinaryop(this.left.op)) {
                     leftstr = this.left.wrapit();
                 } else {
                     leftstr = this.left.normal;
@@ -168,21 +193,21 @@ function generateFormulaClass(notationname) {
             }
             let rightstr = '';
             if (this.right) {
-                if (syntax.isbinaryop(this.right.op)) {
+                if (Formula.syntax.isbinaryop(this.right.op)) {
                     rightstr = this.right.wrapit();
                 } else {
                     rightstr = this.right.normal;
                 }
             }
             // binary op
-            if (syntax.isbinaryop(this.op)) {
+            if (Formula.syntax.isbinaryop(this.op)) {
                 this._normal = leftstr + ' ' + this.op + ' ' + rightstr;
                 return this._normal;
             }
             // monadic op
-            if (syntax.ismonop(this.op)) {
+            if (Formula.syntax.ismonop(this.op)) {
                 let o = this.op;
-                if (syntax.isquant(o)) {
+                if (Formula.syntax.isquant(o)) {
                     let v = this.boundvar ?? '';
                     o = o + v;
                 }
@@ -198,7 +223,7 @@ function generateFormulaClass(notationname) {
             let terms = this.terms ?? '';
             let pletter = this.pletter ?? '';
             // too simplistic for function terms**
-            if (syntax.usecommas) { terms = terms.split('').join(','); }
+            if (Formula.syntax.usecommas) { terms = terms.split('').join(','); }
             if (terms && Formula.syntax.termparens) { terms = '(' + terms + ')'; };
             this._normal = pletter + terms;
             return this._normal;
@@ -247,7 +272,7 @@ function generateFormulaClass(notationname) {
                 }
                 // possible main op must have depth 0, which
                 // should always be true since we stripped parens
-                if (syntax.isop(c)) {
+                if (Formula.syntax.isop(c)) {
                     // if "more main" or first one found, then it
                     // becomes our candidate
                     if ((currdepth < mainopdepth) || (mainopdepth == -1)) {
@@ -393,7 +418,7 @@ function generateFormulaClass(notationname) {
                 return this._wellformed;
             }
             // binary molecular
-            if (syntax.isbinaryop(this.op)) {
+            if (Formula.syntax.isbinaryop(this.op)) {
                 if (!("_wellformed" in this)) { this._wellformed = true; }
                 let lresult = this.left.wellformed;
                 let rresult = this.right.wellformed;
@@ -403,7 +428,7 @@ function generateFormulaClass(notationname) {
                 return this._wellformed;
             }
             // monadic operator; either quantifier or other
-            if (syntax.ismonop(this.op)) {
+            if (Formula.syntax.ismonop(this.op)) {
                 // assume it's all ok to start
                 if (!("_wellformed" in this)) { this._wellformed = true; }
                 let rresult = this.right.wellformed;
@@ -420,7 +445,7 @@ function generateFormulaClass(notationname) {
                     // so we won't wait for that
                     return this._wellformed;
                 }
-                if (syntax.isquant(this.op)) {
+                if (Formula.syntax.isquant(this.op)) {
                     let varresult = (this.boundvar !== false);
                     if (!varresult) {
                         this._wellformed = false;
@@ -466,23 +491,23 @@ function generateFormulaClass(notationname) {
         // OTHER METHODS
         // important: instantiate should not change original Formula ("this")
         instantiate(variable, term) {
-            if (syntax.isbinaryop(this.op)) {
+            if (Formula.syntax.isbinaryop(this.op)) {
                 if (!this.left || !this.right) { return ''; }
                 let l = Formula.from(this.left.instantiate(variable, term));
                 let r = Formula.from(this.right.instantiate(variable, term));
                 return l.wrapifneeded() + ' ' + this.op +
                     ' ' + r.wrapifneeded();
             }
-            if (syntax.ismonop(this.op)) {
+            if (Formula.syntax.ismonop(this.op)) {
                 if (!this.right) { return ''; }
                 // we only replace free instances, so we don't replace within
                 // subformula with same variable
-                if (syntax.isquant(this.op) && (this.boundvar == variable)) {
+                if (Formula.syntax.isquant(this.op) && (this.boundvar == variable)) {
                     return this.normal;
                 }
                 let r = Formula.from(this.right.instantiate(variable, term));
                 return this.op +
-                    ((syntax.isquant(this.op)) ? (this.boundvar ?? '') : '' )
+                    ((Formula.syntax.isquant(this.op)) ? (this.boundvar ?? '') : '' )
                     + r.wrapifneeded();
             }
             if (this.op) { return this.normal; }
@@ -491,7 +516,7 @@ function generateFormulaClass(notationname) {
             let terms = this.terms ?? ''
             // too simplistic for function terms**
             terms = terms.replaceAll(variable, term);
-            if (syntax.usecommas) { terms = terms.split('').join(','); }
+            if (Formula.syntax.usecommas) { terms = terms.split('').join(','); }
             if (terms && Formula.syntax.termparens) { terms = '(' + terms + ')'; };
             return pletter + terms;
         }

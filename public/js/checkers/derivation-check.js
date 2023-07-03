@@ -851,7 +851,7 @@ export class formFit {
             }
         }
         // check terms
-        for (const t of schema.terms.split('')) {
+        for (const t of schema.terms) {
             // for variables, we need to make sure any instances
             // using what the variable substitutes into are correct
             if (syntax.isvar(t)) {
@@ -875,8 +875,9 @@ export class formFit {
                 }
             } else {
                 // t is a constant
-                let consts = arrayUnion([],f.terms.split('')
-                    .filter((x)=>(!syntax.isvar(x))));
+                let consts = arrayUnion([],f.terms.filter(
+                    (x) => (!syntax.isvar(x))
+                ));
                 if (t in assigns) {
                     assigns[t] = assigns[t].filter((c) => ( consts.indexOf(c) != -1));
                 } else {

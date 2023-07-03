@@ -43,7 +43,7 @@ function checkTranslation(ansstr, givenstr, pred = true) {
             maxfrac = maxfrac - 0.1;
             message += ((message == '') ? '' : '; ') +
                 tr('Sentential Logic translation incorrectly uses ' +
-                    'terms (' + given.terms.split('').join(', ') +
+                    'terms (' + given.terms.join(', ') +
                     ') or quantifiers');
             correct = false;
         }
