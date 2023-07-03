@@ -298,6 +298,7 @@ function generateFormulaClass(notationname) {
             // in case it's a "recoverable error"
             let mainopdepth = -1;
             let mainopcat = -1;
+            let mainopq = false;
             for (let i=0; i<this.parsedstr.length; i++) {
                 // get this character, and the remainder of the string
                 const c = this.parsedstr.at(i);
@@ -329,12 +330,14 @@ function generateFormulaClass(notationname) {
                 if (isop || startswithq) {
                     // if "more main" or first one found, then it
                     // becomes our candidate
+                    let newopcat = Formula.syntax.symbolcat[thisop];
                     if ((currdepth < mainopdepth) || (mainopdepth == -1)) {
                         this._opspot = i;
                         mainopdepth = currdepth;
+                        mainopcat =newopcat;
+                        mainopq = !!startswithq;
                     } else if (currdepth == mainopdepth) {
                         // or it depends on adicity
-                        let newopcat = Formula.syntax.symbolcat[thisop];
                         if (newopcat == 2 && mainopcat == 2) {
                             this.syntaxError('two binary operators occur ' +
                                 'without enough parentheses to ' +
@@ -344,11 +347,16 @@ function generateFormulaClass(notationname) {
                             this._opspot = i;
                             mainopdepth = currdepth;
                             mainopcat = newopcat;
+                            mainopq = !!startswithq;
                         }
                     }
                 }
             }
-            if (mainopdepth > 0) {
+            let parensinqs = (Formula.syntax.notation
+                .quantifierForm.indexOf('(') != -1);
+            if (((mainopdepth > 0) && (!mainopq)) ||
+                ((mainopdepth > 0) && (!parensinqs)) ||
+                (mainopdepth > 1)) {
                 this.syntaxError('unbalanced parentheses');
             }
             return this._opspot;
@@ -668,7 +676,7 @@ export default function getFormulaClass(notationname) {
 }
 
 let Fml = getFormulaClass("copi");
-let f = Fml.from('(x)(∃y)[(Fx ≡ G(x,y)) ⊃ x=z]');
+let f = Fml.from('(x)(∃y)[(Fx ≡ G(x,y)) ⊃ (∃z)~x=z]');
 
 
 console.log('normal',f.normal);
