@@ -182,7 +182,8 @@ function generateFormulaClass(notationname) {
             if ("_normal" in this) {
                 return this._normal;
             }
-            // add parentheses if needed
+            // get left and right sides and
+            // add parentheses if needed (when binary)
             let leftstr = '';
             if (this.left) {
                 if (Formula.syntax.isbinaryop(this.left.op)) {
@@ -209,7 +210,7 @@ function generateFormulaClass(notationname) {
                 let o = this.op;
                 if (Formula.syntax.isquant(o)) {
                     let v = this.boundvar ?? '';
-                    o = o + v;
+                    o = Formula.syntax.mkquantifier(v, o);
                 }
                 this._normal = o + rightstr;
                 return this._normal;
@@ -220,12 +221,22 @@ function generateFormulaClass(notationname) {
                 return this._normal;
             }
             // otherwise, atomic
-            let terms = this.terms ?? '';
-            let pletter = this.pletter ?? '';
-            // too simplistic for function terms**
-            if (Formula.syntax.usecommas) { terms = terms.split('').join(','); }
-            if (terms && Formula.syntax.termparens) { terms = '(' + terms + ')'; };
-            this._normal = pletter + terms;
+            const terms = this.terms ?? [];
+            const pletter = this.pletter ?? '';
+            // check if there should be commas between
+            let joiner = '';
+            if (Formula.syntax.notation.useTermParensCommas) {
+                joiner = ',';
+            }
+            // join terms into single string
+            let termsstr = this.terms.join(joiner);
+            // add parentheses around terms if need be
+            if ((Formula.syntax.notation.useTermParensCommas) &&
+                (this.terms.length > 0)) {
+                termsstr = '(' + termsstr + ')';
+            }
+            // put terms after predicate letter
+            this._normal = pletter + termsstr;
             return this._normal;
         }
 
@@ -234,12 +245,34 @@ function generateFormulaClass(notationname) {
         get op() {
             // if nothing to parse, mainop is falsey
             if (!this.parsedstr) { return false; }
+            // return saved val
             if ("_op" in this) { return this._op; }
-            let opspot = this.opspot;
+            const opspot = this.opspot;
             // if not found, treat main op as falsy
             if (opspot == -1) { return false; }
-            //get main op from spot and record it for later
-            this._op = this.parsedstr[opspot];
+            // if there is operator right there, return it
+            if (this.parsedstr[opspot] in Formula.syntax.operators) {
+                this._op = this.parsedstr[opspot];
+                return this._op;
+            }
+            // otherwise, try to parse remainder as starting with
+            // a quantifier
+            const remainder = this.parsedstr.substring(this.opspot);
+            const m = remainder.match(Formula.syntax.qaRegEx);
+            // if remainder
+            if (m) {
+                // if it contains the existential quantifier it is
+                // an existential
+                if (m[0].search(Formula.syntax.symbols.EXISTS)) {
+                    this._op = Formula.syntax.symbols.EXISTS;
+                    return this._op;
+                }
+                // if it doesn't it must be universal
+                this._op = Formula.syntax.symbols.FORALL;
+                return this._op;
+            }
+            // shouldn't be here, but just in case
+            this._op = false;
             return this._op;
         }
 
@@ -260,6 +293,7 @@ function generateFormulaClass(notationname) {
             for (let i=0; i<this.parsedstr.length; i++) {
                 // get this character
                 const c = this.parsedstr.at(i);
+                const remainder = this.parsedstr.substring(i);
                 if (c == '(') {
                     // increase depth with left parenthesis
                     currdepth++;
@@ -267,6 +301,7 @@ function generateFormulaClass(notationname) {
                     // decrease depth with right parenthesis
                     currdepth--;
                 }
+                // if more right parens than left, that's a problem
                 if (currdepth < 0) {
                     Formula.syntaxError("unbalanced parentheses");
                 }
