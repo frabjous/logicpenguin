@@ -270,7 +270,7 @@ function generateFormulaClass(notationname) {
             if (m) {
                 // if it contains the existential quantifier it is
                 // an existential
-                if (m[0].search(Formula.syntax.symbols.EXISTS)) {
+                if (m[0].search(Formula.syntax.symbols.EXISTS) >= 0) {
                     this._op = Formula.syntax.symbols.EXISTS;
                     return this._op;
                 }
@@ -320,7 +320,7 @@ function generateFormulaClass(notationname) {
                 let thisop = c;
                 if (startswithq) {
                     let m = startswithq[0];
-                    if (m.search(Formula.syntax.symbols.EXISTS)) {
+                    if (m.search(Formula.syntax.symbols.EXISTS) >= 0) {
                         thisop = Formula.syntax.symbols.EXISTS;
                     } else {
                         thisop = Formula.syntax.symbols.FORALL;
@@ -468,7 +468,6 @@ function generateFormulaClass(notationname) {
             const r = new RegExp('[^' + Formula.syntax.notation.variableRange +
                 Formula.syntax.notation.constantsRange + ']','g');
             const termstr = nocommas.replace(r,'');
-            console.log(termstr, nocommas, 'here');
             // atomic formulas should not have junk
             if ((!this.op) && (nocommas != termstr)) {
                 this.syntaxError('unexpected symbols occur within an ' +
@@ -668,8 +667,8 @@ export default function getFormulaClass(notationname) {
     return fClass;
 }
 
-let Fml = getFormulaClass("cambridge");
-let f = Fml.from('∀x∃y[(XFx ∨ Gx) → x=yz]');
+let Fml = getFormulaClass("copi");
+let f = Fml.from('(x)(∃y)[(Fx ≡ G(x,y)) ⊃ x=z]');
 
 
 console.log('normal',f.normal);
@@ -689,9 +688,10 @@ console.log('pletter',f.pletter);
 console.log('syntaxerrs',f.syntaxerrors);
 console.log('terms',f.terms);
 console.log('wellformed',f.wellformed);
+console.log('syntaxerrors',f._syntaxerrors);
 console.log('wellformed r',f.right.wellformed);
 console.log('wellformed rr',f.right.right.wellformed);
-console.log('instantiate to a',f.instantiate('x','a'));
+console.log('instantiate to a',f.right.instantiate('x','a'));
 console.log('is instance of',Fml.isInstanceOf(Fml.from(f.right.instantiate('x','a')),f))
 console.log('wrapifneeded',f.wrapifneeded());
 console.log('wrapit',f.wrapit());

@@ -169,7 +169,7 @@ function generateSyntax(notationname) {
     // anchored to start
     syntax.qaRegEx = new RegExp('^' + syntax.qRegExStr);
     // variable regex
-    syntax.varRegEx = new RegExp('[' + syntax.notation.variableRange + ']$');
+    syntax.varRegEx = new RegExp('[' + syntax.notation.variableRange + ']');
     // variable regex, anchored
     syntax.varaRegEx = new RegExp('^[' + syntax.notation.variableRange + ']$');
     // terms regex
