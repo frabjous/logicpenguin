@@ -159,7 +159,8 @@ function generateSyntax(notationname) {
     syntax.qRegExStr = syntax.notation.quantifierForm
         .replaceAll('(',"\\(").replaceAll(')',"\\)")
         .replaceAll('Q?',symbols.EXISTS + '?')
-        .replaceAll('Q','[' + symbols.EXISTS + symbols.FORALL + ']');
+        .replaceAll('Q','[' + symbols.EXISTS + symbols.FORALL + ']')
+        .replaceAll('x','[' + syntax.notation.variableRange + ']');
 
     // regular quantifier regex
     syntax.qRegEx = new RegExp(syntax.qRegExStr);
@@ -168,7 +169,9 @@ function generateSyntax(notationname) {
     // anchored to start
     syntax.qaRegEx = new RegExp('^' + syntax.qRegExStr);
     // variable regex
-    syntax.varRegEx = new RegExp('^[' + syntax.notation.variableRange + ']$');
+    syntax.varRegEx = new RegExp('[' + syntax.notation.variableRange + ']$');
+    // variable regex, anchored
+    syntax.varaRegEx = new RegExp('^[' + syntax.notation.variableRange + ']$');
     // terms regex
     syntax.termsRegEx = new RegExp('[' + syntax.notation.variableRange +
         syntax.notation.constantsRange + ']', 'g');

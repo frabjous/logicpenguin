@@ -79,15 +79,15 @@ function generateFormulaClass(notationname) {
                 const v = q[0].match(Formula.syntax.varRegEx);
                 // if variable found, return it
                 if (v) {
-                    this._boundar = v[0];
+                    this._boundvar = v[0];
                     return this._boundvar;
                 }
             }
             // no quantifier or variable was found, but not returned
             // already means this is poorly formed
             this._boundvar = false;
-            Formula.syntaxError('a quantifier is used without a ' +
-                'variable in the range ' + Formula.syntax.variableRange +
+            this.syntaxError('a quantifier is used without a ' +
+                'variable in the range ' + Formula.syntax.notation.variableRange +
                 ' following it or has stray characters before it');
             return this._boundvar;
         }
@@ -148,7 +148,9 @@ function generateFormulaClass(notationname) {
                 return this._freevars;
             }
             // atomic; too simple for functions **
-            this._freevars = this.terms.filter(Formula.syntax.isvar);
+            this._freevars = this.terms.filter(
+                (x) => (Formula.syntax.isvar(x))
+            );
             return this._freevars;
         }
 
@@ -162,7 +164,7 @@ function generateFormulaClass(notationname) {
             if (this.opspot < 1) {
                 if (Formula.syntax.isbinaryop(this.op)) {
                     // SHOULD have a left, but does not
-                    Formula.syntaxError('nothing to the left of ' +
+                    this.syntaxError('nothing to the left of ' +
                         this.op);
                 }
                 this._left = false;
@@ -309,7 +311,7 @@ function generateFormulaClass(notationname) {
                 }
                 // if more right parens than left, that's a problem
                 if (currdepth < 0) {
-                    Formula.syntaxError("unbalanced parentheses");
+                    this.syntaxError("unbalanced parentheses");
                 }
                 // check if we're right at an operator, or if not,
                 // if we're at the start of a quantifier
@@ -334,7 +336,7 @@ function generateFormulaClass(notationname) {
                         // or it depends on adicity
                         let newopcat = Formula.syntax.symbolcat[thisop];
                         if (newopcat == 2 && mainopcat == 2) {
-                            Formula.syntaxError('two binary operators occur ' +
+                            this.syntaxError('two binary operators occur ' +
                                 'without enough parentheses to ' +
                                 'determine which has wider scope');
                         }
@@ -347,7 +349,7 @@ function generateFormulaClass(notationname) {
                 }
             }
             if (mainopdepth > 0) {
-                Formula.syntaxError('unbalanced parentheses');
+                this.syntaxError('unbalanced parentheses');
             }
             return this._opspot;
         }
@@ -369,7 +371,7 @@ function generateFormulaClass(notationname) {
             // has no pletter, which is not ok
             if (!match) {
                 this._pletter = false;
-                Formula.syntaxError('an atomic (sub)formula must use a letter in '
+                this.syntaxError('an atomic (sub)formula must use a letter in '
                     + 'the range ' + Formula.syntax.notation.predicatesRange +
                     ' and this does not');
                 return this._pletter;
@@ -379,11 +381,11 @@ function generateFormulaClass(notationname) {
             this._pletter = match[0];
             let pos = match.index;
             if (pos != 0 && this._pletter != '=') {
-                Formula.syntaxError('unexpected characters appear before the ' +
+                this.syntaxError('unexpected characters appear before the ' +
                     'letter ' + this._pletter);
             }
             if (pos != 2 && this._pletter == '=') {
-                Formula.syntaxError('the identity relation symbol = occurs ' +
+                this.syntaxError('the identity relation symbol = occurs ' +
                     'in an unexpected place');
             }
             return this._pletter;
@@ -412,7 +414,7 @@ function generateFormulaClass(notationname) {
             let rightstring =
                 this.parsedstr.substring(this.opspot+skip).trim();
             if (rightstring == '') {
-                Formula.syntaxError('nothing to the right of the operator ' +
+                this.syntaxError('nothing to the right of the operator ' +
                     this.op);
                 this._right = false;
                 return this._right;
@@ -466,7 +468,7 @@ function generateFormulaClass(notationname) {
             const termstr = nocommas.replace(r,'');
             // atomic formulas should not have junk
             if ((!this.op) && (nocommas != termstr)) {
-                Formula.syntaxError('unexpected symbols occur within an ' +
+                this.syntaxError('unexpected symbols occur within an ' +
                     'atomic (sub)formula');
             }
             this._terms = termstr.match(Formula.syntax.termsRegEx);
@@ -500,7 +502,7 @@ function generateFormulaClass(notationname) {
                 Object.assign(this._syntaxerrors, this.right._syntaxerrors);
                 let garbagebefore = (this.opspot != 0);
                 if (garbagebefore) {
-                    Formula.syntaxError('unexpected character(s) appear before ' +
+                    this.syntaxError('unexpected character(s) appear before ' +
                         'the operator ' + this.op);
                     this._wellformed = false;
                     // boundvar error may be misleading in case of garbage
@@ -520,7 +522,7 @@ function generateFormulaClass(notationname) {
             if (this.op) {
                 // should consist of operator alone
                 if (this.parsedstr != this.op) {
-                    Formula.syntaxError('unexpected character(s) appear ' +
+                    this.syntaxError('unexpected character(s) appear ' +
                         'surrounding the symbol ' + this.op);
                     this._wellformed = false;
                     return this._wellformed;
@@ -610,7 +612,7 @@ function generateFormulaClass(notationname) {
             if (!f.right) { return false; }
             // filter to terms that are not variables
             let tt = i.terms;
-            tt = tt.filter((t) => (!syntax.isvar(t)));
+            tt = tt.filter((t) => (!Formula.syntax.isvar(t)));
             // see if instance can be got by replacing the formula's
             // bound variable with that term
             for (let c of tt) {
@@ -665,7 +667,20 @@ export default function getFormulaClass(notationname) {
 
 let Fml = getFormulaClass("cambridge");
 let f = Fml.from('∀x∃y[(Fx ∨ Gx) → x=y]');
+let r = f.right;
+let rr = f.right.right;
+let rrl = rr.left;
+let rrr = rr.right;
+let rrrr = rrr.right;
+let rrrl = rrr.left;
+
+console.log([f,r,rr,rrl,rrr,rrrr,rrrl].map((x)=>(x.normal)));
+
 console.log('normal',f.normal);
+console.log('normal r',f.right.normal);
+console.log('ps r',f.right.parsedstr);
+console.log('op opstor r',f.right.op, f.right.opspot);
+console.log('bv r',f.right.boundvar);
 console.log('plleters',f.allpletters);
 console.log('boundvar',f.boundvar);
 console.log('depth',f.depth);
@@ -678,8 +693,10 @@ console.log('pletter',f.pletter);
 console.log('syntaxerrs',f.syntaxerrors);
 console.log('terms',f.terms);
 console.log('wellformed',f.wellformed);
+console.log('wellformed r',f.right.wellformed);
+console.log('wellformed rr',f.right.right.wellformed);
 console.log('instantiate to a',f.instantiate('x','a'));
-console.log('is instance of',Fml.isInstanceOf(f.right.instantiate('x','a'),f))
+console.log('is instance of',Fml.isInstanceOf(Fml.from(f.right.instantiate('x','a')),f))
 console.log('wrapifneeded',f.wrapifneeded());
 console.log('wrapit',f.wrapit());
 

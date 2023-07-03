@@ -2,10 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-////////////////// notations.js ////////////////////////
-// Defines the various notation choices and returns the
-// one asked for
-////////////////////////////////////////////////////////
+////////////////// notations.js ///////////////////////////
+// Defines the various notation choices and returns the  //
+// one asked for                                         //
+///////////////////////////////////////////////////////////
 
 // NOTE: the logic penguin math font makes ✖ look like
 // a double-stroked X
