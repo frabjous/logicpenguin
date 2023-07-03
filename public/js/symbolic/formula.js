@@ -290,6 +290,10 @@ function generateFormulaClass(notationname) {
             if ("_opspot" in this) {
                 return this._opspot;
             }
+            // set whether parentheses around quantifiers
+            const parensinqs = (Formula.syntax.notation
+                .quantifierForm.indexOf('(') != -1);
+
             // -1 means no operator found so far
             this._opspot = -1;
             let currdepth = 0;
@@ -298,7 +302,6 @@ function generateFormulaClass(notationname) {
             // in case it's a "recoverable error"
             let mainopdepth = -1;
             let mainopcat = -1;
-            let mainopq = false;
             for (let i=0; i<this.parsedstr.length; i++) {
                 // get this character, and the remainder of the string
                 const c = this.parsedstr.at(i);
@@ -316,8 +319,13 @@ function generateFormulaClass(notationname) {
                 }
                 // check if we're right at an operator, or if not,
                 // if we're at the start of a quantifier
-                const isop = Formula.syntax.isop(c);
+                let isop = Formula.syntax.isop(c);
                 const startswithq = remainder.match(Formula.syntax.qaRegEx);
+                if (parensinqs && c == Formula.syntax.symbols.EXISTS &&
+                    !startswithq) { isop = false; }
+                const realdepth = (
+                    (startswithq && parensinqs) ? currdepth -1 : currdepth
+                );
                 let thisop = c;
                 if (startswithq) {
                     let m = startswithq[0];
@@ -331,12 +339,11 @@ function generateFormulaClass(notationname) {
                     // if "more main" or first one found, then it
                     // becomes our candidate
                     let newopcat = Formula.syntax.symbolcat[thisop];
-                    if ((currdepth < mainopdepth) || (mainopdepth == -1)) {
+                    if ((realdepth < mainopdepth) || (mainopdepth == -1)) {
                         this._opspot = i;
-                        mainopdepth = currdepth;
-                        mainopcat =newopcat;
-                        mainopq = !!startswithq;
-                    } else if (currdepth == mainopdepth) {
+                        mainopdepth = realdepth;
+                        mainopcat = newopcat;
+                    } else if (realdepth == mainopdepth) {
                         // or it depends on adicity
                         if (newopcat == 2 && mainopcat == 2) {
                             this.syntaxError('two binary operators occur ' +
@@ -345,18 +352,14 @@ function generateFormulaClass(notationname) {
                         }
                         if (newopcat > mainopcat) {
                             this._opspot = i;
-                            mainopdepth = currdepth;
+                            mainopdepth = realdepth;
                             mainopcat = newopcat;
-                            mainopq = !!startswithq;
                         }
                     }
                 }
             }
-            let parensinqs = (Formula.syntax.notation
-                .quantifierForm.indexOf('(') != -1);
-            if (((mainopdepth > 0) && (!mainopq)) ||
-                ((mainopdepth > 0) && (!parensinqs)) ||
-                (mainopdepth > 1)) {
+            
+            if (mainopdepth > 0) {
                 this.syntaxError('unbalanced parentheses');
             }
             return this._opspot;
@@ -675,32 +678,6 @@ export default function getFormulaClass(notationname) {
     return fClass;
 }
 
-let Fml = getFormulaClass("copi");
-let f = Fml.from('(x)(∃y)[(Fx ≡ G(x,y)) ⊃ (∃z)~x=z]');
-
-
-console.log('normal',f.normal);
-console.log('normal r',f.right.normal);
-console.log('ps r',f.right.parsedstr);
-console.log('op opstor r',f.right.op, f.right.opspot);
-console.log('bv r',f.right.boundvar);
-console.log('plleters',f.allpletters);
-console.log('boundvar',f.boundvar);
-console.log('depth',f.depth);
-console.log('freevars',f.freevars);
-console.log('left',f?.left?.normal);
-console.log('right',f?.right?.normal);
-console.log('op',f.op);
-console.log('opspot',f.opspot);
-console.log('pletter',f.pletter);
-console.log('syntaxerrs',f.syntaxerrors);
-console.log('terms',f.terms);
-console.log('wellformed',f.wellformed);
-console.log('syntaxerrors',f._syntaxerrors);
-console.log('wellformed r',f.right.wellformed);
-console.log('wellformed rr',f.right.right.wellformed);
-console.log('instantiate to a',f.right.instantiate('x','a'));
-console.log('is instance of',Fml.isInstanceOf(Fml.from(f.right.instantiate('x','a')),f))
-console.log('wrapifneeded',f.wrapifneeded());
-console.log('wrapit',f.wrapit());
+let Fml = getFormulaClass("cambridge");
+let f = Fml.from('∃w∀y[(Fx ∧ G(x,y)) → ∃x(¬((x=z)))]');
 
