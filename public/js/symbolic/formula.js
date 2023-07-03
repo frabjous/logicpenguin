@@ -237,12 +237,13 @@ function generateFormulaClass(notationname) {
                 (this.terms.length > 0)) {
                 termsstr = '(' + termsstr + ')';
             }
+            // put them together
             let atomicstr = pletter + termsstr;
             // identity is different
             if ((terms.length == 2) && (pletter == '=')) {
                 atomicstr = this.terms[0] + ' = ' + this.terms[1];
             }
-            // put terms after predicate letter
+            // return value
             this._normal = atomicstr;
             return this._normal;
         }
@@ -315,17 +316,22 @@ function generateFormulaClass(notationname) {
                 }
                 // if more right parens than left, that's a problem
                 if (currdepth < 0) {
-                    this.syntaxError("unbalanced parentheses");
+                    this.syntaxError("unbalanced parentheses (extra right parenthesis)");
                 }
                 // check if we're right at an operator, or if not,
                 // if we're at the start of a quantifier
                 let isop = Formula.syntax.isop(c);
                 const startswithq = remainder.match(Formula.syntax.qaRegEx);
+                // don't count ∃ as an operator if matching (∃x) at the
+                // parenthesis as well
                 if (parensinqs && c == Formula.syntax.symbols.EXISTS &&
                     !startswithq) { isop = false; }
+                // quantifiers starting with parentheses really have
+                // one less depth
                 const realdepth = (
                     (startswithq && parensinqs) ? currdepth -1 : currdepth
                 );
+                // determine operator, either the symbol, or the quantifier
                 let thisop = c;
                 if (startswithq) {
                     let m = startswithq[0];
@@ -335,6 +341,7 @@ function generateFormulaClass(notationname) {
                         thisop = Formula.syntax.symbols.FORALL;
                     }
                 }
+                // found something at this spot
                 if (isop || startswithq) {
                     // if "more main" or first one found, then it
                     // becomes our candidate
@@ -350,6 +357,7 @@ function generateFormulaClass(notationname) {
                                 'without enough parentheses to ' +
                                 'determine which has wider scope');
                         }
+                        // greater adicity means greater scope by default
                         if (newopcat > mainopcat) {
                             this._opspot = i;
                             mainopdepth = realdepth;
@@ -358,9 +366,11 @@ function generateFormulaClass(notationname) {
                     }
                 }
             }
-            
+            // since we removed matching parentheses, we'd only
+            // not be at depth zero if there was an extra left
+            // parenthesis
             if (mainopdepth > 0) {
-                this.syntaxError('unbalanced parentheses');
+                this.syntaxError('unbalanced parentheses (unclosed left parenthesis)');
             }
             return this._opspot;
         }
@@ -402,6 +412,7 @@ function generateFormulaClass(notationname) {
             return this._pletter;
         }
 
+        // gets formula right of main operator
         get right() {
             // do not reparse
             if ("_right" in this) {
@@ -424,16 +435,19 @@ function generateFormulaClass(notationname) {
             // break the string
             let rightstring =
                 this.parsedstr.substring(this.opspot+skip).trim();
+            // if nothing left, that's a problem
             if (rightstring == '') {
                 this.syntaxError('nothing to the right of the operator ' +
                     this.op);
                 this._right = false;
                 return this._right;
             }
+            // get formula
             this._right = Formula.from(rightstring);
             return this._right;
         }
 
+        // puts all syntax errors into a single string
         get syntaxerrors() {
             if (!("_syntaxerrors" in this)) { return ''; }
             let rv = '';
@@ -637,11 +651,13 @@ function generateFormulaClass(notationname) {
             return false;
         }
 
+        // adds a syntax error to the collection of errors
         syntaxError(reason) {
             this._syntaxerrors[reason] = true;
             this._wellformed = false;
         }
 
+        // puts parentheses around formulae with binary operators
         wrapifneeded() {
             if (this.op && Formula.syntax.isbinaryop(this.op)) {
                 return this.wrapit();
@@ -649,6 +665,8 @@ function generateFormulaClass(notationname) {
             return this.normal;
         }
 
+        // puts parentheses around anything, picking nice ones based
+        // on its depth
         wrapit() {
             switch (this.depth % 3) {
                 case 0:
@@ -666,9 +684,12 @@ function generateFormulaClass(notationname) {
             return this.normal; // shouldn't be here either
         }
     }
+    // return the class
     return Formula;
 }
 
+// main function, either retrieves a Formula class from those
+// already generated, or generates a new one and returns it
 export default function getFormulaClass(notationname) {
     if (notationname in formulaClasses) {
         return formulaClasses[notationname];
@@ -677,7 +698,4 @@ export default function getFormulaClass(notationname) {
     formulaClasses[notationname] = fClass;
     return fClass;
 }
-
-let Fml = getFormulaClass("cambridge");
-let f = Fml.from('∃w∀y[(Fx ∧ G(x,y)) → ∃x(¬((x=z)))]');
 
