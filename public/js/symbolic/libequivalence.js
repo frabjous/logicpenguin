@@ -6,8 +6,8 @@ import getFormulaClass from './formula.js';
 import { arrayUnion, randomString } from '../misc.js';
 import { loadEquivalents, saveEquivalents, equivProliferate } from './libequivalence-db.js';
 
-// too simple for function terms?**
-
+// only support small interpretations with a domain of three things
+// and at most two-place relations
 const smallInterpSize = 3;
 const termLimit = 2;
 
@@ -16,6 +16,8 @@ const termLimit = 2;
 ///////////////////////////////////////////////////////////////////////
 
 /*
+ * Note for developers
+ * 
 branches have the following properties:
     - growing (boolean): whether it is still growing
     - closed (boolean): whether it has a contradiction; an open branch is
@@ -43,7 +45,9 @@ Possible modes:
 
 
 // applies a given rule to a branch for a particular statement
-function apply(branch, s, mode) {
+function apply(branch, s, mode, Formula) {
+    const syntax = Formula.syntax;
+    const symbols = syntax.symbols;
     let f = Formula.from(s);
     // make sure what we need is there
     if (f.op && (f.op != symbols.FALSUM) &&
@@ -52,17 +56,17 @@ function apply(branch, s, mode) {
     }
     // affirmative AND => both conjuncts added
     if (f.op == symbols.AND) {
-        return nodes(branch, [[f.left.normal, f.right.normal]], mode);
+        return nodes(branch, [[f.left.normal, f.right.normal]], mode, Formula);
     }
     // affirmative OR => branch to each disjunct
     if (f.op == symbols.OR) {
-        return nodes(branch, [[f.left.normal], [f.right.normal]], mode);
+        return nodes(branch, [[f.left.normal], [f.right.normal]], mode, Formula);
     }
     // affirmative IFTHEN => branch of negation of antecedent and
     //                       consequent
     if (f.op == symbols.IFTHEN) {
         return nodes(branch, [[symbols.NOT + f.left.wrapifneeded()],
-            [f.right.normal]], mode)
+            [f.right.normal]], mode, Formula);
     }
     // affirmative IFF => branch to both sides, or both negations
     if (f.op == symbols.IFF) {
@@ -72,7 +76,7 @@ function apply(branch, s, mode) {
                 symbols.NOT + f.left.wrapifneeded(),
                 symbols.NOT + f.right.wrapifneeded()
             ]
-        ], mode);
+        ], mode, Formula);
     }
     // falsum = close branch
     if (f.op == symbols.FALSUM) { return closebranch(branch); }
@@ -80,7 +84,7 @@ function apply(branch, s, mode) {
     if (f.op == symbols.FORALL) {
         // abbreviatedtt: ignore quantifier
         if (mode == 'abbreviatedtt') {
-            return nodes(branch, [[f.right.normal]], mode);
+            return nodes(branch, [[f.right.normal]], mode, Formula);
         }
         // rage if no bound variable
         if (!f.boundvar) {
@@ -91,7 +95,7 @@ function apply(branch, s, mode) {
             let instances = branch.terms.map(
                 (t) => (f.right.instantiate(f.boundvar, t))
             );
-            return nodes(branch, [instances], mode);
+            return nodes(branch, [instances], mode, Formula);
         }
         // "full" mode, use first term not instantiated-to
         for (let t of branch.terms) {
@@ -99,17 +103,17 @@ function apply(branch, s, mode) {
             if (branch.univ[s].indexOf(t) == -1) {
                 branch.univ[s].push(t);
                 let instance = f.right.instantiate(f.boundvar, t);
-                return nodes(branch, [[instance]], mode);
+                return nodes(branch, [[instance]], mode, Formula);
             }
         }
         // shouldn't be here, but if somehow we are, just grow the branch
-        return grow(branch, mode);
+        return grow(branch, mode, Formula);
     }
     // existentials: depends on mode
     if (f.op == symbols.EXISTS) {
         // abbreviated tt; ignore quantifier
         if (mode == 'abbreviatedtt') {
-            return nodes(branch, [[f.right.normal]], mode);
+            return nodes(branch, [[f.right.normal]], mode, Formula);
         }
         // rage if no bound variable
         if (!f.boundvar) {
@@ -121,7 +125,7 @@ function apply(branch, s, mode) {
             let instances = branch.terms.map(
                 (t) => ([f.right.instantiate(f.boundvar, t)])
             );
-            return nodes(branch, instances, mode);
+            return nodes(branch, instances, mode, Formula);
         }
         // "full" mode, use a new term if there is one
         if (branch.termsleft.length == 0) {
@@ -131,7 +135,7 @@ function apply(branch, s, mode) {
         let t = branch.termsleft.shift();
         branch.terms.push(t);
         let instance = f.right.instantiate(f.boundvar, t);
-        return nodes(branch, [[instance]], mode);
+        return nodes(branch, [[instance]], mode, Formula);
     }
     // for negations, right side op is important
     if (f.op == symbols.NOT) {
@@ -146,43 +150,43 @@ function apply(branch, s, mode) {
             return nodes(branch, [
                 [ symbols.NOT + r.left.wrapifneeded() ],
                 [ symbols.NOT + r.right.wrapifneeded() ]
-            ], mode);
+            ], mode, Formula);
         }
         // negated OR => negations of both disjuncts added
         if (r.op == symbols.OR) {
             return nodes(branch, [[
                 symbols.NOT + r.left.wrapifneeded(),
                 symbols.NOT + r.right.wrapifneeded()
-            ]], mode);
+            ]], mode, Formula);
         }
         // negated IFTHEN => antecedent and negated consequent added
         if (r.op == symbols.IFTHEN) {
             return nodes(branch, [[
                 r.left.normal,
                 symbols.NOT + r.right.wrapifneeded()
-            ]], mode);
+            ]], mode, Formula);
         }
         // negated IFF => branch to affirmative and negative pairs
         if (r.op == symbols.IFF) {
             return nodes(branch, [
                 [r.left.normal, symbols.NOT + r.right.wrapifneeded()],
                 [symbols.NOT + r.left.wrapifneeded(), r.right.normal]
-            ], mode);
+            ], mode, Formula);
         }
         // negated negation => remove the double-negative
         if (r.op == symbols.NOT) {
-            return nodes(branch, [[r.right.normal]], mode);
+            return nodes(branch, [[r.right.normal]], mode, Formula);
         }
         // negated falsum => do nothing
         if (r.op == symbols.FALSUM) {
-            return grow(branch, mode);
+            return grow(branch, mode, Formula);
         }
         // negated universal: depends on mode, but like an existential
         if (r.op == symbols.FORALL) {
             // abbreviated tt; ignore quantifier
             if (mode == 'abbreviatedtt') {
                 return nodes(branch,
-                    [[symbols.NOT + r.right.wrapifneeded()]], mode);
+                    [[symbols.NOT + r.right.wrapifneeded()]], mode, Formula);
             }
             // rage if no bound variable
             if (!r.boundvar) {
@@ -199,7 +203,7 @@ function apply(branch, s, mode) {
                         return [symbols.NOT + ff.wrapifneeded()];
                     }
                 );
-                return nodes(branch, instances, mode);
+                return nodes(branch, instances, mode, Formula);
             }
             // "full" mode, use a new term
             if (branch.termsleft.length == 0) {
@@ -211,14 +215,14 @@ function apply(branch, s, mode) {
             let falsehood = r.right.instantiate(r.boundvar, t);
             let ff = Formula.from(falsehood);
             return nodes(branch,
-                [[symbols.NOT + ff.wrapifneeded()]], mode);
+                [[symbols.NOT + ff.wrapifneeded()]], mode, Formula);
         }
         // negated existential: depends on mode, but like a universal
         if (r.op == symbols.EXISTS) {
             // in abbreviated tt we ignore the quantifier
             if (mode == 'abbreviatedtt') {
                 return nodes(branch,
-                    [[symbols.NOT + r.right.wrapifneeded()]], mode);
+                    [[symbols.NOT + r.right.wrapifneeded()]], mode, Formula);
             }
             // rage if no bound variable
             if (!r.boundvar) {
@@ -233,7 +237,7 @@ function apply(branch, s, mode) {
                         return symbols.NOT + ff.wrapifneeded();
                     }
                 );
-                return nodes(branch, [instances], mode);
+                return nodes(branch, [instances], mode, Formula);
             }
             // "full" mode, use first term not instantiated-to
             for (let t of branch.terms) {
@@ -244,21 +248,21 @@ function apply(branch, s, mode) {
                         r.right.instantiate(r.boundvar, t);
                     let ff = Formula.from(falsehood);
                     return nodes(branch,
-                        [[symbols.NOT + ff.wrapifneeded()]], mode);
+                        [[symbols.NOT + ff.wrapifneeded()]], mode, Formula);
                 }
             }
             // shouldn't be here, but if somehow we are,
             // just grow the branch
-            return grow(branch, mode);
+            return grow(branch, mode, Formula);
         }
 
     }
     // should be atomic or negation of atomic; check for contradiction
-    if (contradicts(branch, s, mode)) {
+    if (contradicts(branch, s, mode, Formula)) {
         return closebranch(branch);
     }
     // processing the atomic didn't do anything; move on
-    return grow(branch, mode);
+    return grow(branch, mode, Formula);
 }
 
 // marks branch as closed
@@ -272,7 +276,9 @@ function closebranch(branch) {
 
 // checks if statement contradicts an already processed statement
 // on branch or in universal pool
-function contradicts(branch, s, mode) {
+function contradicts(branch, s, mode, Formula) {
+    const syntax = Formula.syntax;
+    const symbols = syntax.symbols;
     let f = Formula.from(s);
     // check if it contradicts already processed statement
     for (let pstr of branch.processed) {
@@ -304,13 +310,14 @@ function contradicts(branch, s, mode) {
     return false;
 }
 
-export function treeEquivtest(fp, fq) {
+export function treeEquivtest(fp, fq, Formula) {
+    const symbols = Formula.syntax.symbols;
     let sprouts = [
         [ fp.normal, symbols.NOT + fq.wrapifneeded() ],
         [ fq.normal, symbols.NOT + fp.wrapifneeded() ]
     ];
     // TEST 1: REGULAR TABLEAUX (with termlimit)
-    let fullresult = tree(sprouts, 'full');
+    let fullresult = tree(sprouts, 'full', Formula);
     // todo: parse processed tree to describe countermodel?)
     if (!fullresult.undecided) {
         return {
@@ -321,7 +328,7 @@ export function treeEquivtest(fp, fq) {
     }
     // TEST 2: ABBREVIATED TRUTH TABLE TEST;
     // this can only identify non-equivalence
-    let attresult = tree(sprouts, 'abbreviatedtt');
+    let attresult = tree(sprouts, 'abbreviatedtt', Formula);
     if (!attresult.undecided && !attresult.closed) {
         return {
             equiv: false,
@@ -333,7 +340,7 @@ export function treeEquivtest(fp, fq) {
     // this can only identify non-equivalence as well
     // would probably catch everything abbreviatedtt test would
     // catch, but considerably slower in doing so?
-    let smallresult = tree(sprouts, 'small');
+    let smallresult = tree(sprouts, 'small', Formula);
     if (!smallresult.undecided && !smallresult.closed) {
         return {
             equiv: false,
@@ -351,7 +358,7 @@ export function treeEquivtest(fp, fq) {
 
 // determines which next rule to apply by priority (and uses it to
 // "grow"); does universals only if nothing else to do
-function grow(branch, mode) {
+function grow(branch, mode, Formula) {
     // if closed or made indeterminate in previous step
     // return branch as is
     if (!branch.growing) { return branch; }
@@ -365,9 +372,9 @@ function grow(branch, mode) {
             // we can skip if already processed this very formula
             if (branch.processed.indexOf(processme) == -1) {
                 branch.processed.push(processme);
-                return apply(branch, processme, mode);
+                return apply(branch, processme, mode, Formula);
             } else {
-                return grow(branch, mode);
+                return grow(branch, mode, Formula);
             }
         }
     }
@@ -387,7 +394,7 @@ function grow(branch, mode) {
                 // see how many letters applied
                 let ll = branch.univ[s];
                 if (ll.length < n) {
-                    return apply(branch, s, mode);
+                    return apply(branch, s, mode, Formula);
                 }
             }
         }
@@ -413,7 +420,7 @@ function newbranch(terms, termsleft) {
 }
 
 // adds nodes and branches and merges results generally
-function nodes(branch, sprouts, mode) {
+function nodes(branch, sprouts, mode, Formula) {
     // we convert to JSON to create clones of branch of need be
     let branchjson = (sprouts.length > 1) ? JSON.stringify(branch) : '';
     // get result for each sprout group (= new branch)
@@ -424,7 +431,7 @@ function nodes(branch, sprouts, mode) {
         let trunk = (i==0) ? branch : JSON.parse(branchjson);
         // add each new sprout to queue by priority
         for (let a of sprout) {
-            let priority = priorityOf(a, mode);
+            let priority = priorityOf(a, mode, Formula);
             if (priority == 'univ') {
                 // add to universals
                 trunk.univ[a] = [];
@@ -432,7 +439,7 @@ function nodes(branch, sprouts, mode) {
                 trunk.queue[priority].push(a);
             }
             // check if that closed branch
-            if (contradicts(trunk, a, mode)) {
+            if (contradicts(trunk, a, mode, Formula)) {
                 trunk.processed.push(a);
                 trunk = closebranch(trunk);
                 break;
@@ -440,7 +447,7 @@ function nodes(branch, sprouts, mode) {
             // if not, sort the next sprout
         }
         // grow remainder of tree from new state
-        trunk = grow(trunk, mode);
+        trunk = grow(trunk, mode, Formula);
         // check what happened
         // if undecided, entire tree is undecided based on it
         if (trunk.undecided) {
@@ -459,7 +466,9 @@ function nodes(branch, sprouts, mode) {
     return branch;
 }
 
-function priorityOf(s, mode) {
+function priorityOf(s, mode, Formula) {
+    const syntax = Formula.syntax;
+    const symbols = syntax.symbols;
     // no-branchers: priority high
     // new names: priority medium (existentials, negated universals)
     // branchers: priority low
@@ -506,12 +515,11 @@ function priorityOf(s, mode) {
     return 'low';
 }
 
-function tree(sprouts, mode, syntax) {
-
-    const cRegEx = new RegExp( '^[' + syntax.notation.constantsRange + ']$');
-    const ncRegEx = new RegExp( '[^' + syntax.notation.constantsRange + ']', 'g');
+function tree(sprouts, mode, Formula) {
+    const syntax = Formula.syntax;
+    const cRegEx = syntax.cRegEx;
+    const ncRegEx = syntax.ncRegEx;
     const constCP = syntax.notation.constantsRange.codePointAt(0);
-
     let terms = [];
     let termsleft = [];
     if (mode != 'abbreviatedtt') {
@@ -541,7 +549,7 @@ function tree(sprouts, mode, syntax) {
             }
         }
     }
-    return nodes(newbranch(terms, termsleft), sprouts, mode);
+    return nodes(newbranch(terms, termsleft), sprouts, mode, Formula);
 }
 
 function undecided(branch) {
@@ -559,8 +567,8 @@ function undecided(branch) {
 
 // just checks if provided answer as is in the right answer's database
 // of equivalents
-export function quickDBCheck(fp, fq) {
-    let equivs = loadEquivalents(fp.normal);
+export function quickDBCheck(fp, fq, notationname) {
+    let equivs = loadEquivalents(fp.normal, notationname);
     let isEquiv = (equivs.indexOf(fq.normal) != -1);
     return {
         equiv: isEquiv,
@@ -571,9 +579,9 @@ export function quickDBCheck(fp, fq) {
 
 // look at all normal equivalents of provided answer and looks for each
 // one in the database for the right answer
-export function bidirectionalDBCheck(fp, fq) {
-    let equivs = loadEquivalents(fp.normal);
-    let givenequivs = equivProliferate(fq, {});
+export function bidirectionalDBCheck(fp, fq, notationname) {
+    let equivs = loadEquivalents(fp.normal, notationname);
+    let givenequivs = equivProliferate(fq, {}, notationname);
     for (let g of givenequivs) {
         let isEquiv = (equivs.indexOf(g.normal) != -1);
         if (isEquiv) {
@@ -593,7 +601,7 @@ export function bidirectionalDBCheck(fp, fq) {
 
 // the key function for testing equivalence, used in symbolic translation
 // problem checking
-export function equivtest(fp, fq) {
+export function equivtest(fp, fq, notationname) {
     // check if on the nose
     if (fp.normal == fq.normal) {
         return {
@@ -603,23 +611,24 @@ export function equivtest(fp, fq) {
         }
     }
     // check if already in database
-    let quickResult = quickDBCheck(fp, fq);
+    let quickResult = quickDBCheck(fp, fq, notationname);
     if (quickResult.determinate) { return quickResult; }
 
     // do a tree check
-    let treeResult = treeEquivtest(fp, fq);
+    const Formula = getFormulaClass(notationname);
+    let treeResult = treeEquivtest(fp, fq, Formula);
     // if found a new equivalent, save it
     if (treeResult.determinate && treeResult.equiv) {
-        let equivs = loadEquivalents(fp.normal);
+        let equivs = loadEquivalents(fp.normal, notationname);
         equivs.push(fq.normal);
-        saveEquivalents(fp.normal, equivs);
+        saveEquivalents(fp.normal, equivs, notationname);
     }
     if (treeResult.determinate) { return treeResult; }
-    let bidirectionalResult = bidirectionalDBCheck(fp, fq);
+    let bidirectionalResult = bidirectionalDBCheck(fp, fq, notationname);
     if (bidirectionalResult.determinate && bidirectionalResult.equiv) {
-        let equivs = loadEquivalents(fp.normal);
+        let equivs = loadEquivalents(fp.normal, notationname);
         equivs.push(fq.normal);
-        saveEquivalents(fp.normal, equivs);
+        saveEquivalents(fp.normal, equivs, notationname);
     }
     if (bidirectionalResult.determinate) {
         return bidirectionalResult;
@@ -631,4 +640,3 @@ export function equivtest(fp, fq) {
         determinate: false
     }
 }
-

@@ -175,8 +175,12 @@ function generateSyntax(notationname) {
     // terms regex
     syntax.termsRegEx = new RegExp('[' + syntax.notation.variableRange +
         syntax.notation.constantsRange + ']', 'g');
+    // predicate letter/ propositional letter regEx
     syntax.pletterRegEx = new RegExp ('[' + syntax.notation
         .predicatesRange + ']');
+    // constants and nonconstants regexex
+    syntax.cRegEx = new RegExp('^[' + syntax.notation.constantsRange + ']$');
+    syntax.ncRegEx = new RegExp( '[^' + syntax.notation.constantsRange + ']', 'g');
 
     // BIND SYNTAX FUNCTIONS TO THIS SYNTAX
     syntax.allsoftparens = allsoftparens;

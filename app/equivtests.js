@@ -13,6 +13,7 @@ import { equivtest, quickDBCheck, bidirectionalDBCheck } from '../public/js/symb
 const datadir = appsettings.datadir;
 const assignmentdir = datadir + '/kck/34254/exercises';
 const usersdir = datadir + '/kck/34254/users';
+const notationname = 'hardegree';
 
 let makedb = async function() {
     const jsonfiles = await lpfs.filesin(assignmentdir);
@@ -48,7 +49,7 @@ let makedb = async function() {
         for (let ansset of ansans) {
             for (let t of ansset) {
                 console.log('processing wff', t);
-                loadEquivalents(t);
+                loadEquivalents(t, notationname);
             }
         }
     }

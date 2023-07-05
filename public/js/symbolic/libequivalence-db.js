@@ -406,6 +406,7 @@ function issymmetric(op, Formula) {
 }
 
 export function loadEquivalents(wffstr, notationname) {
+    const Formula = getFormulaClass(notationname);
     //if memory, check the equivDB object, otherwise generate it
     //using equivProliferate
     if (useMemory) {
