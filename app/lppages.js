@@ -236,8 +236,8 @@ function makeProblemSets(userdir, exdir, exnum, numprobslist) {
 
     // loop through sets
     for (let i=0; i<allprobs.length; i++) {
-        const newprobset = [];
-        const newansset = [];
+        let newprobset = [];
+        let newansset = [];
         const probpool = allprobs[i];
         const anspool = answers[i];
         // ensure answers match question in number

@@ -35,6 +35,8 @@ lpgrading.fullGradingScan = async function() {
     const consumers = await lpfs.subdirs(datadir);
     // scan all consumers
     for (let consumerkey of consumers) {
+        // skip equivalents directory
+        if (consumerkey == 'equivalents') { continue; }
         const cdir = path.join(datadir, consumerkey);
         // get its list of contexts (courses) and scan each one
         const contexts = await lpfs.subdirs(cdir);

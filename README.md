@@ -74,7 +74,9 @@ Obviously, the examples do not allow for saving answers since they do not use th
 <!--
 Private todo:
 
-[ ] - Archive convertold
+[x] - Archive convertold
+[ ] - Finish Formula overhaul
+[ ] - Overhaul how embedded lecture problems work to require less of load.js
 [ ] = Archive equiv tests, or update for initial generation
 [ ] = figure out what to do with scripty.js
 

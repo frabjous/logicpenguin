@@ -2,16 +2,12 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-import Formula from './formula.js';
-import { syntax, symbols } from './libsyntax.js';
+import getFormulaClass from './formula.js';
 import { arrayUnion, randomString } from '../misc.js';
 import { loadEquivalents, saveEquivalents, equivProliferate } from './libequivalence-db.js';
 
 // too simple for function terms?**
-const cRegEx = new RegExp( '^[' + syntax.constantsRange + ']$');
-const ncRegEx = new RegExp( '[^' + syntax.constantsRange + ']', 'g');
-const constCP = syntax.constantsRange.codePointAt(0);
-const varCP = syntax.variableRange.codePointAt(0);
+
 const smallInterpSize = 3;
 const termLimit = 2;
 
@@ -510,7 +506,12 @@ function priorityOf(s, mode) {
     return 'low';
 }
 
-function tree(sprouts, mode) {
+function tree(sprouts, mode, syntax) {
+
+    const cRegEx = new RegExp( '^[' + syntax.notation.constantsRange + ']$');
+    const ncRegEx = new RegExp( '[^' + syntax.notation.constantsRange + ']', 'g');
+    const constCP = syntax.notation.constantsRange.codePointAt(0);
+
     let terms = [];
     let termsleft = [];
     if (mode != 'abbreviatedtt') {
