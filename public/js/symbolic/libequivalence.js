@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////////// libequivalence.js /////////////////////////////////
+// functions for various tests of equivalence, mostly tableaux or tree  //
+// based, but also intergraing the database lookup mechanisms           //
+//////////////////////////////////////////////////////////////////////////
+
 import getFormulaClass from './formula.js';
 import { arrayUnion, randomString } from '../misc.js';
 import { loadEquivalents, saveEquivalents, equivProliferate } from './libequivalence-db.js';

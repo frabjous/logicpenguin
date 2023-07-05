@@ -34,7 +34,7 @@ function generateFormulaClass(notationname) {
         // main function for fetching from the repository or adding to it
         // if necessary
         static from = function(s) {
-            let toparse = Formula.syntax.stripmatching(
+            const toparse = Formula.syntax.stripmatching(
                 Formula.syntax.allsoftparens(Formula.syntax.inputfix(s)).trim()
             );
             if (Formula.repository[toparse]) {
@@ -52,8 +52,8 @@ function generateFormulaClass(notationname) {
             // return old result if already calculated
             if ("_allpletters" in this) { return this._allpletters; }
             // get left and right letters
-            let l = (this.left) ? this.left.allpletters : [];
-            let r = (this.right) ? this.right.allpletters : [];
+            const l = (this.left) ? this.left.allpletters : [];
+            const r = (this.right) ? this.right.allpletters : [];
             // add the one for this if atomic
             if (this.pletter) { r.push(this.pletter); }
             // combine them
@@ -121,15 +121,15 @@ function generateFormulaClass(notationname) {
             }
             // for moleculars, combine the two sides
             if (Formula.syntax.isbinaryop(this.op)) {
-                let lfv = (this.left) ? this.left.freevars : [];
-                let rfv = (this.right) ? this.right.freevars : [];
+                const lfv = (this.left) ? this.left.freevars : [];
+                const rfv = (this.right) ? this.right.freevars : [];
                 this._freevars = arrayUnion(lfv, rfv);
                 return this._freevars;
             }
             // for quantifiers, return everything minus the one bound
             // by this quantifier
             if (Formula.syntax.isquant(this.op)) {
-                let rfv = (this.right) ? this.right.freevars : [];
+                const rfv = (this.right) ? this.right.freevars : [];
                 let filtered = rfv;
                 if (this.boundvar) {
                     filtered = filtered.filter((v) => (v != this.boundvar));
@@ -171,7 +171,7 @@ function generateFormulaClass(notationname) {
                 return this._left;
             }
             // cut string at the operator spot
-            let leftstring =
+            const leftstring =
                 this.parsedstr.substring(0,this.opspot).trim();
             // use repository if already one for string in question
             this._left = Formula.from(leftstring);
@@ -345,7 +345,7 @@ function generateFormulaClass(notationname) {
                 if (isop || startswithq) {
                     // if "more main" or first one found, then it
                     // becomes our candidate
-                    let newopcat = Formula.syntax.symbolcat[
+                    const newopcat = Formula.syntax.symbolcat[
                         Formula.syntax.operators[thisop]
                     ];
                     if ((realdepth < mainopdepth) || (mainopdepth == -1)) {
@@ -390,7 +390,7 @@ function generateFormulaClass(notationname) {
                 return this._pletter;
             }
             // look for first character which is a predicate
-            let match = this.parsedstr.match(Formula.syntax.pletterRegEx);
+            const match = this.parsedstr.match(Formula.syntax.pletterRegEx);
             // has no pletter, which is not ok
             if (!match) {
                 this._pletter = false;
@@ -402,7 +402,7 @@ function generateFormulaClass(notationname) {
             // position should be 0, or 2 in the case of =; may need to
             // change this to accommodate complex terms
             this._pletter = match[0];
-            let pos = match.index;
+            const pos = match.index;
             if (pos != 0 && this._pletter != '=') {
                 this.syntaxError('unexpected characters appear before the ' +
                     'letter ' + this._pletter);
@@ -435,7 +435,7 @@ function generateFormulaClass(notationname) {
                 if (m) { skip = m[0].length; }
             }
             // break the string
-            let rightstring =
+            const rightstring =
                 this.parsedstr.substring(this.opspot+skip).trim();
             // if nothing left, that's a problem
             if (rightstring == '') {
@@ -513,8 +513,8 @@ function generateFormulaClass(notationname) {
             // binary molecular
             if (Formula.syntax.isbinaryop(this.op)) {
                 if (!("_wellformed" in this)) { this._wellformed = true; }
-                let lresult = this.left.wellformed;
-                let rresult = this.right.wellformed;
+                const lresult = this.left.wellformed;
+                const rresult = this.right.wellformed;
                 Object.assign(this._syntaxerrors, this.left._syntaxerrors,
                     this.right._syntaxerrors);
                 this._wellformed = (this._wellformed && lresult && rresult);
@@ -524,12 +524,12 @@ function generateFormulaClass(notationname) {
             if (Formula.syntax.ismonop(this.op)) {
                 // assume it's all ok to start
                 if (!("_wellformed" in this)) { this._wellformed = true; }
-                let rresult = this.right.wellformed;
+                const rresult = this.right.wellformed;
                 if (!rresult) {
                     this._wellformed = false;
                 }
                 Object.assign(this._syntaxerrors, this.right._syntaxerrors);
-                let garbagebefore = (this.opspot != 0);
+                const garbagebefore = (this.opspot != 0);
                 if (garbagebefore) {
                     this.syntaxError('unexpected character(s) appear before ' +
                         'the operator ' + this.op);
@@ -539,7 +539,7 @@ function generateFormulaClass(notationname) {
                     return this._wellformed;
                 }
                 if (Formula.syntax.isquant(this.op)) {
-                    let varresult = (this.boundvar !== false);
+                    const varresult = (this.boundvar !== false);
                     if (!varresult) {
                         this._wellformed = false;
                     }
@@ -586,8 +586,8 @@ function generateFormulaClass(notationname) {
         instantiate(variable, term) {
             if (Formula.syntax.isbinaryop(this.op)) {
                 if (!this.left || !this.right) { return ''; }
-                let l = Formula.from(this.left.instantiate(variable, term));
-                let r = Formula.from(this.right.instantiate(variable, term));
+                const l = Formula.from(this.left.instantiate(variable, term));
+                const r = Formula.from(this.right.instantiate(variable, term));
                 return l.wrapifneeded() + ' ' + this.op +
                     ' ' + r.wrapifneeded();
             }
@@ -599,7 +599,7 @@ function generateFormulaClass(notationname) {
                     return this.normal;
                 }
                 // instantiate in right side
-                let r = Formula.from(this.right.instantiate(variable, term));
+                const r = Formula.from(this.right.instantiate(variable, term));
                 // put quantifier with different variable back on right side
                 if (Formula.syntax.isquant(this.op)) {
                     return Formula.syntax.mkquantifier(
@@ -612,8 +612,8 @@ function generateFormulaClass(notationname) {
             // zero place op, nothing to do
             if (this.op) { return this.normal; }
             // should be atomic
-            let pletter = this.pletter ?? '';
-            let terms = (this.terms ?? []).map(
+            const pletter = this.pletter ?? '';
+            const terms = (this.terms ?? []).map(
                 (t) => ((t == variable) ? term : t)
             );
             // too simplistic for function terms**

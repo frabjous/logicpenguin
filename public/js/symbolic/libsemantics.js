@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////////////libsemantics.js//////////////////////////////////
+// calculates truth values based on truth functions, completes        //
+// truth tables and similar                                           //
+////////////////////////////////////////////////////////////////////////
+
 // common abbrevs:
 // interp: interpretation (aka truth-value assignment)
 // tfns = truth functions
@@ -9,11 +14,12 @@
 // tv = truth value
 // wff: well formed formula (though often they aren't well formed)
 
-import { syntax, operators } from './libsyntax.js';
+import getSyntax from './libsyntax.js';
 import { arrayUnion } from '../misc.js';
 
 export let libtf = {};
 
+// truth functions of classical logic
 libtf.tfns = {
     OR     : (a,b) => (a || b),
     AND    : (a,b) => (a && b),
@@ -50,11 +56,12 @@ libtf.allinterps = function(wffs) {
 
 // evaluates a formula on an interpretation; keeping track of the
 // "full truth table row" and where the main op is in it
-libtf.evaluate = function(wff, interp) {
-    let tfn = (wff.op) ? libtf.tfns[operators[wff.op]] : false;
+libtf.evaluate = function(wff, interp, notationname) {
+    const syntax = getSyntax(notationname);
+    let tfn = (wff.op) ? libtf.tfns[syntax.operators[wff.op]] : false;
     if (syntax.isbinaryop(wff.op)) {
-        let lres = libtf.evaluate(wff.left, interp);
-        let rres = libtf.evaluate(wff.right, interp);
+        let lres = libtf.evaluate(wff.left, interp, notationname);
+        let rres = libtf.evaluate(wff.right, interp, notationname);
         let tv = tfn(lres.tv, rres.tv);
         return {
             tv: tv,
@@ -63,7 +70,7 @@ libtf.evaluate = function(wff, interp) {
         }
     }
     if (syntax.ismonop(wff.op)) {
-        let rres = libtf.evaluate(wff.right, interp);
+        let rres = libtf.evaluate(wff.right, interp, notationname);
         let tv = tfn(rres.tv)
         return { tv: tv, row: [tv, ...rres.row], opspot: 0 }
     }
@@ -73,13 +80,15 @@ libtf.evaluate = function(wff, interp) {
 }
 
 
-export function formulaTable(fml) {
+// fills in a truth table for one formula and determines if it
+// is a contradiction or tautology
+export function formulaTable(fml, notationname) {
     let interps = libtf.allinterps([fml]);
     let taut = true;
     let contra = true;
     let opspot = 0;
     let rows = interps.map( (interp) => {
-        let e = libtf.evaluate(fml, interp);
+        let e = libtf.evaluate(fml, interp, notationname);
         if (e.tv) { contra = false; } else { taut = false; }
         opspot = e.opspot;
         return e.row;
@@ -87,7 +96,9 @@ export function formulaTable(fml) {
     return { taut, contra, opspot, rows };
 }
 
-export function equivTables(fmlA, fmlB) {
+// fills in truth table for two formulas and checks their
+// equivalence
+export function equivTables(fmlA, fmlB, notationname) {
     let interps = libtf.allinterps([fmlA,fmlB]);
     let equiv = true;
     let A = {};
@@ -97,8 +108,8 @@ export function equivTables(fmlA, fmlB) {
     A.rows = [];
     B.rows = [];
     for (let interp of interps) {
-        let ea = libtf.evaluate(fmlA, interp);
-        let eb = libtf.evaluate(fmlB, interp);
+        let ea = libtf.evaluate(fmlA, interp, notationname);
+        let eb = libtf.evaluate(fmlB, interp, notationname);
         A.opspot = ea.opspot;
         B.opspot = eb.opspot;
         A.rows.push(ea.row);
@@ -108,8 +119,9 @@ export function equivTables(fmlA, fmlB) {
     return { equiv, A, B }
 }
 
-
-export function argumentTables(pwffs, cwff) {
+// fills in the truth tables for the premises and conclusion of
+// an argument and determines its validity
+export function argumentTables(pwffs, cwff, notationname) {
 
     let interps = libtf.allinterps([...pwffs,cwff]);
     let valid = true;
@@ -124,12 +136,12 @@ export function argumentTables(pwffs, cwff) {
         let allpremstrue = true;
         for (let i=0; i < pwffs.length; i++) {
             let w = pwffs[i];
-            let e = libtf.evaluate(w, interp);
+            let e = libtf.evaluate(w, interp, notationname);
             prems[i].opspot = e.opspot;
             prems[i].rows.push(e.row);
             allpremstrue = (allpremstrue && e.tv);
         }
-        let ce = libtf.evaluate(cwff, interp);
+        let ce = libtf.evaluate(cwff, interp, notationname);
         conc.opspot = ce.opspot;
         conc.rows.push(ce.row);
         valid = (valid && (!allpremstrue || ce.tv));
@@ -137,7 +149,9 @@ export function argumentTables(pwffs, cwff) {
     return { valid, prems, conc }
 }
 
-export function comboTables(wffs, index) {
+// determines truth tables for a problem in which the student
+// did their own translations and determines validity
+export function comboTables(wffs, index, notationname) {
     let tables = [];
     let interps = libtf.allinterps(wffs);
     let valid = true;
@@ -149,7 +163,7 @@ export function comboTables(wffs, index) {
         let conctrue = false;
         for (let i=0; i<wffs.length; i++) {
             let wff=wffs[i];
-            let e = libtf.evaluate(wff, interp);
+            let e = libtf.evaluate(wff, interp, notationname);
             tables[i].opspot = e.opspot;
             tables[i].rows.push(e.row);
             if (i==index) { // conclusion

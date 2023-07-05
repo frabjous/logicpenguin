@@ -2,34 +2,39 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////// libequivalence-db.js //////////////////////////////////
+// functions for creating, loading and saving equivalence lists for      //
+// formulas to speed equivalence testing                                 //
+///////////////////////////////////////////////////////////////////////////
+
 // This script is meant to be usable both in the browser and via node
 // making use of either 'window' or 'process' appropriately
 
 import getFormulaClass from './formula.js';
 import { arrayUnion } from '../misc.js';
 
-let equivDB = {};
+const equivDB = {};
 
 // create object in window if need be
 if ((typeof window != 'undefined') && !window?.equivDB) {
     window.equivDB = equivDB;
 }
 
-let useMemory = ((typeof process === 'undefined') ||
+const useMemory = ((typeof process === 'undefined') ||
     !process?.appsettings ||
     !process?.lpfs);
 
 /// FUNCTIONS ///
 
 function applyswitches(str, switches) {
-    for (let sw in switches) {
-        let cpoint = 120049 + switches[sw].codePointAt(0);
-        let tempchar = String.fromCodePoint(cpoint);
+    for (const sw in switches) {
+        const cpoint = 120049 + switches[sw].codePointAt(0);
+        const tempchar = String.fromCodePoint(cpoint);
         str = str.replaceAll(sw, tempchar);
     }
-    for (let sw in switches) {
-        let cpoint = 120049 + switches[sw].codePointAt(0);
-        let tempchar = String.fromCodePoint(cpoint);
+    for (const sw in switches) {
+        const cpoint = 120049 + switches[sw].codePointAt(0);
+        const tempchar = String.fromCodePoint(cpoint);
         str = str.replaceAll(tempchar, switches[sw]);
     }
     return str;
@@ -63,7 +68,7 @@ export function equivProliferate(f, switches = {}, notationname) {
 
         // guard against nonsense if not a negation of anything
         if (!f?.right) { return equivs; }
-        let r = f.right;
+        const r = f.right;
 
         // negation of atomic, return it with switches applied
         if (!r.op) {
@@ -78,7 +83,7 @@ export function equivProliferate(f, switches = {}, notationname) {
 
         // for other negations we start by proliferating
         // what it's a negation of
-        let baseEquivs = equivProliferate(r, switches, notationname);
+        const baseEquivs = equivProliferate(r, switches, notationname);
         equivs = baseEquivs.map((w) => 
             (Formula.from(Formula.syntax.symbols.NOT + w.wrapifneeded())));
 
@@ -186,19 +191,19 @@ export function equivProliferate(f, switches = {}, notationname) {
     if (Formula.syntax.isquant(f.op)) {
         // guard against nonsense
         if (!f?.right) { return equivs; }
-        let r = f.right;
+        const r = f.right;
 
         // get bound variable
-        let v = f.boundvar
+        const v = f.boundvar
 
         // real bound var after switches
-        let v_to_use = v;
+        const v_to_use = v;
         if (v in switches) {
             v_to_use = switches[v];
         }
 
         // proliferate on base
-        let baseEquivs = equivProliferate(r, switches, notationname);
+        const baseEquivs = equivProliferate(r, switches, notationname);
         equivs = baseEquivs.map((w) => (
             Formula.from(
                 Formula.syntax.mkquantifier(v_to_use, f.op) + w.wrapifneeded()
@@ -273,12 +278,12 @@ export function equivProliferate(f, switches = {}, notationname) {
         // Try also with swapped out/switched bound variables
         // if not already apply a switch on that variable
         if (!(v in switches)) {
-            for (let somevar of someVariables) {
+            for (const somevar of someVariables) {
                 // don't redo switch and don't switch free variables
                 if (somevar in switches) { continue; }
                 if (somevar == v) { continue; }
                 if (f.freevars.indexOf(somevar) != -1) { continue; }
-                let newswitches = {...switches};
+                const newswitches = {...switches};
                 newswitches[v] = somevar;
                 newswitches[somevar] = v;
                 equivs = arrayUnion(
@@ -295,7 +300,7 @@ export function equivProliferate(f, switches = {}, notationname) {
         f.op == Formula.syntax.symbols.IFTHEN || f.op == Formula.syntax.symbols.IFF ) {
         // guard against nonsense
         if (!f?.right || !f?.left) { return equivs; }
-        let r = f.right; let l = f.left;
+        const r = f.right; const l = f.left;
 
         // start by proliferating the parts and recombining
         // this also handles commutativity of ∨, ∧ and ↔
@@ -417,8 +422,8 @@ export function loadEquivalents(wffstr, notationname) {
         return equivDB[wffstr];
     }
     // if using file database, try to load file
-    let equivdir = process.appsettings.datadir + '/equivalents/' + notationname;
-    let fn = equivdir + '/' + wffstr + '.json';
+    const equivdir = process.appsettings.datadir + '/equivalents/' + notationname;
+    const fn = equivdir + '/' + wffstr + '.json';
     let equivs = process.lpfs.loadjson(fn);
     // if no file, then start afresh
     if (!equivs) { equivs = []; }
@@ -433,12 +438,12 @@ export function loadEquivalents(wffstr, notationname) {
 }
 
 function proliferateCombine(f, g, op, switches, notationname) {
-    let Formula = getFormulaClass(notationname);
+    const Formula = getFormulaClass(notationname);
     let results = [];
-    let fequivs = equivProliferate(f, switches, notationname);
-    let gequivs = equivProliferate(g, switches, notationname);
-    for (let fe of fequivs) {
-        for (let ge of gequivs) {
+    const fequivs = equivProliferate(f, switches, notationname);
+    const gequivs = equivProliferate(g, switches, notationname);
+    for (const fe of fequivs) {
+        for (const ge of gequivs) {
             results = arrayUnion(results,
                 [Formula.from(fe.wrapifneeded() + op + ge.wrapifneeded())]
             );
@@ -459,7 +464,7 @@ export function saveEquivalents(wffstr, equivs, notationname) {
         (!("datadir" in process.appsettings)) ||
         (!("lpfs" in process)) ||
         (!("savejson" in process.lpfs))) { return false; }
-    let fn = process.appsettings.datadir + '/equivalents/' +
+    const fn = process.appsettings.datadir + '/equivalents/' +
         notationname + '/' + wffstr + '.json';
     return process.lpfs.savejson(fn, equivs);
 }
