@@ -2,28 +2,40 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-import { symbols, symbolcat, syntax } from '../symbolic/libsyntax.js';
+//////////////////////// formula-input.js /////////////////////////////////
+// defines symbolic formula input field class and adds insertion widget  //
+// to the window                                                         //
+///////////////////////////////////////////////////////////////////////////
+
+import getSyntax from '../symbolic/libsyntax.js';
 import { addelem, htmlEscape } from '../common.js';
 import tr from '../translate.js';
 
 export default class FormulaInput {
 
+    // generic function for making changes, used by other functions
     static autoChange(findbefore, repbefore, ins, findafter, repafter) {
-        let before = this.value.substr(0,this.selectionStart)
+        // make replacement in what is before the cursor
+        const before = this.value.substr(0,this.selectionStart)
             .replace(findbefore, repbefore);
+        // get what is after cursor, and change it if also requested
         let after= this.value.substr(this.selectionEnd);
         if (findafter) {
             after = after.replace(findafter, repafter);
         }
+        // determine where to put the cursor after change; focus input
         let pos = before.length + ins.length;
         this.value = before + ins + after;
         this.focus();
         this.setSelectionRange(pos, pos);
     }
 
+    // functin called on formula inputs when they are unfocused/blurred
     static blur(e) {
-        // record when this
+
+        // record when this happened
         this.lastblurred = (new Date()).getTime();
+
         // don't react to widget changes
         if (e?.relatedTarget?.classList?.contains('symbolwidgetbutton') ||
             e?.relatedTarget?.classList?.contains('derivchartlabel') ||
@@ -31,21 +43,31 @@ export default class FormulaInput {
         ) {
             return;
         }
+
+        // justification widgets shouldn't react to clicks on rules or
+        // line numbers
         if ((e?.relatedTarget?.classList?.contains('derivationlinenumber') ||
             e?.relatedTarget?.classList?.contains('rulenamedisplay') ||
             e?.relatedTarget?.classList?.contains('ruledisplay'))
             && this.classList.contains("justification")) {
             return;
         }
+
         // hide symbol insertion widget focused for this
         if (window.symbolwidget) {
             window.symbolwidget.hide();
         }
+
+        // don't hide the rule display if losing focus because of click
+        // on it
         if (e?.relatedTarget?.classList?.contains('rulenamedisplay') ||
             e?.relatedTarget?.classList?.contains('ruledisplay')) {
             e.blockhide = true;
         }
+
+        // fix its value to something better looking
         this.value = this.inputfix(this.value);
+
         // use blurHook to have blurring do other things
         if (this.blurHook) {
             this.blurHook(e);
@@ -56,11 +78,6 @@ export default class FormulaInput {
     static focus(e) {
 
         // don't react to widget changes
-        if (e?.relatedTarget?.classList?.contains('symbolwidgetbutton')) {
-            return;
-        }
-
-        // don't react to widget changes
         for (let widgettype of [
             'symbolwidgetbutton',
             'derivationlinenumber'
@@ -69,8 +86,14 @@ export default class FormulaInput {
                 return;
             }
         }
+
+        // set the value so we can tell if edits changed it later on
         this.oldvalue = this.value;
+
+        // don't show widget if the input is read-only
         if (this.readOnly) { return; }
+
+        // show the symbol insertion widget
         if (window.symbolwidget) {
             window.symbolwidget.showfor(this);
         }
@@ -79,32 +102,53 @@ export default class FormulaInput {
         }
     }
 
+    // create a new formula input and return it
     static getnew(options = {}) {
         let elem = document.createElement("input");
         elem.type = "text";
+
+        // add all options to the input
         for (let opt in options) {
             elem[opt] = options[opt];
         }
+
+        // assign classes for css
         elem.classList.add("formulainput","symbolic");
+
+        // assign the static event listeners
         elem.addEventListener("blur", FormulaInput.blur);
         elem.addEventListener("focus", FormulaInput.focus);
         elem.addEventListener("keydown", FormulaInput.keydown);
+
+        // add the static functions
         elem.insOp = FormulaInput.insOp;
         elem.insertHere = FormulaInput.insertHere;
         elem.autoChange = FormulaInput.autoChange;
+
+        // attach the proper syntax, symbols and inputfix for the notation
+        // defaulting to cambridge
+        let notation = 'cambridge';
+        if (opts?.notation) {
+            notation = opts.notatation;
+        }
+        const syntax = getSyntax(notation);
+        elem.syntax = syntax;
+        elem.symbols = syntax.symbols;
         elem.inputfix = syntax.inputfix;
         return elem;
     }
 
+    // function for inserting an operator, fixing the spacing around it
     static insOp(op) {
-        let symb = symbols[op];
-        if (symbolcat[op] >= 2) {
+        let symb = this.symbols[op];
+        if (this.syntax.symbolcat[op] >= 2) {
             this.autoChange(/\s+$/,'',' ' + symb + ' ',/^\s+/,'');
         } else {
             this.insertHere(symb);
         }
     }
 
+    // stick a symbol right where the cursor is
     static insertHere(c) {
         let pos = this.selectionStart;
         this.setRangeText(c);
@@ -112,10 +156,12 @@ export default class FormulaInput {
         this.setSelectionRange(pos+1, pos+1);
     }
 
+    // function for handling keys; making many changes
     static keydown(e) {
         // register value on enter
         if (e.key == 'Enter') {
             e.preventDefault();
+            // prettify the contents
             this.value = this.inputfix(this.value);
             // use blurHook to have blurring do other things
             if (this.blurHook) {
@@ -126,8 +172,11 @@ export default class FormulaInput {
                 return;
             }
         }
+
+        // tab/shift-tab can be assigned a special role, as in derivations
         if (e.key == 'Tab') {
             e.preventDefault();
+            // prettify the result
             this.value = this.inputfix(this.value);
             if (e.shiftKey && this.shiftTabHook) {
                 this.shiftTabHook(e);
@@ -138,6 +187,8 @@ export default class FormulaInput {
                 return;
             }
         }
+
+        // arrows/shift arrows can be given special actions as in derivations
         if (e.key == 'ArrowUp' && this.arrowUpHook) {
             e.preventDefault();
             this.arrowUpHook(e);
@@ -159,7 +210,9 @@ export default class FormulaInput {
             return;
         }
 
+        // other changes only apply when the field can actually be edited
         if (this.readOnly) { return; }
+
         // block extra spaces
         if (e.key == ' ') {
             if (/\s$/.test(this.value.substr(0,this.selectionStart))) {
