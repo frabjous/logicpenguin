@@ -10,14 +10,14 @@
 // //////////////////////////////////////////////////////////////
 
 // import external modules
-import cors    from 'cors';
-import debugM  from 'debug';
-import express from 'express';
-import fs      from 'node:fs';
-import http    from 'node:http';
-import https   from 'node:https';
-import morgan  from 'morgan';
-import path    from 'node:path';
+import cors    from 'cors'; // allows cross-origin requests
+import debugM  from 'debug'; // package for debugging
+import express from 'express'; // general webserver framework
+import fs      from 'node:fs'; // file system
+import http    from 'node:http'; // for handling http requests
+import https   from 'node:https'; // for handling https requests
+import morgan  from 'morgan'; // logging and debug-reporting package
+import path    from 'node:path'; // resolve path names
 
 // define dirname, filename; move to that folder
 import { fileURLToPath } from 'node:url';
@@ -25,20 +25,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 process.chdir(__dirname);
 
+// read app settings; should also make it attach to process global object
+import appsettings from './app/lpsettings.js';
+
 // import internal modules
 import lpauth from './app/lpauth.js';
-import lpfs from './app/lpfs.js';
+import lpfs from './app/lpfs.js'; // also creates process.lpfs
 import lpgrading from './app/lpgrading.js';
 import lplti from './app/lplti.js';
 import lprequesthandler from './app/lprequesthandler.js';
-import {
-    getpagetext,
-    getexercise,
-    getlecture
-} from './app/lppages.js';
-
-// read app settings
-import appsettings from './app/lpsettings.js';
+import { getpagetext, getexercise, getlecture } from './app/lppages.js';
 
 // create debugger context
 const debug = debugM('logic-penguin');
@@ -106,28 +102,27 @@ app.use(express.urlencoded({ extended: false }));
 // setup the public/ folder as serving static content
 app.use(express.static('public'));
 
-// define some routes
+// ROUTES
 
 // exercise launch request
 app.post('/launch/:exnum', async function(req, res) {
     // check consumerkey and check against consumer secret
-    const consumerkey = req.body.oauth_consumer_key;
+    const consumerkey = req.body?.oauth_consumer_key ?? false;
     if (!consumerkey) {
         return res.status(403).send(getpagetext('403.html', {
             message: 'No consumer key provided'
         }));
     }
-    const consumersecret = await lplti.getConsumerSecret(
-        consumerkey, appsettings.datadir
-    );
+    const consumersecret = await lplti.getConsumerSecret(consumerkey);
     if (!consumersecret) {
         return res.status(403).send(getpagetext('403.html', {
             message: 'Invalid consumer key provided'
         }));
     }
     // read contextid, userid
-    const contextid = req.body.context_id;
-    const userid = req.body.user_id ?? req.body.ext_user_username;
+    const contextid = req.body?.context_id ?? false;
+    const userid =
+        (req.body?.user_id ?? req.body?.ext_user_username) ?? false;
     if (!contextid || !userid) {
         return res.status(403).send(getpagetext('403.html', {
             message: 'Inadequate course or user information provided'
@@ -142,8 +137,7 @@ app.post('/launch/:exnum', async function(req, res) {
             }));
         }
         // save launch information in user's data folder
-        let launchid = lpauth.newlaunch(appsettings.datadir, req.body,
-            req.params.exnum);
+        let launchid = lpauth.newlaunch(req.body, req.params.exnum);
         if (launchid === false) {
             return res.status(500).send(getpagetext('500.html', {
                 message: 'Server unable to make record of launch'
@@ -158,6 +152,7 @@ app.post('/launch/:exnum', async function(req, res) {
 });
 
 // allow direct access to exercises for test consumer and context
+// when app is in development mode
 app.get('/developmenttest/:exnum',
     async function(req, res) {
         if (process.env.NODE_ENV != 'development') {
@@ -169,14 +164,14 @@ app.get('/developmenttest/:exnum',
         const exnum = req.params.exnum;
         const userid = 'teststudent';
         const launchid = 'developmenttest';
-        if (!lpauth.verifylaunch(appsettings.datadir, consumerkey,
-            contextid, userid, exnum, launchid)) {
+        if (!lpauth.verifylaunch(consumerkey, contextid, userid, exnum,
+            launchid)) {
             return res.status(403).send(getpagetext('403.html', {
                 message: 'Invalid launch id for user and exercise'
             }));
         }
-        let exercisepage = await getexercise(appsettings.datadir,
-            consumerkey, contextid, userid, exnum, launchid);
+        let exercisepage = await getexercise( consumerkey, contextid,
+            userid, exnum, launchid);
         if (!exercisepage) {
             return res.status(404).send(getpagetext('404.html',{}));
         }
@@ -192,14 +187,14 @@ app.get('/exercises/:consumerkey/:contextid/:userid/:exnum/:launchid',
         const exnum = req.params.exnum;
         const userid = req.params.userid;
         const launchid = req.params.launchid;
-        if (!lpauth.verifylaunch(appsettings.datadir, consumerkey,
-            contextid, userid, exnum, launchid)) {
+        if (!lpauth.verifylaunch(consumerkey, contextid, userid,
+            exnum, launchid)) {
             return res.status(403).send(getpagetext('403.html', {
                 message: 'Invalid launch id for user and exercise'
             }));
         }
-        let exercisepage = await getexercise(appsettings.datadir,
-            consumerkey, contextid, userid, exnum, launchid);
+        let exercisepage = await getexercise(consumerkey, contextid,
+            userid, exnum, launchid);
         if (!exercisepage) {
             return res.status(404).send(getpagetext('404.html',{}));
         }
@@ -213,8 +208,7 @@ app.get('/lectures/:consumerkey/:contextid/:unit',
         const consumerkey = req.params.consumerkey;
         const contextid = req.params.contextid;
         const unit = req.params.unit;
-        let lecturepage = await getlecture(appsettings.datadir, 
-            consumerkey, contextid, unit);
+        let lecturepage = await getlecture(consumerkey, contextid, unit);
         if (!lecturepage) {
             return res.status(404).send(getpagetext('404.html',{}));
         }
@@ -224,12 +218,11 @@ app.get('/lectures/:consumerkey/:contextid/:unit',
 
 // process json request
 app.post('/json', async function(req, res) {
-    let resp = await lprequesthandler.respond(appsettings.datadir,
-        req.body);
+    let resp = await lprequesthandler.respond(req.body);
     res.json(resp);
 });
 
-// reverse string: used to test still up
+// reverse string: used to test if server is still up
 app.get('/reverse/:str',
     async function(req, res) {
         res.send(req.params.str.split('').reverse().join(''));
@@ -351,11 +344,8 @@ if (appsettings.gradeinterval) {
     let startDateObj = new Date(
         year, monthIndex, date, hours, minutes);
     let startTime = startDateObj.getTime();
-    // if we missed that time, add a day to start
-    // tomorrow
-    if (startTime < currentTime) {
-        startTime += 86400000;
-    }
+    // if we missed that time, add a day to start tomorrow
+    if (startTime < currentTime) { startTime += 86400000; }
     let waittostart = startTime - currentTime;
     // we do not wait in development mode
     if (process.env.NODE_ENV == 'development') {
@@ -363,23 +353,25 @@ if (appsettings.gradeinterval) {
     }
     // set timer to begin intervals
     setTimeout(
-        async (datadir) => {
+        async () => {
             // do it right away
-            await lpgrading.fullGradingScan(datadir);
+            await lpgrading.fullGradingScan();
             // set regular interval
             setInterval(
-                async (datadir) => {
+                async () => {
+                    // don't do it if already doing it and taking awhile
                     if (isgrading) { return; }
+                    // mark as grading
                     isgrading = true;
+                    // do actual grading
                     debug('Starting grading scan …');
-                    await lpgrading.fullGradingScan(datadir);
+                    await lpgrading.fullGradingScan();
+                    // mark as no longer doing it
                     isgrading = false;
                 },
-                appsettings.gradeinterval,
-                datadir
+                appsettings.gradeinterval
             );
         },
-        waittostart,
-        appsettings.datadir
+        waittostart
     );
 }

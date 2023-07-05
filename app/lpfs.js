@@ -7,11 +7,16 @@
 // by reading and writing files, directory contents, etc.
 ///////////////////////////////////////////////////////////////////
 
+// Note to self: this library should not need to be able to make use
+// of appsettings, since the lpsettings.js script calls it;
+// always have caller provide the full path
 
+// import node libraries
 import fs from 'node:fs';
 import path from 'node:path';
 
-let lpfs = {};
+// initiate return value
+const lpfs = {};
 
 // returns true if the directory already exists, otherwise creates it
 lpfs.ensuredir = function(dir) {
@@ -155,7 +160,7 @@ lpfs.subdirs = async function(dir) {
 }
 
 // attach return value to process so can be used by public scripts
-if (process) { process.lpfs = lpfs; }
+if (process && !process?.lpfs) { process.lpfs = lpfs; }
 
 // export the object containing the functions
 export default lpfs;

@@ -2,6 +2,8 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+// TODO: get rid of this or merge it elsewhere
+
 import appsettings from './lpsettings.js';
 import lpfs from './lpfs.js';
 import Formula from '../public/js/symbolic/formula.js';
