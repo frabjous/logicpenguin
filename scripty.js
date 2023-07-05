@@ -25,14 +25,12 @@ import lpdata from './app/lpdata.js';
 import lplti from './app/lplti.js';
 
 // set constants
-const datadir = appsettings.datadir;
 const consumerkey = appsettings.defaultconsumer;
 const contextid = appsettings.defaultcontext;
 const urlRoot = appsettings.defaulturl;
 
-async function printURL(datadir, consumerkey, contextid, userid, exnum) {
-    let url = await lplti.launchUrlFor(
-        datadir, consumerkey, contextid, userid, exnum
+async function printURL(consumerkey, contextid, userid, exnum) {
+    let url = await lplti.launchUrlFor(consumerkey, contextid, userid, exnum
     );
     if (url === false) {
         console.log('That user has not launched that exercise yet.');
@@ -90,7 +88,7 @@ if (cmd == 'extension') {
         process.exit(1);
     }
     let r = lpdata.grantExtension(
-        datadir, consumerkey, contextid, userid, exnum, t.getTime()
+        consumerkey, contextid, userid, exnum, t.getTime()
     );
     if (r === false) {
         console.error('There was an error granting the extension.');
@@ -98,5 +96,5 @@ if (cmd == 'extension') {
     }
 }
 
-printURL(datadir, consumerkey, contextid, userid, exnum);
+printURL(consumerkey, contextid, userid, exnum);
 
