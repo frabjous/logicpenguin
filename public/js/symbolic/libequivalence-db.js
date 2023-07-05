@@ -8,10 +8,7 @@
 import getFormulaClass from './formula.js';
 import { arrayUnion } from '../misc.js';
 
-
-
 let equivDB = {};
-
 
 // create object in window if need be
 if ((typeof window != 'undefined') && !window?.equivDB) {
@@ -48,7 +45,7 @@ export function equivProliferate(f, switches = {}, notationname) {
         String.fromCodePoint(varCP+2)
     ];
 
-    
+
     let equivs = [];
 
     // for atomics, return it with switches applied
@@ -419,7 +416,7 @@ export function loadEquivalents(wffstr, notationname) {
         return equivDB[wffstr];
     }
     // if using file database, try to load file
-    let equivdir = process.appsettings.datadir + '/equivalents';
+    let equivdir = process.appsettings.datadir + '/equivalents/' + notationname;
     let fn = equivdir + '/' + wffstr + '.json';
     let equivs = process.lpfs.loadjson(fn);
     // if no file, then start afresh
@@ -454,7 +451,7 @@ function proliferateCombine(f, g, op, switches, notationname) {
     return results;
 }
 
-export function saveEquivalents(wffstr, equivs) {
+export function saveEquivalents(wffstr, equivs, notationname) {
     // don't crash if called incorrectly
     if ((typeof process == 'undefined') ||
         (!("appsettings" in process)) ||
@@ -462,7 +459,7 @@ export function saveEquivalents(wffstr, equivs) {
         (!("lpfs" in process)) ||
         (!("savejson" in process.lpfs))) { return false; }
     let fn = process.appsettings.datadir + '/equivalents/' +
-        wffstr + '.json';
+        notationname + '/' + wffstr + '.json';
     return process.lpfs.savejson(fn, equivs);
 }
 
