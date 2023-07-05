@@ -3,8 +3,8 @@
 // https://www.gnu.org/licenses/.
 
 /////////////////////////lpsettings.js////////////////////////////////
-// Reads the settings for the logic penguin instance and fills in
-// defaults, etc., if not specified
+// Reads the settings for the logic penguin instance and fills in   //
+// defaults, etc., if not specified                                 //
 //////////////////////////////////////////////////////////////////////
 
 // load necessary modules

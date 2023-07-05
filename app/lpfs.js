@@ -2,10 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////////////lpfs.js///////////////////////////////////
-// This script handles lp's interacting with the file system (fs)
-// by reading and writing files, directory contents, etc.
-///////////////////////////////////////////////////////////////////
+/////////////////////////lpfs.js//////////////////////////////////////
+// This script handles lp's interacting with the file system (fs)   //
+// by reading and writing files, directory contents, etc.           //
+//////////////////////////////////////////////////////////////////////
 
 // Note to self: this library should not need to be able to make use
 // of appsettings, since the lpsettings.js script calls it;
@@ -26,7 +26,7 @@ lpfs.ensuredir = function(dir) {
 
 // true or false depending on whether argument is a directory
 lpfs.isdir = function(dir) {
-    var stats;
+    let stats;
     try {
         stats = fs.statSync(dir);
     } catch (err) {
@@ -38,7 +38,7 @@ lpfs.isdir = function(dir) {
 // true or false depending on whether argument is a filename of an
 // exiting file
 lpfs.isfile = function(dir) {
-    var stats;
+    let stats;
     try {
         stats = fs.statSync(dir);
     } catch (err) {
@@ -49,9 +49,9 @@ lpfs.isfile = function(dir) {
 
 // returns (Promise of) an array with the files in a given directory
 lpfs.filesin = async function(dir) {
-    let rv = [];
+    const rv = [];
     try {
-        let contents = await fs.promises.readdir(dir);
+        const contents = await fs.promises.readdir(dir);
         const promises = contents.map(async (item) => {
             const s = await fs.promises.stat(path.join(dir,item));
             // check if folder and hide hidden stuff too
@@ -83,7 +83,7 @@ lpfs.loadjson = function(filename) {
 // same as above, but asynchronous, yielding a Promise
 lpfs.loadjsonAsync = async function(filename) {
     try {
-        let json = await fs.promises.readFile(filename,
+        const json = await fs.promises.readFile(filename,
             { encoding: "utf8", flag: "r" });
         return JSON.parse(json);
     } catch(err) {
@@ -139,9 +139,9 @@ lpfs.savejsonAsync = async function(filename, obj) {
 
 // gets a (Promise of) a list of subdirectories of a directory
 lpfs.subdirs = async function(dir) {
-    let rv = [];
+    const rv = [];
     try {
-        let contents = await fs.promises.readdir(dir);
+        const contents = await fs.promises.readdir(dir);
         const promises = contents.map(async (item) => {
             const s = await fs.promises.stat(path.join(dir,item));
             // check if folder and hide hidden stuff too
