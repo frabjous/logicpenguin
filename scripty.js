@@ -9,6 +9,8 @@
 // it more generic, or scrapped once instructor thingy is in place
 /////////////////////////////////////////////////////////////////////
 
+// TODO: let scripty take arguments
+
 // node modules
 //import fs from 'node:fs';
 import path from 'node:path';
