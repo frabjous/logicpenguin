@@ -35,6 +35,7 @@ const notations = {
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
         predicatesRange: '=A-Z',
+        schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: true,
         variableRange: 'x-zs-w'
     },
@@ -50,6 +51,7 @@ const notations = {
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
         predicatesRange: '=A-Z',
+        schematicLetters: '𝑨𝑨𝒙𝒄𝒄',
         useTermParensCommas: false,
         variableRange: 'x-zs-w'
     },
@@ -65,6 +67,7 @@ const notations = {
         constantsRange: 'a-w',
         predicatesRange: '=A-Z',
         quantifierForm: '(Q?x)',
+        schematicLetters: 'pℱ𝓍𝒶𝒶',
         useTermParensCommas: false,
         variableRange: 'x-z'
     },
@@ -80,6 +83,7 @@ const notations = {
         constantsRange: 'a-w',
         predicatesRange: '=A-Z',
         quantifierForm: 'Qx',
+        schematicLetters: '𝒜𝒜𝓍𝒶𝓃',
         useTermParensCommas: false,
         variableRange: 'x-z'
     },
@@ -95,6 +99,7 @@ const notations = {
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
         predicatesRange: '=A-Z',
+        schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
     }

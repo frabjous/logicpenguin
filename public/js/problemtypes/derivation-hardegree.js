@@ -8,6 +8,8 @@ import tr from '../translate.js';
 import rules from '../checkers/rules/hardegree-rules.js';
 import { symbols } from '../symbolic/libsyntax.js';
 
+// TODO: use schematic letters from notatiton, etc.
+
 export default class DerivationHardegree extends DerivationExercise {
 
     constructor() {
