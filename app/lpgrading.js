@@ -2,9 +2,9 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////////////lpgrading.js///////////////////////////////////
-// This script handles lp's grading mechanisms at a general level
-///////////////////////////////////////////////////////////////////////
+/////////////////////////lpgrading.js////////////////////////////////////
+// This script handles lp's grading mechanisms at a general level      //
+/////////////////////////////////////////////////////////////////////////
 
 // import modules
 import path from 'node:path';
@@ -16,22 +16,22 @@ import libgrade from '../public/js/libgrade.js';
 // initiate return value
 const lpgrading = {};
 
+// read data dir from settings
+const datadir = process.appsettings.datadir;
+
 // scans a given context (course) for all users for grading to do
-lpgrading.contextGradingScan =
-    async function(datadir, consumerkey, contextid) {
+lpgrading.contextGradingScan = async function(consumerkey, contextid) {
     // get users as as the subdirectory list of the users folder
     const userdir = path.join(datadir, consumerkey, contextid, 'users');
     const users = await lpfs.subdirs(userdir);
     // scan each user
     for (let userid of users) {
-        await lpgrading.userGradingScan(
-            datadir, consumerkey, contextid, userid
-        );
+        await lpgrading.userGradingScan(consumerkey, contextid, userid);
     }
 }
 
 // scans all consumers and contexts for grading to do
-lpgrading.fullGradingScan = async function(datadir) {
+lpgrading.fullGradingScan = async function() {
     const consumers = await lpfs.subdirs(datadir);
     // scan all consumers
     for (let consumerkey of consumers) {
@@ -40,30 +40,24 @@ lpgrading.fullGradingScan = async function(datadir) {
         const contexts = await lpfs.subdirs(cdir);
         // scan each context
         for (let contextid of contexts) {
-            await lpgrading.contextGradingScan(
-                datadir, consumerkey, contextid
-            );
+            await lpgrading.contextGradingScan(consumerkey, contextid);
         }
     }
 }
 
 // grade a given exercise for a given user
 lpgrading.gradeExercise = async function(
-    datadir, consumerkey, contextid, userid, exnum, exinfo
-) {
+    consumerkey, contextid, userid, exnum, exinfo) {
     // to allow not passing the exinfo, load it here if need be
     if (!exinfo) {
-        exinfo = lpdata.getExerciseInfo(
-            datadir, consumerkey, contextid, exnum
-        );
+        exinfo = lpdata.getExerciseInfo(consumerkey, contextid, exnum);
     }
     // return false for bogus exercises without problems
     if (!exinfo.problemsets) { return false; }
     // load saved information
-    let userdir = lpdata.userdir(datadir, consumerkey, contextid,
-        userid, false);
+    const userdir = lpdata.userdir(consumerkey, contextid, userid, false);
     if (!userdir) { return false; }
-    let savedfile = path.join(userdir, 'saved', exnum + '.json');
+    const savedfile = path.join(userdir, 'saved', exnum + '.json');
     let savedinfo = {};
     if (lpfs.isfile(savedfile)) {
         savedinfo = lpfs.loadjson(savedfile);
@@ -76,7 +70,7 @@ lpgrading.gradeExercise = async function(
     let changesmade = false;
     for (let probid in savedinfo) {
         // load data for the problem
-        let probdata = savedinfo[probid];
+        const probdata = savedinfo[probid];
         // skip problems without answers
         if (!("ans" in probdata)) { continue; }
         // check if graded already; if so, just count its points
@@ -91,19 +85,18 @@ lpgrading.gradeExercise = async function(
         }
         // NOT graded already
         // retrieve problem set and problem numbers from id
-        let numparts = probid.substr(8).split('n').map(
+        const numparts = probid.substr(8).split('n').map(
             (x) => (parseInt(x))
         );
         if (numparts.length != 2) { continue; }
-        let probsetnum = numparts[0];
-        let probnum = numparts[1];
+        const probsetnum = numparts[0];
+        const probnum = numparts[1];
         // load problem set info
-        let probsetinfo = exinfo.problemsets?.[probsetnum];
+        const probsetinfo = exinfo.problemsets?.[probsetnum];
         if (!probsetinfo) { continue; }
         // get saved question and answer
-        let [question, answer] = lpdata.getIndividualQnA(
-            datadir, consumerkey, contextid, userid,
-            exnum, probsetnum, probnum
+        const [question, answer] = lpdata.getIndividualQnA(
+            consumerkey, contextid, userid, exnum, probsetnum, probnum
         );
         // if getting the question/answer yielded null, skip it
         if (question === null || answer === null) {
@@ -129,71 +122,61 @@ lpgrading.gradeExercise = async function(
         // if we got here, the problem was actually graded
         changesmade = true;
         // add its points to the total
-        let ptstoadd = Math.max(0, (newind.points ?? 0));
+        const ptstoadd = Math.max(0, (newind.points ?? 0));
         ptsearned += ptstoadd;
     }
     let totalpoints = 0;
     // determine total number of points that were available
     for (let pset of exinfo.problemsets) {
-        let pointsper = pset.points ?? 1;
-        let number = pset.number ?? 0;
+        const pointsper = pset.points ?? 1;
+        const number = pset.number ?? 0;
         totalpoints += (pointsper * number);
     }
     // calculate score as number from 0 to 1
-    let score = (ptsearned/totalpoints);
+    const score = (ptsearned/totalpoints);
     // save changes
-    if (changesmade) {
-        lpfs.savejson(savedfile, savedinfo);
-    }
+    if (changesmade) { lpfs.savejson(savedfile, savedinfo); }
     // send the score to the LTI
-    lplti.sendScore(
-        datadir, consumerkey, contextid, userid, exnum, score
-    );
+    lplti.sendScore(consumerkey, contextid, userid, exnum, score);
     // send in background after 2 secs, but wait until promise returns
     await new Promise(r => setTimeout(r, 2000));
 }
 
 // scan all problems for a given user
 lpgrading.userGradingScan =
-    async function(datadir, consumerkey, contextid, userid) {
-    let userdir = lpdata.userdir(
-        datadir, consumerkey, contextid, userid, false
-    );
+    async function(consumerkey, contextid, userid) {
+    const userdir = lpdata.userdir(consumerkey, contextid, userid, false);
     // ensure saved dir and scores dir exist
-    let saveddir = path.join(userdir, 'saved');
-    let scoresdir = path.join(userdir, 'scores');
+    const saveddir = path.join(userdir, 'saved');
+    const scoresdir = path.join(userdir, 'scores');
     if (!lpfs.ensuredir(saveddir)) { return false; }
     if (!lpfs.ensuredir(scoresdir)) { return false; }
     // scan saved dir
-    let savedexs = await lpfs.filesin(saveddir);
+    const savedexs = await lpfs.filesin(saveddir);
     for (let savedex of savedexs) {
-        let savedfile = path.join(saveddir, savedex);
-        let exnum = savedex.replace(/\.json$/,'');
+        const savedfile = path.join(saveddir, savedex);
+        const exnum = savedex.replace(/\.json$/,'');
         // skip non-json files
         if (exnum == savedex) { continue; }
         // skip those without a corresponding exercise
-        let exinfo = lpdata.getExerciseInfo(
-            datadir, consumerkey, contextid, exnum
-        );
+        const exinfo = lpdata.getExerciseInfo(consumerkey, contextid, exnum);
         if (!exinfo) { continue; }
         // skip those not yet past due
-        let duetime = exinfo.duetime ?? false;
-        let pastdue = lpdata.determinePastDue(
-            datadir, consumerkey, contextid, userid, exnum, duetime
-        );
+        const duetime = exinfo.duetime ?? false;
+        const pastdue = lpdata.determinePastDue(
+            consumerkey, contextid, userid, exnum, duetime);
         if (!pastdue) { continue; }
         // skip those with a newer score file
-        let scorefile = path.join(scoresdir, exnum + '.json');
+        const scorefile = path.join(scoresdir, exnum + '.json');
         if (lpfs.isfile(scorefile)) {
-            let scmtime = await lpfs.mtime(scorefile);
-            let savedmtime = await lpfs.mtime(savedfile);
+            const scmtime = await lpfs.mtime(scorefile);
+            const savedmtime = await lpfs.mtime(savedfile);
             if (scmtime > savedmtime) { continue; }
         }
         // grade the exercise, and wait for it to be done before
         // starting a new one
         await lpgrading.gradeExercise(
-            datadir, consumerkey, contextid, userid, exnum, exinfo
-        );
+            consumerkey, contextid, userid, exnum, exinfo);
     }
 }
 
