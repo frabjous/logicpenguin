@@ -1,21 +1,24 @@
 // LICENSE: GNU GPL v3 You should have received a copy of the GNU General
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
-//
+
+/////////////////// common.js //////////////////////////////////////////
+// Some functions that are used all over the place in logic penguin   //
+////////////////////////////////////////////////////////////////////////
+
 import tr from './translate.js';
 
 // Common functions
 
-let localcheckers = {};
+const localcheckers = {};
 
 // determine URL
-//export let url = (window.logicPenguinURL) ? window.logicPenguinURL : '';
 export const url = new URL(import.meta.url).origin;
 
 // adds element to specified parent, with additional properties
 // as set by opts
 export function addelem(tag, parnode, opts = {}) {
-    let elem = document.createElement(tag);
+    const elem = document.createElement(tag);
     parnode.append(elem);
     for (const opt in opts) {
         if (opt == 'classes') {
@@ -34,11 +37,12 @@ export function byid(id) {
     return document.getElementById(id);
 }
 
+// create a box that displays information at the top of the page
 export function makeInfobox() {
-    let ibox = document.createElement("div");
+    const ibox = document.createElement("div");
     ibox.classList.add('infobox');
     ibox.fillme = function(message, msgicon) {
-        let icontag = '<span class="material-symbols-outlined">' + msgicon + '</span>';
+        const icontag = '<span class="material-symbols-outlined">' + msgicon + '</span>';
         this.innerHTML = '<table class="' + msgicon + '"><tbody>' +
             '<tr><td>' + icontag + '</td><td>' + tr(message) + '</td></tr>' +
             '</tbody></table>';
@@ -49,13 +53,15 @@ export function makeInfobox() {
     return ibox;
 }
 
+// escape &,>,< character in a string with their html escape sequences
 export function htmlEscape(str) {
     return str.replace(/&/g, '&amp;')
         .replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
+// put new information in the infobix
 export function infoboxMsg(message, msgicon) {
-    let infobox = document.getElementById('infobox');
+    const infobox = document.getElementById('infobox');
     if (!infobox || !infobox.fillme) {
         console.error('INFOBOX Message (' + msgicon + '): ' + message);
         return;
@@ -86,7 +92,7 @@ export function jsonRequest(obj, callback) {
     }
 
     // create request
-    let xhttp = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
     xhttp.open("POST", url + '/json', true);
     xhttp.setRequestHeader("Content-Type", "application/json");
     xhttp.responseType = 'json';
@@ -94,12 +100,11 @@ export function jsonRequest(obj, callback) {
     // respond when completed
     xhttp.onreadystatechange = function() {
         if (this.readyState != 4) { return; }
-        let stts = parseInt();
         if ((this.status < 200) || (this.status>= 300)) {
             callback(this.statusText ?? 'Unknown error', false);
             return;
         }
-        let respobj = this.response;
+        const respobj = this.response;
         if (!respobj) {
             callback('Invalid response from server', false);
         }
@@ -116,21 +121,25 @@ export function jsonRequest(obj, callback) {
 }
 
 export async function localCheck(prob) {
-    let problemtype = prob.myproblemtype;
-    let rightans = prob.myanswer;
-    let givenans = prob.getAnswer();
-    let question = prob.myquestion;
+    // read info from problem
+    const problemtype = prob.myproblemtype;
+    const rightans = prob.myanswer;
+    const givenans = prob.getAnswer();
+    const question = prob.myquestion;
+    // sanity checks
     if (!question || !problemtype || (typeof givenans === 'undefined')
         || (typeof rightans === 'undefined')) {
         return false;
     }
-    let savestatus = prob.getIndicatorStatus().savestatus;
+    const savestatus = prob.getIndicatorStatus().savestatus;
+    // load checker if need be
     if (!localcheckers[problemtype]) {
         try {
-            let imported = await import('./checkers/' + problemtype +
+            const imported = await import('./checkers/' + problemtype +
                 '.js');
             localcheckers[problemtype] = imported.default;
         } catch(err) {
+            // report error if cannot be loaded
             this.setIndicator({
                 savestatus: 'malfunction',
                 successStatus: 'malfunction',
@@ -144,9 +153,12 @@ export async function localCheck(prob) {
             return false;
         }
     }
-    let checkStatus = await localcheckers[problemtype](question, rightans,
+    // apply the checker to the problem
+    const checkStatus = await localcheckers[problemtype](question, rightans,
         givenans, false, -1, true, prob.options ?? {});
+    // local checks never confer points
     checkStatus.points = -1;
+    // saved status based on previous save status
     checkStatus.savestatus = prob.getIndicatorStatus().savestatus;
     prob.setIndicator(checkStatus);
 }

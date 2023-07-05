@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////////////////////////////////////////////////////////////
+// Functions specific to loading exercises in sets for exercise pages  //
+/////////////////////////////////////////////////////////////////////////
+
 import LP from '../load.js';
 
 // original setting of wasontime
@@ -11,10 +15,10 @@ window.wasontime = (!window.duetime ||
 // check if a certain time is past due; also set "wasontime" to
 // result for next check, and warn if this has changed
 // should not be used seriously; always double check on server
-window.checkOnTime = function(currtime) {
+window.checkOnTime = function(currtime, graceperiod = 300000) {
     if (!window.duetime) { return true; }
     // give five minute grace period
-    let ontime = (currtime < (window.duetime - 300000));
+    const ontime = (currtime < (window.duetime + graceperiod));
     if ((!ontime) && window?.wasontime) {
         window.wasontime = false;
         // -1 indicates time hadn't expired but now has
@@ -23,8 +27,9 @@ window.checkOnTime = function(currtime) {
     return ontime;
 }
 
+// formats a time in human readable form (time-stamp to string)
 function prettytime(ts) {
-    let d = new Date(ts);
+    const d = new Date(ts);
     let ampm = 'am';
     let hour = d.getHours();
     if (hour > 12) { hour = hour - 12 ; ampm = 'pm'; }
@@ -36,13 +41,17 @@ function prettytime(ts) {
         d.toDateString();
 }
 
+// load the exercises when the page is ready for them
 window.addEventListener('load', async function() {
-    let pagetitle = LP.byid('pagetitle');
-    // grab page elements once loaded
+
+    // get the page title element
+    const pagetitle = LP.byid('pagetitle');
+
     // set page title
     if (window?.exerciseinfo?.longtitle && pagetitle) {
         pagetitle.innerHTML = window.exerciseinfo.longtitle;
     }
+
     // insert the problems
     if (window.exerciseinfo && window.exerciseproblems) {
         await LP.makeProblems('problems', window.exerciseinfo,
@@ -54,6 +63,7 @@ window.addEventListener('load', async function() {
     if (window.restoredata) {
         LP.restoreProblemStates(window.restoredata);
     }
+
 
     // info about when due
     if (!window.duetime) { return; }

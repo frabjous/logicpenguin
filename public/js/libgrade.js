@@ -2,7 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-let libgrade = {}
+////////////////////////////////////////////////////////////////////////
+// functions common to both server and in-browser grading             //
+////////////////////////////////////////////////////////////////////////
+
+const libgrade = {}
 
 libgrade.checkers = {};
 
@@ -11,7 +15,7 @@ libgrade.checkAnswer = async function(problemtype, question, answer,
 
     // check if grader already loaded; load it if not
     if (!("problemtype" in libgrade.checkers)) {
-        let imported = await import('./checkers/' + problemtype + '.js');
+        const imported = await import('./checkers/' + problemtype + '.js');
         libgrade.checkers[problemtype] = imported.default;
     }
 

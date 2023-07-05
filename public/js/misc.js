@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+//////////////////// misc.js ///////////////////////////////////////////
+// a few functions that might be useful in different contexts         //
+////////////////////////////////////////////////////////////////////////
+
+// random string of a given length
 export function randomString(n = 16) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
                 'abcdefghijklmnopqrstuvwxyz' +
@@ -13,14 +18,16 @@ export function randomString(n = 16) {
     return rv;
 }
 
+// combine two arrays into a union-ed array without duplicates
 export function arrayUnion(a, b) {
     return [...(new Set([...a,...b]))];
 }
 
+// get all permutations of numbers less than n
 export function perms(n) {
     let col=[[]];
     for (let i=0; i<n; i++) {
-        let newcol = [];
+        const newcol = [];
         for (let a of col) {
             for (let j=0; j<=i ; j++) {
                 let b = [...a];
