@@ -148,7 +148,7 @@ lpdata.userdir = function(consumerkey, contextid, userid, fullname) {
     return dir;
 }
 
-lpdata.whenPastDue = functionconsumerkey, contextid, userid, exnum,
+lpdata.whenPastDue = function(consumerkey, contextid, userid, exnum,
     duetime) {
     // if no due time, never past due
     if (!duetime) { return false; }

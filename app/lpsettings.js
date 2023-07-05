@@ -41,6 +41,37 @@ if ("LOGIC_PENGUIN_DATA_DIR" in process.env) {
     appsettings.datadir = process.env.LOGIC_PENGUIN_DATA_DIR;
 }
 
+if ("LOGIC_PENGUIN_DEFAULT_CONSUMER" in process.env) {
+    appsettings.defaultconsumer =
+        process.env. LOGIC_PENGUIN_DEFAULT_CONSUMER;
+}
+
+if ("LOGIC_PENGUIN_DEFAULT_CONTEXT" in process.env) {
+    appsettings.defaultcontext =
+        process.env. LOGIC_PENGUIN_DEFAULT_CONTEXT;
+}
+
+if ("LOGIC_PENGUIN_DEFAULT_STUDENT" in process.env) {
+    appsettings.defaultstudent =
+        process.env. LOGIC_PENGUIN_DEFAULT_STUDENT;
+}
+
+if ("LOGIC_PENGUIN_DEFAULT_NOTATION" in process.env) {
+    appsettings.defaultnotation =
+        process.env. LOGIC_PENGUIN_DEFAULT_NOTATION;
+}
+
+if ("LOGIC_PENGUIN_DEFAULT_URL" in process.env) {
+    appsettings.defaulturl =
+        process.env. LOGIC_PENGUIN_DEFAULT_URL;
+}
+
+if ("LOGIC_PENGUIN_GRACEPERIOD" in process.env) {
+    appsettings.graceperiod = parseInt(
+        process.env.LOGIC_PENGUIN_GRACEPERIOD
+    );
+}
+
 if ("LOGIC_PENGUIN_GRADING_START_HOUR" in process.env) {
     appsettings.starthour = parseInt(
         process.env.LOGIC_PENGUIN_GRADING_START_HOUR
@@ -82,6 +113,37 @@ if (!("httpsport" in appsettings)) {
 if (!("datadir" in appsettings)) {
     appsettings.datadir = 'data';
 }
+
+// default consumer, context and student are those for development
+if (!("defaultconsumer" in appsettings)) {
+    appsettings.defaultconsumer = "lpdeveloper";
+}
+
+if (!("defaultcontext" in appsettings)) {
+    appsettings.defaultcontext = "testcontext";
+}
+
+if (!("defaultstudent" in appsettings)) {
+    appsettings.defaultstudent = "teststudent";
+}
+
+// cambridge as default notation; sorry Gary?
+if (!("defaultnotation" in appsettings)) {
+    appsettings.defaultnotation = "cambridge";
+}
+
+// default graceperiod is 300000 ms or 5 minutes
+if (!("graceperiod" in appsettings)) {
+    appsettings.graceperiod = 300000;
+}
+
+// default url is localhost; I think this is only used by scripty
+if (!("defaulturl" in appsettings)) {
+    appsettings.defaulturl = 'http://localhost';
+}
+
+// no defaults set for gradeinterval, starthour, startmin; without
+// gradeinterval, no grading will be done; starthour and startmin = 0
 
 // ensure data dir exists
 if (!lpfs.ensuredir(appsettings.datadir)) {

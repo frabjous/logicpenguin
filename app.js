@@ -159,10 +159,10 @@ app.get('/developmenttest/:exnum',
             res.send("not in development");
             return;
         }
-        const consumerkey = 'lpdeveloper';
-        const contextid = 'testcontext';
+        const consumerkey = appsettings.defaultconsumer;
+        const contextid = appsettings.defaultcontext;
         const exnum = req.params.exnum;
-        const userid = 'teststudent';
+        const userid = appsettings.defaultstudent;
         const launchid = 'developmenttest';
         if (!lpauth.verifylaunch(consumerkey, contextid, userid, exnum,
             launchid)) {
@@ -337,7 +337,7 @@ if (appsettings.gradeinterval) {
     let year = currentDateObj.getFullYear();
     let monthIndex = currentDateObj.getMonth();
     let date = currentDateObj.getDate();
-    // read time to start grading from settings
+    // read time to start grading from settings; or make midnight
     let hours = (appsettings.starthour ?? 0);
     let minutes = (appsettings.startmin ?? 0);
     // determine when that would be today
