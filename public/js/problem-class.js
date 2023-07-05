@@ -2,10 +2,15 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////////// problem-class.js //////////////////////////////////
+// The class that is common to all logic penguin problems               //
+//////////////////////////////////////////////////////////////////////////
+
 import tr from './translate.js';
 import { addelem, byid, sendAnswerToServer, localCheck } from './common.js';
 import LP from '../../load.js';
 
+// the problem is its HTML element, so we extend it
 export default class LogicPenguinProblem extends HTMLElement {
 
     constructor() {
@@ -46,16 +51,16 @@ export default class LogicPenguinProblem extends HTMLElement {
 
     // get what you need to describe current state of indicator
     getIndicatorStatus() {
-        let ind = {};
+        const ind = {};
         ind.successstatus = 'unanswered';
-        for (let s of LogicPenguinProblem.successStatuses) {
+        for (const s of LogicPenguinProblem.successStatuses) {
             if (this.classList.contains(s)) {
                 ind.successstatus = s;
                 break;
             }
         }
         ind.savestatus = 'unsaved';
-        for (let s of LogicPenguinProblem.saveStatuses) {
+        for (const s of LogicPenguinProblem.saveStatuses) {
             if (this.classList.contains(s)) {
                 ind.successstatus = s;
                 break;
@@ -66,7 +71,7 @@ export default class LogicPenguinProblem extends HTMLElement {
             ind.points = this.indicator.points.awarded;
         }
         if (this?.indicator?.msgarea) {
-            let iH = this.indicator.msgarea.innerHTML;
+            const iH = this.indicator.msgarea.innerHTML;
             if (iH != '') {
                 ind.message = iH;
             }
@@ -93,7 +98,7 @@ export default class LogicPenguinProblem extends HTMLElement {
 
     // get current answer and indicator state
     getState() {
-        let state = {};
+        const state = {};
         state.ans = this.getAnswer();
         state.ind = this.getIndicatorStatus();
         return state;
@@ -133,7 +138,6 @@ export default class LogicPenguinProblem extends HTMLElement {
         if (!this?.indicator?.points) { return; }
         if (!this?.maxpoints) { return; }
         // -1 is no points determined
-        // TODO: implement points slider
         if (p == -1) {
             if ("awarded" in this.indicator.points) {
                 delete this.indicator.points.awarded;
@@ -142,9 +146,9 @@ export default class LogicPenguinProblem extends HTMLElement {
         } else {
             if (this.maxpoints != 1) {
                 this.indicator.points.awarded = p;
-                this.indicator.points.innerHTML = 
+                this.indicator.points.innerHTML =
                     p.toString() + ' / ' + this.maxpoints.toString() +
-                    ' points awarded';
+                    ' ' + tr('points awarded');
             }
         }
         if (this.myproblemsdiv.progressbar) {
@@ -153,11 +157,11 @@ export default class LogicPenguinProblem extends HTMLElement {
     }
 
     markSaveStatus(s) {
-        // unsavable is permanent
+        // unsaveability is permanent
         if ((this.classList.contains("unsavable")) &&
             (s != 'malfunction') && (s != 'saveerror')) {
-            if (s == 'saved') { this.pseudosaved = true; }
-                else { this.pseudosaved = false; }
+                this.pseudosaved = ((s == 'saved') ? true : false);
+            }
             return;
         }
         this.pseudosaved = false;
@@ -193,7 +197,7 @@ export default class LogicPenguinProblem extends HTMLElement {
     // behave appropriately for checking or saving the answer
     processAnswer() {
         // read the necessary info
-        let state = this.getState();
+        const state = this.getState();
         if (!state) {
             this.setIndicator({
                 savestatus: 'malfunction',
@@ -205,15 +209,15 @@ export default class LogicPenguinProblem extends HTMLElement {
         }
 
         // determine if answer should be sent to the server
-        let serversend = (
+        const serversend = (
             window.exerciseinfo && window.exerciseinfo.savable &&
             (this.myprobsetnumber >= 0) && (this.mynumber >= 0) &&
             this.id && window.exnum && window.launchid &&
             window.consumerkey && window.userid && window.contextid);
-        let timestamp = (new Date()).getTime();
+        const timestamp = (new Date()).getTime();
 
         // do not send if expired
-        let ontime = (window.checkOnTime && window.wasontime) ?
+        const ontime = (window.checkOnTime && window.wasontime) ?
             window.checkOnTime(timestamp) : false;
         if (ontime === -1) {
             this.setIndicator({
@@ -248,7 +252,7 @@ export default class LogicPenguinProblem extends HTMLElement {
             });
             return;
         }
-        // check if local check possible
+        // see if local check possible
         if ("myanswer" in this && "myproblemtype" in this) {
             localCheck(this);
         }
@@ -296,11 +300,11 @@ export default class LogicPenguinProblem extends HTMLElement {
     }
 
     startOver() {
-        let wasunsavable = this.classList.contains('unsavable');
-        let hadindicator = (!!this.indicator);
-        let problem = this.myquestion;
-        let options = this.options;
-        let checksave = this.checksave;
+        const wasunsavable = this.classList.contains('unsavable');
+        const hadindicator = (!!this.indicator);
+        const problem = this.myquestion;
+        const options = this.options;
+        const checksave = this.checksave;
         this.innerHTML = '';
         this.makeProblem(problem, options, checksave);
         if (hadindicator) {
