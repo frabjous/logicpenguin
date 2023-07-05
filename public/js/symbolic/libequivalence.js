@@ -53,7 +53,7 @@ Possible modes:
 function apply(branch, s, mode, Formula) {
     const syntax = Formula.syntax;
     const symbols = syntax.symbols;
-    let f = Formula.from(s);
+    const f = Formula.from(s);
     // make sure what we need is there
     if (f.op && (f.op != symbols.FALSUM) &&
         (!f.right || (syntax.isbinaryop(f.op) && !f.left))) {
@@ -286,8 +286,8 @@ function contradicts(branch, s, mode, Formula) {
     const symbols = syntax.symbols;
     let f = Formula.from(s);
     // check if it contradicts already processed statement
-    for (let pstr of branch.processed) {
-        let p = Formula.from(pstr);
+    for (const pstr of branch.processed) {
+        const p = Formula.from(pstr);
         if ((p.normal == symbols.NOT + f.wrapifneeded()) ||
             (f.normal == symbols.NOT + p.wrapifneeded())) {
                 return true;
@@ -305,8 +305,8 @@ function contradicts(branch, s, mode, Formula) {
         }
     }
     // check if it contradicts an active universal
-    for (let ustr in branch.univ) {
-        let u = Formula.from(ustr);
+    for (const ustr in branch.univ) {
+        const u = Formula.from(ustr);
         if ((u.normal == symbols.NOT + f.wrapifneeded()) ||
             (f.normal == symbols.NOT + u.wrapifneeded())) {
                 return true;
@@ -317,12 +317,12 @@ function contradicts(branch, s, mode, Formula) {
 
 export function treeEquivtest(fp, fq, Formula) {
     const symbols = Formula.syntax.symbols;
-    let sprouts = [
+    const sprouts = [
         [ fp.normal, symbols.NOT + fq.wrapifneeded() ],
         [ fq.normal, symbols.NOT + fp.wrapifneeded() ]
     ];
     // TEST 1: REGULAR TABLEAUX (with termlimit)
-    let fullresult = tree(sprouts, 'full', Formula);
+    const fullresult = tree(sprouts, 'full', Formula);
     // todo: parse processed tree to describe countermodel?)
     if (!fullresult.undecided) {
         return {
@@ -333,7 +333,7 @@ export function treeEquivtest(fp, fq, Formula) {
     }
     // TEST 2: ABBREVIATED TRUTH TABLE TEST;
     // this can only identify non-equivalence
-    let attresult = tree(sprouts, 'abbreviatedtt', Formula);
+    const attresult = tree(sprouts, 'abbreviatedtt', Formula);
     if (!attresult.undecided && !attresult.closed) {
         return {
             equiv: false,
@@ -345,7 +345,7 @@ export function treeEquivtest(fp, fq, Formula) {
     // this can only identify non-equivalence as well
     // would probably catch everything abbreviatedtt test would
     // catch, but considerably slower in doing so?
-    let smallresult = tree(sprouts, 'small', Formula);
+    const smallresult = tree(sprouts, 'small', Formula);
     if (!smallresult.undecided && !smallresult.closed) {
         return {
             equiv: false,
@@ -371,9 +371,9 @@ function grow(branch, mode, Formula) {
     if ( (new Date()).getTime() > branch.deadline ) {
         return undecided(branch);
     }
-    for (let priority of ['high', 'medium', 'low']) {
+    for (const priority of ['high', 'medium', 'low']) {
         if (branch.queue[priority].length > 0) {
-            let processme = branch.queue[priority].shift();
+            const processme = branch.queue[priority].shift();
             // we can skip if already processed this very formula
             if (branch.processed.indexOf(processme) == -1) {
                 branch.processed.push(processme);
@@ -395,7 +395,7 @@ function grow(branch, mode, Formula) {
     // any others
     if (mode == "full") { 
         for (let n = 1 ; n <= branch.terms.length ; n++) {
-            for (let s in branch.univ) {
+            for (const s in branch.univ) {
                 // see how many letters applied
                 let ll = branch.univ[s];
                 if (ll.length < n) {
@@ -427,16 +427,16 @@ function newbranch(terms, termsleft) {
 // adds nodes and branches and merges results generally
 function nodes(branch, sprouts, mode, Formula) {
     // we convert to JSON to create clones of branch of need be
-    let branchjson = (sprouts.length > 1) ? JSON.stringify(branch) : '';
+    const branchjson = (sprouts.length > 1) ? JSON.stringify(branch) : '';
     // get result for each sprout group (= new branch)
     for (let i = 0; i < sprouts.length; i++) {
-        let sprout = sprouts[i];
+        const sprout = sprouts[i];
         // we can use the branch as trunk if it's the first or only one;
         // otherwise create a new branch trunk from the json
-        let trunk = (i==0) ? branch : JSON.parse(branchjson);
+        const trunk = (i==0) ? branch : JSON.parse(branchjson);
         // add each new sprout to queue by priority
-        for (let a of sprout) {
-            let priority = priorityOf(a, mode, Formula);
+        for (const a of sprout) {
+            const priority = priorityOf(a, mode, Formula);
             if (priority == 'univ') {
                 // add to universals
                 trunk.univ[a] = [];
@@ -478,8 +478,8 @@ function priorityOf(s, mode, Formula) {
     // new names: priority medium (existentials, negated universals)
     // branchers: priority low
     // or "univ" for universals, negated existentials (ultra-low)
-    let f = Formula.from(s);
-    let op = f.op ?? false;
+    const f = Formula.from(s);
+    const op = f.op ?? false;
     // affirmatives
     if (op === false || op == symbols.AND || op == symbols.FALSUM) {
         return 'high';
@@ -498,7 +498,7 @@ function priorityOf(s, mode, Formula) {
     }
     // negations
     if (op == symbols.NOT) {
-        let negop = f?.right?.op ?? false;
+        const negop = f?.right?.op ?? false;
         if (negop === false || negop == symbols.IFTHEN ||
             negop == symbols.OR || negop == symbols.FALSUM ||
             negop == symbols.NOT) {
@@ -526,16 +526,16 @@ function tree(sprouts, mode, Formula) {
     const ncRegEx = syntax.ncRegEx;
     const constCP = syntax.notation.constantsRange.codePointAt(0);
     let terms = [];
-    let termsleft = [];
+    const termsleft = [];
     if (mode != 'abbreviatedtt') {
-        for (let sprout of sprouts) {
-            for (let a of sprout) {
+        for (const sprout of sprouts) {
+            for (const a of sprout) {
                 terms = arrayUnion(terms, a.replace(ncRegEx,'').split(''));
             }
         }
         if (mode == 'small') {
-            let cp = constCP;
-            let c = String.fromCodePoint(cp);
+            const cp = constCP;
+            const c = String.fromCodePoint(cp);
             while (terms.length < smallInterpSize && cRegEx.test(c)) {
                 terms = arrayUnion(terms, [c]);
                 cp++;
@@ -543,8 +543,8 @@ function tree(sprouts, mode, Formula) {
             }
         }
         if (mode == 'full') {
-            let cp = constCP;
-            let c = String.fromCodePoint(cp);
+            const cp = constCP;
+            const c = String.fromCodePoint(cp);
             while (termsleft.length < termLimit && cRegEx.test(c)) {
                 if (terms.indexOf(c) == -1) {
                     termsleft.push(c);
@@ -573,8 +573,8 @@ function undecided(branch) {
 // just checks if provided answer as is in the right answer's database
 // of equivalents
 export function quickDBCheck(fp, fq, notationname) {
-    let equivs = loadEquivalents(fp.normal, notationname);
-    let isEquiv = (equivs.indexOf(fq.normal) != -1);
+    const equivs = loadEquivalents(fp.normal, notationname);
+    const isEquiv = (equivs.indexOf(fq.normal) != -1);
     return {
         equiv: isEquiv,
         method: 'quickdb',
@@ -585,10 +585,10 @@ export function quickDBCheck(fp, fq, notationname) {
 // look at all normal equivalents of provided answer and looks for each
 // one in the database for the right answer
 export function bidirectionalDBCheck(fp, fq, notationname) {
-    let equivs = loadEquivalents(fp.normal, notationname);
-    let givenequivs = equivProliferate(fq, {}, notationname);
-    for (let g of givenequivs) {
-        let isEquiv = (equivs.indexOf(g.normal) != -1);
+    const equivs = loadEquivalents(fp.normal, notationname);
+    const givenequivs = equivProliferate(fq, {}, notationname);
+    for (const g of givenequivs) {
+        const isEquiv = (equivs.indexOf(g.normal) != -1);
         if (isEquiv) {
             return {
                 equiv: true,
@@ -616,22 +616,22 @@ export function equivtest(fp, fq, notationname) {
         }
     }
     // check if already in database
-    let quickResult = quickDBCheck(fp, fq, notationname);
+    const quickResult = quickDBCheck(fp, fq, notationname);
     if (quickResult.determinate) { return quickResult; }
 
     // do a tree check
     const Formula = getFormulaClass(notationname);
-    let treeResult = treeEquivtest(fp, fq, Formula);
+    const treeResult = treeEquivtest(fp, fq, Formula);
     // if found a new equivalent, save it
     if (treeResult.determinate && treeResult.equiv) {
-        let equivs = loadEquivalents(fp.normal, notationname);
+        const equivs = loadEquivalents(fp.normal, notationname);
         equivs.push(fq.normal);
         saveEquivalents(fp.normal, equivs, notationname);
     }
     if (treeResult.determinate) { return treeResult; }
-    let bidirectionalResult = bidirectionalDBCheck(fp, fq, notationname);
+    const bidirectionalResult = bidirectionalDBCheck(fp, fq, notationname);
     if (bidirectionalResult.determinate && bidirectionalResult.equiv) {
-        let equivs = loadEquivalents(fp.normal, notationname);
+        const equivs = loadEquivalents(fp.normal, notationname);
         equivs.push(fq.normal);
         saveEquivalents(fp.normal, equivs, notationname);
     }
