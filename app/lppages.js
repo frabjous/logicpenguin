@@ -13,6 +13,8 @@ import lpfs from './lpfs.js';
 import lpdata from './lpdata.js';
 import path from 'node:path';
 
+const datadir = process.appsettings.datadir;
+
 // fills a templated string from list of fillins
 export function filltemplate(template, fillins) {
     let rv = template;
@@ -23,16 +25,16 @@ export function filltemplate(template, fillins) {
 }
 
 // gets an exercise html file with necessary info
-export async function getexercise(datadir, consumerkey,
-    contextid, userid, exnum, launchid) {
+export async function getexercise(consumerkey, contextid, userid, exnum,
+    launchid) {
     // fill the template in with these
-    let fillins = { consumerkey, contextid, userid, exnum, launchid };
+    const fillins = { consumerkey, contextid, userid, exnum, launchid };
 
     // load exercise metadata
     // note we do not use lpfs.loadjson because we also need the json
     // itself, not the parsed version
-    let exdir = path.join(datadir, consumerkey, contextid, 'exercises');
-    let exinfofile = path.join(exdir, exnum + '-info.json');
+    const exdir = path.join(datadir, consumerkey, contextid, 'exercises');
+    const exinfofile = path.join(exdir, exnum + '-info.json');
     let exinfojson = '';
     let exinfo = {};
     try {
@@ -44,9 +46,7 @@ export async function getexercise(datadir, consumerkey,
     }
 
     // ensure we got the needed info
-    if (!exinfo || !exinfo.problemsets) {
-        return false;
-    }
+    if (!exinfo || !exinfo.problemsets) { return false; }
     // fill in some additional info for the exercise
     fillins.exerciseinfo = exinfojson.trim();
     if (exinfo.longtitle) {
@@ -57,8 +57,8 @@ export async function getexercise(datadir, consumerkey,
 
     // determine number of problems for each set, and
     // whether to send answers for cheating purposes
-    let numprobslist = [];
-    let allowscheating = [];
+    const numprobslist = [];
+    const allowscheating = [];
     // loop over info for problem sets and see if it allows cheating
     for (const probsetinfo of exinfo.problemsets) {
         const probtype = probsetinfo.problemtype;
@@ -71,28 +71,25 @@ export async function getexercise(datadir, consumerkey,
     // note: problems and answers are a random set specific to
     // the individual; first we see if set has already been made
     // so determine userdir
-    let userdir = lpdata.userdir(datadir, consumerkey, contextid,
-        userid, false);
+    const userdir = lpdata.userdir(consumerkey, contextid, userid, false);
     if (!userdir) { return false; }
-    let userprobfile = path.join(userdir, 'problems', exnum + '.json');
-    let useransfile = path.join(userdir, 'answers', exnum + '.json');
+    const userprobfile = path.join(userdir, 'problems', exnum + '.json');
+    const useransfile = path.join(userdir, 'answers', exnum + '.json');
     let exerciseproblems = '';
     let exerciseanswers = 'false'; // as string for ◇insertion in template
     let allanswersjson = ''; // those answers we *might* add
     // determine if past due for this individual
-    if (!"duetime" in exinfo) {
-        exinfo.duetime = false;
-    }
-    let duetime = lpdata.whenPastDue(datadir, consumerkey, contextid,
-        userid, exnum, exinfo.duetime);
-    let pastdue = false; 
+    if (!"duetime" in exinfo) { exinfo.duetime = false; }
+    const duetime = lpdata.whenPastDue(consumerkey, contextid, userid,
+        exnum, exinfo.duetime);
+    let pastdue = false;
     if (duetime) {
         // add graceperiod or default of 300 secs = 5 minutes
-        let graceperiod = process?.appsettings?.graceperiod ?? 300000;
+        const graceperiod = process?.appsettings?.graceperiod ?? 300000;
         pastdue = ((new Date()).getTime() > duetime + graceperiod);
     }
     // determine whether cheating is allowed at all for anything
-    let anycheats = allowscheating.reduce((a,b) => (a||b));
+    const anycheats = allowscheating.reduce((a,b) => (a||b));
     // make the duetime a string for filling in template
     fillins.duetime = duetime.toString();
     // determine if problems already generated for user, if so read it,
@@ -109,13 +106,11 @@ export async function getexercise(datadir, consumerkey,
         let genexerciseanswers = '';
         [ exerciseproblems, allanswersjson ] = makeProblemSets(
             userdir, exdir, exnum, numprobslist);
-        if (exerciseproblems === false) {
-            return false;
-        }
+        if (exerciseproblems === false) { return false; }
     }
     // if problems already exist and answers are needed
     // read them from answers file
-    let needtocheckanswers = (anycheats || pastdue);
+    const needtocheckanswers = (anycheats || pastdue);
     if (needtocheckanswers && (allanswersjson === '') &&
         lpfs.isfile(useransfile)) {
         try {
@@ -131,7 +126,7 @@ export async function getexercise(datadir, consumerkey,
         exerciseanswers = allanswersjson;
     } else if (anycheats) {
         // otherwise just include answers for those allowing cheats
-        let allowedanswers = [];
+        const allowedanswers = [];
         let allanswers = [];
         try {
             allanswers = JSON.parse(allanswersjson);
@@ -163,9 +158,9 @@ export async function getexercise(datadir, consumerkey,
     fillins.exerciseanswers = exerciseanswers.trim();
 
     // get data for restoring old answers if needed
-    let restoredir = path.join(userdir, 'saved');
+    const restoredir = path.join(userdir, 'saved');
     if (!lpfs.ensuredir(restoredir)) { return false; }
-    let restorefile = path.join(restoredir, exnum + '.json');
+    const restorefile = path.join(restoredir, exnum + '.json');
     let restoredata = 'false'; // as string for ◇insertion in template
     if (lpfs.isfile(restorefile)) {
         try {
@@ -182,12 +177,12 @@ export async function getexercise(datadir, consumerkey,
 }
 
 // gets a lecture html file for a given unit
-export async function getlecture(datadir, consumerkey, contextid, unit) {
+export async function getlecture(consumerkey, contextid, unit) {
     // initialize what should be filled in in temmplate
-    let fillins = {};
-    let lectdir = path.join(datadir, consumerkey, contextid, 'lectures');
+    const fillins = {};
+    const lectdir = path.join(datadir, consumerkey, contextid, 'lectures');
     // read metadata about all lectures; ensure it and entry exist
-    let lectdata = lpfs.loadjson(path.join(lectdir, 'lectureinfo.json'));
+    const lectdata = lpfs.loadjson(path.join(lectdir, 'lectureinfo.json'));
     // sanity checks
     if (!lectdata) { return false; }
     if (!("contextdescription" in lectdata)) { return false; }
@@ -224,27 +219,27 @@ export function getpagetext(filename, fillins) {
 function makeProblemSets(userdir, exdir, exnum, numprobslist) {
 
     // read exercise problem pool
-    let allprobsfile = path.join(exdir, exnum + '-allproblems.json');
-    let allprobs = lpfs.loadjson(allprobsfile);
+    const allprobsfile = path.join(exdir, exnum + '-allproblems.json');
+    const allprobs = lpfs.loadjson(allprobsfile);
     if (!allprobs) { return [false, false]; }
 
     // read exercise answer pool
-    let answersfile = path.join(exdir, exnum + '-answers.json');
-    let answers = lpfs.loadjson(answersfile);
+    const answersfile = path.join(exdir, exnum + '-answers.json');
+    const answers = lpfs.loadjson(answersfile);
     if (!answers) { return [false, false]; }
 
     // ensure the number of sets match expected number
     if (allprobs.length != numprobslist.length) { return [false, false]; }
     if (answers.length != allprobs.length) { return [false, false]; }
-    let probsets = [];
-    let anssets = [];
+    const probsets = [];
+    const anssets = [];
 
     // loop through sets
     for (let i=0; i<allprobs.length; i++) {
-        let newprobset = [];
-        let newansset = [];
-        let probpool = allprobs[i];
-        let anspool = answers[i];
+        const newprobset = [];
+        const newansset = [];
+        const probpool = allprobs[i];
+        const anspool = answers[i];
         // ensure answers match question in number
         if (anspool.length != probpool.length) { return [false, false]; }
         // ensure there are enough problems in pool
@@ -267,10 +262,10 @@ function makeProblemSets(userdir, exdir, exnum, numprobslist) {
     }
 
     // determine save locations
-    let userprobdir = path.join(userdir, 'problems');
-    let userprobfile = path.join(userprobdir, exnum + '.json');
-    let useransdir = path.join(userdir, 'answers');
-    let useransfile = path.join(useransdir, exnum + '.json');
+    const userprobdir = path.join(userdir, 'problems');
+    const userprobfile = path.join(userprobdir, exnum + '.json');
+    const useransdir = path.join(userdir, 'answers');
+    const useransfile = path.join(useransdir, exnum + '.json');
 
     // ensure directories exist
     if (!lpfs.ensuredir(userprobdir) || !lpfs.ensuredir(useransdir)) {
