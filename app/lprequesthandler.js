@@ -60,7 +60,7 @@ lprequesthandler.saveAnswer = async function(reqobj) {
 
     // ensure exercise is savable
     const exinfo = lpdata.getExerciseInfo(consumerkey, contextid, exnum);
-    const { duetime, savable, servergraded } = exinfo;
+    let { duetime, savable, servergraded } = exinfo;
     if (!duetime) { duetime = false; }
     if (!savable) {
         return errResponse('Exercises in this set cannot be saved.');
