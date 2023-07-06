@@ -13,28 +13,39 @@ export default class JustificationInput extends FormulaInput {
 
     static getnew(opts) {
         let elem = super.getnew(opts);
+        // change classes to match different style
         elem.classList.remove("formulainput");
         elem.classList.remove("symbolic");
         elem.classList.add("justification");
+        // modify various functions
         elem.insOp = JustificationInput.insOp;
         elem.inputfix = JustificationInput.justFix;
         elem.insertLineNum = JustificationInput.insertLineNum;
         elem.insertRuleCite = JustificationInput.insertRuleCite;
+        // add an additional key listener
         elem.addEventListener("keydown", JustificationInput.keydownExtra);
         return elem;
     }
 
+    // stick a number at the end and reorganize
     static insertLineNum(n) {
         this.value = this.inputfix(n + ',' + this.value);
     }
 
     static insertRuleCite(rule) {
         this.value = this.inputfix(this.value);
+        // if has numbers before, remove current rule coming afterwards
         if (/[0-9 ,?]/.test(this.value)) {
             this.value = this.value.replace(/ .*/,'');
         } else {
-            this.value = '';
+            // if numbers at the end, remove what is before them
+            if (/ [0-9].*/.test(this.value)) {
+                this.value = this.value.replace(/^[^0-9]*/,'');
+            } else {
+                this.value = '';
+            }
         }
+        // if has numbers after, remove current rule coming before
         this.value = this.inputfix(this.value + ', ' + rule);
     }
 
