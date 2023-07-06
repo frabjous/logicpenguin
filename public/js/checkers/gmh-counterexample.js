@@ -2,11 +2,20 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////// checkers/gmh-counterexample.js ///////////////////////////
+// checks an old-style counterexample multiple choice problem       //
+//////////////////////////////////////////////////////////////////////
+
+// partial credit not really an option
+
+// returns a counterexample if one is given for the argument as well
+// to display as a comment
+
 export default async function(
     question, answer, givenans, partialcredit, points, cheat, options
 ) {
-    let correct = (answer.valid == givenans);
-    let counterexample = answer.counterexample ?? false;
+    const correct = (answer.valid == givenans);
+    const counterexample = answer.counterexample ?? false;
     return {
         successstatus: (correct ? "correct" : "incorrect"),
         counterexample: counterexample,
