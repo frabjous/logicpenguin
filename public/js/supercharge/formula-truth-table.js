@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////// supercharge/formula-truth-table.js //////////////////////////
+// adds a show answer button to formula truth tables                  //
+////////////////////////////////////////////////////////////////////////
+
+
 import { addelem } from '../common.js';
 
 export function chargeup(probelem) {

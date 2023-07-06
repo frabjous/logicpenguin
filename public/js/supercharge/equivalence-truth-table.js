@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////// supercharge/equivalence-truth-table.js //////////////////////
+// adds a show answer button to equivalence truth tables              //
+////////////////////////////////////////////////////////////////////////
+
+
 import { addelem } from '../common.js';
 
 export function chargeup(probelem) {

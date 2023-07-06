@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////// supercharge/argument-truth-table.js /////////////////////////
+// adds a show answer button to argument truth tables                 //
+////////////////////////////////////////////////////////////////////////
+
 import { addelem } from '../common.js';
 
 export function chargeup(probelem) {

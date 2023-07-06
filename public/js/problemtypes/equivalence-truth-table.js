@@ -75,6 +75,13 @@ export default class EquivalenceTruthTable extends TruthTable {
                 message: ''
             }
         });
+
+        // remove bad cells
+        const tdtd = this.getElementsByTagName("td");
+        for (const td of tdtd) {
+            td.classList.remove("badcell");
+        }
+
         // change multiple choice question class
         this.rnchoosediv.classList.remove("badnumber");
         if (this.mcquestion) {

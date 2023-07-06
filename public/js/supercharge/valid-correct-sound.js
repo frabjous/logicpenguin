@@ -2,7 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-import { addelem } from '../common.js';
+///////////// supercharge/valid-correct-sound.js /////////////////////////
+// doesn't really do anything because cheating is trivial for multiple  //
+// choice type questions                                                //
+//////////////////////////////////////////////////////////////////////////
 
 export function chargeup(probelem) {}
 

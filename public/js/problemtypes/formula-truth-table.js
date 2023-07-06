@@ -70,6 +70,11 @@ export default class FormulaTruthTable extends TruthTable {
                 message: ''
             }
         });
+        // remove bad cells
+        const tdtd = this.getElementsByTagName("td");
+        for (const td of tdtd) {
+            td.classList.remove("badcell");
+        }
         this.rnchoosediv.classList.remove("badnumber");
         if (this.mcquestion) {
             this.mcquestion.classList.remove("badsubquestion");

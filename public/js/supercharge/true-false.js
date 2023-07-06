@@ -2,17 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-import { addelem } from '../common.js';
+///////////////////// supercharge/true-false.js ///////////////////////
+// doesn't really do anything because it is trivial to get the right //
+// answer to a true/false question if initial answer is wrong        //
+///////////////////////////////////////////////////////////////////////
 
-export function chargeup(probelem) {
-    /* kept as reference; multiple choice
-     * does not need supercharging!
-    addelem('div', probelem, {
-        innerHTML: 'supercharged!',
-        myprob: probelem,
-        onclick: function() {
-            let r = this.myprob.getSolution();
-        }
-    }); */
-}
+export function chargeup(probelem) { }
 
