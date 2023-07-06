@@ -2,8 +2,13 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////// symbolic-argument-input.js ////////////////////////////////
+// creates an input box for an entire argument, where premises can be  //
+// added or removed, etc.                                              //
+/////////////////////////////////////////////////////////////////////////
+
 import { addelem, htmlEscape } from '../common.js';
-import Formula from '../symbolic/formula.js';
+import getFormulaClass from '../symbolic/formula.js';
 import FormulaInput from './formula-input.js';
 import tr from '../translate.js';
 
@@ -11,9 +16,14 @@ export default class SymbolicArgumentInput {
 
     static addPremise() {
         if (!this.premisecell) { return; }
-        let pr = addelem('div', this.premisecell, {
+        const pr = addelem('div', this.premisecell, {
             classes: ['symbargpremise']
         });
+        const opts = this.options ?? {};
+        // get notation name from Formula class if need be
+        if (!"notation" in opts) {
+            opts.notation = this.Formula.syntax.notationname;
+        }
         pr.myinput = FormulaInput.getnew( (this.options ?? {}) );
         pr.myinput.onchange = function() {
             this.classList.remove('error');
@@ -24,24 +34,30 @@ export default class SymbolicArgumentInput {
     }
 
     static clearme() {
-        let pp = this.getElementsByClassName("symbargpremise");
+        // remove all premises
+        const pp = this.getElementsByClassName("symbargpremise");
         while (pp.length > 0) {
             let p = pp[ pp.length - 1];
             p.parentNode.removeChild(p);
         }
+        // add a blank premise back
         this.addPremise();
-        let cc = this.getElementsByClassName("symbargconc");
+        // clear conclusion field
+        const cc = this.getElementsByClassName("symbargconc");
         if (cc && cc.length > 0 && cc[0].myinput) {
             cc[0].myinput.value = '';
         }
     }
 
+    // read the argument
     static getArgument() {
-        let arg = { prems: [], conc: '' };
-        let pp = this.getElementsByClassName("symbargpremise");
-        for (let p of pp) {
+        const arg = { prems: [], conc: '' };
+        const pp = this.getElementsByClassName("symbargpremise");
+        // read premises
+        for (const p of pp) {
             if (p.myinput && p.myinput.value != '') {
-                let f = Formula.from(p.myinput.value);
+                const f = this.Formula.from(p.myinput.value);
+                // make non-well formed formulas an error
                 if (!f.wellformed) {
                     p.myinput.classList.add('error');
                     return false;
@@ -49,14 +65,17 @@ export default class SymbolicArgumentInput {
                 arg.prems.push(f.normal);
             }
         }
-        let cc = this.getElementsByClassName("symbargconc");
+        // read conclusion
+        const cc = this.getElementsByClassName("symbargconc");
         if (!cc || cc.length < 1) { return false; }
-        let c = cc[0];
+        const c = cc[0];
+        // conclusion cannot be empty
         if (!c.myinput || c.myinput.value == '') {
             return false;
         }
-        let s = c.myinput.value;
-        let cf = Formula.from(s);
+        const s = c.myinput.value;
+        const cf = this.Formula.from(s);
+        // check its conclusion for being well-formed
         if (!cf.wellformed) {
             c.myinput.classList.add('error');
             return false;
@@ -66,20 +85,34 @@ export default class SymbolicArgumentInput {
     }
 
     static getnew(options = {}) {
-        let elem = document.createElement("div");
+        // use cambridge if no notation given
+        options.notation = options.notation ?? 'cambridge';
+
+        // create base element
+        const elem = document.createElement("div");
         elem.classList.add('symbolicargumentinput');
         elem.options = options;
-        let table = addelem('table', elem);
-        let tbody = addelem('tbody', table);
-        let premrow = addelem('tr', tbody);
-        let premlabel = addelem('td', premrow, {
+
+        // assign Formula class based on notation
+        const Formula = getFormulaClass(options.notation);
+        elem.Formula = Formula;
+
+        // create table
+        const table = addelem('table', elem);
+        const tbody = addelem('tbody', table);
+
+        // create expandable row for premises
+        const premrow = addelem('tr', tbody);
+        const premlabel = addelem('td', premrow, {
             innerHTML: tr('premises')
         });
         elem.premisecell = addelem('td', premrow);
-        let buttonrow = addelem('tr', tbody);
-        let buttonlabel = addelem('td', buttonrow);
-        let buttoncell = addelem('td', buttonrow);
-        let plusbutton = addelem('button', buttoncell, {
+        const buttonrow = addelem('tr', tbody);
+        const buttonlabel = addelem('td', buttonrow);
+        const buttoncell = addelem('td', buttonrow);
+
+        // create plus and minus buttons
+        const plusbutton = addelem('button', buttoncell, {
             type: 'button',
             innerHTML: '+',
             classes: ['symbarginputbutton'],
@@ -88,7 +121,7 @@ export default class SymbolicArgumentInput {
             }
         });
         plusbutton.myelem = elem;
-        let minusbutton = addelem('button', buttoncell, {
+        const minusbutton = addelem('button', buttoncell, {
             type: 'button',
             innerHTML: '−',
             classes: ['symbarginputbutton'],
@@ -97,32 +130,44 @@ export default class SymbolicArgumentInput {
             }
         });
         minusbutton.myelem = elem;
+
+        // functions for adding and removing premises
         elem.addPremise = SymbolicArgumentInput.addPremise;
         elem.removePremise = SymbolicArgumentInput.removePremise;
+
+        // start with a blank premise
         elem.addPremise();
-        let concrow = addelem('tr', tbody);
-        let conclabel = addelem('td', concrow,{
+
+        // create row for conclusion
+        const concrow = addelem('tr', tbody);
+        const conclabel = addelem('td', concrow,{
             innerHTML: tr('conclusion')
         });
-        let conccell = addelem('td', concrow);
-        let concdiv = addelem('div', conccell,{
+        const conccell = addelem('td', concrow);
+        const concdiv = addelem('div', conccell,{
             classes: ['symbargconc']
         });
+
+        // conclusion input field
         concdiv.myinput = FormulaInput.getnew(options);
         concdiv.myinput.onchange = function() {
             this.classList.remove('error');
         }
         concdiv.appendChild(concdiv.myinput);
+
+        // assign get argument and clearing functions
         elem.getArgument = SymbolicArgumentInput.getArgument;
         elem.clearme = SymbolicArgumentInput.clearme;
+
+        // return the element
         return elem;
     }
 
     static removePremise() {
-        let pp = this.getElementsByClassName("symbargpremise");
+        const pp = this.getElementsByClassName("symbargpremise");
         if (!pp) { return; }
         if (pp.length < 1) { return; }
-        let goner = pp[ pp.length - 1 ];
+        const goner = pp[ pp.length - 1 ];
         goner.parentNode.removeChild(goner);
     }
 

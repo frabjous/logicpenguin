@@ -57,8 +57,8 @@ export default class FormulaInput {
         }
 
         // hide symbol insertion widget focused for this
-        if (window.symbolwidget) {
-            window.symbolwidget.hide();
+        if (this.symbolwidget) {
+            this.symbolwidget.hide();
         }
 
         // don't hide the rule display if losing focus because of click
@@ -97,8 +97,8 @@ export default class FormulaInput {
         if (this.readOnly) { return; }
 
         // show the symbol insertion widget
-        if (window.symbolwidget) {
-            window.symbolwidget.showfor(this);
+        if (this.symbolwidget) {
+            this.symbolwidget.showfor(this);
         }
 
         // check if script calling it has added a hook to focus
