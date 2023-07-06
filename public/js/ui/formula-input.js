@@ -134,13 +134,14 @@ export default class FormulaInput {
 
         // attach the proper syntax, symbols and inputfix for the notation
         // defaulting to cambridge
-        let notation = 'cambridge';
-        if (opts?.notation) {
-            notation = opts.notatation;
-        }
+        // let notation = 'cambridge';
+        options.notation = options?.notation ?? 'cambridge';
+        const notation = options.notation;
         const syntax = getSyntax(notation);
+        console.log(syntax);
         elem.syntax = syntax;
         elem.symbols = syntax.symbols;
+        console.log(elem.symbols);
         elem.inputfix = syntax.inputfix;
 
         // attach a symbolwidget
@@ -316,7 +317,7 @@ export default class FormulaInput {
         if (e.key == 'X') {
             if (this.value.at(this.selectionStart - 1) == 'X') {
                 e.preventDefault();
-                this.autoChange(/\s*X$/, '', ' ' + symbols.FALSUM, null, null);
+                this.autoChange(/\s*X$/, '', ' ' + this.symbols.FALSUM, null, null);
             }
             return;
         }
@@ -348,7 +349,7 @@ export default class FormulaInput {
             e.preventDefault();
             const len = this.value.substr(0,this.selectionStart)
                 .match(/-+$/g)[0].length;
-            const nots = symbols.NOT.repeat(len);
+            const nots = this.symbols.NOT.repeat(len);
             this.autoChange(/-+$/,'', nots + e.key, null, null);
         }
 
@@ -424,7 +425,7 @@ function makeSymbolWidgetFor(notationname) {
             td.classList.add('symbolwidgetbutton');
             td.onclick = () => {
                 if (!symbolwidget.targetInput) { return; }
-                symbolwidget.targetInput.insOp(this.myOp);
+                symbolwidget.targetInput.insOp(td.myOp);
             };
         }
         // function to show up for a given input; may have options to
@@ -442,7 +443,7 @@ function makeSymbolWidgetFor(notationname) {
             for (const q of ['FORALL', 'EXISTS']) {
                 if (this.buttonfor[q]) {
                     if (elem.pred && (!( q == 'FORALL' && 
-                    (this.myWidget.syntax.notation.quantifierForm.search('\\?') >= 0)) )) {
+                    (this.syntax.notation.quantifierForm.search('\\?') >= 0)) )) {
                         this.buttonfor[q].classList.remove("hidden");
                     } else {
                         this.buttonfor[q].classList.add("hidden");

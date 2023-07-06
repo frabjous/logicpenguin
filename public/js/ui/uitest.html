@@ -36,26 +36,26 @@
             window.onload = function() {
                 const nmydiv = document.getElementById("mydiv");
                 for (const notationname in notations) {
-                    const mydiv - document.createElement("div");
+                    const mydiv = document.createElement("div");
                     nmydiv.appendChild(mydiv);
                     const hdr = document.createElement("h2");
                     mydiv.appendChild(hdr);
                     hdr.innerHTML = notationname;
-                    const inp = FormulaInput.getnew({ pred: false, lazy: true});
+                    const inp = FormulaInput.getnew({ pred: false, lazy: true, notation: notationname });
                     mydiv.appendChild(inp);
                     mydiv.appendChild(document.createElement('p'));
                     mydiv.appendChild(document.createElement('p'));
-                    const twimp = FormulaInput.getnew({ pred: false, lazy: false, nofalsum: true});
+                    const twimp = FormulaInput.getnew({ pred: false, lazy: false, nofalsum: true, notation: notationname });
                     mydiv.appendChild(twimp);
                     mydiv.appendChild(document.createElement('p'));
                     mydiv.appendChild(document.createElement('p'));
-                    const eimp = FormulaInput.getnew({ pred: true, nofalsum: false});
+                    const eimp = FormulaInput.getnew({ pred: true, nofalsum: false, notation: notationname });
                     mydiv.appendChild(eimp);
                     mydiv.appendChild(document.createElement('p'));
                     mydiv.appendChild(document.createElement('p'));
-                    const ximp = FormulaInput.getnew({ pred: true, nofalsum: true});
+                    const ximp = FormulaInput.getnew({ pred: true, nofalsum: true, notation: notationname });
                     mydiv.appendChild(ximp);
-                    const ji = JustificationInput.getnew({ pred: true, nofalsum: false});
+                    const ji = JustificationInput.getnew({ pred: true, nofalsum: false, notation: notationname });
                     ji.value="hello";
                     mydiv.appendChild(ji);
                 }

@@ -94,7 +94,7 @@ export default class JustificationInput extends FormulaInput {
 
     // look for problem specific key listener extras
     static keydownExtra(e) {
-        if (this.myline.mysubderiv.myprob.justKeydownExtra) {
+        if (this?.myline?.mysubderiv?.myprob?.justKeydownExtra) {
             this.myline.mysubderiv.myprob.justKeydownExtra(e, this);
         }
     }
