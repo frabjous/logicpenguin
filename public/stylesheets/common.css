@@ -558,6 +558,7 @@ a#lplogo:hover span {
     color: var(--lpgray2);
 }
 
+.logicpenguin button,
 .logicpenguin .buttondiv button {
     background-color: var(--lpblue);
     color: var(--lpgray6);
@@ -572,18 +573,29 @@ a#lplogo:hover span {
     font-size: inherit;
 }
 
+.logicpenguin .symbolicargumentinput td button {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    margin-right: 0.5em;
+}
+
+.logicpenguin button:hover,
 .logicpenguin .buttondiv button:hover {
     background-color: var(--lpcyan);
     color: var(--lpwhite);
 }
 
+.logicpenguin button:active,
 .logicpenguin .buttondiv button:active {
     background-color: var(--lpmagenta);
     color: var(--lpwhite);
 }
 
-
-.logicpenguin .buttondiv button:disabled,
+.logicpenguin button:disabled,
+.logicpenguin button:disabled:hover,
+.logicpenguin button[disabled]:hover,
 .logicpenguin .buttondiv button:disabled,
 .logicpenguin .buttondiv button:disabled:hover,
 .logicpenguin .buttondiv button[disabled]:hover {

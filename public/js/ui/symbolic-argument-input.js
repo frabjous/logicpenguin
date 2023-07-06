@@ -113,6 +113,7 @@ export default class SymbolicArgumentInput {
 
         // create plus and minus buttons
         const plusbutton = addelem('button', buttoncell, {
+            title: 'add premise',
             type: 'button',
             innerHTML: '+',
             classes: ['symbarginputbutton'],
@@ -122,6 +123,7 @@ export default class SymbolicArgumentInput {
         });
         plusbutton.myelem = elem;
         const minusbutton = addelem('button', buttoncell, {
+            title: 'remove premise',
             type: 'button',
             innerHTML: '−',
             classes: ['symbarginputbutton'],
