@@ -208,7 +208,7 @@ export default class LogicPenguinProblem extends HTMLElement {
         }
 
         // determine if answer should be sent to the server
-        const serversend = (
+        let serversend = (
             window.exerciseinfo && window.exerciseinfo.savable &&
             (this.myprobsetnumber >= 0) && (this.mynumber >= 0) &&
             this.id && window.exnum && window.launchid &&
