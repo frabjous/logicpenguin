@@ -2,13 +2,19 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+//////////////// checkers/formula-truth-table.js ///////////////////////
+// determines if a truth-table answer for a single formula is correct //
+////////////////////////////////////////////////////////////////////////
+
 import { fullTableMatch } from './truth-tables.js';
 
+// tests whether they should think the statement is a tautology,
+// self contradiction or contingent
 function shouldBe(rows, opspot) {
     let taut = true;
     let contra = true;
     let comp = true;
-    for (let r of rows) {
+    for (const r of rows) {
         if (r[opspot] === -1) {
             comp = false;
             taut = false;
@@ -25,19 +31,24 @@ function shouldBe(rows, opspot) {
     return { taut, contra, comp };
 }
 
+// partial credit is based on 5 points for the table, and 2 additional
+// points if there is a partial credit portion; these 2 points are
+// awarded if the answer is either correct or would be correct if the
+// table was right
+
 export default async function(
     question, answer, givenans, partialcredit, points, cheat, options
 ) {
     let correct = true;
     // check table portion
     let offive = 0;
-    let tmResult = fullTableMatch(answer.rows, givenans.right.rows);
+    const tmResult = fullTableMatch(answer.rows, givenans.right.rows);
     if ((tmResult.offcells.length == 0) && (tmResult.rowdiff == 0)) {
         offive = 5;
     } else {
         correct = false;
         // todo? tweak this?
-        let shouldachecked = (answer.rows.length * answer.rows[0].length);
+        const shouldachecked = (answer.rows.length * answer.rows[0].length);
         if (tmResult.numchecked > 0) {
             offive = (( tmResult.numchecked -
                 tmResult.offcells.length ) / shouldachecked) * 4;
@@ -83,10 +94,12 @@ export default async function(
             awarded = (correct) ? points: 0;
         }
     }
-    let rv = {
+    const rv = {
         successstatus: (correct ? "correct" : "incorrect"),
         points: awarded
     }
+    // only send off cells back to browser if they are allowed to 
+    // cheat at this stage
     if (cheat && !correct) {
         rv.offcells = tmResult.offcells;
         if (options.question) {
@@ -97,11 +110,3 @@ export default async function(
     return rv;
 }
 
-/*
- * answer:
- * taut, contra, opspot, rows
- *
- * lefts []
- * right { rows, howhls }
- * 
- */

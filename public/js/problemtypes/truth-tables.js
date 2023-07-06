@@ -399,9 +399,10 @@ export default class TruthTable extends LogicPenguinProblem {
     restoreTable(table, tdata) {
         // restore cells
         const trtr = table.tbody.getElementsByTagName('tr');
+        console.log(trtr);
         const currrows = trtr.length;
         if (currrows > tdata.rows.length) {
-            this.removeRows(currows - tdata.rows.length);
+            this.removeRows(currrows - tdata.rows.length);
             this.numRowInput.value = tdata.rows.length;
         }
         if (tdata.rows.length > currrows) {
