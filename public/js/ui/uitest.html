@@ -31,12 +31,40 @@
 
         <script type="module">
             import notations from '../symbolic/notations.js';
-            import JustificationInput from './justification-input.js';
-            import FormulaInput from './formula-input.js';
+            /*import JustificationInput from './justification-input.js';
+            import FormulaInput from './formula-input.js';*/
+            import SymbolicArgumentInput from './symbolic-argument-input.js';
             window.onload = function() {
                 const nmydiv = document.getElementById("mydiv");
                 for (const notationname in notations) {
                     const mydiv = document.createElement("div");
+                    nmydiv.appendChild(mydiv);
+                    const n = document.createElement("h2");
+                    n.innerHTML = notationname;
+                    mydiv.appendChild(n);
+                    const h = document.createElement("h4");
+                    h.innerHTML = "Sentential";
+                    mydiv.appendChild(h);
+                    const slai = SymbolicArgumentInput.getnew({ pred: false, lazy: true, notation: notationname });
+                    mydiv.appendChild(slai);
+                    const ph = document.createElement("h4");
+                    ph.innerHTML = "Predicate";
+                    mydiv.appendChild(ph);
+                    const plai = SymbolicArgumentInput.getnew({ pred: true, notation: notationname });
+                    mydiv.appendChild(plai);
+                    mydiv.appendChild(document.createElement("p"));
+                    mydiv.submitB = document.createElement("button");
+                    mydiv.submitB.type ="button";
+                    mydiv.submitB.innerHTML ="check";
+                    mydiv.submitB.mySlai = slai;
+                    mydiv.submitB.myPlai = plai;
+                    mydiv.submitB.onclick = function() {
+                        console.log(this.mySlai.getArgument());
+                        console.log(this.myPlai.getArgument());
+                    }
+                    mydiv.appendChild(mydiv.submitB);
+
+                /*
                     nmydiv.appendChild(mydiv);
                     const hdr = document.createElement("h2");
                     mydiv.appendChild(hdr);
@@ -58,6 +86,7 @@
                     const ji = JustificationInput.getnew({ pred: true, nofalsum: false, notation: notationname });
                     ji.value="hello";
                     mydiv.appendChild(ji);
+                */
                 }
             }
         </script>

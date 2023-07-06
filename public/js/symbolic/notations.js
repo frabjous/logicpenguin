@@ -57,7 +57,7 @@ const notations = {
     },
     "copi": {
         OR      : '∨',
-        AND     : '∙',
+        AND     : '•',
         IFTHEN  : '⊃',
         IFF     : '≡',
         NOT     : '~',

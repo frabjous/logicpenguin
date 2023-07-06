@@ -138,10 +138,8 @@ export default class FormulaInput {
         options.notation = options?.notation ?? 'cambridge';
         const notation = options.notation;
         const syntax = getSyntax(notation);
-        console.log(syntax);
         elem.syntax = syntax;
         elem.symbols = syntax.symbols;
-        console.log(elem.symbols);
         elem.inputfix = syntax.inputfix;
 
         // attach a symbolwidget
@@ -405,7 +403,7 @@ function makeSymbolWidgetFor(notationname) {
         const symbolwidget = symbolwidgets[notationname];
         symbolwidget.classList.add("symbolinsertwidget",
             "symbolic", "logicpenguin");
-        symbolwidget.syntax = getSyntax("notationname");
+        symbolwidget.syntax = getSyntax(notationname);
         symbolwidget.symbols = symbolwidget.syntax.symbols;
         const symbols = symbolwidget.symbols;
 
