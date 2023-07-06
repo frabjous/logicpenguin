@@ -161,8 +161,7 @@ export default class LogicPenguinProblem extends HTMLElement {
         if ((this.classList.contains("unsavable")) &&
             (s != 'malfunction') && (s != 'saveerror')) {
                 this.pseudosaved = ((s == 'saved') ? true : false);
-            }
-            return;
+                return;
         }
         this.pseudosaved = false;
         this.classList.remove(...LogicPenguinProblem.saveStatuses);

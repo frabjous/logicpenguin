@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////// true-false.js ////////////////////////////////////////
+// true or false type questions; a sub-class of multiple choice        //
+/////////////////////////////////////////////////////////////////////////
+
 import MultipleChoiceExercise from './multiple-choice.js';
 import tr from '../translate.js';
 
@@ -9,20 +13,24 @@ export default class TrueFalseExercise extends MultipleChoiceExercise {
     constructor(probleminfo) {
         super();
     }
+
+    // problem is just a multiple choice problem with two options
     makeProblem(problem, options, checksave) {
-        let probwithoptions = {}
+        const probwithoptions = {}
         probwithoptions.prompt = problem.prompt;
         probwithoptions.choices = [ tr('True'), tr('False') ];
         super.makeProblem(probwithoptions, options, checksave);
         this.myquestion = problem;
     }
+
     getAnswer() {
         // True if index 0; return true if that's what's checked
         // Or -1 if neither is checked
-        let checkedindex = super.getAnswer();
+        const checkedindex = super.getAnswer();
         if (checkedindex === -1) { return -1; }
         return (checkedindex == 0);
     }
+
     restoreAnswer(ans) {
         // first box = True; so checked when ans=true
         // second box = False, so checked when ans=false

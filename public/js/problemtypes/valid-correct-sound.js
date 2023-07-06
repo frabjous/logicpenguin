@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+//////////////// valid-correct-sound.js //////////////////////////////////
+// given a categorical-style argument, determine whether it is valid or //
+// invalid, factually correct or not, and sound or unsound              //
+//////////////////////////////////////////////////////////////////////////
+
 import LogicPenguinProblem from '../problem-class.js';
 import { addelem, byid } from   '../common.js';
 import { randomString } from    '../misc.js';
@@ -15,7 +20,7 @@ export default class ValidCorrectSound extends LogicPenguinProblem {
     }
 
     checkIfComplete() {
-        let ans = this.getAnswer();
+        const ans = this.getAnswer();
         if ((ans.correct != -2) && (ans.valid != -2) && (ans.sound != -2)) {
             this.processAnswer();
         }
@@ -40,13 +45,13 @@ export default class ValidCorrectSound extends LogicPenguinProblem {
             while (document.getElementById(randomid));
         this.radiotable.id = randomid;
 
-        let rtbody = addelem('tbody', this.radiotable, {});
+        const rtbody = addelem('tbody', this.radiotable, {});
         this.radiosets = {};
-        for (let q of ['Factually correct?', 'Valid?', 'Sound?']) {
-            let squishq = q.toLowerCase().replace(/[^a-z]/g,'');
-            let xtr = addelem('tr',rtbody,{});
-            let tdc = addelem('td', xtr, {innerHTML: tr(q)});
-            let tdr = addelem('td', xtr);
+        for (const q of ['Factually correct?', 'Valid?', 'Sound?']) {
+            const squishq = q.toLowerCase().replace(/[^a-z]/g,'');
+            const xtr = addelem('tr',rtbody,{});
+            const tdc = addelem('td', xtr, {innerHTML: tr(q)});
+            const tdr = addelem('td', xtr);
             this.radiosets[squishq] = {};
             this.radiosets[squishq].yes = addelem('input', tdr, {
                 type: 'radio',
@@ -59,7 +64,7 @@ export default class ValidCorrectSound extends LogicPenguinProblem {
                     this.myprob.checkIfComplete();
                 }
             });
-            let ylabel = addelem('label', tdr, {
+            const ylabel = addelem('label', tdr, {
                 innerHTML: tr('Yes'),
                 htmlFor: randomid + '-' + squishq + '-yes'
             });
@@ -74,7 +79,7 @@ export default class ValidCorrectSound extends LogicPenguinProblem {
                     this.myprob.checkIfComplete();
                 }
             });
-            let nlabel = addelem('label', tdr, {
+            const nlabel = addelem('label', tdr, {
                 innerHTML: tr('No'),
                 htmlFor: randomid + '-' + squishq + '-no'
             });
@@ -90,7 +95,7 @@ export default class ValidCorrectSound extends LogicPenguinProblem {
                         this.myprob.checkIfComplete();
                     }
                 });
-                let ctlabel = addelem('label', tdr, {
+                const ctlabel = addelem('label', tdr, {
                     innerHTML: tr('Can’t Tell'),
                     htmlFor: randomid + '-' + squishq + '-canttell'
                 });
@@ -114,9 +119,9 @@ export default class ValidCorrectSound extends LogicPenguinProblem {
     }
 
     restoreAnswer(ans) {
-        for (let subq of ['correct','valid','sound']) {
-            let squish = (subq=='correct') ? 'factuallycorrect' : subq;
-            let thisans = ans[subq];
+        for (const subq of ['correct','valid','sound']) {
+            const squish = (subq=='correct') ? 'factuallycorrect' : subq;
+            const thisans = ans[subq];
             this.radiosets[squish].yes.checked = (thisans === true);
             this.radiosets[squish].no.checked = (thisans === false);
             if (this.options.allowcanttell) {

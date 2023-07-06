@@ -2,6 +2,12 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////// gmh-counterexample /////////////////////////////////
+// asks if a given categorical-type argument has counterexamples;    //
+// will hopefully replaced with a better way of asking for           //
+// counterexamples                                                   //
+///////////////////////////////////////////////////////////////////////
+
 import LogicPenguinProblem from '../problem-class.js';
 import { addelem, byid } from   '../common.js';
 import { randomString } from    '../misc.js';
@@ -33,12 +39,15 @@ export default class OldCounterexample extends LogicPenguinProblem {
             while (document.getElementById(randomid));
         this.radiotable.id = randomid;
 
-        let rtbody = addelem('tbody', this.radiotable, {});
-        let xtr = addelem('tr',rtbody,{});
-        let tdc = addelem('td', xtr, {
-            innerHTML: 'Can a counterexample be constructed?'
+        // create a table for the answer options
+        const rtbody = addelem('tbody', this.radiotable, {});
+        const xtr = addelem('tr',rtbody,{});
+        const tdc = addelem('td', xtr, {
+            innerHTML: tr('Can a counterexample be constructed?')
         });
-        let tdr = addelem('td', xtr);
+        const tdr = addelem('td', xtr);
+
+        // create yes or no radio options
         this.radios = {};
         this.radios.yes = addelem('input', tdr, {
             type: 'radio',
@@ -50,7 +59,7 @@ export default class OldCounterexample extends LogicPenguinProblem {
                 this.myprob.processAnswer();
             }
         });
-        let ylabel = addelem('label', tdr, {
+        const ylabel = addelem('label', tdr, {
             innerHTML: tr('Yes'),
             htmlFor: randomid + 'rb-yes'
         });
@@ -64,7 +73,7 @@ export default class OldCounterexample extends LogicPenguinProblem {
                 this.myprob.processAnswer();
             }
         });
-        let nlabel = addelem('label', tdr, {
+        const nlabel = addelem('label', tdr, {
             innerHTML: tr('No'),
             htmlFor: randomid + 'rb-no'
         });
@@ -73,6 +82,8 @@ export default class OldCounterexample extends LogicPenguinProblem {
             if (this.no.checked) { return false; }
             return -1;
         }
+
+        // comment is where we might show an actual counterexample
         this.comment = addelem('div',this, {
             classes: ['counterexample']
         });
@@ -90,6 +101,8 @@ export default class OldCounterexample extends LogicPenguinProblem {
         this.radios.no.checked = (ans === true);
     }
 
+    // setting the indicator should also show a counterexample
+    // if indeed one can be constructed
     setIndicator(ind) {
         super.setIndicator(ind);
         if (ind.counterexample) {
@@ -99,6 +112,7 @@ export default class OldCounterexample extends LogicPenguinProblem {
         }
     }
 
+    // the counterexamples are implemented as argument boxes
     showCounterexample(counterexample) {
         if (!this.comment) { return; }
         this.comment.innerHTML = '';
@@ -106,7 +120,7 @@ export default class OldCounterexample extends LogicPenguinProblem {
             innerHTML: 'Counterexample: ',
             classes: [ 'counterexamplelabel' ]
         });
-        let ctxBox = argumentBox(counterexample.prems,
+        const ctxBox = argumentBox(counterexample.prems,
             counterexample.conc);
         this.comment.append(ctxBox);
     }
