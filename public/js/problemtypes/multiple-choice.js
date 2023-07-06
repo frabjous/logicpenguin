@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////////// multiple-choice.js ///////////////////////////////
+// multiple choice problem type                                       //
+////////////////////////////////////////////////////////////////////////
+
 import LogicPenguinProblem from '../problem-class.js';
 import { addelem, byid } from '../common.js';
 import { randomString } from '../misc.js';

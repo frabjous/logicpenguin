@@ -2,10 +2,14 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////// truth-tables.js ///////////////////////////////////////
+// the common basis of all truth-table problems                        //
+/////////////////////////////////////////////////////////////////////////
+
 import LogicPenguinProblem from '../problem-class.js';
 import { addelem, byid, htmlEscape } from '../common.js';
 import { randomString } from '../misc.js';
-import { syntax, operators } from '../symbolic/libsyntax.js';
+import getSyntax from '../symbolic/libsyntax.js';
 import  tr from '../translate.js';
 
 export default class TruthTable extends LogicPenguinProblem {
@@ -17,7 +21,7 @@ export default class TruthTable extends LogicPenguinProblem {
 
     // create a clickable cell
     addClickCell(tre) {
-        let c = addelem('td', tre, {
+        const c = addelem('td', tre, {
             innerHTML: '',
             title: tr('click to toggle, or press T/F'),
             myprob: this,
@@ -47,15 +51,15 @@ export default class TruthTable extends LogicPenguinProblem {
         this.label.classList.add("hidden");
         this.startIns.classList.add("hidden");
         this.tableDiv.classList.remove("hidden");
-        for (let table of [ ...this.leftTables, this.rightTable ]) {
-            for (var i = 0; i < n; i++) {
+        for (const table of [ ...this.leftTables, this.rightTable ]) {
+            for (let i = 0; i < n; i++) {
                 let tre = addelem('tr', table.tbody, {});
                 tre.ttcells = [];
-                for (let i = 0; i < table.cellwidth; i++) {
+                for (let k = 0; k < table.cellwidth; k++) {
                     tre.ttcells.push(this.addClickCell(tre));
                 }
                 if (table.isright) {
-                    let cbcell = addelem('td', tre, {
+                    const cbcell = addelem('td', tre, {
                         classes: [ 'ttcbcell' ] 
                     });
                     tre.rowcheckbox = addelem('input', cbcell, {
@@ -74,11 +78,11 @@ export default class TruthTable extends LogicPenguinProblem {
     // checks if entire series of tables filled in
     checkIfComplete() {
         let hasrows = false;
-        for (let table of [ ...this.leftTables, this.rightTable ]) {
-            let trtr = table.tbody.getElementsByTagName("tr");
-            for (let tre of trtr) {
+        for (const table of [ ...this.leftTables, this.rightTable ]) {
+            const trtr = table.tbody.getElementsByTagName("tr");
+            for (const tre of trtr) {
                 hasrows = true;
-                for (let c of tre.ttcells) {
+                for (const c of tre.ttcells) {
                     if (c.innerHTML == '') { return false; }
                 }
             }
@@ -89,8 +93,8 @@ export default class TruthTable extends LogicPenguinProblem {
     // get info on highlights and all table cells
     // add to this for particular problem types to get answer
     getAnswer() {
-        let ans = { lefts: [] };
-        for (let table of this.leftTables) {
+        const ans = { lefts: [] };
+        for (const table of this.leftTables) {
             ans.lefts.push(this.getTableData(table));
         }
         ans.right = this.getTableData(this.rightTable);
@@ -100,8 +104,8 @@ export default class TruthTable extends LogicPenguinProblem {
 
     // gets which columns in a table are highlighted
     getColHLs(table) {
-        let columns = [];
-        for (let cb of table.colcheckboxes) {
+        const columns = [];
+        for (const cb of table.colcheckboxes) {
             columns.push(cb.checked);
         }
         return columns;
@@ -109,10 +113,10 @@ export default class TruthTable extends LogicPenguinProblem {
 
     // gets which rows (for all tables) are highlighted
     getRowHLs() {
-        let rows = [];
+        const rows = [];
         if (this.rightTable) {
-            let trtr = this.rightTable.tbody.getElementsByTagName("tr");
-            for (let tre of trtr) {
+            const trtr = this.rightTable.tbody.getElementsByTagName("tr");
+            for (const tre of trtr) {
                 rows.push(tre?.rowcheckbox?.checked);
             }
         }
@@ -121,12 +125,12 @@ export default class TruthTable extends LogicPenguinProblem {
 
     // gets the cell data for particular table
     getTableData(table) {
-        let trtr = table.tbody.getElementsByTagName("tr");
+        const trtr = table.tbody.getElementsByTagName("tr");
         let tdata = {
             rows: [],
             colhls: this.getColHLs(table)
         };
-        for (let tre of trtr) {
+        for (const tre of trtr) {
             let row = [];
             for (let c of tre.ttcells) {
                 row.push(TruthTable.cellVal[c.innerHTML]);
@@ -143,8 +147,8 @@ export default class TruthTable extends LogicPenguinProblem {
 
     // makes original label that gets hidden
     makeLabel(problem) {
-        let leftsep = problem?.leftsep ?? ' ';
-        let sep = problem?.sep ?? ' ';
+        const leftsep = problem?.leftsep ?? ' ';
+        const sep = problem?.sep ?? ' ';
         return htmlEscape(
             problem.lefts.join(leftsep) + sep + problem.right
         );
@@ -173,7 +177,7 @@ export default class TruthTable extends LogicPenguinProblem {
         // "left tables": for premises, left equiv, or empty
         this.leftTables = [];
         for (let i=0; i<problem.lefts.length; i++) {
-            let statement = problem.lefts[i];
+            const statement = problem.lefts[i];
             this.leftTables.push(this.tableFor(statement, false));
             // separator for all but last left table
             if (i != (problem.lefts.length - 1)) {
@@ -215,18 +219,18 @@ export default class TruthTable extends LogicPenguinProblem {
             placeholder: '#rows',
             myprob: this,
             onchange: function() {
-                let newvalue = this.value;
-                let currNumRows =
+                const newvalue = this.value;
+                const currNumRows =
                     this?.myprob?.rightTable?.tbody
                         ?.getElementsByTagName("tr")?.length ?? 0;
                 if (newvalue < 0 || newvalue > 1024) {
                     this.value = currNumRows;
                     return;
                 }
-                let difference = (newvalue - currNumRows);
+                const difference = (newvalue - currNumRows);
                 if (difference == 0) { return; }
                 if (difference < 0) {
-                    let toremove = (currNumRows - newvalue).toString();
+                    const toremove = (currNumRows - newvalue).toString();
                     let s = 's';
                     if (toremove == 1) { s = ''; }
                     if (!confirm('Really remove ' + toremove + ' row' +
@@ -275,17 +279,17 @@ export default class TruthTable extends LogicPenguinProblem {
 
     // redoes cell borders for all tables after first gathering info
     redoAllBorders() {
-        let rows = this.getRowHLs();
-        for (let table of [...this.leftTables, this.rightTable]) {
-            let columns = this.getColHLs(table);
+        const rows = this.getRowHLs();
+        for (const table of [...this.leftTables, this.rightTable]) {
+            const columns = this.getColHLs(table);
             this.redoTableBorders(table, rows, columns);
         }
     }
 
     // redoes cell borders for just one table, after first gathering info
     redoBorders(table) {
-        let rows = this.getRowHLs();
-        let columns = this.getColHLs(table);
+        const rows = this.getRowHLs();
+        const columns = this.getColHLs(table);
         this.redoTableBorders(table, rows, columns);
     }
 
@@ -293,18 +297,18 @@ export default class TruthTable extends LogicPenguinProblem {
     // this is stupid complicated, but I cannot find anything else 
     // that works very well
     redoTableBorders(table, rows, columns) {
-        let trtr = table.tbody.getElementsByTagName("tr");
-        let reg = 'var(--lpgray5)';
-        let rhl = 'var(--lpcyan)';
-        let chl = (table.isright) ? 'var(--lpyellow)' : 'var(--lpgreen)';
+        const trtr = table.tbody.getElementsByTagName("tr");
+        const reg = 'var(--lpgray5)';
+        const rhl = 'var(--lpcyan)';
+        const chl = (table.isright) ? 'var(--lpyellow)' : 'var(--lpgreen)';
         // cycle through rows
         for (let i=0; i<trtr.length; i++) {
-            let tre = trtr[i];
+            const tre = trtr[i];
             // cycle through columns
             for (let j=0; j<tre.ttcells.length; j++) {
                 let td = tre.ttcells[j];
-                let styles=['dotted', 'dotted', 'dotted', 'dotted'];
-                let colors=[reg, reg, reg, reg];
+                const styles=['dotted', 'dotted', 'dotted', 'dotted'];
+                const colors=[reg, reg, reg, reg];
                 // 0=top, 1=right, 2=bottom, 3=left
                 // add column hls
                 if (columns[j]) {
@@ -352,10 +356,10 @@ export default class TruthTable extends LogicPenguinProblem {
 
     // removes rows from all tables in problem
     removeRows(n) {
-        for (let table of this.leftTables) {
+        for (const table of this.leftTables) {
             this.removeTableRows(table, n);
         }
-        let numleft = this.removeTableRows(this.rightTable, n);
+        const numleft = this.removeTableRows(this.rightTable, n);
         // hide tables if rows back down to 0
         // which shouldn't really be possible, but whatever
         if (numleft == 0) {
@@ -368,9 +372,9 @@ export default class TruthTable extends LogicPenguinProblem {
     }
 
     removeTableRows(table, n) {
-        let trtr = table.tbody.getElementsByTagName('tr');
+        const trtr = table.tbody.getElementsByTagName('tr');
         for (let i = 0; i < n; i++) {
-            let tre = trtr[ trtr.length - 1];
+            const tre = trtr[ trtr.length - 1];
             tre.parentNode.removeChild(tre);
         }
         return trtr.length;
@@ -379,14 +383,14 @@ export default class TruthTable extends LogicPenguinProblem {
     restoreAnswer(ans) {
         // lefts, right, rowhls,  each tdata has rows, colhls
         for (let i = 0; i < ans.lefts.length; i++) {
-            let table = this.leftTables[i];
-            let tdata = ans.lefts[i];
+            const table = this.leftTables[i];
+            const tdata = ans.lefts[i];
             this.restoreTable(table, tdata);
         }
         this.restoreTable(this.rightTable, ans.right);
-        let trtr = this.rightTable.tbody.getElementsByTagName("tr");
+        const trtr = this.rightTable.tbody.getElementsByTagName("tr");
         for (let i = 0; i < ans.rowhls.length; i++) {
-            let tr = trtr[i];
+            const tr = trtr[i];
             tr.rowcheckbox.checked = ans.rowhls[i];
         }
         this.redoAllBorders();
@@ -394,8 +398,8 @@ export default class TruthTable extends LogicPenguinProblem {
 
     restoreTable(table, tdata) {
         // restore cells
-        let trtr = table.tbody.getElementsByTagName('tr');
-        let currrows = trtr.length;
+        const trtr = table.tbody.getElementsByTagName('tr');
+        constcurrrows = trtr.length;
         if (currrows > tdata.rows.length) {
             this.removeRows(currows - tdata.rows.length);
             this.numRowInput.value = tdata.rows.length;
@@ -405,7 +409,7 @@ export default class TruthTable extends LogicPenguinProblem {
             this.numRowInput.value = tdata.rows.length;
         }
         for (let r = 0; r < tdata.rows.length; r++) {
-            let tr = trtr[r];
+            const tr = trtr[r];
             for (let c = 0; c < tr.ttcells.length ; c++) {
                 tr.ttcells[c].innerHTML =
                     TruthTable.cellHFor(tdata.rows[r][c]);
@@ -435,36 +439,46 @@ export default class TruthTable extends LogicPenguinProblem {
     }
 
     tableFor(statement, isright) {
+
+        // get notation from options
+        const notation = this?.options?.notation ?? 'cambridge';
+        const syntax = getSyntax(notation);
+        const operators = syntax.operators;
+
         // break statement into cells with manufactured regex
         let rstr = '[(\\[{]*';
         rstr += '[' + syntax.pletterRange;
-        for (let o in operators) { rstr += o; }
+        // this probably wouldn't be adequate for (x) quantifiers, but you
+        // can't do a truth table with quantifiers anyway
+        for (const o in operators) { rstr += o; }
         rstr += '][' + syntax.constantsRange +
             syntax.variableRange + ']*';
         rstr += '[)\\]}]*';
-        let regex = new RegExp(rstr, 'g');
-        let parts = Array.from(
+        const regex = new RegExp(rstr, 'g');
+        const parts = Array.from(
             statement.replace(/\s/g,'').matchAll(regex));
-        let table = addelem('table', this.tableDiv, {
+        const table = addelem('table', this.tableDiv, {
             classes: ['truthtable']
         });
+
         // initial setup
         table.isright = isright;
         table.cellwidth = parts.length;
         table.thead = addelem('thead', table, {});
         table.tbody = addelem('tbody', table, {});
         table.tfoot = addelem('tfoot', table, {});
-        let headrow = addelem('tr', table.thead, {});
-        let footrow = addelem('tr', table.tfoot, {});
+        const headrow = addelem('tr', table.thead, {});
+        const footrow = addelem('tr', table.tfoot, {});
         table.colcheckboxes = [];
+
         // table head and foot
         for (let i = 0; i < table.cellwidth; i++) {
-            let part = parts[i][0];
+            const part = parts[i][0];
             addelem('th', headrow, {
                 innerHTML: htmlEscape(part),
                 classes: ['symbolic']
             });
-            let fcell = addelem('td', footrow, {});
+            const fcell = addelem('td', footrow, {});
             // check box at bottom of column
             table.colcheckboxes.push(addelem('input', fcell, {
                 type: 'checkbox', myindex: i,
@@ -475,6 +489,7 @@ export default class TruthTable extends LogicPenguinProblem {
                 }
             }));
         }
+
         // extra cell for checkbox column
         if (isright) {
             addelem('th', headrow, {});
@@ -505,8 +520,8 @@ export default class TruthTable extends LogicPenguinProblem {
 if (window) {
     window.addEventListener('keydown', function(e) {
         if (!window.currentClickCell) { return; }
-        let k = e.key.toUpperCase();
-        let oldIH = window.currentClickCell.innerHTML;
+        const k = e.key.toUpperCase();
+        const oldIH = window.currentClickCell.innerHTML;
         if (k == tr('T')) {
             window.currentClickCell.innerHTML = tr('T');
         }
