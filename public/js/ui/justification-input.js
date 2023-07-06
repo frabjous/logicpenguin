@@ -3,7 +3,6 @@
 // https://www.gnu.org/licenses/.
 
 import FormulaInput from './formula-input.js';
-import { symbols } from '../symbolic/libsyntax.js';
 import { justParse } from './justification-parse.js';
 
 export default class JustificationInput extends FormulaInput {

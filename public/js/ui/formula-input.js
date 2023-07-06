@@ -15,14 +15,17 @@ export default class FormulaInput {
 
     // generic function for making changes, used by other functions
     static autoChange(findbefore, repbefore, ins, findafter, repafter) {
+
         // make replacement in what is before the cursor
         const before = this.value.substr(0,this.selectionStart)
             .replace(findbefore, repbefore);
+
         // get what is after cursor, and change it if also requested
         let after= this.value.substr(this.selectionEnd);
         if (findafter) {
             after = after.replace(findafter, repafter);
         }
+
         // determine where to put the cursor after change; focus input
         let pos = before.length + ins.length;
         this.value = before + ins + after;
@@ -78,7 +81,7 @@ export default class FormulaInput {
     static focus(e) {
 
         // don't react to widget changes
-        for (let widgettype of [
+        for (const widgettype of [
             'symbolwidgetbutton',
             'derivationlinenumber'
         ]) {
@@ -97,6 +100,8 @@ export default class FormulaInput {
         if (window.symbolwidget) {
             window.symbolwidget.showfor(this);
         }
+
+        // check if script calling it has added a hook to focus
         if (this.focusHook) {
             this.focusHook(e);
         }
@@ -104,11 +109,13 @@ export default class FormulaInput {
 
     // create a new formula input and return it
     static getnew(options = {}) {
-        let elem = document.createElement("input");
+
+        // create the DOM element
+        const elem = document.createElement("input");
         elem.type = "text";
 
         // add all options to the input
-        for (let opt in options) {
+        for (const opt in options) {
             elem[opt] = options[opt];
         }
 
@@ -135,12 +142,15 @@ export default class FormulaInput {
         elem.syntax = syntax;
         elem.symbols = syntax.symbols;
         elem.inputfix = syntax.inputfix;
+
+        // attach a symbolwidget
+        elem.symbolwidget = makeSymbolWidgetFor(notation);
         return elem;
     }
 
     // function for inserting an operator, fixing the spacing around it
     static insOp(op) {
-        let symb = this.symbols[op];
+        const symb = this.symbols[op];
         if (this.syntax.symbolcat[op] >= 2) {
             this.autoChange(/\s+$/,'',' ' + symb + ' ',/^\s+/,'');
         } else {
@@ -226,6 +236,7 @@ export default class FormulaInput {
             this?.myline?.mysubderiv?.myprob.makeChanged();
         }
 
+        // v's and wedges become disjunctions
         if (e.key == 'v' || e.key == 'V' || e.key == '∨') {
             // don't do when pasting
             if (e.ctrlKey) { return; }
@@ -233,19 +244,26 @@ export default class FormulaInput {
             this.insOp('OR');
             return;
         }
+
         // insert biconditional or conditional
         if (e.key == '>' || e.key == '→' || e.key == '⇒' ||
             e.key == '⊃') {
             e.preventDefault();
+
+            // if there is soemthing of the form <-- before > make
+            // it a biconditional
             if (/<-*$/.test(this.value.substr(0,this.selectionStart))) {
                 this.autoChange(/\s*<[=-]*$/,'','',/^\s*/,'');
                 this.insOp('IFF');
             } else {
+                // o/w remove preceding hyphens and equals signs for -->
                 this.autoChange(/\s*[=-]*$/,'','',/^\s*/,'');
                 this.insOp('IFTHEN');
             }
             return;
         }
+
+        // == becomes biconditional
         if (e.key == '=') {
             if (/=$/.test(this.value.substr(0,this.selectionStart))) {
                 e.preventDefault();
@@ -253,6 +271,7 @@ export default class FormulaInput {
                 this.insOp('IFF');
             }
         }
+
         // double ampersands = conjunction
         if (e.key == '&') {
             if (/&\s*/.test(this.value.substr(0, this.selectionStart))) {
@@ -262,6 +281,7 @@ export default class FormulaInput {
                 return;
             }
         }
+
         // insert conjunction
         if (e.key == '^' || e.key == '.' || e.key == '&' || e.key == '*' ||
             e.key == '•' || e.key == '·'  || e.key == '∧') {
@@ -270,22 +290,29 @@ export default class FormulaInput {
             return;
         }
 
+        // negations
         if (e.key == '~' || e.key == '¬' || e.key == '!') {
             e.preventDefault();
             this.insOp('NOT');
             return;
         }
+
+        // alternative biconditional
         if (e.key == '≡') {
             e.preventDefault();
             this.insOp('IFF');
             return;
         }
+
+        // falsums
         if (e.key == '#' || e.key == '✖' || e.key == '×'
-            || e.key == '⊥' || e.key == '⨳') {
+            || e.key == '⊥' || e.key == '⨳' || e.key == '↯') {
             e.preventDefault();
             this.insOp('FALSUM');
             return;
         }
+
+        // XX also becomes falsum
         if (e.key == 'X') {
             if (this.value.at(this.selectionStart - 1) == 'X') {
                 e.preventDefault();
@@ -293,6 +320,8 @@ export default class FormulaInput {
             }
             return;
         }
+
+        // \/ also becomes disjunction
         if (e.key == '/') {
             if (this.value.at(this.selectionStart - 1) == '\\') {
                 e.preventDefault();
@@ -301,6 +330,8 @@ export default class FormulaInput {
             }
             return;
         }
+
+        // || becomes disjunction as well
         if (e.key == '|') {
             if (this.value.at(this.selectionStart - 1) == '|') {
                 e.preventDefault();
@@ -309,18 +340,24 @@ export default class FormulaInput {
             }
             return;
         }
+
         // hyphens not preceding '>' or numbers are negations?
         if (!(/[0-9?-]/.test(e.key)) &&
             (this.value.at(this.selectionStart - 1) == '-') &&
             e.key.length == 1) {
             e.preventDefault();
-            let len = this.value.substr(0,this.selectionStart)
+            const len = this.value.substr(0,this.selectionStart)
                 .match(/-+$/g)[0].length;
-            let nots = symbols.NOT.repeat(len);
+            const nots = symbols.NOT.repeat(len);
             this.autoChange(/-+$/,'', nots + e.key, null, null);
         }
+
+        // quantifiers, etc. if in predicate mode
         if (this.pred) {
-            if (e.key == 'A') {
+            // only do universal quantifier if quantiferForm in notation
+            // doesn't include '?'
+            if (e.key == 'A' && 
+                (this.syntax.notation.quantifierForm.search('\\?') == -1)) {
                 e.preventDefault();
                 this.insOp('FORALL');
             }
@@ -328,15 +365,19 @@ export default class FormulaInput {
                 e.preventDefault();
                 this.insOp('EXISTS');
             }
-            if (e.key == 's') {
+            // flip  '∀' back to 'A' back to 'Ass'
+            if (e.key == 's' || e.key == 'S') {
                 if (this.value.at(this.selectionStart - 1) == '∀') {
                     e.preventDefault();
                     this.autoChange(/∀$/,'A','s',null,null);
                 }
             }
         }
-        if (!e.ctrlKey && !e.altKey && !this.pred && !this.justify && this.lazy
-        && !this.classList.contains("justification")) {
+
+        // lazy mode; lowercase letters become uppercase
+        if (!e.ctrlKey && !e.altKey && !this.pred &&
+            !this.justify && this.lazy &&
+            !this.classList.contains("justification")) {
             if (/^[a-z]$/.test(e.key)) {
                 e.preventDefault();
                 this.insertHere(e.key.toUpperCase());
@@ -347,51 +388,78 @@ export default class FormulaInput {
 }
 
 // add insert widget to the window element
-if (window && document) {
-    window.symbolwidget = document.createElement("div");
-    window.symbolwidget.classList.add("symbolinsertwidget",
-        "symbolic", "logicpenguin");
-    window.symbolwidget.buttonfor = {};
-    let table = addelem('table',window.symbolwidget,{});
-    let tbody = addelem('tbody',table,{});
-    let tre = addelem('tr',tbody,{});
-    for (let op in symbols) {
-        let td = addelem('td', tre, {});
-        window.symbolwidget.buttonfor[op] = td;
-        td.myOp = op;
-        td.innerHTML = htmlEscape(symbols[op]);
-        td.title = htmlEscape(tr('Insert ') + symbols[op]);
-        td.tabIndex = -1;
-        td.classList.add('symbolwidgetbutton');
-        td.onclick = function() {
-            if (!window.symbolwidget.targetInput) { return; }
-            window.symbolwidget.targetInput.insOp(this.myOp);
+function makeSymbolWidgetFor(notationname) {
+    if (window && document) {
+        // create holder for widgets if it does not exist already
+        if (!window.symbolswidgets) {
+            window.symbolwidgets = {};
         }
-    }
-    window.symbolwidget.showfor = function(elem) {
-        document.body.appendChild(this);
-        this.targetInput = elem;
-        if (this.buttonfor['FALSUM']) {
-            if (elem.nofalsum) {
-                this.buttonfor['FALSUM'].classList.add("hidden");
-            } else {
-                this.buttonfor['FALSUM'].classList.remove("hidden");
-            }
+        // check if already created
+        if (notationname in window.symbolwidgets) {
+            return window.symbolwidgets[notionname]; 
         }
-        for (let q of ['FORALL', 'EXISTS']) {
-            if (this.buttonfor[q]) {
-                if (elem.pred) {
-                    this.buttonfor[q].classList.remove("hidden");
+
+        // create new widget
+        window.symbolwidgets[notationname] = document.createElement("div");
+        const symbolwidget = symbolwidgets[notationname];
+        symbolwidget.classList.add("symbolinsertwidget",
+            "symbolic", "logicpenguin");
+        symbolwidget.syntax = getSyntax("notationname");
+        symbolwidget.symbols = symbolwidget.syntax.symbols;
+        const symbols = symbolwidget.symbols;
+
+        // create buttons for each symbol
+        symbolwidget.buttonfor = {};
+        const table = addelem('table',symbolwidget,{});
+        const tbody = addelem('tbody',table,{});
+        const tre = addelem('tr',tbody,{});
+        for (const op in symbols) {
+            const td = addelem('td', tre, {});
+            symbolwidget.buttonfor[op] = td;
+            td.myWidget = symbolwidget;
+            td.myOp = op;
+            td.innerHTML = htmlEscape(symbols[op]);
+            td.title = htmlEscape(tr('Insert ') + symbols[op]);
+            td.tabIndex = -1;
+            td.classList.add('symbolwidgetbutton');
+            td.onclick = () => {
+                if (!symbolwidget.targetInput) { return; }
+                symbolwidget.targetInput.insOp(this.myOp);
+            };
+        }
+        // function to show up for a given input; may have options to
+        // show or hide falsum, or show or hide quantifier symbols
+        symbolwidget.showfor = function(elem) {
+            document.body.appendChild(this);
+            this.targetInput = elem;
+            if (this.buttonfor['FALSUM']) {
+                if (elem.nofalsum) {
+                    this.buttonfor['FALSUM'].classList.add("hidden");
                 } else {
-                    this.buttonfor[q].classList.add("hidden");
+                    this.buttonfor['FALSUM'].classList.remove("hidden");
+                }
+            }
+            for (const q of ['FORALL', 'EXISTS']) {
+                if (this.buttonfor[q]) {
+                    if (elem.pred && (!( q == 'FORALL' && 
+                    (this.myWidget.syntax.notation.quantifierForm.search('\\?') >= 0)) )) {
+                        this.buttonfor[q].classList.remove("hidden");
+                    } else {
+                        this.buttonfor[q].classList.add("hidden");
+                    }
                 }
             }
         }
-    }
-    window.symbolwidget.hide = function() {
-        this.targetInput = false;
-        if (this.parentNode) {
-            this.parentNode.removeChild(this);
+
+        // hide it when not in use by removing from DOM
+        symbolwidget.hide = function() {
+            this.targetInput = false;
+            if (this.parentNode) {
+                this.parentNode.removeChild(this);
+            }
         }
+        return symbolwidget;
     }
+    // no window or document element, return null
+    return null;
 }
