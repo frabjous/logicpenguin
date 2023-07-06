@@ -2,10 +2,17 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////// checkers/multiple-choice.js /////////////////////////
+// function that determines if a multiple choice question is correct  //
+// or incorrect                                                       //
+////////////////////////////////////////////////////////////////////////
+
+// partial credit isn't really possible with multiple choice, alas
+
 export default async function(
     question, answer, givenans, partialcredit, points, cheat, options
 ) {
-    let correct = (answer === givenans);
+    const correct = (answer === givenans);
     return {
         successstatus: (correct ? "correct" : "incorrect"),
         points: ( correct ? points : 0 )
