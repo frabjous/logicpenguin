@@ -2,18 +2,25 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////// prose-argument.js ////////////////////////////////////
+// creates boxes for arguments in paragraph form, for, e.g., conclusion //
+// identification problems and similar                                  //
+//////////////////////////////////////////////////////////////////////////
+
 import { addelem, htmlEscape } from '../common.js';
 
 export function getProseArgument(parNode, argdetails) {
-    let argDiv = addelem('div', parNode, {
+    // create a div for the argument
+    const argDiv = addelem('div', parNode, {
         classes: ['proseargument']
     });
+    // each statement gets its own span
     argDiv.statementSpans = [];
     let needTN = false;
     for (let sdetails of argdetails) {
         // space between statements
         if (needTN) {
-            let tN = document.createTextNode(" ");
+            const tN = document.createTextNode(" ");
             argDiv.appendChild(tN);
         }
         needTN = true;
@@ -24,6 +31,7 @@ export function getProseArgument(parNode, argdetails) {
                 classes: ['proseargpretext']
             });
         }
+        // statement itself
         if (sdetails.statement) {
             argDiv.statementSpans.push(
                 addelem('span', argDiv, {

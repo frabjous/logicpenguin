@@ -134,9 +134,11 @@ function generateSyntax(notationname) {
     // grab the symbols from the notations
     if (notationname in notations) {
         syntax.notation = notations[notationname];
+        syntax.notationname = notationname;
     } else {
         // use Cambridge notation if a bad notation name given
         syntax.notation = notations['cambridge'];
+        syntax.notationname = 'cambridge';
     }
 
     // symbols are those things in notation also in symbolcat
