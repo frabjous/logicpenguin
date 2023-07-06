@@ -30,29 +30,35 @@
         <link rel="stylesheet" type="text/css" href="../../stylesheets/common.css" />
 
         <script type="module">
+            import notations from '../symbolic/notations.js';
             import JustificationInput from './justification-input.js';
             import FormulaInput from './formula-input.js';
             window.onload = function() {
-                let mydiv = document.getElementById("mydiv");
-                let inp = FormulaInput.getnew({ pred: false, lazy: true});
-                inp.id='inp';
-                mydiv.appendChild(inp);
-                mydiv.appendChild(document.createElement('p'));
-                mydiv.appendChild(document.createElement('p'));
-                let twimp = FormulaInput.getnew({ pred: false, lazy: false, nofalsum: true});
-                mydiv.appendChild(twimp);
-                mydiv.appendChild(document.createElement('p'));
-                mydiv.appendChild(document.createElement('p'));
-                let eimp = FormulaInput.getnew({ pred: true, nofalsum: false});
-                mydiv.appendChild(eimp);
-                mydiv.appendChild(document.createElement('p'));
-                mydiv.appendChild(document.createElement('p'));
-                let ximp = FormulaInput.getnew({ pred: true, nofalsum: true});
-                mydiv.appendChild(ximp);
-                let ji = JustificationInput.getnew({ pred: true, nofalsum: false});
-                ji.value="hello";
-                mydiv.appendChild(ji);
-
+                const nmydiv = document.getElementById("mydiv");
+                for (const notationname in notations) {
+                    const mydiv - document.createElement("div");
+                    nmydiv.appendChild(mydiv);
+                    const hdr = document.createElement("h2");
+                    mydiv.appendChild(hdr);
+                    hdr.innerHTML = notationname;
+                    const inp = FormulaInput.getnew({ pred: false, lazy: true});
+                    mydiv.appendChild(inp);
+                    mydiv.appendChild(document.createElement('p'));
+                    mydiv.appendChild(document.createElement('p'));
+                    const twimp = FormulaInput.getnew({ pred: false, lazy: false, nofalsum: true});
+                    mydiv.appendChild(twimp);
+                    mydiv.appendChild(document.createElement('p'));
+                    mydiv.appendChild(document.createElement('p'));
+                    const eimp = FormulaInput.getnew({ pred: true, nofalsum: false});
+                    mydiv.appendChild(eimp);
+                    mydiv.appendChild(document.createElement('p'));
+                    mydiv.appendChild(document.createElement('p'));
+                    const ximp = FormulaInput.getnew({ pred: true, nofalsum: true});
+                    mydiv.appendChild(ximp);
+                    const ji = JustificationInput.getnew({ pred: true, nofalsum: false});
+                    ji.value="hello";
+                    mydiv.appendChild(ji);
+                }
             }
         </script>
 
