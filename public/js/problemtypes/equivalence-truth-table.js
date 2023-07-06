@@ -10,6 +10,7 @@
 import TruthTable from './truth-tables.js';
 import MultipleChoiceExercise from './multiple-choice.js';
 import { addelem } from '../common.js';
+import tr from '../translate.js';
 
 export default class EquivalenceTruthTable extends TruthTable {
 
@@ -94,7 +95,7 @@ export default class EquivalenceTruthTable extends TruthTable {
         // a subspecies of truth table problems generally with
         // certain options
         const fullprob = {
-            sep: ' and ',
+            sep: ' ' + tr('and') + ' ',
             lefts: [problem.l],
             right: problem.r
         }
