@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////// equivalence-truth-table.js //////////////////////////
+// Truth table problems for two statement where you have to tell if    //
+// they are or are not logically equivalent                            //
+/////////////////////////////////////////////////////////////////////////
+
 import TruthTable from './truth-tables.js';
 import MultipleChoiceExercise from './multiple-choice.js';
 import { addelem } from '../common.js';
@@ -25,7 +30,7 @@ export default class EquivalenceTruthTable extends TruthTable {
     }
 
     getAnswer() {
-        let ans = super.getAnswer();
+        const ans = super.getAnswer();
         if (this.options.question) {
             ans.mcans = this.mcquestion.getAnswer();
             ans.equiv   = (ans.mcans == 0);
@@ -33,13 +38,15 @@ export default class EquivalenceTruthTable extends TruthTable {
         return ans;
     }
 
+    // fills in correct answer
     getSolution() {
         if (!("myanswer" in this)) { return null; }
-        let ans = { lefts: [{}], right: {}, rowhls: []};
+        // fill in left table
+        const ans = { lefts: [{}], right: {}, rowhls: []};
         ans.lefts[0].rows = this.myanswer.A.rows;
         ans.lefts[0].colhls = [];
-        let h = this.myanswer.A.rows.length;
-        let wA = this.myanswer.A.rows[0].length;
+        const h = this.myanswer.A.rows.length;
+        const wA = this.myanswer.A.rows[0].length;
         for (let i = 0 ; i < h ; i++) {
             ans.rowhls.push(false);
         }
@@ -47,9 +54,10 @@ export default class EquivalenceTruthTable extends TruthTable {
             ans.lefts[0].colhls.push(false);
         }
         ans.lefts[0].colhls[this.myanswer.A.opspot] = true;
+        // fill in right table
         ans.right.rows = this.myanswer.B.rows;
         ans.right.colhls = [];
-        let wB = this.myanswer.B.rows[0].length;
+        const wB = this.myanswer.B.rows[0].length;
         for (let i = 0; i < wB; i++) {
             ans.right.colhls.push(false);
         }
@@ -67,6 +75,7 @@ export default class EquivalenceTruthTable extends TruthTable {
                 message: ''
             }
         });
+        // change multiple choice question class
         this.rnchoosediv.classList.remove("badnumber");
         if (this.mcquestion) {
             this.mcquestion.classList.remove("badsubquestion");
@@ -75,7 +84,9 @@ export default class EquivalenceTruthTable extends TruthTable {
     }
 
     makeProblem(problem, options, checksave) {
-        let fullprob = {
+        // a subspecies of truth table problems generally with
+        // certain options
+        const fullprob = {
             sep: ' and ',
             lefts: [problem.l],
             right: problem.r
@@ -121,27 +132,32 @@ export default class EquivalenceTruthTable extends TruthTable {
 
     setIndicator(ind) {
         super.setIndicator(ind);
+        // color wrong cells
         if (ind?.offcells?.A && ind.offcells.A.length > 0) {
-            let trtr = this.leftTables[0].tbody.getElementsByTagName("tr");
-            for (let [y,x] of ind.offcells.A) {
-                let tr = trtr[y];
+            const trtr = this.leftTables[0].tbody.getElementsByTagName("tr");
+            for (const [y,x] of ind.offcells.A) {
+                const tr = trtr[y];
                 if (tr && tr.ttcells[x]) {
                     tr.ttcells[x].classList.add('badcell');
                 }
             }
         }
         if (ind?.offcells?.B && ind.offcells.B.length > 0) {
-            let trtr = this.rightTable.tbody.getElementsByTagName("tr");
-            for (let [y,x] of ind.offcells.B) {
-                let tr = trtr[y];
+            const trtr = this.rightTable.tbody.getElementsByTagName("tr");
+            for (const [y,x] of ind.offcells.B) {
+                const tr = trtr[y];
                 if (tr && tr.ttcells[x]) {
                     tr.ttcells[x].classList.add('badcell');
                 }
             }
         }
+
+        // mark multiple choice question right or wrong
         if (("qright" in ind) && (!ind.qright)) {
             this.mcquestion.classList.add("badsubquestion");
         }
+
+        // indicate wrong number of rows given
         if (("rowdiff" in ind) && (ind.rowdiff !== 0)) {
             this.rnchoosediv.classList.add("badnumber");
         }

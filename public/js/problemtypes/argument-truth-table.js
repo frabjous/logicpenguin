@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////// argument-truth-table.js ///////////////////////////////
+// truth table problems for whole arguments, including asking about    //
+// validity or invalidity                                              //
+/////////////////////////////////////////////////////////////////////////
+
 import TruthTable from './truth-tables.js';
 import MultipleChoiceExercise from './multiple-choice.js';
 import { addelem } from '../common.js';
@@ -24,8 +29,9 @@ export default class ArgumentTruthTable extends TruthTable {
         return true;
     }
 
+    // get answer for both table and multiple choice problem embedded
     getAnswer() {
-        let ans = super.getAnswer();
+        const ans = super.getAnswer();
         if (this.options.question) {
             ans.mcans = this.mcquestion.getAnswer();
             ans.valid   = (ans.mcans == 0);
@@ -33,35 +39,41 @@ export default class ArgumentTruthTable extends TruthTable {
         return ans;
     }
 
+    // solves the table
     getSolution() {
         if (!("myanswer" in this)) { return null; }
-        let ans = { lefts: [], right: {}, rowhls: []};
-        let h = this.myanswer.conc.rows.length;
+        const ans = { lefts: [], right: {}, rowhls: []};
+        const h = this.myanswer.conc.rows.length;
+        // start with everything unhighlighted
         for (let i = 0 ; i < h ; i++) {
             ans.rowhls.push(false);
         }
-        for (let prem of this.myanswer.prems) {
-            let tdata = {}
+        for (const prem of this.myanswer.prems) {
+            const tdata = {}
             tdata.rows = prem.rows;
             tdata.colhls = []
-            let w = prem.rows[0].length;
+            const w = prem.rows[0].length;
             for (let i = 0; i < w; i++) {
                 tdata.colhls.push(false);
             }
             tdata.colhls[prem.opspot] = true;
             ans.lefts.push(tdata);
         }
+        // fill in the rows
         ans.right.rows = this.myanswer.conc.rows;
         ans.right.colhls = [];
-        let wC = this.myanswer.conc.rows[0].length;
+        const wC = this.myanswer.conc.rows[0].length;
         for (let i = 0; i < wC; i++) {
             ans.right.colhls.push(false);
         }
+        // highlight main operator column
         ans.right.colhls[this.myanswer.conc.opspot] = true;
+        // check the right box for the multiple choice question
         if (this.options.question) {
             ans.valid = this.myanswer.valid;
             ans.mcans = (ans.valid) ? 0 : 1;
         }
+        // mark as correct but unsaved
         this.restoreState({
             ans: ans,
             ind: {
@@ -71,10 +83,11 @@ export default class ArgumentTruthTable extends TruthTable {
                 message: ''
             }
         });
-        for (let table of [ ...this.leftTables, this.rightTable]) {
-            let trtr = table.tbody.getElementsByTagName("tr");
-            for (let tre of trtr) {
-                for (let td of tre.ttcells) {
+        // nothing should be bad
+        for (const table of [ ...this.leftTables, this.rightTable]) {
+            const trtr = table.tbody.getElementsByTagName("tr");
+            for (const tre of trtr) {
+                for (const td of tre.ttcells) {
                     td.classList.remove("badcell");
                 }
             }
@@ -87,7 +100,8 @@ export default class ArgumentTruthTable extends TruthTable {
     }
 
     makeProblem(problem, options, checksave) {
-        let fullprob = {
+        // instance of a truth table problem with certain settings
+        const fullprob = {
             sep: ' /∴ ',
             leftsep: ' ; ',
             lefts: problem.prems,
@@ -95,9 +109,10 @@ export default class ArgumentTruthTable extends TruthTable {
         }
         super.makeProblem(fullprob, options, checksave);
 
-        // can stop here if we don't need mcquestion
+        // can stop here if we don't need multiple choice question
         if (!options.question) { return; }
 
+        // create multiple choice subproblem
         this.mcquestion = addelem('multiple-choice', this.subq, {
             classes: [ 'ttsubquestion' ]
         });
@@ -134,14 +149,14 @@ export default class ArgumentTruthTable extends TruthTable {
 
     setIndicator(ind) {
         super.setIndicator(ind);
-        // color marked cells
+        // color cells that are wrong in premises
         if (ind.offcells && ind.offcells.prems && ind.offcells.prems.length > 0) {
             for (let i = 0; i < ind.offcells.prems.length; i++) {
-                let theseOffcells = ind.offcells.prems[i];
+                const theseOffcells = ind.offcells.prems[i];
                 if (theseOffcells.length > 0) {
-                    let trtr = this.leftTables[i].tbody.getElementsByTagName("tr");
-                    for (let [y,x] of theseOffcells) {
-                        let tr = trtr[y];
+                    const trtr = this.leftTables[i].tbody.getElementsByTagName("tr");
+                    for (const [y,x] of theseOffcells) {
+                        const tr = trtr[y];
                         if (tr && tr.ttcells[x]) {
                             tr.ttcells[x].classList.add('badcell');
                         }
@@ -149,18 +164,21 @@ export default class ArgumentTruthTable extends TruthTable {
                 }
             }
         }
+        // … and in conclusion
         if (ind?.offcells?.conc && ind.offcells.conc.length > 0) {
-            let trtr = this.rightTable.tbody.getElementsByTagName("tr");
-            for (let [y,x] of ind.offcells.conc) {
-                let tr = trtr[y];
+            const trtr = this.rightTable.tbody.getElementsByTagName("tr");
+            for (const [y,x] of ind.offcells.conc) {
+                const tr = trtr[y];
                 if (tr && tr.ttcells[x]) {
                     tr.ttcells[x].classList.add('badcell');
                 }
             }
         }
+        // mark subproblem the right way
         if (("qright" in ind) && (!ind.qright)) {
             this.mcquestion.classList.add("badsubquestion");
         }
+        // mark wrong number of rows given
         if (("rowdiff" in ind) && (ind.rowdiff !== 0)) {
             this.rnchoosediv.classList.add("badnumber");
         }

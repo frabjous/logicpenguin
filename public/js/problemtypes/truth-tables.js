@@ -399,7 +399,7 @@ export default class TruthTable extends LogicPenguinProblem {
     restoreTable(table, tdata) {
         // restore cells
         const trtr = table.tbody.getElementsByTagName('tr');
-        constcurrrows = trtr.length;
+        const currrows = trtr.length;
         if (currrows > tdata.rows.length) {
             this.removeRows(currows - tdata.rows.length);
             this.numRowInput.value = tdata.rows.length;
@@ -447,12 +447,12 @@ export default class TruthTable extends LogicPenguinProblem {
 
         // break statement into cells with manufactured regex
         let rstr = '[(\\[{]*';
-        rstr += '[' + syntax.pletterRange;
+        rstr += '[' + syntax.notation.predicatesRange;
         // this probably wouldn't be adequate for (x) quantifiers, but you
         // can't do a truth table with quantifiers anyway
         for (const o in operators) { rstr += o; }
-        rstr += '][' + syntax.constantsRange +
-            syntax.variableRange + ']*';
+        rstr += '][' + syntax.notation.constantsRange +
+            syntax.notation.variableRange + ']*';
         rstr += '[)\\]}]*';
         const regex = new RegExp(rstr, 'g');
         const parts = Array.from(

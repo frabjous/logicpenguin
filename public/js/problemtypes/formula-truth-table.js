@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////// formula-truth-table.js //////////////////////////////
+// truth table problems for individual formulas                       //
+// also ask if they're tautologies, self-contradictions or contingent //
+////////////////////////////////////////////////////////////////////////
+
 import TruthTable from './truth-tables.js';
 import MultipleChoiceExercise from './multiple-choice.js';
 import { addelem } from '../common.js';
@@ -25,7 +30,7 @@ export default class FormulaTruthTable extends TruthTable {
     }
 
     getAnswer() {
-        let ans = super.getAnswer();
+        const ans = super.getAnswer();
         if (this.options.question) {
             ans.mcans = this.mcquestion.getAnswer();
             ans.taut   = (ans.mcans == 0);
@@ -34,13 +39,14 @@ export default class FormulaTruthTable extends TruthTable {
         return ans;
     }
 
+    // gives right answer
     getSolution() {
         if (!("myanswer" in this)) { return null; }
-        let ans = { lefts: [], right: {}, rowhls: []};
+        const ans = { lefts: [], right: {}, rowhls: []};
         ans.right.rows = this.myanswer.rows;
         ans.right.colhls = [];
-        let h = this.myanswer.rows.length;
-        let w = this.myanswer.rows[0].length;
+        const h = this.myanswer.rows.length;
+        const w = this.myanswer.rows[0].length;
         for (let i = 0; i < h; i++) {
             ans.rowhls.push(false);
         }
@@ -72,13 +78,14 @@ export default class FormulaTruthTable extends TruthTable {
     }
 
     makeProblem(problem, options, checksave) {
-        let fullprob = {
+        // implemented as a version of truth-table problems generally
+        const fullprob = {
             lefts: [],
             right: problem
         }
         super.makeProblem(fullprob, options, checksave);
 
-        // can stop here if we don't need mcquestion
+        // can stop here if we don't need multiple choice question
         if (!options.question) { return; }
 
         this.mcquestion = addelem('multiple-choice', this.subq, {
@@ -117,18 +124,21 @@ export default class FormulaTruthTable extends TruthTable {
 
     setIndicator(ind) {
         super.setIndicator(ind);
+        // mark cells right or wrong
         if (ind.offcells && ind.offcells.length > 0) {
-            let trtr = this.rightTable.tbody.getElementsByTagName("tr");
-            for (let [y,x] of ind.offcells) {
-                let tr = trtr[y];
+            const trtr = this.rightTable.tbody.getElementsByTagName("tr");
+            for (const [y,x] of ind.offcells) {
+                const tr = trtr[y];
                 if (tr && tr.ttcells[x]) {
                     tr.ttcells[x].classList.add('badcell');
                 }
             }
         }
+        // mark overall question right or wrong
         if (("qright" in ind) && (!ind.qright)) {
             this.mcquestion.classList.add("badsubquestion");
         }
+        // mark number of cells wrong if wrong
         if (("rowdiff" in ind) && (ind.rowdiff !== 0)) {
             this.rnchoosediv.classList.add("badnumber");
         }
