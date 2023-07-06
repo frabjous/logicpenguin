@@ -8,5 +8,6 @@ dist/
 fallback
 fallback/
 public/.well-known/
+public/js/ui/uitest.html
 package-lock.json
 settings.json

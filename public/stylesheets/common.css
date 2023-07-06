@@ -49,6 +49,7 @@
 /*////////////////////////////////*/
 
 .logicpenguin {
+    all: unset;
     font-size: 20px;
     font-family:
         'Fira Sans', 'Fira Sans',
