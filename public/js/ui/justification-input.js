@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////////// justification-input.js //////////////////////////////
+// creates input fields for justfication fields                       //
+////////////////////////////////////////////////////////////////////////
+
 import FormulaInput from './formula-input.js';
 import { justParse } from './justification-parse.js';
 
@@ -49,20 +53,27 @@ export default class JustificationInput extends FormulaInput {
         this.value = this.inputfix(this.value + ', ' + rule);
     }
 
+    // unlike regular formula inputs, spaces are only put before operators
     static insOp(op) {
-        let symb = symbols[op];
+        const symbols = this.symbols;
+        const symb = symbols[op];
         this.autoChange(/\s+$/,'',' ' + symb, /^\s+/, '');
+        // if there was a negation before it, it's ok to eliminate that space
         this.autoChange(
             new RegExp(symbols.NOT + '\\s+','g'),symbols.NOT,'', /^\s+/, '');
     }
 
+    // parse the justification, and make it appear pretty
     static justFix(val) {
         if (val == '') { return ''; }
         let { nums, ranges, citedrules } = justParse(val);
+
+        // sort stuff
         nums = nums.sort((a, b) => (a - b));
         ranges = ranges.sort(([a,b],[c,d]) => ((a-c==0) ? b-d : a-c));
-        //note the ", " use a thin space
         citedrules = citedrules.sort();
+
+        // join stuff; note the ", " use a thin space
         val = nums.map((n)=>(n.toString())).join(', ');
         if (ranges.length > 0) {
             if (val != '') { val += ', '; }
@@ -70,12 +81,18 @@ export default class JustificationInput extends FormulaInput {
                 (s.toString() + '–' + e.toString())).join(', ');
         }
         if (citedrules.length > 0) {
-            if (val != '') { val += ' '; };
-            val += citedrules.join(', ');
+            // allow rules first for, e.g., forallx nonsense
+            if (this?.rulesFirst) {
+                val = citedrules.join(', ') + ((val=='') ? '' : ' ' + val);
+            } else {
+                if (val != '') { val += ' '; };
+                val += citedrules.join(', ');
+            }
         }
         return val;
     }
 
+    // look for problem specific key listener extras
     static keydownExtra(e) {
         if (this.myline.mysubderiv.myprob.justKeydownExtra) {
             this.myline.mysubderiv.myprob.justKeydownExtra(e, this);

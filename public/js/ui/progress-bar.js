@@ -2,20 +2,27 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////////////////////////////////////////////////////////////////
+// creates a progress bar showing how many points are awarded as correct //
+// or incorrect or just completed                                        //
+///////////////////////////////////////////////////////////////////////////
+
 import { addelem } from '../common.js';
 import tr from '../translate.js';
 
+// this is just a table with cells for each category, whose widths are
+// adjusted accordingly
 export default function makeProgressBar(problemsdiv) {
-    let l = addelem('h3', problemsdiv, {
+    const l = addelem('h3', problemsdiv, {
         innerHTML: tr('Progress')
     });
-    let pb = addelem('div', problemsdiv, {
+    const pb = addelem('div', problemsdiv, {
         classes: [ 'lpprogressbar' ]
     });
     pb.myproblemsdiv = problemsdiv;
-    let t = addelem('table', pb);
-    let tb = addelem('tbody', t);
-    let tre = addelem('tr', tb);
+    const t = addelem('table', pb);
+    const tb = addelem('tbody', t);
+    const tre = addelem('tr', tb);
     pb.correctcell = addelem('td', tre, {
         classes: [ 'pbcorrectcell' ],
         titlebase: tr('marked correct')
@@ -38,16 +45,22 @@ export default function makeProgressBar(problemsdiv) {
         let incorr = 0;
         let saved = 0;
         let unans = 0;
+        // read all status indicators
         let ii = this.myproblemsdiv
             .getElementsByClassName(
                 "problemstatusindicator"
             );
+        // tally up different kinds of points
         for (const indic of ii) {
+            // skip defective indicators
             if (!indic?.points?.maxpoints ||
                 !indic?.myprob?.classList) {
                 continue;
             }
+            // add to max points
             ttl += indic.points.maxpoints;
+
+            // add to specific category as appropriate
             if (indic.myprob.classList.contains("correct")) {
                 corr += indic.points.maxpoints;
                 continue;
@@ -56,7 +69,7 @@ export default function makeProgressBar(problemsdiv) {
                 let toadd = indic.points.awarded ?? 0;
                 toadd = Math.max(toadd, 0);
                 corr += toadd;
-                let incpts = (indic.points.maxpoints - toadd);
+                const incpts = (indic.points.maxpoints - toadd);
                 incorr += incpts;
                 continue;
             }
@@ -70,6 +83,7 @@ export default function makeProgressBar(problemsdiv) {
             }
             unans += indic.points.maxpoints;
         }
+        // assign points to cells
         this.correctcell.pts = corr;
         this.incorrectcell.pts = incorr;
         this.unansweredcell.pts = unans;
@@ -80,8 +94,10 @@ export default function makeProgressBar(problemsdiv) {
             this.unansweredcell,
             this.savedcell
         ]) {
-            let perc = ((c.pts / ttl)*100).toFixed(2);
+            // set width by percentage of points
+            const perc = ((c.pts / ttl)*100).toFixed(2);
             c.style.width = perc.toString() + '%';
+            // tooltip
             c.title = c.titlebase + ': ( ' + c.pts.toString() +
                 ' / ' + ttl.toString() + ' = ' +
                 perc.toString() + '% )';
@@ -89,12 +105,14 @@ export default function makeProgressBar(problemsdiv) {
             if (perc < 0.2) {
                 c.style.display = "none";
             }
+            // if wide enough, show percent inside cell
             if (perc >= 20 && (
                 c == this.correctcell ||
                 c == this.savedcell
             )) {
                 c.innerHTML = perc.toString() + '%';
             } else {
+                // leave blank if not wide enough
                 c.innerHTML = '';
             }
         }
