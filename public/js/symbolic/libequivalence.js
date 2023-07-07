@@ -433,7 +433,7 @@ function nodes(branch, sprouts, mode, Formula) {
         const sprout = sprouts[i];
         // we can use the branch as trunk if it's the first or only one;
         // otherwise create a new branch trunk from the json
-        const trunk = (i==0) ? branch : JSON.parse(branchjson);
+        let trunk = (i==0) ? branch : JSON.parse(branchjson);
         // add each new sprout to queue by priority
         for (const a of sprout) {
             const priority = priorityOf(a, mode, Formula);
@@ -534,8 +534,8 @@ function tree(sprouts, mode, Formula) {
             }
         }
         if (mode == 'small') {
-            const cp = constCP;
-            const c = String.fromCodePoint(cp);
+            let cp = constCP;
+            let c = String.fromCodePoint(cp);
             while (terms.length < smallInterpSize && cRegEx.test(c)) {
                 terms = arrayUnion(terms, [c]);
                 cp++;
@@ -543,8 +543,8 @@ function tree(sprouts, mode, Formula) {
             }
         }
         if (mode == 'full') {
-            const cp = constCP;
-            const c = String.fromCodePoint(cp);
+            let cp = constCP;
+            let c = String.fromCodePoint(cp);
             while (termsleft.length < termLimit && cRegEx.test(c)) {
                 if (terms.indexOf(c) == -1) {
                     termsleft.push(c);

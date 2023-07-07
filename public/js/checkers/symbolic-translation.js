@@ -2,11 +2,26 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-import Formula from '../symbolic/formula.js';
+////////////////// checkers/symbolic-translation.js ///////////////////
+// tests whether a translation exercise is correct by testing it for //
+// equivalence with correct answer; note: may give indeterminate     //
+// answers in polyadic predicate logic                               //
+///////////////////////////////////////////////////////////////////////
+
+import getFormulaClass from '../symbolic/formula.js';
 import tr from '../translate.js';
 import { equivtest } from '../symbolic/libequivalence.js';
 
-function checkTranslation(ansstr, givenstr, pred = true) {
+// try to read default notation from process settings if running
+// on a server
+let defaultnotation = 'cambridge';
+if ((typeof process != 'undefined') &&
+    process?.appsettings?.defaultnotation) {
+    defaultnotation = process.appsettings.defaultnotation;
+}
+
+function checkTranslation(ansstr, givenstr, pred = true,
+    notationname = defaultnotation) {
     let maxfrac = 1;
     // answer is totally right if strings match
     if (ansstr == givenstr) { return {
@@ -14,9 +29,11 @@ function checkTranslation(ansstr, givenstr, pred = true) {
         determinate: true,
         ptfrac: maxfrac
     }};
+    // load formula class for the notation
+    const Formula = getFormulaClass(notationname);
     // parse strings
-    let ans = Formula.from(ansstr);
-    let given = Formula.from(givenstr);
+    const ans = Formula.from(ansstr);
+    const given = Formula.from(givenstr);
     // initialize variables
     let message = '';
     let correct = true;
@@ -39,7 +56,7 @@ function checkTranslation(ansstr, givenstr, pred = true) {
         }
     } else {
         // should not have terms
-        if (given.terms.length != '') {
+        if (given.terms.length != 0) {
             maxfrac = maxfrac - 0.1;
             message += ((message == '') ? '' : '; ') +
                 tr('Sentential Logic translation incorrectly uses ' +
@@ -54,7 +71,7 @@ function checkTranslation(ansstr, givenstr, pred = true) {
         return { correct, determinate, message, ptfrac: maxfrac };
     }
     // check for equivalence
-    let equivtestresult = equivtest(ans, given);
+    const equivtestresult = equivtest(ans, given, notationname);
     // todo? better partial credit for translations;
     // currently awards up to 20% just for being well-formed??
     if (equivtestresult.determinate) {
@@ -82,18 +99,22 @@ function checkTranslation(ansstr, givenstr, pred = true) {
 export default async function(
     question, answer, givenans, partialcredit, points, cheat, options
 ) {
-    let result = checkTranslation(answer, givenans,
-        (options?.pred ?? true));
+    // call function above
+    const result = checkTranslation(answer, givenans,
+        (options?.pred ?? true), (options?.notation ?? defaultnotation));
+    // determine partial credit
     let awarded = (result.correct) ? points : 0;
     if (partialcredit) {
         awarded = Math.floor( points * parseFloat(result.ptfrac.toFixed(5)) );
     }
-    let rv = {
+    // set up return value
+    const rv = {
         successstatus: ((result.determinate) ?
             ((result.correct) ? "correct" : "incorrect" )
                 : "indeterminate"),
         points: awarded
     }
+    // only return detailed message if hints set
     if (result.message && options.hints) {
         rv.transmessage = result.message;
     }

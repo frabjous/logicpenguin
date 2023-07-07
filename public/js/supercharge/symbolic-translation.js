@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////// supercharge/symbolic-translation.js /////////////////////
+// adds a show answer button to translation exercises                  //
+/////////////////////////////////////////////////////////////////////////
+
 import { addelem } from '../common.js';
 
 export function chargeup(probelem) {

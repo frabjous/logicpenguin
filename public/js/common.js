@@ -140,7 +140,7 @@ export async function localCheck(prob) {
             localcheckers[problemtype] = imported.default;
         } catch(err) {
             // report error if cannot be loaded
-            this.setIndicator({
+            prob.setIndicator({
                 savestatus: 'malfunction',
                 successStatus: 'malfunction',
                 points: -1,
