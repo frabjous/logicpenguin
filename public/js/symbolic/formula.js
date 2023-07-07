@@ -307,6 +307,8 @@ function generateFormulaClass(notationname) {
                 // get this character, and the remainder of the string
                 const c = this.parsedstr.at(i);
                 const remainder = this.parsedstr.substring(i);
+                // letter before to check if right after a predicate
+                const b = ((i==0) ? '' : this.parsedstr.at(i-1));
                 if (c == '(') {
                     // increase depth with left parenthesis
                     currdepth++;
@@ -321,7 +323,7 @@ function generateFormulaClass(notationname) {
                 // check if we're right at an operator, or if not,
                 // if we're at the start of a quantifier
                 let isop = Formula.syntax.isop(c);
-                const startswithq = remainder.match(Formula.syntax.qaRegEx);
+                let startswithq = remainder.match(Formula.syntax.qaRegEx);
                 // don't count ∃ as an operator if matching (∃x) at the
                 // parenthesis as well
                 if (parensinqs && c == Formula.syntax.symbols.EXISTS &&
@@ -340,6 +342,15 @@ function generateFormulaClass(notationname) {
                     } else {
                         thisop = Formula.syntax.symbols.FORALL;
                     }
+                }
+                // doesn't really start with a quantifier if we have (x)
+                // right after a predicate
+                if (startswithq && parensinqs &&
+                    this.op == Formula.syntax.symbols.FORALL &&
+                    Formula.syntax.pletterRegEx.test(b)) {
+                    console.log("got here", remainder, c, b);
+                    startswithq = false;
+                    isop = false;
                 }
                 // found something at this spot
                 if (isop || startswithq) {
