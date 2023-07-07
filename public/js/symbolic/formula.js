@@ -532,7 +532,8 @@ function generateFormulaClass(notationname) {
                 const garbagebefore = (this.opspot != 0);
                 if (garbagebefore) {
                     this.syntaxError('unexpected character(s) appear before ' +
-                        'the operator ' + this.op);
+                        ((Formula.syntax.isquant(this.op)) ? 'a quantifier' :
+                        ('the operator ' + this.op)));
                     this._wellformed = false;
                     // boundvar error may be misleading in case of garbage
                     // so we won't wait for that
@@ -700,4 +701,8 @@ export default function getFormulaClass(notationname) {
     formulaClasses[notationname] = fClass;
     return fClass;
 }
+
+let Formula = getFormulaClass("copi");
+console.log(Formula.from('(∃z)[Dz • (x)(R(x,z) ⊃ ~Cx)]').normal)
+console.log(Formula.from('(∃z)[Dz • (x)(R(x,z) ⊃ ~C(x))]').normal)
 
