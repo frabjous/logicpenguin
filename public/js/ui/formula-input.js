@@ -421,6 +421,10 @@ function makeSymbolWidgetFor(notationname) {
             td.title = htmlEscape(tr('Insert ') + symbols[op]);
             td.tabIndex = -1;
             td.classList.add('symbolwidgetbutton');
+            // prevent it from unfocusing the input field
+            td.onmousedown = function(e) {
+                e.preventDefault();
+            }
             td.onclick = () => {
                 if (!symbolwidget.targetInput) { return; }
                 symbolwidget.targetInput.insOp(td.myOp);

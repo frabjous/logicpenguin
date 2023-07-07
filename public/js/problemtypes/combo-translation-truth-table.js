@@ -54,7 +54,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         this.concProb.myprob = this;
         this.concProb.makeProblem(
             this.niceStatement(this.myproblem[n].statement),
-            {}, 'proceed'
+            this.options, 'proceed'
         );
         // set initial variables
         this.concProb.isConclusion = true;
@@ -82,7 +82,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         const thisPP = this.premProbs[ this.premProbs.length - 1 ];
         thisPP.makeProblem(
             this.niceStatement(this.myproblem[n].statement),
-            {}, 'proceed'
+            this.options, 'proceed'
         );
         // set initial variables
         thisPP.isConclusion = false;
