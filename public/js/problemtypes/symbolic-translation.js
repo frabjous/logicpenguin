@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////////// symbolic-translation.js ///////////////////////////
+// problem class for translating natural language sentences into       //
+// symbolic form                                                       //
+/////////////////////////////////////////////////////////////////////////
+
 import LogicPenguinProblem from '../problem-class.js';
 import { addelem, byid, htmlEscape } from '../common.js';
 import tr from '../translate.js';
@@ -66,13 +71,15 @@ export default class TranslationExercise extends LogicPenguinProblem {
     }
 
     getAnswer() {
+        // answer is just what's in the input field
         if (!this.ansinput) { return ''; }
         return this.ansinput.value;
     }
 
     getSolution() {
+        // puts the correct answer in in the field
         if (!("myanswer" in this)) { return null; }
-        let ans = this.myanswer;
+        const ans = this.myanswer;
         this.restoreState({
             ans: ans,
             ind: {
@@ -86,17 +93,22 @@ export default class TranslationExercise extends LogicPenguinProblem {
     }
 
     restoreAnswer(ans) {
+        // just puts the provided answer in the field
         if (!this.ansinput) { return false; }
         this.ansinput.value = ans;
     }
 
     setComment(str) {
+        // comments are used to give feedback on what's wrong with
+        // an answer
         if (!str || str=='') {
             this.comment.innerHTML = '';
             this.comment.classList.add("hidden");
             return;
         }
         this.comment.classList.remove("hidden");
+        // a period if doesn't already end with a sentence-ending
+        // punctuation mark
         str = str.at(0).toUpperCase() + str.substr(1);
         if (str.at(-1) != '.' && str.at(-1) != '?' &&
             str.at(-1) != '!') {
@@ -106,6 +118,7 @@ export default class TranslationExercise extends LogicPenguinProblem {
     }
 
     setIndicator(ind) {
+        // indicator just the usual thing plus sending the comment
         super.setIndicator(ind);
         if (ind.transmessage && ind.transmessage != '') {
             this.setComment(htmlEscape(ind.transmessage));
