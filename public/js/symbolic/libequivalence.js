@@ -615,6 +615,7 @@ export function equivtest(fp, fq, notationname) {
             determinate: true
         }
     }
+
     // check if already in database
     const quickResult = quickDBCheck(fp, fq, notationname);
     if (quickResult.determinate) { return quickResult; }

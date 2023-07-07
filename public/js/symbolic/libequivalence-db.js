@@ -431,7 +431,7 @@ export function loadEquivalents(wffstr, notationname) {
         let equivsff = equivProliferate(Formula.from(wffstr), {}, notationname);
         equivs = equivsff.map((f) =>(f.normal));
         if (equivs.length != 0) {
-            saveEquivalents(wffstr, equivs);
+            saveEquivalents(wffstr, equivs, notationname);
         }
     }
     return equivs;
@@ -464,8 +464,12 @@ export function saveEquivalents(wffstr, equivs, notationname) {
         (!("datadir" in process.appsettings)) ||
         (!("lpfs" in process)) ||
         (!("savejson" in process.lpfs))) { return false; }
-    const fn = process.appsettings.datadir + '/equivalents/' +
-        notationname + '/' + wffstr + '.json';
+    // determine location to save
+    const dirname = process.appsettings.datadir + '/equivalents/' +
+        notationname;
+    const fn =  dirname + '/' + wffstr + '.json';
+    // ensure directory exists before saving
+    process.lpfs.ensuredir(dirname);
     return process.lpfs.savejson(fn, equivs);
 }
 
