@@ -346,9 +346,8 @@ function generateFormulaClass(notationname) {
                 // doesn't really start with a quantifier if we have (x)
                 // right after a predicate
                 if (startswithq && parensinqs &&
-                    this.op == Formula.syntax.symbols.FORALL &&
+                    thisop == Formula.syntax.symbols.FORALL &&
                     Formula.syntax.pletterRegEx.test(b)) {
-                    console.log("got here", remainder, c, b);
                     startswithq = false;
                     isop = false;
                 }
@@ -713,7 +712,4 @@ export default function getFormulaClass(notationname) {
     return fClass;
 }
 
-let Formula = getFormulaClass("copi");
-console.log(Formula.from('(∃z)[Dz • (x)(R(x,z) ⊃ ~Cx)]').normal)
-console.log(Formula.from('(∃z)[Dz • (x)(R(x,z) ⊃ ~C(x))]').normal)
 
