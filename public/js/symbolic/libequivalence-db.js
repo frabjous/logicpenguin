@@ -197,7 +197,7 @@ export function equivProliferate(f, switches = {}, notationname) {
         const v = f.boundvar
 
         // real bound var after switches
-        const v_to_use = v;
+        let v_to_use = v;
         if (v in switches) {
             v_to_use = switches[v];
         }

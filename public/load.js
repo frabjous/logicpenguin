@@ -93,7 +93,7 @@ LP.makeProblems = async function(parentid, exerciseinfo,
                     '/js/problemtypes/' + problemtype + '.js');
                 LP.problemTypes[problemtype] = imported.default;
             } catch(err) {
-                console.log("nogo",err.toString(), err.stack);
+                console.log("problem loading script",problemtype + '.js',err.toString(), err.stack);
                 LP.infoboxMsg('Unable to load all types of problem. ' +
                     'Check your internet connection and reload. ' +
                     'If the problem persists, inform your instructor.',
