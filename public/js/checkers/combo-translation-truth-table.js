@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+////////////// checkers/combo-translation-truth-table.js ///////////////
+// uses functions from other scripts to check a combination problem   //
+////////////////////////////////////////////////////////////////////////
+
 import tr from '../translate.js';
 import checkTransProb from './symbolic-translation.js';
 import checkArgumentTT from './argument-truth-table.js';
@@ -12,7 +16,7 @@ export default async function(
     question, answer, givenans, partialcredit, points, cheat, options
 ) {
     let correct = true;
-    let messages = [];
+    const messages = [];
     let offcells = false;
     let qright = null;
     let rowdiff = 0;
@@ -31,14 +35,14 @@ export default async function(
     // check translations
     for (let i=0; i<answer.translations.length; i++) {
         transptsttl++;
-        let righttrans = answer.translations[i];
+        const righttrans = answer.translations[i];
         if (!givenans.translations
             || givenans.translations.length < (i+1)) {
             continue;
         }
-        let giventrans = givenans.translations[i];
-        let transq = question?.[i]?.statement ?? '';
-        let transcheck = await checkTransProb(
+        const giventrans = givenans.translations[i];
+        const transq = question?.[i]?.statement ?? '';
+        const transcheck = await checkTransProb(
             transq, righttrans, giventrans, partialcredit, 100, cheat, options
         );
         if (transcheck.successstatus == 'correct') {
@@ -56,16 +60,16 @@ export default async function(
     }
     // check tables
     if (givenans.tableAns) {
-        let conclusion = givenans?.translations?.[
+        const conclusion = givenans?.translations?.[
             (givenans?.chosenConclusion ?? 0)] ?? '';
         let premises = [];
         if (givenans.chosenOrder) {
             premises = givenans.chosenOrder.map((n) => 
                 (givenans?.translations?.[n] ?? ''));
         }
-        let pwffs = premises.map((p)=>(Formula.from(p)));
-        let cwff = Formula.from(conclusion);
-        let tablesShouldBe = argumentTables(pwffs, cwff);
+        const pwffs = premises.map((p)=>(Formula.from(p)));
+        const cwff = Formula.from(conclusion);
+        const tablesShouldBe = argumentTables(pwffs, cwff);
         let tcQ = {
             prems: premises,
             conc: conclusion

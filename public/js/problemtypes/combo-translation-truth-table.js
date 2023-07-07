@@ -2,6 +2,12 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////// combo-translation-truth-table.js ////////////////////////
+// problems that involve translating an entire natural language      //
+// argument, and then checking its validity with a truth table       //
+///////////////////////////////////////////////////////////////////////
+
+
 import LogicPenguinProblem from '../problem-class.js';
 import ArgumentTruthTable from './argument-truth-table.js';
 import TranslationExercise from './symbolic-translation.js';
@@ -15,10 +21,12 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         super();
     }
 
+    // problems are multiple steps and we give instructions for each
+    // one by adding an element to the problem
     addstepdirections(instr) {
         if (!this.stepDiv) { return; }
         // add element with step instructions
-        let e = addelem('div', this.stepDiv, {
+        const e = addelem('div', this.stepDiv, {
             classes: [ 'combostepinstructions' ],
             innerHTML: '<strong>' + tr('Step') + ' ' +
                 (this.onstep.toString()) + ':</strong> ' +
@@ -36,11 +44,11 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         // mark statement as chosen
         this.argumentDiv.statementSpans[n].classList.add("chosen");
         // remove click listeners
-        for (let stsp of this.argumentDiv.statementSpans) {
+        for (const stsp of this.argumentDiv.statementSpans) {
             stsp.onclick = function() {};
         }
         // new instructions
-        let inse = this.addstepdirections('Translate the conclusion.');
+        const inse = this.addstepdirections('Translate the conclusion.');
         // add translation problem
         this.concProb = addelem('combo-translation', this.stepDiv, {});
         this.concProb.myprob = this;
@@ -64,14 +72,14 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         // mark statement as chosen
         this.argumentDiv.statementSpans[n].classList.add("chosen");
         // remove click listeners
-        for (let stsp of this.argumentDiv.statementSpans) {
+        for (const stsp of this.argumentDiv.statementSpans) {
             stsp.onclick = function() {};
         }
         // new instruction
-        let inse = this.addstepdirections('Translate the premise.');
+        const inse = this.addstepdirections('Translate the premise.');
         // new translation problem
         this.premProbs.push(addelem('combo-translation', this.stepDiv, {}));
-        let thisPP = this.premProbs[ this.premProbs.length - 1 ];
+        const thisPP = this.premProbs[ this.premProbs.length - 1 ];
         thisPP.makeProblem(
             this.niceStatement(this.myproblem[n].statement),
             {}, 'proceed'
@@ -106,7 +114,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         this.addstepdirections('Click on the premise you wish to translate ' +
             firstnext + '.');
         // add click listeners
-        for (let stsp of this.argumentDiv.statementSpans) {
+        for (const stsp of this.argumentDiv.statementSpans) {
             if (!stsp.classList.contains('chosen')) {
                 stsp.onclick = function() {
                     this.myprob.chooseAsPremise(this.myindex);
@@ -118,7 +126,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
     }
 
     getAnswer() {
-        let ans = {};
+        const ans = {};
         // read selection order
         if ("chosenConclusion" in this) {
             ans.chosenConclusion = this.chosenConclusion;
@@ -140,7 +148,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
     getSolution() {
         if (!("myanswer" in this)) { return null; }
         this.startOver();
-        let ans = {};
+        const ans = {};
         ans.chosenConclusion = this.myanswer.index;
         ans.chosenOrder = [];
         for (var x=0; x<this.myanswer.translations.length; x++) {
@@ -155,8 +163,8 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
             this.myanswer.tables[0].rows.map((r) => (false));
         // create table data for each table in answer
         for (let j=0; j<this.myanswer.tables.length; j++) {
-            let table = this.myanswer.tables[j];
-            let newtab = {};
+            const table = this.myanswer.tables[j];
+            const newtab = {};
             newtab.rows = table.rows;
             // only highlight opspot column
             newtab.colhls = [];
@@ -217,7 +225,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
             classes: ['combottdiv']
         });
         for (let i=0; i<this.argumentDiv.statementSpans.length; i++) {
-            let ss = this.argumentDiv.statementSpans[i];
+            const ss = this.argumentDiv.statementSpans[i];
             ss.myindex = i;
             ss.myprob = this;
             ss.onclick = function() {
@@ -270,10 +278,10 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
             }
         }
         if (ans.chosenOrder) {
-            for (let n of ans.chosenOrder) {
+            for (const n of ans.chosenOrder) {
                 this.chooseAsPremise(n);
                 if (ans.translations) {
-                    let thisPP = this.premProbs[this.premProbs.length-1];
+                    const thisPP = this.premProbs[this.premProbs.length-1];
                     thisPP.ansinput.value = ans.translations[n];
                     thisPP.processAnswer();
                 }
@@ -298,7 +306,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
     setIndicator(ind) {
         super.setIndicator(ind);
         if ("messages" in ind && ind.messages.length > 0) {
-            let iH = ind.messages.map(
+            const iH = ind.messages.map(
                 (m) => (htmlEscape(m))).join('<br>');
             this.setComment(iH);
         } else {
@@ -308,11 +316,11 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         // color marked cells
         if (this.ttProb && ind.offcells && ind.offcells.prems && ind.offcells.prems.length > 0) {
             for (let i = 0; i < ind.offcells.prems.length; i++) {
-                let theseOffcells = ind.offcells.prems[i];
+                const theseOffcells = ind.offcells.prems[i];
                 if (theseOffcells.length > 0) {
-                    let trtr = this.ttProb.leftTables[i].tbody.getElementsByTagName("tr");
-                    for (let [y,x] of theseOffcells) {
-                        let tr = trtr[y];
+                    const trtr = this.ttProb.leftTables[i].tbody.getElementsByTagName("tr");
+                    for (const [y,x] of theseOffcells) {
+                        const tr = trtr[y];
                         if (tr && tr.ttcells[x]) {
                             tr.ttcells[x].classList.add('badcell');
                         }
@@ -321,9 +329,9 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
             }
         }
         if (this.ttProb && ind?.offcells?.conc && ind.offcells.conc.length > 0) {
-            let trtr = this.ttProb.rightTable.tbody.getElementsByTagName("tr");
-            for (let [y,x] of ind.offcells.conc) {
-                let tr = trtr[y];
+            const trtr = this.ttProb.rightTable.tbody.getElementsByTagName("tr");
+            for (const [y,x] of ind.offcells.conc) {
+                const tr = trtr[y];
                 if (tr && tr.ttcells[x]) {
                     tr.ttcells[x].classList.add('badcell');
                 }
@@ -350,7 +358,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         this.ttDiv.innerHTML = '';
         this.hasTable = false;
         let allIn = true;
-        for (let t of this.translations) {
+        for (const t of this.translations) {
             if (t == '') { allIn = false; break; }
         }
         if (!allIn) { return; }
@@ -362,11 +370,11 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
 
         this.ttProb = addelem('combo-truth-table', this.ttDiv, {});
         this.ttProb.myprob = this;
-        let probinfo = {
+        const probinfo = {
             prems: [],
             conc: this.translations[this.chosenConclusion]
         }
-        for (let i of this.chosenOrder) {
+        for (const i of this.chosenOrder) {
             probinfo.prems.push(this.translations[i]);
         }
         this.ttProb.makeProblem(probinfo,
@@ -389,8 +397,8 @@ export class ComboTranslation extends TranslationExercise {
     }
 
     processAnswer() {
-        let newAns = this.getAnswer();
-        let oldTrans = this.myprob.translations[this.myindex];
+        const newAns = this.getAnswer();
+        const oldTrans = this.myprob.translations[this.myindex];
         // do nothing if no change
         if (newAns == oldTrans) { return; }
         this.makeChanged();
