@@ -9,12 +9,24 @@
 import tr from '../translate.js';
 import checkTransProb from './symbolic-translation.js';
 import checkArgumentTT from './argument-truth-table.js';
-import Formula from '../symbolic/formula.js';
+import getFormulaClass from '../symbolic/formula.js';
 import { argumentTables } from '../symbolic/libsemantics.js';
+
+let defaultnotation = 'cambridge';
+if ((typeof process !== 'undefined') && process?.appsettings?.defaultnotation) {
+    defaultnotation = process.appsettings.defaultnotation;
+}
 
 export default async function(
     question, answer, givenans, partialcredit, points, cheat, options
 ) {
+    // set notation
+    let notation = defaultnotation;
+    if (options?.notation) {
+        notation = options.notation;
+    }
+    const Formula = getFormulaClass(notation);
+    //
     let correct = true;
     const messages = [];
     let offcells = false;
@@ -69,12 +81,12 @@ export default async function(
         }
         const pwffs = premises.map((p)=>(Formula.from(p)));
         const cwff = Formula.from(conclusion);
-        const tablesShouldBe = argumentTables(pwffs, cwff);
-        let tcQ = {
+        const tablesShouldBe = argumentTables(pwffs, cwff, notation);
+        const tcQ = {
             prems: premises,
             conc: conclusion
         }
-        let tableCheck = await checkArgumentTT(
+        const tableCheck = await checkArgumentTT(
              tcQ, tablesShouldBe, givenans.tableAns,
                 partialcredit, ttTtl, cheat, { question: true }
         );
@@ -103,8 +115,8 @@ export default async function(
         if (correct) {
             earned = points;
         } else {
-            let allpts = ttEarned + transptsearned;
-            let avail = ttTtl + transptsttl;
+            const allpts = ttEarned + transptsearned;
+            const avail = ttTtl + transptsttl;
             earned = Math.floor(
                 points * (allpts/avail)
             );
@@ -113,7 +125,7 @@ export default async function(
         // all or nothing
         earned = correct ? points : 0;
     }
-    let rv = {
+    const rv = {
         successstatus: (correct ? "correct" : "incorrect"),
         points: earned
     }

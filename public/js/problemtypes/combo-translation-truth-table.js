@@ -377,8 +377,10 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         for (const i of this.chosenOrder) {
             probinfo.prems.push(this.translations[i]);
         }
+        const options = this.options;
+        options.question = true;
         this.ttProb.makeProblem(probinfo,
-            {question: true}, this.checksave);
+            options, this.checksave);
         this.ttProb.buttonDiv.style.display = "none";
         this.hasTable = true;
         this.everHadTable = true;

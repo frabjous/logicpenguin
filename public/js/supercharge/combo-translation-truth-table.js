@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+//////// supercharge/combo-translation-truth-table.js ///////////////////
+// adds a show answer button to combination trans/TT problems          //
+/////////////////////////////////////////////////////////////////////////
+
 import { addelem } from '../common.js';
 
 export function chargeup(probelem) {
