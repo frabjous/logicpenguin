@@ -3,9 +3,9 @@
 
 # Logic Penguin
 
-🐧 Logic penguin 🐧 aims to be a flexible, extensible, open source, and self-hostable framework for online exercises for introductory logic problems, and interfaces with LMS systems such as [moodle](https://moodle.org/) and [canvas](https://www.instructure.com/canvas) using the [LTI protocol](https://www.imsglobal.org/activity/learning-tools-interoperability).
+🐧 Logic Penguin 🐧 aims to be a flexible, extensible, open source, and self-hostable framework for online exercises for introductory logic problems, and interfaces with LMS systems such as [moodle](https://moodle.org/) and [canvas](https://www.instructure.com/canvas) using the [LTI protocol](https://www.imsglobal.org/activity/learning-tools-interoperability).
 
-It is all written in JavaScript so code can be shared browser-side and server-side.
+It is all written in javascript so code can be shared browser-side and server-side.
 
 An [express.js](https://expressjs.com/)-based web-server is included to handle the LTI Tool Provider side of things, save and score exercises, submit grades, etc.
 
@@ -85,7 +85,7 @@ Private todo:
 
 ## License
 
-Logic penguin is copyright © 2023 by Kevin C. Klement. This is free software, which can be redistributed and/or modified under the terms of the [GNU General Public License (GPL), version 3](https://www.gnu.org/licenses/gpl.html).
+Logic Penguin is copyright © 2023 by Kevin C. Klement. This is free software, which can be redistributed and/or modified under the terms of the [GNU General Public License (GPL), version 3](https://www.gnu.org/licenses/gpl.html).
 
 Penguin logo and icon adapted from a free licensed image by Hannah Hill: <https://freepngimg.com/author/hannahhil-5479>.
 
