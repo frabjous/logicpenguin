@@ -8,7 +8,7 @@
 
 import tr from './translate.js';
 import { addelem, byid, sendAnswerToServer, localCheck } from './common.js';
-import LP from '../../load.js';
+import LP from '../load.js';
 
 // the problem is its HTML element, so we extend it
 export default class LogicPenguinProblem extends HTMLElement {

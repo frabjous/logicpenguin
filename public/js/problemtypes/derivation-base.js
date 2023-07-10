@@ -768,9 +768,9 @@ export class SubDerivation extends HTMLElement {
     addSubderivation(s, removeemptylineabove = false) {
         // remove last line of current subderivation if empty
         if (removeemptylineabove) {
-            let lines = this.getElementsByClassName("derivationline");
+            const lines = this.getElementsByClassName("derivationline");
             if (lines && lines.length > 0) {
-                let lline = lines[ lines.length - 1 ];
+                const lline = lines[ lines.length - 1 ];
                 if (!lline.classList.contains("derivationshowline")) {
                     if ((lline.input.value == '') && (lline.jinput.value == '')) {
                         lline.parentNode.removeChild(lline);
@@ -778,7 +778,7 @@ export class SubDerivation extends HTMLElement {
                 }
             }
         }
-        let subderiv = addelem('sub-derivation', this.inner, {});
+        const subderiv = addelem('sub-derivation', this.inner, {});
         subderiv.initialSetup({
             parentderiv: this,
             target: (s ?? false)
@@ -802,7 +802,7 @@ export class SubDerivation extends HTMLElement {
 
     close() {
         let changed = false;
-        let lines = Array.from(this.getElementsByClassName("derivationline"));
+        const lines = Array.from(this.getElementsByClassName("derivationline"));
         // remove blank lines
         lines.forEach((line) => {
             if (line.jinput.value == '' && line.input.value == '' &&
@@ -825,13 +825,13 @@ export class SubDerivation extends HTMLElement {
     }
 
     getLineInfo(line) {
-        let info = {};
+        const info = {};
         info.s = line?.input?.value ?? '';
         info.j = line?.jinput?.value ?? '';
         // return something falsey if no values
-        let cbCL = line?.checkButton?.getElementsByTagName("div")?.[0]?.classList;
+        const cbCL = line?.checkButton?.getElementsByTagName("div")?.[0]?.classList;
         if (cbCL) {
-            for (let cl of cbCL) {
+            for (const cl of cbCL) {
                 if (cl != 'material-symbols-outlined') {
                     info.c = cl;
                     break;
@@ -843,14 +843,14 @@ export class SubDerivation extends HTMLElement {
     }
 
     getSubderivationInfo() {
-        let info = { parts: [] };
+        const info = { parts: [] };
         info.closed = this.classList.contains("closed");
-        for (let div of this?.outer?.childNodes) {
+        for (const div of this?.outer?.childNodes) {
             if (div.classList.contains("derivationshowline")) {
                 info.showline= this.getLineInfo(div);
             }
             if (div.classList.contains("innersubderiv")) {
-                for (let p of div.childNodes) {
+                for (const p of div.childNodes) {
                     if (p.classList.contains("subderivbuttons")) {
                         continue;
                     }
@@ -869,7 +869,7 @@ export class SubDerivation extends HTMLElement {
     lineBefore(line) {
         let lookbefore = line;
         while (lookbefore) {
-            let psib = lookbefore.previousSibling;
+            const psib = lookbefore.previousSibling;
             if (psib) {
                 // a previous sibling existed; see if it is
                 // either a line or subderiv
@@ -890,11 +890,11 @@ export class SubDerivation extends HTMLElement {
             } else {
                 // no previous sibling, we are at the top
                 // check if showline
-                let upone = lookbefore.mysubderiv ??
+                const upone = lookbefore.mysubderiv ??
                     (lookbefore.parentderiv ?? false);
                 if (upone && !lookbefore.classList.contains("derivationshowline")) {
                     // if it is we must look to see if there are any
-                    let sl = upone.getElementsByClassName("derivationshowline");
+                    const sl = upone.getElementsByClassName("derivationshowline");
                     if (sl && sl.length > 0 && sl[0].parentNode == upone.outer) {
                         // return that show line
                         return sl[ 0 ];
@@ -910,16 +910,16 @@ export class SubDerivation extends HTMLElement {
         // see if a showline
         let lookafter = line;
         while (lookafter) {
-            let isshowline = lookafter.classList.contains("derivationshowline");
+            const isshowline = lookafter.classList.contains("derivationshowline");
             if (isshowline) {
                 // it is a show line
                 // next line should be first line of subderiv
-                let lineafter = lookafter?.mysubderiv?.inner?.
+                const lineafter = lookafter?.mysubderiv?.inner?.
                     getElementsByClassName("derivationline")?.[0];
                 if (lineafter) { return lineafter; }
             } else {
                 // not a show line; look for sibling
-                let sib = lookafter.nextSibling;
+                const sib = lookafter.nextSibling;
                 if (sib && sib.classList.contains("derivationline")) {
                     return sib;
                 }
@@ -927,7 +927,7 @@ export class SubDerivation extends HTMLElement {
                 // its first line
                 if (sib && sib.tagName.toLowerCase() == "sub-derivation") {
                     // if it does not, we can go to its first line
-                    let firstline = sib.getElementsByClassName("derivationline")[0];
+                    const firstline = sib.getElementsByClassName("derivationline")?.[0];
                     if (firstline) { return firstline; }
                 }
             }
@@ -964,25 +964,31 @@ export class SubDerivation extends HTMLElement {
     }
 
     restoreSubderivation(info) {
+        // restore showline
         if (info.showline) {
-            let sl = this?.getElementsByClassName("derivationshowline")?.[0];
+            const sl = this?.getElementsByClassName("derivationshowline")?.[0];
             if (sl && sl.mysubderiv == this) {
                 this.restoreLine(sl, info.showline);
             }
         }
+        // restore other parts
         let didfirst = false;
-        for (let p of info.parts) {
+        for (const p of info.parts) {
+            // restore subsubderivation
             if ("parts" in p) {
-                let sd = this.addSubderivation(info?.showline?.s ?? '', (!didfirst));
+                const sd = this.addSubderivation(info?.showline?.s ?? '', (!didfirst));
                 sd.restoreSubderivation(p);
             } else {
+                // restore regular line
                 let l;
-                let lines = this.inner.getElementsByClassName("derivationline");
+                const lines = this.inner.getElementsByClassName("derivationline");
+                // may have automatically inserted a first line, use it if need be
                 if (lines.length == 1 && lines[0].input.value == '' &&
                     lines[0].jinput.value == '' && !didfirst) {
                     l = lines[0];
                     didfirst = true;
                 } else {
+                    // otherwise create a line for it
                     l = this.addLine(p.s ?? '', false);
                 }
                 this.restoreLine(l, p);
@@ -1000,17 +1006,22 @@ export class SubDerivation extends HTMLElement {
     }
 
     static blurHook(e) {
+        // hide rule panel on blur
         if (this.myline.mysubderiv.myprob.options.rulepanel && !e.blockhide) {
             this.myline.mysubderiv.myprob.hideRulePanel();
         }
+        // check if anything changed
         if (this.value == this.oldvalue) { return; }
+        // update old value
         this.oldvalue = this.value;
+        // any changes means the problem is changed, when not restoring
         if (this?.myline?.mysubderiv?.myprob?.isRestoring) {
             return true;
         }
         if (this?.myline?.mysubderiv?.myprob?.makeChanged) {
             this.myline.mysubderiv.myprob.makeChanged();
         }
+        // process the line
         if (this?.myline?.mysubderiv?.myprob?.processLine) {
             this.myline.mysubderiv.myprob.processLine(this.myline);
         }
@@ -1018,16 +1029,20 @@ export class SubDerivation extends HTMLElement {
     }
 
     static focusHook(e) {
+        // open an input's subderivation when focused if not
+        // open already
         if (this?.myline?.mysubderiv) {
             if (!this?.myline?.mysubderiv?.myprob?.isRestoring) {
                 this.myline.mysubderiv.open();
             }
         }
+        // mark this line's as last focused justification input
         if (this?.myline?.jinput &&
             this?.myline?.mysubderiv?.myprob) {
             this.myline.mysubderiv.myprob.lastfocusedJ =
                 this.myline.jinput
         }
+        // show the rule panel
         if (this.myline.mysubderiv.myprob.options.rulepanel &&
             this.myline.mysubderiv.myprob.showRulePanelFor) {
             this.myline.mysubderiv.myprob.showRulePanelFor(this);
@@ -1044,7 +1059,7 @@ export class SubDerivation extends HTMLElement {
             }
         }
         // go to input on next line
-        let nextline =
+        const nextline =
             this.myline.mysubderiv.lineAfter(this.myline, stayinsubderiv);
         if (nextline && nextline.input) {
             nextline.input.focus();
@@ -1056,11 +1071,11 @@ export class SubDerivation extends HTMLElement {
         // create next line!
         if (this.myline.classList.contains("derivationshowline")) {
             if (!stayinsubderiv) { return; }
-            let childlines = (this.myline.mysubderiv.inner.
+            const childlines = (this.myline.mysubderiv.inner.
                 getElementsByTagName("derivationline"));
             if (childlines) { return; }
         }
-        let newline = this.myline.mysubderiv.addLine('', false);
+        const newline = this.myline.mysubderiv.addLine('', false);
         if (newline?.input) { newline.input.focus(); }
     }
 
@@ -1074,7 +1089,7 @@ export class SubDerivation extends HTMLElement {
             }
         }
         // go to justification input on prev line
-        let prevline =
+        const prevline =
             this.myline.mysubderiv.lineBefore(this.myline);
         if (prevline && prevline.jinput) {
             prevline.jinput.focus();
@@ -1090,12 +1105,15 @@ export class SubDerivation extends HTMLElement {
             fn: function(e) {
                 let targspot = this.myline;
                 let targderiv = targspot.mysubderiv;
+                // showlines, previous are in parent
                 if (this.myline.classList.contains("derivationshowline")) {
                     targspot = targderiv;
                     targderiv = targderiv.parentderiv;
                 }
-                let nl = targderiv.addLine('', false);
+                const nl = targderiv.addLine('', false);
+                // move line into place
                 targspot.parentNode.insertBefore(nl, targspot);
+                // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
@@ -1106,13 +1124,16 @@ export class SubDerivation extends HTMLElement {
             descr: 'insert line below',
             numinp: false,
             fn: function(e) {
-                let nl = this.myline.mysubderiv.addLine('', false);
+                // create line
+                const nl = this.myline.mysubderiv.addLine('', false);
+                // move into place
                 if (this.myline.classList.contains("derivationshowline")) {
                     this.myline.mysubderiv.inner.insertBefore(nl,
                         this.myline.mysubderiv.inner.firstChild);
                 } else {
                     this.myline.parentNode.insertBefore(nl, this.myline.nextSibling);
                 }
+                // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
@@ -1123,19 +1144,24 @@ export class SubDerivation extends HTMLElement {
             descr: 'insert subderivation above',
             numinp: false,
             fn: function(e) {
-                let line = this.myline;
+                const line = this.myline;
                 let targ = line;
                 let targderiv = line.mysubderiv;
+                // for showlines, the derivation goes in parent
                 if (line.classList.contains("derivationshowline")) {
                     targderiv = targ.mysubderiv.parentderiv;
                     targ = targ.mysubderiv;
                 }
-                let sd = targderiv.addSubderivation('', false);
+                // new subderivation
+                const sd = targderiv.addSubderivation('', false);
+                // move into place
                 targ.parentNode.insertBefore(sd, targ);
+                // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 line.mysubderiv.myprob.makeChanged();
                 line.mysubderiv.myprob.renumberLines();
-                let ii = sd.getElementsByClassName("derivationline");
+                // focus on first input in new subderiv
+                const ii = sd.getElementsByClassName("derivationline");
                 if (ii?.[0]?.input) { ii[0].input.focus(); };
             }
         },
@@ -1143,7 +1169,9 @@ export class SubDerivation extends HTMLElement {
             descr: 'insert subderivation below',
             numinp: false,
             fn: function(e) {
-                let sd = this.myline.mysubderiv.addSubderivation('', false);
+                // add the subderivation
+                const sd = this.myline.mysubderiv.addSubderivation('', false);
+                // put into place, for showline, it goes in parent
                 if (this.myline.classList.contains("derivationshowline")) {
                     this.myline.mysubderiv.inner.insertBefore(sd,
                         this.myline.mysubderiv.inner.firstChild);
@@ -1151,10 +1179,12 @@ export class SubDerivation extends HTMLElement {
                     this.myline.parentNode.insertBefore(sd,
                         this.myline.nextSibling);
                 }
+                // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
-                let ii = sd.getElementsByClassName("derivationline");
+                // focus first input
+                const ii = sd.getElementsByClassName("derivationline");
                 if (ii?.[0]?.input) { ii[0].input.focus(); };
             }
         },
@@ -1162,7 +1192,8 @@ export class SubDerivation extends HTMLElement {
             descr: 'move above line:',
             numinp: true,
             fn: function(e) {
-                let linepicked = parseInt(this.value);
+                // figure out what should move
+                const linepicked = parseInt(this.value);
                 let targ = this.myline?.mysubderiv?.myprob?.linesByNum?.[linepicked];
                 if (!targ) {
                     alert("No such line!");
@@ -1172,7 +1203,7 @@ export class SubDerivation extends HTMLElement {
                     alert('You cannot edit the argument itself.');
                     return;
                 }
-                let isshow = this.myline.classList.contains("derivationshowline");
+                const isshow = this.myline.classList.contains("derivationshowline");
                 if (isshow) {
                     if (!(confirm("Moving a showline moves its entire " +
                         "subderivation. Do you want to move it?"))) {
@@ -1186,7 +1217,9 @@ export class SubDerivation extends HTMLElement {
                 if (targ.classList.contains("derivationshowline")) {
                     targ = targ.mysubderiv;
                 }
+                // actually do the move
                 targ.parentNode.insertBefore(movee, targ);
+                // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
@@ -1196,8 +1229,9 @@ export class SubDerivation extends HTMLElement {
             descr: 'move below line:',
             numinp: true,
             fn: function(e) {
-                let linepicked = parseInt(this.value);
-                let targ = this.myline?.mysubderiv?.myprob?.linesByNum?.[linepicked];
+                // figure out what to move
+                const linepicked = parseInt(this.value);
+                const targ = this.myline?.mysubderiv?.myprob?.linesByNum?.[linepicked];
                 if (!targ) {
                     alert("No such line!");
                     return;
@@ -1206,7 +1240,7 @@ export class SubDerivation extends HTMLElement {
                     alert('You cannot edit the argument itself.');
                     return;
                 }
-                let isshow = this.myline.classList.contains("derivationshowline");
+                const isshow = this.myline.classList.contains("derivationshowline");
                 if (isshow) {
                     if (!(confirm("Moving a showline moves its entire " +
                         "subderivation. Do you want to move it?"))) {
@@ -1217,12 +1251,14 @@ export class SubDerivation extends HTMLElement {
                 if (isshow) {
                     movee = this.myline.mysubderiv;
                 }
+                // do the move
                 if (targ.classList.contains("derivationshowline")) {
                     targ.mysubderiv.inner.insertBefore(movee,
                         targ.mysubderiv.inner.firstChild);
                 } else {
                     targ.parentNode.insertBefore(movee, targ.nextSibling);
                 }
+                // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
@@ -1232,12 +1268,15 @@ export class SubDerivation extends HTMLElement {
             descr: 'remove line',
             numinp: false,
             fn: function(e) {
+                // go ahead and remove normal lines;
+                // this will close the menu as it will no longer exist
                 if (!this.myline.classList.contains("derivationshowline")) {
                     this.myline.parentNode.removeChild(this.myline);
                     this.myline.mysubderiv.myprob.makeChanged();
                     this.myline.mysubderiv.myprob.renumberLines();
                     return;
                 }
+                // confirm for showlines
                 if (!confirm(tr('Removing a show line removes its '
                     + 'attached subderviation. Do you wish to '
                     + 'remove it?'))) { return; }
@@ -1246,6 +1285,7 @@ export class SubDerivation extends HTMLElement {
                 );
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
+                // close the menu asap; not sure this is neeeded
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
             }
         },
@@ -1253,16 +1293,17 @@ export class SubDerivation extends HTMLElement {
             descr: 'cancel',
             numinp: false,
             fn: function(e) {
+                // just close the menu
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
             }
         }
     }
 
     static lineStatusUpdate(icon) {
-        let prob = this.myprob;
+        const prob = this.myprob;
         this.innerHTML = '<div class="material-symbols-outlined ' +
             icon + '">' + prob.icons[icon] + '</div>';
-        this.title = prob.tooltips[icon];
+        this.title = tr(prob.tooltips[icon]);
     }
 
     static moveHorizontally(e) {
@@ -1276,7 +1317,7 @@ export class SubDerivation extends HTMLElement {
 
     static moveDown(e) {
         if (!this.myline) { return; }
-        let nextline = this.myline.mysubderiv.lineAfter(this.myline, false);
+        const nextline = this.myline.mysubderiv.lineAfter(this.myline, false);
         if (!nextline) { return; }
         if (this.classList.contains("justification")) {
             if (nextline.jinput) { nextline.jinput.focus(); return; }
@@ -1286,7 +1327,7 @@ export class SubDerivation extends HTMLElement {
 
     static moveUp(e) {
         if (!this.myline) { return; }
-        let prevline = this.myline.mysubderiv.lineBefore(this.myline);
+        const prevline = this.myline.mysubderiv.lineBefore(this.myline);
         if (!prevline) { return; }
         if (this.classList.contains("justification")) {
             if (prevline.jinput) { prevline.jinput.focus(); return; }
