@@ -2,11 +2,15 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////// derivation-hardegree.js //////////////////////////////
+// Kalish-Montague style derivations using Hardegree's rule set       //
+////////////////////////////////////////////////////////////////////////
+
 import DerivationExercise from './derivation-base.js';
 import { addelem, htmlEscape } from '../common.js';
 import tr from '../translate.js';
 import rules from '../checkers/rules/hardegree-rules.js';
-import { symbols } from '../symbolic/libsyntax.js';
+import getSyntax from '../symbolic/libsyntax.js';
 
 // TODO: use schematic letters from notatiton, etc.
 
@@ -17,7 +21,7 @@ export default class DerivationHardegree extends DerivationExercise {
     }
 
     addSubDerivHook(subderiv) {
-        let l = subderiv.addLine(subderiv.target, true);
+        const l = subderiv.addLine(subderiv.target, true);
         if (!this.isRestoring) {
             l.input.focus();
         }
