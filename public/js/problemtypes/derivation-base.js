@@ -2,6 +2,11 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////// derivation-base.js ////////////////////////////////
+// defines the base class shared by all derivation problem types     //
+// regardless of precise system or ruleset                           //
+///////////////////////////////////////////////////////////////////////
+
 import LogicPenguinProblem from '../problem-class.js';
 import { addelem, htmlEscape } from '../common.js';
 import FormulaInput from '../ui/formula-input.js';
@@ -15,6 +20,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         super();
     }
 
+    // return auto-check as off unless already specified
     get autocheck() {
         if (!("_autocheck" in this)) {
             this._autocheck = false;
@@ -22,9 +28,11 @@ export default class DerivationExercise extends LogicPenguinProblem {
         return this._autocheck;
     }
 
+    // turn auto-check on or off
     set autocheck(b) {
-        let lines = this.mainDeriv.getElementsByClassName("derivationline");
-        for (let line of lines) {
+        const lines = this.mainDeriv.getElementsByClassName("derivationline");
+        // hide or unhide checkbutton for each line
+        for (const line of lines) {
             if (!line.checkButton) { continue; };
             if (b) {
                 line.checkButton.classList.remove("hideunchecked");
@@ -32,6 +40,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 line.checkButton.classList.add("hideunchecked")
             }
         }
+        // set the toggle button on or off
         if (this.clToggle) {
             if (b) { 
                 this.clToggle.innerHTML =
@@ -45,19 +54,24 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 this.clToggle.title = 'turn on autocheck';
             }
         }
+        // explicitly set autocheck on
         this._autocheck = b;
         // run it now
-        if (b && this.checkLines && !this.isRestoring) { this.checkLines(); }
+        if (b && this.checkLines && !this.isRestoring) {
+            this.checkLines();
+        }
     }
 
+    // the answer is the subderivation info of the main derivation
+    // i.e., the one with the premises
     getAnswer() {
         if (!this.premDeriv) { return []; }
-        let pDinfo = this.premDeriv.getSubderivationInfo();
+        const pDinfo = this.premDeriv.getSubderivationInfo();
         pDinfo.autocheck = this.autocheck;
         return pDinfo;
     }
 
-
+    // fill in answer, which is the same format as regular answers
     getSolution() {
         if (!this.myanswer) { return; }
         this.startOver();
@@ -73,6 +87,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.scrollIntoView();
     }
 
+    // TODO: this needs to be ruleset specific, I think
     hideRulePanel() {
         if (window?.rulepanel?.parentNode) {
             window.rulepanel.parentNode.removeChild(window.rulepanel);
@@ -80,24 +95,26 @@ export default class DerivationExercise extends LogicPenguinProblem {
         if (window?.rulepanel) { window.rulepanel.target = false; }
     }
 
+    // making it changed also removes all line check markers
     makeChanged() {
         super.makeChanged();
         // remove markers on lines
-        for (let line of this.getElementsByClassName("derivationline")) {
+        for (const line of this.getElementsByClassName("derivationline")) {
             if (line.checkButton) { line.checkButton.update("unchecked"); }
         }
     }
 
+    // base of creating the problem
     makeProblem(problem, options, checksave) {
         this.options = options;
         this.checksave = checksave;
 
         // outer wrap container, full width
-        let container = addelem('div', this, {
+        const container = addelem('div', this, {
             classes: ['derivationcontainer']
         });
         // formula area only contains the formulas, not the side boxes
-        let formulaarea = addelem('div', container, {
+        const formulaarea = addelem('div', container, {
             classes: ['derivationcore']
         });
 
@@ -110,8 +127,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.premDeriv.classList.add("premiseroot");
         this.premDeriv.myprob = this;
         let prems = problem?.prems ?? [];
-        for (let prem of prems) {
-            let line = this.premDeriv.addLine(prem, false);
+        for (const prem of prems) {
+            const line = this.premDeriv.addLine(prem, false);
             line.jinput.value = this.premiseAbbr ?? tr('premise');
             line.jinput.readOnly = true;
         }
@@ -149,7 +166,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
             innerHTML: tr('start over'),
             onclick: function() {
                 this.myprob.startOver();
-                let sh = this?.myprob?.
+                // start with focus on main showline? TODO: fitch different?
+                const sh = this?.myprob?.
                     getElementsByClassName("derivationshowline")?.[0];
                 if (sh) {
                     sh.jinput.focus();
@@ -160,6 +178,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
 
     // note: makeRulePanel: specific to specific type of derivation problem
 
+    // makes changes when a line is updated, renumbering things and
+    // checking when autocheck is on
     processLine(line) {
         if (line?.mysubderiv?.myprob?.renumberLines) {
             line.mysubderiv.myprob.renumberLines();
@@ -174,24 +194,24 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     renumberLines() {
-        let lines = this.getElementsByClassName("derivationline");
+        const lines = this.getElementsByClassName("derivationline");
         // we want to start with 1, so we start the array with a
         // dummy entry
         this.linesByNum = ['offbyone'];
         // we map the old numbers to the lines to update
         // the citations
-        let oldnumbers = {};
+        const oldnumbers = {};
         // loop through lines
-        for (let line of lines) {
+        for (const line of lines) {
             // shouldn't be here without a numbox, but just in case
             // we don't want a crash
             if (!line.numbox) { continue; }
             // record old line number if it has one
-            let oldnum = line.numbox.innerHTML;
+            const oldnum = line.numbox.innerHTML;
             if (oldnum != '') { oldnumbers[oldnum] = line; }
-            // ensure the link isn't blank
-            let jval = line?.jinput?.value ?? false;
-            let ival = line?.input?.value ?? false;
+            // ensure the line isn't blank
+            const jval = line?.jinput?.value ?? false;
+            const ival = line?.input?.value ?? false;
             // hide it if blank, unhide it otherwise
             if (!ival && !jval) {
                 line.numbox.innerHTML = '';
@@ -206,19 +226,28 @@ export default class DerivationExercise extends LogicPenguinProblem {
             this.linesByNum.push(line);
         }
         // time to fix old citations
-        for (let line of this.linesByNum) {
+        for (const line of this.linesByNum) {
             // again shouldn't be here without a justification input
             // but just in case, we don't want a crash
             if (!line?.jinput) { continue; }
             // justFix should have been run on justification, so
             // it should only have space in between numbers and rules
-            let jval = line.jinput.value ?? '';
-            let [cites, rules] = jval.split(' ');
-            // if only one thing in split, and it has no numbers,
+            const jval = line.jinput.value ?? '';
+            const jvalsplit = jval.split(' ');
+            let cites = '';
+            let rules = '';
+            if (this?.rulesFirst) {
+                rules = jvalsplit?.[0];
+                cites = jvalsplit?.[1];
+            } else {
+                cites = jvalsplit?.[0];
+                rules = jvalsplit?.[1];
+            }
+            // if cites does not exist, or has no numbers,
             // no updating is needed
             if (!cites || !(/[0-9]/.test(cites))) { continue; }
-            // change each citation; note split uses thin space
-            let newcites = cites.split(', ').map((cite) => {
+            // change each citation; note split/join uses thin space
+            const newcites = cites.split(', ').map((cite) => {
                 let [start, end] = cite.split('–');
                 start = oldnumbers?.[start]?.numbox?.innerHTML ?? '?';
                 if (end) {
@@ -227,7 +256,11 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 return start + ((end) ? ('–' + end) : '');
             }).join(', ');
             // add back in the rules if needed
-            line.jinput.value = newcites + ((rules) ? (' ' + rules) : '');
+            if (this?.rulesFirst) {
+                line.jinput.value = ((rules) ? (rules + ' ') : '') + newcites;
+            } else {
+                line.jinput.value = newcites + ((rules) ? (' ' + rules) : '');
+            }
         }
     }
 
@@ -261,18 +294,18 @@ export default class DerivationExercise extends LogicPenguinProblem {
         super.setIndicator(ind);
         // report errors
         if (ind.errors) {
-            // if there is only errors on showlines, any they're all
+            // if there is only errors on show lines, any they're all
             // justification or completion, don't report anything
             let onlygooderrors = true;
-            for (let lnstr in ind.errors) {
-                let errline = this.linesByNum[parseInt(lnstr)];
+            for (const lnstr in ind.errors) {
+                const errline = this.linesByNum[parseInt(lnstr)];
                 if (!errline) { continue; }
                 if (!errline.classList.contains("derivationshowline")) {
                     onlygooderrors = false;
                     break;
                 }
 
-                for (let category in ind.errors[lnstr]) {
+                for (const category in ind.errors[lnstr]) {
                     if (category != 'justification' && category != 'completion' && category != 'dependency') {
                         onlygooderrors = false;
                         break;
@@ -282,17 +315,18 @@ export default class DerivationExercise extends LogicPenguinProblem {
             }
             // regular checking
             let ch = '';
-            for (let line of this.linesByNum) {
+            for (const line of this.linesByNum) {
                 if (line == 'offbyone') { continue; }
-                let ln = line.numbox.innerHTML;
+                const ln = line.numbox.innerHTML;
                 let lsupdate = '';
                 if (ln == '') { continue; }
+                // build table of errors
                 if (ind.errors[ln]) {
                     if (ch == '') { ch = '<table class="errortable"><tbody>'; };
                     ch += '<tr><td>Line ' + ln + '</td><td>';
                     let needbr = false;
-                    for (let category in ind.errors[ln]) {
-                        let errIconType = DerivationExercise.errIconType[category] ?? '';
+                    for (const category in ind.errors[ln]) {
+                        const errIconType = DerivationExercise.errIconType[category] ?? '';
                         if (lsupdate == '') {
                             lsupdate = errIconType;
                         } else {
@@ -311,8 +345,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
                                 ' errors: </span>';
                         }
                         let needsemicolon = false;
-                        for (let severity in ind.errors[ln][category]) {
-                            for (let desc in ind.errors[ln][category][severity]) {
+                        for (const severity in ind.errors[ln][category]) {
+                            for (const desc in ind.errors[ln][category][severity]) {
                                 if (needsemicolon) {
                                     ch+='; ';
                                 }
@@ -328,6 +362,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
                     if (lsupdate == '') {
                         line.checkButton.update('good');
                     } else {
+                        // consider it to be incomplete not wrong if only
+                        // natural errors for incomplete problem
                         if (onlygooderrors && (lsupdate == 'justificationerror' || lsupdate == 'baddependency')) {
                             line.checkButton.update('incomplete');
                         } else {
@@ -338,6 +374,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
 
             }
             if (ch != '') { ch += '</tbody></table>' };
+            // don't report errors if they're only natural errors for an
+            // incomplete problem
             if (onlygooderrors) {
                 this.setComment('');
             } else {
@@ -347,7 +385,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         // auto close if correct -- made a timer to avoid reopening when clicked
         if (ind.successstatus == "correct") {
             setTimeout( () => {
-                for (let sd of this.getElementsByTagName("sub-derivation")) {
+                for (const sd of this.getElementsByTagName("sub-derivation")) {
                     sd.classList.add("closed")
                 }
             }, 100);
@@ -355,6 +393,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     showRulePanelFor(inp) {
+        // TODO: make rule panels ruleset-specific
         if (!this.options.rulepanel || !this.ruleset) { return; }
         if (!window.rulepanel ||
             window.rulepanel.problemtype != this.problemtype) {
@@ -367,23 +406,25 @@ export default class DerivationExercise extends LogicPenguinProblem {
         // and show first one
         window.rulepanel.resetState();
 
-        // subset rules
+        // subset rules -- hide excluded rules
         if (this.options.excluderules) {
-            for (let rule of this.options.excluderules) {
+            for (const rule of this.options.excluderules) {
                 if (window.rulepanel.rulemap[rule]) {
                     window.rulepanel.rulemap[rule].classList.add("excluded");
                 }
             }
         }
+        // hide all the ones not in useonly if useonly set
         if (this.options.useonlyrules) {
-            for (let rule in window.rulepanel.rulemap) {
+            for (const rule in window.rulepanel.rulemap) {
                 if (this.options.useonlyrules.indexOf(rule) == -1) {
                     window.rulepanel.rulemap[rule].classList.add("excluded");
                 }
             }
         }
+        // hide predicate rules if we are not working with predicate logic
         if (!this?.options?.pred) {
-            for (let rule in window.rulepanel.rulemap) {
+            for (const rule in window.rulepanel.rulemap) {
                 if (this.ruleset[rule].pred) {
                     window.rulepanel.rulemap[rule].classList.add("excluded");
                 }
@@ -499,7 +540,7 @@ export class SubDerivation extends HTMLElement {
                 classes: ['material-symbols-outlined'],
                 innerHTML: this.myprob.icons['rmderiv'],
                 mysubderiv: this,
-                title: 'delete this subderivation',
+                title: tr('delete this subderivation'),
                 onclick: function() {
                     if (!confirm(tr('Do you really want to remove the ' +
                         'entire subderivation?'))) { return; }
@@ -527,9 +568,9 @@ export class SubDerivation extends HTMLElement {
     addLine(s, showline = false) {
         // show line go above the rest of the subderiv,
         // in the outer box (KM style)
-        let loc = (showline) ? this.outer : this.inner;
+        const loc = (showline) ? this.outer : this.inner;
         // create the line
-        let line = addelem('div', loc, {
+        const line = addelem('div', loc, {
             classes: ['derivationline']
         });
         // put in proper location
@@ -549,14 +590,19 @@ export class SubDerivation extends HTMLElement {
             title: 'insert line number',
             myline: line,
             tabIndex: -1,
+            // removing onmousedown keeps input from being blurred?
+            onmousedown: function(e) {
+                e.preventDefault();
+            },
             onclick: function(e) {
-                let targ = this.myline.mysubderiv.myprob.lastfocusedJ;
+                e.preventDefault();
+                const targ = this.myline?.mysubderiv?.myprob?.lastfocusedJ;
                 if (targ) {
-                    let time = (new Date()).getTime();
-                    let iblurred = targ?.myline?.input?.lastblurred ?? 0;
-                    let blurred = Math.max(targ.lastblurred, iblurred);
+                    const time = (new Date()).getTime();
+                    const iblurred = targ?.myline?.input?.lastblurred ?? 0;
+                    const blurred = Math.max(targ.lastblurred, iblurred);
                     if (time  - blurred > 500) { return; }
-                    let oldval = targ.value;
+                    const oldval = targ.value;
                     targ.insertLineNum(this.innerHTML);
                     targ.focus();
                     this.myline.mysubderiv.myprob.showRulePanelFor(targ);
@@ -566,12 +612,12 @@ export class SubDerivation extends HTMLElement {
         });
         // stuff to the right; put before main input so that
         // justification works out
-        let rightwrap = addelem('div', line, {
+        const rightwrap = addelem('div', line, {
             classes: ['jbwrap']
         });
-        let jwrap = addelem('div', rightwrap, {});
+        const jwrap = addelem('div', rightwrap, {});
         // justification input
-        let inputopts = this?.myprob?.options ?? {};
+        const inputopts = this?.myprob?.options ?? {};
         line.jinput = JustificationInput.getnew(inputopts);
         jwrap.appendChild(line.jinput);
         line.jinput.myline = line;
@@ -591,6 +637,7 @@ export class SubDerivation extends HTMLElement {
         line.buttons = addelem('div', jwrap, {
             classes: ['derivlinebuttons']
         });
+        // for subderivations that are not main
         if (this?.parentderiv?.parentderiv || (this.parentderiv && !showline)) {
             line.menuButton = addelem('div', line.buttons, {
                 classes: [ 'derivmenubutton' ],
@@ -598,34 +645,34 @@ export class SubDerivation extends HTMLElement {
                     this.classList.add("opened");
                 }
             });
-            let icon = addelem('div', line.menuButton, {
+            const icon = addelem('div', line.menuButton, {
                 classes: [ 'material-symbols-outlined' ],
                 innerHTML: this.myprob.icons['derivlinemenu'],
                 title: tr('line menu')
             });
             // popup menu
-            let popUp = addelem('table', line.menuButton, {
+            const popUp = addelem('table', line.menuButton, {
                 classes: [ 'derivlinepopupmenu' ],
                 mywidg: line.menuButton,
                 onmouseleave: function() {
                     this.mywidg.classList.remove("opened");
                 }
             });
-            let tbody = addelem('tbody', popUp, {});
-            let actions = SubDerivation.lineActions;
-            for (let actionname in actions) {
-                let action = actions[actionname];
-                let tre = addelem('tr', tbody, {});
-                let icontd = addelem('td', tre, {
+            const tbody = addelem('tbody', popUp, {});
+            const actions = SubDerivation.lineActions;
+            for (const actionname in actions) {
+                const action = actions[actionname];
+                const tre = addelem('tr', tbody, {});
+                const icontd = addelem('td', tre, {
                     innerHTML: '<div class="material-symbols-outlined">'
                         + this.myprob.icons[actionname] + '</div>',
                     classes: [actionname],
                 });
-                let descrtd = addelem('td', tre, {
+                const descrtd = addelem('td', tre, {
                     innerHTML: tr(action.descr),
                 });
                 if (action.numinp) {
-                    let ni = addelem('input',descrtd, {
+                    const ni = addelem('input',descrtd, {
                         type: "number",
                         myline: line,
                         onchange: action.fn
@@ -638,6 +685,7 @@ export class SubDerivation extends HTMLElement {
                 }
             }
         } else {
+            // for those that are in main derivation
             if (showline) {
                 this.myprob.clToggle = addelem('div', line.buttons, {
                     classes: ['derivchecklinestoggle'],
@@ -670,13 +718,13 @@ export class SubDerivation extends HTMLElement {
                 line.checkButton.classList.add("hideunchecked");
             }
         }
-        // showbox for show lines
+        // showbox for show lines, with word "SHOW"
         if (showline) {
             line.showbox = addelem('div', line, {
                 myderiv: this,
                 innerHTML: tr('SHOW') + ':',
                 classes: ['showlineshow'],
-                title: 'toggle shown/not',
+                title: tr('toggle shown/not'),
                 onclick: function() { this.myderiv.toggle(); }
             });
         }
