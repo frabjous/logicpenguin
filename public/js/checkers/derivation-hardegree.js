@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////// checkers/derivation-hardegree.js /////////////////////
+// hardegree-specific derivation checker, uses derivation-check.js    //
+////////////////////////////////////////////////////////////////////////
+
 import rules from './rules/hardegree-rules.js';
 import DerivationCheck from './derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';

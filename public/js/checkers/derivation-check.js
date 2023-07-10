@@ -941,13 +941,13 @@ export class formFit {
                 currsubderiv = checkpart.mysubderiv;
             }
             // go to previous
-            let currindex = currsubderiv?.parts?.indexOf(checkpart) ?? 0;
+            const currindex = currsubderiv?.parts?.indexOf(checkpart) ?? 0;
             if (currindex > 0) {
                 checkpart = currsubderiv?.parts?.[currindex-1]?? false;
             } else {
                 if (currsubderiv?.showline &&
                     currsubderiv.showline != line) {
-                    let f = Formula.from(currsubderiv.showline.s);
+                    const f = Formula.from(currsubderiv.showline.s);
                     if (f.terms.indexOf(newname) !== -1) {
                         return false;
                     }
@@ -964,7 +964,7 @@ export class formFit {
             // which is available
             if (checkpart.parts) {
                 if (checkpart.showline) {
-                    let f = Formula.from(currsubderiv.showline.s);
+                    const f = Formula.from(currsubderiv.showline.s);
                     if (f.terms.indexOf(newname) !== -1) {
                         return false;
                     }
@@ -973,7 +973,7 @@ export class formFit {
             }
             // if a regular line, check it
             if (checkpart.s) {
-                let f = Formula.from(checkpart.s);
+                const f = Formula.from(checkpart.s);
                 if (f.terms.indexOf(newname) !== -1) {
                     return false;
                 }
@@ -986,7 +986,7 @@ export class formFit {
         this.checkConc();
         this.checkPrems();
         this.checkSubDerivs();
-        let newresult = this.checkNewness();
+        const newresult = this.checkNewness();
         if (!newresult) {
             if (this.message != '') { this.message += '; '; }
             this.message += 'does not use a new name as is ' +
