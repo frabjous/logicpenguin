@@ -2,6 +2,15 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////// supercharge/derivation-hardegree-hint.js //////////////////
+// gives the student a hint if asked for, by applying out rules where  //
+// possible, checking for things you want, etc., but really doing a    //
+// tableaux indirect proof by default                                  //
+/////////////////////////////////////////////////////////////////////////
+
+//TODO: allow other notations
+
+
 import rules from '../checkers/rules/hardegree-rules.js';
 import Formula from '../symbolic/formula.js';
 import { syntax, isInstanceOf } from '../symbolic/libsyntax.js';

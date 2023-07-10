@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////// supercharge/derivation-hardegree.js ///////////////////
+// adds line checking and hint button to hardegree derivation problems //
+/////////////////////////////////////////////////////////////////////////
+
 import { addelem, htmlEscape } from '../common.js';
 import hardegreeDerivCheck from '../checkers/derivation-hardegree.js';
 import hardegreeDerivationHint from './derivation-hardegree-hint.js';
@@ -17,15 +21,15 @@ export function chargeup(probelem) {
         }
     });
     probelem.checkLines = async function() {
-        let question = this.myquestion;
-        let answer = this.myanswer;
-        let givenans = this.getAnswer();
-        let partialcredit = false;
-        let points = -1;
-        let cheat = true;
-        let options = this.options;
+        const question = this.myquestion;
+        const answer = this.myanswer;
+        const givenans = this.getAnswer();
+        const partialcredit = false;
+        const points = -1;
+        const cheat = true;
+        const options = this.options;
         // set to checking
-        let lines = this.getElementsByClassName("derivationline");
+        const lines = this.getElementsByClassName("derivationline");
         for (const line of lines) {
             if (line?.checkButton && line?.checkButton?.update) {
                 if ((line.input.value != '') || (line.jinput.value != '')) {
@@ -33,10 +37,11 @@ export function chargeup(probelem) {
                 }
             }
         }
-        let ind = await hardegreeDerivCheck(
+        const ind = await hardegreeDerivCheck(
             question, answer, givenans, partialcredit, points, cheat, options
         );
-        let forceSave = (ind.successstatus == 'correct' && !this.ishinting);
+        // save problem automatically if check reveals whole thing correct
+        const forceSave = (ind.successstatus == 'correct' && !this.ishinting);
         ind.successstatus = 'edited';
         ind.savedstatus = 'unsaved';
         if (!this.isRestoring) {
@@ -44,7 +49,7 @@ export function chargeup(probelem) {
         }
         if (forceSave) {
             // remove empty line at end
-            let lastline = lines[lines.length - 1];
+            const lastline = lines[lines.length - 1];
             if ((lastline.input.value == '')
                 && (lastline.jinput.value == '')) {
                 lastline.parentNode.removeChild(lastline);
@@ -62,11 +67,12 @@ export function chargeup(probelem) {
         }
     });
     probelem.giveHint = async function() {
+        //do a check first
         this.ishinting = true;
         await this.checkLines();
         this.ishinting = false;
         // check line status indicators
-        let lines = this.getElementsByClassName("derivationline");
+        const lines = this.getElementsByClassName("derivationline");
         // find last line with content
         let i = lines.length - 1;
         while (lines[i].input.value == '' &&
@@ -82,9 +88,9 @@ export function chargeup(probelem) {
         let errfound = false;
         let allgood = true;
         for (let j=0; j<=lltc; j++) {
-            let line = lines[j];
+            constline = lines[j];
             if (!line.checkButton) { continue; }
-            let ico = line.checkButton.getElementsByTagName("div")?.[0];
+            const ico = line.checkButton.getElementsByTagName("div")?.[0];
             if (!ico) { continue; }
             if (!ico.classList.contains('good')) {
                 allgood = false;
@@ -95,7 +101,7 @@ export function chargeup(probelem) {
                 ico.classList.contains('justificationerror')) {
                 errfound = true;
                 if (this.commentDiv) {
-                    let hintspan = addelem('span', this.commentDiv, {
+                    const hintspan = addelem('span', this.commentDiv, {
                         classes: ['errorhint'],
                         innerHTML: '<strong>' + tr('Hint.') + ' </strong> ' +
                             '<span>' + tr('Fix or remove the lines with errors ' +
@@ -113,7 +119,7 @@ export function chargeup(probelem) {
             return;
         }
         // actually get hint
-        let probinfo = this.getAnswer();
+        const probinfo = this.getAnswer();
         this.setComment('<span class="regularhint"><strong>' +
             tr('Hint.') + ' </strong>' +
             '<span>' + htmlEscape(tr(new hardegreeDerivationHint(probinfo,
