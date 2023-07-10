@@ -2,7 +2,7 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-////////////////// gmh-counterexample /////////////////////////////////
+////////////////// gmh-counterexample.js //////////////////////////////
 // asks if a given categorical-type argument has counterexamples;    //
 // will hopefully replaced with a better way of asking for           //
 // counterexamples                                                   //
