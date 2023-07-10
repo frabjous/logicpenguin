@@ -9,6 +9,7 @@
 
 import LogicPenguinProblem from '../problem-class.js';
 import { addelem, htmlEscape } from '../common.js';
+import getSyntax from '../symbolic/libsyntax.js';
 import FormulaInput from '../ui/formula-input.js';
 import JustificationInput from '../ui/justification-input.js';
 import tr from '../translate.js';
@@ -108,6 +109,12 @@ export default class DerivationExercise extends LogicPenguinProblem {
     makeProblem(problem, options, checksave) {
         this.options = options;
         this.checksave = checksave;
+
+        // assign notation, symbols, syntax from options
+        this.notationname = options?.notation ?? 'cambridge';
+        this.syntax = getSyntax(this.notationname);
+        this.symbols = this.syntax.symbols;
+        this.notation = this.syntax.notation;
 
         // outer wrap container, full width
         const container = addelem('div', this, {
