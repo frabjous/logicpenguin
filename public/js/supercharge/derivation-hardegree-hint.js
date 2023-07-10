@@ -10,7 +10,6 @@
 
 //TODO: allow other notations
 
-
 import rules from '../checkers/rules/hardegree-rules.js';
 import Formula from '../symbolic/formula.js';
 import { syntax, isInstanceOf } from '../symbolic/libsyntax.js';
