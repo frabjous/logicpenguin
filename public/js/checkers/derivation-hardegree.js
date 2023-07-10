@@ -10,10 +10,20 @@ import rules from './rules/hardegree-rules.js';
 import DerivationCheck from './derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';
 
+// default notation from settings, but hardegree otherwise for hardegree
+// derivations
+let defaultnotation = 'hardegree';
+if ((typeof "process" != "undefined") && (process?.appsettings?.defaultnotation)) {
+    defaultnotation = process.appsettings.defaultnotation;
+}
+
+// try to determine which lines are actual progress
 function progresslinesin(deriv, errors) {
     let ttl = 0;
+    // skip empty subderivations
     if (!("parts" in deriv)) { return 0; }
-    for (let pt of deriv.parts) {
+    for (const pt of deriv.parts) {
+        // recursively apply to subdirevations
         if ("parts" in pt) {
             ttl+= progresslinesin(pt, errors);
             if ("showline" in pt) {
@@ -26,6 +36,7 @@ function progresslinesin(deriv, errors) {
         if ((!("n" in pt)) || (!("j" in pt))) {
             continue;
         }
+        // lines with errors are not progress
         if (pt.n in errors) {
             let badfound = false;
             for (let cat in errors[pt.n]) {
@@ -36,9 +47,10 @@ function progresslinesin(deriv, errors) {
             }
             if (badfound) { continue; }
         }
-        let { nums, ranges, citedrules } = justParse(pt.j);
+        // determine kind of out rule
+        const { nums, ranges, citedrules } = justParse(pt.j);
         if (citedrules.length < 1) { continue; }
-        let rule = citedrules[0];
+        const rule = citedrules[0];
         // skip nonexistent rules
         if (!(rule in rules)) {
             continue;
@@ -57,24 +69,32 @@ function progresslinesin(deriv, errors) {
 export default async function(
     question, answer, givenans, partialcredit, points, cheat, options
 ) {
-    let ansclone = JSON.parse(JSON.stringify(givenans));
-    let checkResult = new DerivationCheck(
-        rules, ansclone, question.prems, question.conc, partialcredit, true
+    // clone the answer to avoid messing it up when checking it
+    const ansclone = JSON.parse(JSON.stringify(givenans));
+    const notationname = (options?.notation ?? defaultnotation);
+    const checkResult = new DerivationCheck(
+        notationname, rules, ansclone, question.prems, question.conc, partialcredit, true
     ).report();
-    let correct = (Object.keys(checkResult.errors).length == 0);
+    // only correct if no errors
+    const correct = (Object.keys(checkResult.errors).length == 0);
     let portion = 1;
+    // try to determine partial credit by checking progress vs needed
+    // progress
     if (partialcredit && !correct) {
-        let initialportion = checkResult.pointsportion;
+        // get maximum credit from derivation check
+        const initialportion = checkResult.pointsportion;
         portion = initialportion;
         // check number of good lines versus answer's good lines
-        let goalprogress = progresslinesin(answer, {});
-        let actualprogress = progresslinesin(givenans, checkResult.errors);
-        let progportion = (actualprogress / goalprogress);
+        const goalprogress = progresslinesin(answer, {});
+        const actualprogress = progresslinesin(givenans, checkResult.errors);
+        const progportion = (actualprogress / goalprogress);
+        // if mostly wrong, we give points on the number of good steps
         if (initialportion < 0.5) {
             let buildup = actualprogress * 0.1;
             if (buildup > 0.5) { buildup = 0.5; }
             portion = Math.max(initialportion, buildup);
         }
+        // maximum of 0.8 for incomplete derivations
         if (progportion < 0.8) {
             portion = (portion * progportion);
         }

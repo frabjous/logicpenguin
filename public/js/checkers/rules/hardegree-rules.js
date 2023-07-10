@@ -2,6 +2,10 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+///////////////////// hardegree-rules.js //////////////////////////////////
+// defines the inference rules of Hardegree's system                     //
+///////////////////////////////////////////////////////////////////////////
+
 export default {
     "→I"  : { meinongian: true, hint: "To establish a →-statement, use CD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
     "∨I"  : { forms: [ { prems: ["A"], conc: "A ∨ B" }, { prems: ["A"], conc: "B ∨ A" } ] },

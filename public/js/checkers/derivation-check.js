@@ -70,13 +70,13 @@ export default class DerivationCheck {
                 subderiv.lnmap[subderiv.showline.n] = subderiv.showline;
             }
         }
-        for (let p of subderiv?.parts) {
+        for (const p of subderiv?.parts) {
             // if a subderivation, get its analysis and merge
             if ("parts" in p) {
                 p = this.analyze(p);
                 p.parentderiv = subderiv;
                 subderiv.lines = subderiv.lines.concat(p.lines);
-                for (let ln in p.lnmap) {
+                for (const ln in p.lnmap) {
                     if (ln in subderiv.lnmap) {
                         this.adderror(ln, "justification", "low",
                             "has the same line number as a line another " +
@@ -137,22 +137,24 @@ export default class DerivationCheck {
             return line;
         }
         // parse it
-        let { nums, ranges, citedrules } = justParse(line.j);
+        const { nums, ranges, citedrules } = justParse(line.j);
         // ensure availability of nums and ranges
-        for (let num of nums) {
+        for (const num of nums) {
             if (num == '?') {
                 this.adderror(line.n, 'justification', 'low', 'cites an unknown line number (?)');
                 continue;
             }
-            let avail = this.isAvailableLineTo(num, line);
+            // just calling this function will add errors if it finds them
+            const avail = this.isAvailableLineTo(num, line);
         }
-        for (let [start, end] of ranges) {
+        for (const [start, end] of ranges) {
             if ((/[?]/.test(start)) || (/[?]/.test(end))) {
                 this.adderror(line.n, 'justification', 'low',
                     'cites a line number range with an unknown line number (?)');
                 continue;
             }
-            let avail = this.isAvailableRangeTo(start, end, line);
+            // just calling this function will add errors if it finds them
+            const avail = this.isAvailableRangeTo(start, end, line);
         }
         // make sure it cites a rule
         if (citedrules.length < 1) {
@@ -164,8 +166,8 @@ export default class DerivationCheck {
             ' (only one can be checked)');
         }
         // make sure the rule(s) exist(s)
-        let realrules = [];
-        for (let rule of citedrules) {
+        const realrules = [];
+        for (const rule of citedrules) {
             if ((!(rule in this.rules)) || this.rules[rule].meinongian) {
                 this.adderror(line.n, 'justification', 'high', 'cites a rule (' + rule +
                     ') that does not exist');
@@ -177,8 +179,8 @@ export default class DerivationCheck {
             this.rulechecked = false;
             return line;
         }
-        let rulechecked = realrules[0];
-        let ruleinfo = this.rules[rulechecked];
+        const rulechecked = realrules[0];
+        const ruleinfo = this.rules[rulechecked];
         if (line.isshowline && !ruleinfo.showrule) {
             this.adderror(line.n, 'justification', 'high', 'cites a non-show-rule ' +
                 'for a show line');
@@ -249,8 +251,8 @@ export default class DerivationCheck {
         if (line.isshowline && line.mysubderiv) {
             line.citedsubderivs.push(line.mysubderiv);
         }
-        let rulename = line.rulechecked;
-        let rule = this.rules[rulename] ?? false;
+        const rulename = line.rulechecked;
+        const rule = this.rules[rulename] ?? false;
         if (!rule) {
             this.adderror(line.n, 'rule', 'high', 'rule information for “' +
                 rulename + '” found');
@@ -258,7 +260,7 @@ export default class DerivationCheck {
         }
         // PREMISE
         if (rule.premiserule) {
-            let norm = Formula.from(line.s).normal;
+            const norm = Formula.from(line.s).normal;
             let found = false;
             for (let prem of this.prems) {
                 if (prem == norm) {
@@ -275,7 +277,7 @@ export default class DerivationCheck {
             return line;
         }
         // forms either come from rule of what showlines allow for assumption
-        let forms = rule?.forms ?? [];
+        const forms = rule?.forms ?? [];
         // ASSUMPTION
         if (rule.assumptionrule) {
             // TODO: assumptions compatible with other systems
@@ -304,7 +306,7 @@ export default class DerivationCheck {
         }
         let errMsg = '';
         for (const form of forms) {
-            let fitresult = (new formFit(rule, rulename, form, line, Formula)).result();
+            const fitresult = (new formFit(rule, rulename, form, line, Formula)).result();
             if (fitresult.success) {
                 line.checkedOK = true;
                 return line;
@@ -332,7 +334,7 @@ export default class DerivationCheck {
             errMsg += ' ' + isare + ' not of the right form for ' +
                 this.rulechecked + ' to apply';
         }
-        let categ = (line.isshowline) ? 'completion' : 'rule';
+        const categ = (line.isshowline) ? 'completion' : 'rule';
         this.adderror(line.n, categ, 'high', errMsg);
         return line;
     }
@@ -341,9 +343,9 @@ export default class DerivationCheck {
         const Formula = this.Formula;
         if (!deriv.lines) { return; }
         // check regular lines
-        for (let line of deriv.lines) {
+        for (const line of deriv.lines) {
             // check the syntax
-            let f = Formula.from(line.s);
+            const f = Formula.from(line.s);
             if (f.wellformed) {
                 if (f.freevars.length != 0) {
                     this.adderror(line.n, "syntax", "low", "formula uses a " +
@@ -362,7 +364,7 @@ export default class DerivationCheck {
             // check rule if there is one
         }
         // loop through again to check actual rules
-        for (let line of deriv.lines) {
+        for (const line of deriv.lines) {
             if (line.rulechecked) {
                 this.checkRule(line);
             }
@@ -370,7 +372,7 @@ export default class DerivationCheck {
     }
 
     isAvailableLineTo(num, line) {
-        let zbnum = num - 1;
+        const zbnum = num - 1;
         // note: I think we can make this low, b/c it can't pass the rule test
         if (this.deriv.lines.length < num || zbnum < 0) {
             this.adderror(line.n, "justification", "low", "cites a line that does not exist");
@@ -384,7 +386,7 @@ export default class DerivationCheck {
             this.adderror(line.n, "justification", "high", "cites a line later in the derivation");
             return false;
         }
-        let citedline = this.deriv.lines[zbnum];
+        const citedline = this.deriv.lines[zbnum];
         let checkpart = line;
         while (checkpart) {
             // MOVE TO PREVIOUS PART
@@ -397,7 +399,7 @@ export default class DerivationCheck {
             // get context
             let currsubderiv;
             if (checkpart.parentderiv) { currsubderiv = checkpart.parentderiv; } else { currsubderiv = checkpart.mysubderiv; }
-            let currindex = currsubderiv?.parts?.indexOf(checkpart) ?? 0;
+            const currindex = currsubderiv?.parts?.indexOf(checkpart) ?? 0;
             // move to previous line or upwards
             if (currindex > 0) {
                 checkpart = currsubderiv?.parts?.[ currindex - 1 ] ?? false;
@@ -440,8 +442,8 @@ export default class DerivationCheck {
     }
 
     isAvailableRangeTo(start, end, line) {
-        let zbstart = start - 1;
-        let zbend = end - 1;
+        const zbstart = start - 1;
+        const zbend = end - 1;
         if (zbstart < 0 || zbend < 0 || start > this.deriv.lines.length ||
             zbstart > this.deriv.lines.length) {
             this.adderror(line.n, "justification", "low",
@@ -459,9 +461,9 @@ export default class DerivationCheck {
                 "cites a range of lines later in the derviation");
             return false;
         }
-        let citestartline = this.deriv.lines[zbstart];
-        let citeendline = this.deriv.lines[zbend];
-        let citedsubderiv = citestartline.mysubderiv;
+        const citestartline = this.deriv.lines[zbstart];
+        const citeendline = this.deriv.lines[zbend];
+        const citedsubderiv = citestartline.mysubderiv;
         if (citedsubderiv.lines.indexOf(citeendline) == -1) {
             this.adderror(line.n, "justification", "high",
                 "cites a range of lines that spans multiple subderivations");
@@ -489,7 +491,7 @@ export default class DerivationCheck {
             let currsubderiv;
             if (checkpart.parentderiv) { currsubderiv = checkpart.parentderiv; }
             else { currsubderiv = checkpart.mysubderiv; }
-            let currindex = currsubderiv?.parts?.indexOf(checkpart) ?? 0;
+            const currindex = currsubderiv?.parts?.indexOf(checkpart) ?? 0;
             if (currindex > 0) {
                 checkpart = currsubderiv?.parts?.[ currindex - 1 ] ?? false;
             } else {
@@ -521,7 +523,7 @@ export default class DerivationCheck {
     // check that reported line numbers match up with actual line numbers
     lncheck() {
         for (let i=0; i < this.deriv.lines.length; i++) {
-            let line = this.deriv.lines[i];
+            const line = this.deriv.lines[i];
             line.pos = i;
             if (line.n && line.n != '') {
                 let thinkitis = parseInt(line.n)-1;
@@ -552,8 +554,8 @@ export default class DerivationCheck {
     }
 
     traceBadDeps() {
-        for (let ln in this.deriv.lnmap) {
-            let line = this.deriv.lnmap[ln];
+        for (const ln in this.deriv.lnmap) {
+            const line = this.deriv.lnmap[ln];
             let myerrcats = [];
             if (this.errors[ln]) {
                 myerrcats = Object.keys(this.errors[ln]);
@@ -562,10 +564,10 @@ export default class DerivationCheck {
             if (line.isshowline) {
                 let isInc = false;
                 let hasErr = true;
-                for (let sdline of line.mysubderiv.lines) {
+                for (const sdline of line.mysubderiv.lines) {
                     if (sdline == line) { continue; }
                     if (!this.errors[sdline.n]) { continue; }
-                    let itserrcats = Object.keys(this.errors[sdline.n]);
+                    const itserrcats = Object.keys(this.errors[sdline.n]);
                     if (itserrcats.length == 1 && 
                         itserrcats[0] == 'completion') {
                         isInc = true;
@@ -587,9 +589,9 @@ export default class DerivationCheck {
                 if (!line.citednums || line.citednums.length == 0) {
                     continue;
                 }
-                for (let cln of line.citednums) {
+                for (const cln of line.citednums) {
                     if (!this.errors[cln]) { continue; }
-                    let itserrcats = Object.keys(this.errors[cln]);
+                    const itserrcats = Object.keys(this.errors[cln]);
                     if (itserrcats.length > 0) {
                         this.adderror(ln, 'dependency', 'low',
                             'depends on a line that contains errors, so may not be correct'
@@ -602,10 +604,10 @@ export default class DerivationCheck {
 
     weighErrors() {
         // substract points
-        targetloop: for (let targLN in this.errors) {
+        targetloop: for (const targLN in this.errors) {
             // we take first error by severity level
-            severityloop: for (let sev of ['high','medium','low']) {
-                categoryloop: for (let cat in this.errors[targLN]) {
+            severityloop: for (const sev of ['high','medium','low']) {
+                categoryloop: for (const cat in this.errors[targLN]) {
                     // dependency errors do not count
                     if (cat == 'dependency') { continue categoryloop; }
                     if (!(sev in this.errors[targLN][cat])) {
@@ -644,8 +646,8 @@ export class formFit {
     checkConc() {
         const Formula = this.Formula;
         if (!this.form.conc) { return; }
-        let schema = Formula.from(this.form.conc);
-        let cr = this.extendAssign(schema,
+        const schema = Formula.from(this.form.conc);
+        const cr = this.extendAssign(schema,
             this.resultf, this.assigns);
         if (!cr) {
             this.possible = false;
@@ -658,7 +660,7 @@ export class formFit {
         if (!this.form.mustbenew) { return true; }
         for (const n of this.form.mustbenew) {
             if (!this?.assigns?.[n] || this?.assigns?.[n]?.length < 1) { continue; }
-            let newname = this.assigns[n][0];
+            const newname = this.assigns[n][0];
             if (!newname) { continue; }
             if (!this.isNewAt(newname, this.line)) { return false; }
         }
@@ -668,17 +670,17 @@ export class formFit {
     checkPrems() {
         const Formula = this.Formula;
         if (!this.form.prems) { return; }
-        let premForms = this.form.prems.map((s) => (Formula.from(s)));
-        let premLines = this.line.citedlines.slice(0, premForms.length)
+        const premForms = this.form.prems.map((s) => (Formula.from(s)));
+        const premLines = this.line.citedlines.slice(0, premForms.length)
             .map((l) => (Formula.from(l.s)));
         // todo: change for thorough check
         while (premLines.length < premForms.length) {
             premLines.push(premLines[0]);
         }
-        let allOrders = perms(premLines.length);
+        const allOrders = perms(premLines.length);
         let foundgood = false;
         for (const order of allOrders) {
-            let assignstry = { ...this.assigns };
+            const assignstry = { ...this.assigns };
             let madeitthrough = true;
             for (let i=0; i<premForms.length; i++) {
                 const schema = premForms[i];
@@ -689,7 +691,7 @@ export class formFit {
                     break;
                 }
                 //
-                let ext = this.extendAssign(schema, f, assignstry);
+                const ext = this.extendAssign(schema, f, assignstry);
                 if (ext === false) {
                     madeitthrough = false;
                     break;
@@ -717,23 +719,23 @@ export class formFit {
         const Formula = this.Formula;
         if (!this.form.subderivs ||
             this.form.subderivs.length == 0) { return; }
-        let subDerivs = this.line.citedsubderivs.slice(0, this.form.subderivs.length);
+        const subDerivs = this.line.citedsubderivs.slice(0, this.form.subderivs.length);
         while (subDerivs.length < this.form.subderivs.length) {
             subDerivs.push(subDerivs[0]);
         }
-        let allOrders = perms(this.form.subderivs.length);
+        const allOrders = perms(this.form.subderivs.length);
         let foundgood = false;
         let newnesstrigger = false;
         orderloop: for (const order of allOrders) {
             let ordergood = true;
-            let assignstry = { ...this.assigns };
+            const assignstry = { ...this.assigns };
             subderivloop: for (let i=0; i<this.form.subderivs.length; i++) {
-                let derivruleinfo = this.form.subderivs[i];
-                let subDeriv = subDerivs[i];
+                const derivruleinfo = this.form.subderivs[i];
+                const subDeriv = subDerivs[i];
                 let satisfaction = true;
                 needloop: for (let need of derivruleinfo.needs) {
-                    let schema = Formula.from(need);
-                    lineloop: for (let line of subDeriv.lines) {
+                    const schema = Formula.from(need);
+                    lineloop: for (const line of subDeriv.lines) {
                         // ignores self
                         if (line == this.line) { continue; }
                         //look only in top layer
@@ -750,18 +752,18 @@ export class formFit {
                             !line.isshowline) {
                             continue;
                         }
-                        let thislinestry = { ... assignstry };
-                        let linetry = this.extendAssign(schema,
+                        const thislinestry = { ... assignstry };
+                        const linetry = this.extendAssign(schema,
                             Formula.from(line.s), thislinestry );
                         if (linetry) {
                             let newnessOK = true;
                             if (derivruleinfo.wantsasnew) {
-                                for (let n of derivruleinfo.wantsasnew) {
+                                for (const n of derivruleinfo.wantsasnew) {
                                     if (!(n in thislinestry) ||
                                         (thislinestry[n].length < 1)) {
                                         continue;
                                     }
-                                    let newname = thislinestry[n][0];
+                                    const newname = thislinestry[n][0];
                                     if (!this.isNewAt(newname, line)) {
                                         newnessOK = false;
                                         break;
@@ -831,7 +833,7 @@ export class formFit {
                 if (!f.left) {
                     return false;
                 }
-                let extl = this.extendAssign(
+                const extl = this.extendAssign(
                     schema.left, f.left, assigns
                 );
                 if (extl === false) {
@@ -843,7 +845,7 @@ export class formFit {
                 if (!f.right) {
                     return false;
                 }
-                let extr = this.extendAssign(
+                const extr = this.extendAssign(
                     schema.right, f.right, assigns
                 );
                 if (extr === false) {
@@ -874,14 +876,14 @@ export class formFit {
             // using what the variable substitutes into are correct
             if (syntax.isvar(t)) {
                 if ((this.form.subst) && (t in this.form.subst)) {
-                    let b = this.form.subst[t];
+                    const b = this.form.subst[t];
                     for (const a in assigns) {
                         if (a == schema.instantiate(t, b) &&
                             (t in assigns)) {
                             if (f.freevars.indexOf(assigns[t]) == -1) {
                                 if (f.normal != assigns[a]) { return false; }
                             } else {
-                                let couldbe = assigns[b].filter(
+                                const couldbe = assigns[b].filter(
                                     (c) => (assigns[a] == f.instantiate(assigns[t], c)));
                                 if (couldbe.length == 0) {
                                     return false;
@@ -893,7 +895,7 @@ export class formFit {
                 }
             } else {
                 // t is a constant
-                let consts = arrayUnion([],f.terms.filter(
+                const consts = arrayUnion([],f.terms.filter(
                     (x) => (!syntax.isvar(x))
                 ));
                 if (t in assigns) {
@@ -903,15 +905,15 @@ export class formFit {
                 }
                 // look for it as result of substitution
                 if (this?.form?.subst) {
-                    for (let v in this.form.subst) {
+                    for (const v in this.form.subst) {
                         if (this.form.subst[v] == t && (v in assigns)) {
                             for (const a in assigns) {
                                 if (a.at(0) != schema.pletter) { continue; }
-                                let pf = Formula.from(a);
+                                const pf = Formula.from(a);
                                 if (schema.normal != pf.instantiate(v, t)) {
                                     continue;
                                 }
-                                let pfinst = Formula.from(assigns[a]);
+                                const pfinst = Formula.from(assigns[a]);
                                 if (pfinst.freevars.indexOf(assigns[v]) == -1) {
                                     if (pfinst.normal != f.normal) { return false; }
                                     continue;
