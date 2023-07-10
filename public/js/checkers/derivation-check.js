@@ -2,13 +2,22 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-import Formula from '../symbolic/formula.js';
-import { syntax } from '../symbolic/libsyntax.js'; 
+/////////////////// checkers/derivation-check.js ///////////////////////
+// common function for checking a derivations and derivation lines    //
+////////////////////////////////////////////////////////////////////////
+
+import getFormulaClass from '../symbolic/formula.js';
 import { justParse } from '../ui/justification-parse.js';
 import { arrayUnion, perms } from '../misc.js';
 
+
 export default class DerivationCheck {
-    constructor(rules, deriv, prems, conc, thorough = false, numberedShowLines = false) {
+    constructor(notationname, rules, deriv, prems, conc,
+        thorough = false, numberedShowLines = false) {
+        this.notationname = notationname;
+        const Formula = getFormulaClass(notationname);
+        this.Formula = Formula;
+        this.syntax = Formula.syntax;
         this.rules = rules;
         this.deriv = deriv;
         this.prems = prems.map((p) => (Formula.from(p).normal));
@@ -103,6 +112,7 @@ export default class DerivationCheck {
 
     checkConc() {
         let foundConc = false;
+        const Formula = this.Formula;
         for (let pt of this.deriv.parts) {
             if (pt.showline &&
                 (Formula.from(pt.showline.s).normal == this.conc)) {
@@ -227,6 +237,7 @@ export default class DerivationCheck {
     }
 
     checkRule(line) {
+        const Formula = this.Formula;
         // populate cited lines and subderivs
         line.citedlines = line.citednums
             .map((n) => (this?.deriv?.lines?.[parseInt(n)-1] ?? false))
@@ -293,7 +304,7 @@ export default class DerivationCheck {
         }
         let errMsg = '';
         for (const form of forms) {
-            let fitresult = (new formFit(rule, rulename, form, line)).result();
+            let fitresult = (new formFit(rule, rulename, form, line, Formula)).result();
             if (fitresult.success) {
                 line.checkedOK = true;
                 return line;
@@ -327,6 +338,7 @@ export default class DerivationCheck {
     }
 
     checkDeriv(deriv) {
+        const Formula = this.Formula;
         if (!deriv.lines) { return; }
         // check regular lines
         for (let line of deriv.lines) {
@@ -617,10 +629,11 @@ export default class DerivationCheck {
 }
 //////////////////////////////////////////////////////////////// FORM FIT
 export class formFit {
-    constructor(rule, rulename, form, line) {
+    constructor(rule, rulename, form, line, Formula) {
         this.rule = rule;
         this.rulename = rulename;
         this.form = form;
+        this.Formula = Formula;
         this.message = '';
         this.line = line;
         this.resultf = Formula.from(line.s);
@@ -629,6 +642,7 @@ export class formFit {
     }
 
     checkConc() {
+        const Formula = this.Formula;
         if (!this.form.conc) { return; }
         let schema = Formula.from(this.form.conc);
         let cr = this.extendAssign(schema,
@@ -652,6 +666,7 @@ export class formFit {
     }
 
     checkPrems() {
+        const Formula = this.Formula;
         if (!this.form.prems) { return; }
         let premForms = this.form.prems.map((s) => (Formula.from(s)));
         let premLines = this.line.citedlines.slice(0, premForms.length)
@@ -699,6 +714,7 @@ export class formFit {
     }
 
     checkSubDerivs() {
+        const Formula = this.Formula;
         if (!this.form.subderivs ||
             this.form.subderivs.length == 0) { return; }
         let subDerivs = this.line.citedsubderivs.slice(0, this.form.subderivs.length);
@@ -789,6 +805,8 @@ export class formFit {
     }
 
     extendAssign(schema, f, assigns) {
+        const Formula = this.Formula;
+        const syntax = this.syntax;
         if (schema.op) {
             if (schema.op != f.op) {
                 return false;
@@ -913,6 +931,7 @@ export class formFit {
     }
 
     isNewAt(newname, line) {
+        const Formula = this.Formula;
         let checkpart = line;
         while (checkpart) {
             let currsubderiv;
