@@ -14,7 +14,6 @@
 // but I may need to change how it's loaded
 import rules from '../checkers/rules/hardegree-rules.js';
 import getFormulaClass from '../symbolic/formula.js';
-// TODO: check these: import { syntax, isInstanceOf } from '../symbolic/libsyntax.js';
 import { default as DerivationCheck, formFit } from '../checkers/derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';
 import { arrayUnion } from '../misc.js';
@@ -130,16 +129,16 @@ export default class hardegreeDerivationHint {
     canIGet(s) {
         if (!this.workingline) { return false; }
         if (!("workingAvailLines" in this)) { return false; }
-        let allAvail = this.workingAvailLines;
+        const allAvail = this.workingAvailLines;
         // emulate a new line to see if it were a correct one
-        let pseudoline = {
+        const pseudoline = {
             s: s,
             isshowline: false,
             mysubderiv: this.workingsubderiv
         }
         // check each rule
         for (const rule in rules) {
-            let ruleinfo = rules[rule];
+            const ruleinfo = rules[rule];
             // skip bad rules
             if (!this.ruleIsAvail(rule)) { continue; }
             if (ruleinfo.meinongian ||
@@ -151,12 +150,12 @@ export default class hardegreeDerivationHint {
             if (!ruleinfo.forms) { continue; }
             for (const form of ruleinfo.forms) {
                 // check pseudoline as conc
-                let ff = new formFit(
+                const ff = new formFit(
                     ruleinfo, rule, form, pseudoline, this.Formula);
                 ff.checkConc();
                 if (!ff.possible) { continue; }
-                let concAssign = JSON.stringify(ff.assigns);
-                let numprems = form.prems.length ?? 0;
+                const concAssign = JSON.stringify(ff.assigns);
+                const numprems = form.prems.length ?? 0;
                 if (numprems < 1 || numprems > 2) { continue; }
                 pseudoline.citedsubderivs = [];
                 pseudoline.citedlines = [];
@@ -166,7 +165,7 @@ export default class hardegreeDerivationHint {
                     pseudoline.citedlines = [a];
                     if (numprems == 1) {
                         ff.checkPrems();
-                        let newness = ff.checkNewness();
+                        const newness = ff.checkNewness();
                         if (!newness) {
                             ff.possible = false;
                         }
@@ -183,10 +182,10 @@ export default class hardegreeDerivationHint {
                         pseudoline.citedlines = [a, b];
                         ff.checkPrems();
                         if (ff.possible) {
-                            let x = Math.min(
+                            const x = Math.min(
                                 parseInt(a.n), parseInt(b.n)
                             ).toString();
-                            let y = Math.max(
+                            const y = Math.max(
                                 parseInt(a.n), parseInt(b.n)
                             ).toString();
                             return 'You can obtain ' + s +
@@ -203,21 +202,21 @@ export default class hardegreeDerivationHint {
     checkIfOutRuleApplied(f) {
         const symbols = this.symbols;
         const Formula = this.Formula;
-        let allAvail = this.workingAvailLines;
+        const allAvail = this.workingAvailLines;
         if (!allAvail) { return false; }
         // lookingFor is an array of arrays
         // each element is something that must be found, but
         // what is found could be any element of array
         let lookingFor = [[]];
         if (f.op) {
-            let lfGetter = outRuleResults(this.syntax, f.op);
+            const lfGetter = outRuleResults(this.syntax, f.op);
             if (!lfGetter) { return false; }
             lookingFor = lfGetter(f);
         } else {
             lookingFor = [[symbols.FALSUM]]
         }
         for (const sline of allAvail) {
-            let sf = Formula.from(sline.s);
+            const sf = Formula.from(sline.s);
             // filter looking for by removing found components
             // NOTE: because we are filtering, we return false when
             // found
@@ -246,8 +245,10 @@ export default class hardegreeDerivationHint {
     }
 
     fillRegLineHint() {
+        const symbols = this.symbols;
+        // if the formula string is not filled in (but maybe justificaiton is)
         if (this.lastline.s == '') {
-            let { nums, ranges, citedrules } = justParse(this.lastline.j);
+            const { nums, ranges, citedrules } = justParse(this.lastline.j);
             if (ranges.length > 0) {
                 return 'This derivation system does not use number ' +
                     'ranges like ' + ranges[0][0].toString() + '–' +
@@ -274,11 +275,15 @@ export default class hardegreeDerivationHint {
             if (citedrules.length == 0) {
                 // NO RULE CITED
                 if (nums.length == 2) {
-                    for (let rule of ['→O', '∨O', '↔I']) {
-                        let ruleinfo = rules[rule];
-                        let forms = ruleinfo.forms;
+                    for (const rule of [
+                            symbols.IFTHEN + 'O',
+                            symbols.OR + 'O',
+                            symbols.IFF + 'I'
+                        ]) {
+                        const ruleinfo = rules[rule];
+                        const forms = ruleinfo.forms;
                         for (const form of forms) {
-                            let ffit = (new formFit(
+                            const ffit = (new formFit(
                                 ruleinfo, rule, form, this.lastline,
                                 this.Formula
                             ));
@@ -295,11 +300,11 @@ export default class hardegreeDerivationHint {
                     'doesn’t provide enough info for me to work ' +
                     'with, sorry.';
             }
-            let citedrule = citedrules[0];
+            const citedrule = citedrules[0];
             if (!(citedrule in rules)) {
                 return 'There is no such rule as ' + citedrule;
             }
-            let ruleinfo = rules[citedrule];
+            const ruleinfo = rules[citedrule];
             if (ruleinfo.meinongian) {
                 return 'The rule ' + citedrule + ' does not exist. ' +
                     (rules[citedrule].hint ?? '');
@@ -315,13 +320,14 @@ export default class hardegreeDerivationHint {
                     return 'You do not need line numbers for an assumption.';
                 }
                 // try to figure out what the right assumption would be
-                let sl = this.lastline.mysubderiv.showline;
+                const sl = this.lastline.mysubderiv.showline;
                 if (!sl) { return 'No assumption is allowed here.'; }
-                if (sl.j == 'ID' || sl.j == '∃D' || sl.j == '∨D' ||
-                    sl.j == '~D') {
-                    let slf = Formula.from(sl.s);
-                    let goodassume = '~' + slf.wrapifneeded();
-                    if (slf.op == '~') {
+                if (sl.j == 'ID' || sl.j == (symbols.EXISTS + 'D') ||
+                    sl.j == (symbols.OR + 'D') || 
+                    sl.j == (symbols.NOT + 'D')) {
+                    const slf = Formula.from(sl.s);
+                    let goodassume = symbols.NOT + slf.wrapifneeded();
+                    if (slf.op == symbols.NOT) {
                         goodassume = slf.right.normal;
                     }
                     return 'For ' + sl.j + ', your assumption should be the opposite ' +
@@ -330,19 +336,19 @@ export default class hardegreeDerivationHint {
                 return 'No assumption is allowed in a ' + sl.j + '.';
             }
             // should be regular rule
-            let forms = ruleinfo.forms;
-            let enough = [];
+            const forms = ruleinfo.forms;
+            const enough = [];
             if (!forms) { return 'Weird. That rule has no forms.'; }
-            for (let form of forms) {
+            for (const form of forms) {
                 enough.push( (form.prems.length == nums.length) );
             }
-            let any = enough.reduce((x,y) => (x||y));
+            const any = enough.reduce((x,y) => (x||y));
             if (!any) {
                 return 'You are not citing the correct number of ' +
                     'lines for the rule ' + citedrule + '.';
             }
             for (const form of forms) {
-                let ffit = (new formFit(
+                const ffit = (new formFit(
                     ruleinfo, citedrule, form, this.lastline. this.Formula
                 ));
                 ffit.checkPrems();
@@ -358,13 +364,13 @@ export default class hardegreeDerivationHint {
                 'to change.';
         }
         if (this.lastline.j == '') {
-            let f = Formula.from(this.lastline.s);
+            const f = Formula.from(this.lastline.s);
             if (!f.wellformed) {
                 return 'The formula “' + s + '” is not ' +
                     'well-formed. Can you fix it?';
             }
             // check if good assumption
-            let sl = this.lastline.mysubderiv.showline;
+            const sl = this.lastline.mysubderiv.showline;
             if (!sl) { return stumpedAnswer; }
             if (sl.j == 'CD') {
                 if (f.normal == Formula.from(sl.s).left.normal) {
@@ -373,19 +379,19 @@ export default class hardegreeDerivationHint {
                 }
             }
             if (sl.j == 'ID' ||
-                sl.j == '~D' ||
-                sl.j == '∨D' ||
-                sl.j == '∃D') {
-                let slf = Formula.from(sl.s);
-                if (slf.normal == '~' + f.wrapifneeded() ||
-                    '~' + slf.wrapifneeded() == f.normal) {
+                sl.j == (symbols.NOT + 'D') ||
+                sl.j == (symbols.OR + 'D') ||
+                sl.j == (symbols.EXISTS + 'D')) {
+                const slf = Formula.from(sl.s);
+                if (slf.normal == (symbols.NOT + f.wrapifneeded()) ||
+                    (symbols.NOT + slf.wrapifneeded()) == f.normal) {
                     return 'The last line looks like an assumption. ' +
                         'Fill in that in for its justification.';
                 }
             }
             // check all good rules!
             for (const rule in rules) {
-                let ruleinfo = rules[rule];
+                const ruleinfo = rules[rule];
                 if (ruleinfo.meinongian ||
                     ruleinfo.showrule ||
                     ruleinfo.premiserule ||
@@ -394,28 +400,26 @@ export default class hardegreeDerivationHint {
                 }
                 if (!ruleinfo.forms) { continue; }
                 for (const form of ruleinfo.forms) {
-                    let ffit = (new formFit(
+                    const ffit = (new formFit(
                         ruleinfo, rule, form, this.lastline, this.Formula
                     ));
                     ffit.checkConc();
                     if (!ffit.possible) {
                         continue;
                     }
-                    let concAssign = JSON.stringify(
-                        ffit.assigns
-                    );
-                    let numprems = form.prems.length;
+                    const concAssign = JSON.stringify(ffit.assigns);
+                    const numprems = form.prems.length;
                     if (numprems < 1 || numprems > 2) { continue; }
-                    let allAvail = this.getAllAvailTo(this.lastline);
+                    const allAvail = this.getAllAvailTo(this.lastline);
                     this.lastline.citedsubderivs = [];
                     this.lastline.citedlines = [];
-                    for (let a of allAvail) {
+                    for (const a of allAvail) {
                         ffit.assigns = JSON.parse(concAssign);
                         ffit.possible = true;
                         this.lastline.citedlines = [a];
                         if (numprems == 1) {
                             ffit.checkPrems();
-                            let newness = ffit.checkNewness();
+                            const newness = ffit.checkNewness();
                             if (!newness) { ffit.possible = false; }
                             if (ffit.possible) {
                                 return 'You can obtain this formula ' +
@@ -424,7 +428,7 @@ export default class hardegreeDerivationHint {
                             }
                             continue;
                         }
-                        for (let b of allAvail) {
+                        for (const b of allAvail) {
                             ffit.possible = true;
                             this.lastline.citedlines = [a, b];
                             ffit.checkPrems();
@@ -550,7 +554,7 @@ export default class hardegreeDerivationHint {
         for (let line of this.workingAvailLines.concat(revShowLines)) {
             if (!line.s) { continue; }
             let tt = Formula.from(line.s).terms;
-            tt = tt.filter((t) => (!syntax.isvar(t)));
+            tt = tt.filter((t) => (!this.syntax.isvar(t)));
             rv = arrayUnion(rv, tt);
         }
         return rv;
