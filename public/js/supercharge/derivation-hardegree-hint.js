@@ -10,81 +10,96 @@
 
 //TODO: allow other notations
 
+// TODO? it is probably best for hints to be specific to this ruleset,
+// but I may need to change how it's loaded
 import rules from '../checkers/rules/hardegree-rules.js';
-import Formula from '../symbolic/formula.js';
-import { syntax, isInstanceOf } from '../symbolic/libsyntax.js';
+import getFormulaClass from '../symbolic/formula.js';
+// TODO: check these: import { syntax, isInstanceOf } from '../symbolic/libsyntax.js';
 import { default as DerivationCheck, formFit } from '../checkers/derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';
 import { arrayUnion } from '../misc.js';
 
-export const showRuleFor = {
-    "∨": "ID",
-    "&": "&D",
-    "~": "ID",
-    "→": "CD",
-    "↔": "↔D",
-    "∀": "UD",
-    "∃": "ID",
-    "✖": "DD"
+export function showRuleFor(syntax, op) {
+    const symbols = syntax.symbols;
+    const possvalues = {
+        OR : "ID",
+        AND : symbols.AND + "D",
+        NOT : "ID",
+        IFTHEN : "CD",
+        IFF: symbols.IFF + "D",
+        ALL: "UD",
+        EXISTS: "ID",
+        FALSUM: "DD"
+    }
+    return possvalues[op];
 }
 
-export const outRuleResults = {
-    "∨": (f) => ([[f.left.normal, f.right.normal]]),
-    "&": (f) => ([[f.left.normal], [f.right.normal]]),
-    "→": (f) => ([['~' + f.left.wrapifneeded(), f.right.normal]]),
-    "↔": (f) => ([
-        [f.left.wrapifneeded() + ' → ' + f.right.wrapifneeded()],
-        [f.right.wrapifneeded() + ' → ' + f.left.wrapifneeded()]
-    ]),
-    "∀": (f) => (['special']),
-    "∃": (f) => (['instance']),
-    "✖": (f) => ([]),
-    "~": (f) => {
-        switch(f.right.op) {
-            case false:
-                return '✖';
-                break;
-            case '∨': 
-                return [
-                    ['~' + f.right.left.wrapifneeded()],
-                    ['~' + f.right.right.wrapifneeded()]
-                ];
-                break;
-            case '&':
-                return [[
-                    f.right.left.wrapifneeded() + ' → ~' +
-                    f.right.right.wrapifneeded()
-                ]];
-                break;
-            case '→':
-                return [[
-                    f.right.left.wrapifneeded() + ' & ~' +
-                    f.right.right.wrapifneeded()
-                ]];
-                break;
-            case '↔':
-                return [[
-                    '~' + f.right.left.wrapifneeded() + ' ↔ ' +
-                    f.right.right.wrapifneeded()
-                ]];
-                break;
-            case '~':
-                return [[ f.right.right.normal ]];
-                break;
-            case '∀':
-                return [[ '∃' + f.right.boundvar +
-                    '~' + f.right.right.wrapifneeded()
-                ]];
-                break;
-            case '∃':
-                return [[ '∀' + f.right.boundvar +
-                    '~' + f.right.right.wrapifneeded()
-                ]];
-                break;
-            default: return false;
+export function outRuleResults(syntax, op) {
+    const symbols = syntax.symbols;
+    const operators = syntax.operators;
+    const possvalues = {
+        OR: (f) => ([[f.left.normal, f.right.normal]]),
+        AND: (f) => ([[f.left.normal], [f.right.normal]]),
+        IFTHEN: (f) => ([[symbols.NOT + f.left.wrapifneeded(), f.right.normal]]),
+        IFF: (f) => ([
+            [f.left.wrapifneeded() + ' ' + symbols.IFTHEN +
+                ' ' + f.right.wrapifneeded()],
+            [f.right.wrapifneeded() + ' ' + symbols.IFTHEN +
+                ' ' + f.left.wrapifneeded()]
+        ]),
+        ALL: (f) => (['special']),
+        EXISTS: (f) => (['instance']),
+        FALSUM: (f) => ([]),
+        NOT: (f) => {
+            switch(f.right.op) {
+                case false:
+                    return symbols.FALSUM;
+                    break;
+                case symbols.OR:
+                    return [
+                        [symbols.NOT + f.right.left.wrapifneeded()],
+                        [symbols.NOT + f.right.right.wrapifneeded()]
+                    ];
+                    break;
+                case symbols.AND:
+                    return [[
+                        f.right.left.wrapifneeded() + ' ' +
+                        symbols.IFTHEN + ' ' + symbols.NOT +
+                        f.right.right.wrapifneeded()
+                    ]];
+                    break;
+                case symbols.IFTHEN:
+                    return [[
+                        f.right.left.wrapifneeded() + ' ' +
+                        symbols.AND + ' ' + symbols.NOT +
+                        f.right.right.wrapifneeded()
+                    ]];
+                    break;
+                case symbols.IFF:
+                    return [[
+                        symbols.NOT + f.right.left.wrapifneeded() + ' ' +
+                        symbols.IFF + ' ' + f.right.right.wrapifneeded()
+                    ]];
+                    break;
+                case symbols.NOT:
+                    return [[ f.right.right.normal ]];
+                    break;
+                case symbols.ALL:
+                    return [[ symbols.EXISTS + f.right.boundvar +
+                        symbols.NOT + f.right.right.wrapifneeded()
+                    ]];
+                    break;
+                case symbols.EXISTS:
+                    return [[ symbols.ALL + f.right.boundvar +
+                        symbols.NOT + f.right.right.wrapifneeded()
+                    ]];
+                    break;
+                default: return false;
+            }
+            return false;
         }
-        return false;
     }
+    return possvalues[operators[op]];
 }
 
 export const stumpedAnswer = 'Sorry, I’m stumped. Maybe the derivation ' +
@@ -96,8 +111,14 @@ export default class hardegreeDerivationHint {
     constructor(probinfo, options, lastlinefilled) {
         this.deriv = probinfo;
         this.options = options;
+        // note this will always run in the browser, so we needn't bother
+        // looking for process.appsettings.defaultnotation
+        this.notationname = options?.notation ?? 'hardegree';
+        this.Formula = getFormulaClass(this.notationname);
+        this.syntax = this.Formula.syntax;
+        this.symbols = this.syntax.symbols;
         this.lastlinefilled = lastlinefilled;
-        this.dc = new DerivationCheck(rules,
+        this.dc = new DerivationCheck(this.notationname, rules,
             this.deriv, [], '', false, true);
         this.dc.analyze(this.deriv);
     }
@@ -183,7 +204,7 @@ export default class hardegreeDerivationHint {
         // what is found could be any element of array
         let lookingFor = [[]];
         if (f.op) {
-            let lfGetter = outRuleResults[f.op];
+            let lfGetter = outRuleResults(this.syntax, f.op);
             if (!lfGetter) { return false; }
             lookingFor = lfGetter(f);
         } else {
@@ -423,6 +444,7 @@ export default class hardegreeDerivationHint {
     }
 
     fillShowLineHint() {
+        const syntax = this.syntax;
         if (this.lastline.j == '') {
             let f = Formula.from(this.lastline.s);
             if (!f.wellformed) {
@@ -440,7 +462,7 @@ export default class hardegreeDerivationHint {
             if (f.op == '✖') {
                 return '✖ can only be shown by DD.';
             }
-            let wantedSR = showRuleFor[f.op];
+            let wantedSR = showRuleFor(syntax, syntax.operators[f.op]);
             if (!wantedSR) {
                 return 'Sorry, I don’t understand that formula.';
             }
