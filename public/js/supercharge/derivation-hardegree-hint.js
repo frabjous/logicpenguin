@@ -108,6 +108,8 @@ export const stumpedAnswer = 'Sorry, I’m stumped. Maybe the derivation ' +
 
 export default class hardegreeDerivationHint {
 
+    // give the hint object the properties it needs and analyze and
+    // check the derivation
     constructor(probinfo, options, lastlinefilled) {
         this.deriv = probinfo;
         this.options = options;
@@ -123,11 +125,13 @@ export default class hardegreeDerivationHint {
         this.dc.analyze(this.deriv);
     }
 
+    // checks if a certain formula string an be obtained by the rules
+    // right away, either returns false or a hint about how to get it
     canIGet(s) {
         if (!this.workingline) { return false; }
         if (!("workingAvailLines" in this)) { return false; }
         let allAvail = this.workingAvailLines;
-        // emulate a new line
+        // emulate a new line to see if it were a correct one
         let pseudoline = {
             s: s,
             isshowline: false,
@@ -148,7 +152,7 @@ export default class hardegreeDerivationHint {
             for (const form of ruleinfo.forms) {
                 // check pseudoline as conc
                 let ff = new formFit(
-                    ruleinfo, rule, form, pseudoline);
+                    ruleinfo, rule, form, pseudoline, this.Formula);
                 ff.checkConc();
                 if (!ff.possible) { continue; }
                 let concAssign = JSON.stringify(ff.assigns);
@@ -197,6 +201,8 @@ export default class hardegreeDerivationHint {
     }
 
     checkIfOutRuleApplied(f) {
+        const symbols = this.symbols;
+        const Formula = this.Formula;
         let allAvail = this.workingAvailLines;
         if (!allAvail) { return false; }
         // lookingFor is an array of arrays
@@ -208,7 +214,7 @@ export default class hardegreeDerivationHint {
             if (!lfGetter) { return false; }
             lookingFor = lfGetter(f);
         } else {
-            lookingFor = [['✖']]
+            lookingFor = [[symbols.FALSUM]]
         }
         for (const sline of allAvail) {
             let sf = Formula.from(sline.s);
@@ -217,7 +223,7 @@ export default class hardegreeDerivationHint {
             // found
             lookingFor = lookingFor.filter((lookset) => {
                 if (lookset === 'instance') {
-                    if (isInstanceOf(sf, f)) {
+                    if (Formula.isInstanceOf(sf, f)) {
                         return false;
                     }
                 }
@@ -273,8 +279,9 @@ export default class hardegreeDerivationHint {
                         let forms = ruleinfo.forms;
                         for (const form of forms) {
                             let ffit = (new formFit(
-                                ruleinfo, rule, form, this.lastline)
-                            );
+                                ruleinfo, rule, form, this.lastline,
+                                this.Formula
+                            ));
                             ffit.checkPrems();
                             if (ffit.possible) {
                                 return 'The lines with those two ' +
@@ -336,8 +343,8 @@ export default class hardegreeDerivationHint {
             }
             for (const form of forms) {
                 let ffit = (new formFit(
-                    ruleinfo, citedrule, form, this.lastline)
-                );
+                    ruleinfo, citedrule, form, this.lastline. this.Formula
+                ));
                 ffit.checkPrems();
                 if (ffit.possible) {
                     return 'It is possible to use rule ' +
@@ -388,7 +395,8 @@ export default class hardegreeDerivationHint {
                 if (!ruleinfo.forms) { continue; }
                 for (const form of ruleinfo.forms) {
                     let ffit = (new formFit(
-                        ruleinfo, rule, form, this.lastline));
+                        ruleinfo, rule, form, this.lastline, this.Formula
+                    ));
                     ffit.checkConc();
                     if (!ffit.possible) {
                         continue;
