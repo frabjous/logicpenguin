@@ -246,6 +246,7 @@ export default class hardegreeDerivationHint {
 
     fillRegLineHint() {
         const symbols = this.symbols;
+        const Formula = this.Formula;
         // if the formula string is not filled in (but maybe justificaiton is)
         if (this.lastline.s == '') {
             const { nums, ranges, citedrules } = justParse(this.lastline.j);
@@ -349,7 +350,7 @@ export default class hardegreeDerivationHint {
             }
             for (const form of forms) {
                 const ffit = (new formFit(
-                    ruleinfo, citedrule, form, this.lastline. this.Formula
+                    ruleinfo, citedrule, form, this.lastline, this.Formula
                 ));
                 ffit.checkPrems();
                 if (ffit.possible) {
@@ -822,7 +823,7 @@ export default class hardegreeDerivationHint {
             // check if we have partner premise for arrow O, wedge O
             let partnerat = false;
             if (f.op == symbols.OR || f.op == symbols.IFTHEN) {
-                const partners = [];
+                let partners = [];
                 if (f.op == symbols.OR) {
                     partners = [
                         symbols.NOT + f.left.wrapifneeded(),

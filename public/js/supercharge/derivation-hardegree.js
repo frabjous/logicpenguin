@@ -12,7 +12,41 @@ import hardegreeDerivationHint from './derivation-hardegree-hint.js';
 import tr from '../translate.js';
 
 
-function getPartsUntil(
+function getPartsUntil(inparts, numtoget) {
+    let ctr = 0;
+    let rv = [];
+    for (const inpart of inparts) {
+        const outpart = {};
+        if ("parts" in inpart) {
+            if ("closed" in inpart) {
+                outpart.closed = inpart.closed;
+            }
+            if ("showline" in inpart) {
+                outpart.showline = inpart.showline;
+                ctr++;
+            }
+            if (ctr >= numtoget) {
+                outpart.parts = [];
+                rv.push(outpart);
+                break;
+            }
+            const [recparts, n] =
+                getPartsUntil(inpart.parts, numtoget - ctr);
+            outpart.parts = recparts;
+            ctr = ctr + n;
+            if (ctr >= numtoget) {
+                rv.push(outpart);
+                break;
+            }
+        }
+        rv.push(inpart);
+        ctr++;
+        if (ctr >= numtoget) {
+            break;
+        }
+    }
+    return [rv, ctr];
+}
 
 function fillInTo(probinfo, i) {
     const rv = {}
@@ -23,7 +57,8 @@ function fillInTo(probinfo, i) {
         rv.autocheck = probinfo.autocheck;
     }
     const [parts, n] = getPartsUntil(probinfo.parts, (i+1));
-    rv.parts = getLineFrom
+    rv.parts = parts;
+    return rv;
 }
 
 export function chargeup(probelem) {
@@ -143,10 +178,12 @@ export function chargeup(probelem) {
             probinfoToUse = fillInTo(probinfo, i);
             skippingBackUp = true;
         }
-        console.log(probinfo);
         this.setComment('<span class="regularhint"><strong>' +
             tr('Hint.') + ' </strong>' +
-            '<span>' + htmlEscape(tr(new hardegreeDerivationHint(probinfo,
+            '<span>' + 
+            ((skippingBackUp) ? (htmlEscape(tr('Let’s go back to line ')) +
+                (i+1).toString() + ', and complete it. ') : '') +
+            htmlEscape(tr(new hardegreeDerivationHint(probinfoToUse,
                 (this?.options ?? {}), incll).output())) + '</span></span>');
     }
     return;
