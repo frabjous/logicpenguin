@@ -452,7 +452,7 @@ export default class hardegreeDerivationHint {
                 + this.lastline.s + ' directly from the ' +
                 'currently available lines.';
         }
-        return regularHint();
+        return this.regularHint();
     }
 
     fillShowLineHint() {
@@ -1062,3 +1062,4 @@ export default class hardegreeDerivationHint {
         return true;
     }
 }
+

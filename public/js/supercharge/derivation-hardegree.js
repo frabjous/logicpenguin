@@ -122,6 +122,7 @@ export function chargeup(probelem) {
         }
         // actually get hint
         const probinfo = this.getAnswer();
+        console.log(probinfo);
         this.setComment('<span class="regularhint"><strong>' +
             tr('Hint.') + ' </strong>' +
             '<span>' + htmlEscape(tr(new hardegreeDerivationHint(probinfo,
