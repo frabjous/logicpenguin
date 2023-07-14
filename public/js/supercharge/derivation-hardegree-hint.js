@@ -790,7 +790,7 @@ export default class hardegreeDerivationHint {
             // check if rule is available
             const rule = (f.op + 'O');
             if (f.op == symbols.NOT) {
-                // add to wouldBeNice if whatisneeded is ✖
+                // add to wouldBeNice if whatisneeded is falsum
                 if (f.right && whatisneeded == symbols.FALSUM) {
                     this.wouldBeNice.push({
                         want: f.right.normal,
@@ -819,7 +819,7 @@ export default class hardegreeDerivationHint {
             // check if out-rule already applied
             const applied = this.checkIfOutRuleApplied(f);
             if (applied) { continue; }
-            // check if we have partner premise for →O, ∨O
+            // check if we have partner premise for arrow O, wedge O
             let partnerat = false;
             if (f.op == symbols.OR || f.op == symbols.IFTHEN) {
                 const partners = [];
@@ -1029,7 +1029,7 @@ export default class hardegreeDerivationHint {
                             ' contradict. You can get ' + symbols.FALSUM + ' from them ' +
                             ' and use ' + symbols.FALSUM + 'O to get whatever you want.';
                     } else {
-                        // ercommend strategy via ∨Ǐ, ∨O
+                        // ercommend strategy via wedge Ǐ, wedge O
                         return 'What rule allows you to add ' +
                             'whatever you want as a disjunct to ' +
                             'a formula you already have?';
