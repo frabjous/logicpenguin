@@ -83,13 +83,13 @@ export function outRuleResults(syntax, op) {
                 case symbols.NOT:
                     return [[ f.right.right.normal ]];
                     break;
-                case symbols.ALL:
+                case symbols.FORALL:
                     return [[ symbols.EXISTS + f.right.boundvar +
                         symbols.NOT + f.right.right.wrapifneeded()
                     ]];
                     break;
                 case symbols.EXISTS:
-                    return [[ symbols.ALL + f.right.boundvar +
+                    return [[ symbols.FORALL + f.right.boundvar +
                         symbols.NOT + f.right.right.wrapifneeded()
                     ]];
                     break;
@@ -456,9 +456,11 @@ export default class hardegreeDerivationHint {
     }
 
     fillShowLineHint() {
+        const Formula = this.Formula;
         const syntax = this.syntax;
+        const symbols = this.symbols;
         if (this.lastline.j == '') {
-            let f = Formula.from(this.lastline.s);
+            const f = Formula.from(this.lastline.s);
             if (!f.wellformed) {
                 return 'What you have for the SHOW line is ' +
                     'not a well-formed formula. Can you fix it?';
@@ -471,10 +473,10 @@ export default class hardegreeDerivationHint {
                     return 'Try to show this by DD, maybe?';
                 }
             }
-            if (f.op == '✖') {
-                return '✖ can only be shown by DD.';
+            if (f.op == symbols.FALSUM) {
+                return symbols.FALSUM + ' can only be shown by DD.';
             }
-            let wantedSR = showRuleFor(syntax, syntax.operators[f.op]);
+            const wantedSR = showRuleFor(syntax, syntax.operators[f.op]);
             if (!wantedSR) {
                 return 'Sorry, I don’t understand that formula.';
             }
@@ -485,7 +487,7 @@ export default class hardegreeDerivationHint {
             return 'Maybe try to show this by DD?';
         }
         if (this.lastline.s == '') {
-            let parentShowLine =
+            const parentShowLine =
                 this.lastline.mysubderiv.parentderiv.showline;
             if (!parentShowLine) {
                 return stumpedAnswer;
@@ -496,37 +498,40 @@ export default class hardegreeDerivationHint {
                     'show line.';
             }
             if (parentShowLine.j == 'ID' ||
-                parentShowLine.j == '∃D' ||
-                parentShowLine.j == '~D' ||
-                parentShowLine.j == '∨D'
+                parentShowLine.j == (symbols.EXISTS + 'D') ||
+                parentShowLine.j == (symbols.NOT + 'D') ||
+                parentShowLine.j == (symbols.OR + 'D')
             ) {
-                return 'Since we started an ID, we now need to show ✖.';
+                return 'Since we started an ID, we now need to show ' +
+                    symbols.FALSUM + '.';
             }
-            if (parentShowLine.j == '↔D') {
-                return 'In a ↔D, we need to show the one-way conditionals ' +
-                    '(→-statements) in each direction.';
+            if (parentShowLine.j == (symbols.IFF + 'D')) {
+                return 'In a ' + symbols.IFF + 'D, we need to show the one-way conditionals ' +
+                    '(' + symbols.IFTHEN + '-statements) in each direction.';
             }
-            if (parentShowLine.j == '&D') {
-                return 'In a &D, we need to show each conjunct (each half) of ' +
-                    'the &-statement individually.';
+            if (parentShowLine.j == (symbols.AND + 'D')) {
+                return 'In a ' + symbols.AND + ' D, we need to show each conjunct (each half) of ' +
+                    'the ' + symbols.AND + '-statement individually.';
             }
             if (parentShowLine.j == 'UD') {
-                return 'In a UD, we need to show an instance of the ∀-statement ' +
-                    'but using a new name.';
+                return 'In a UD, we need to show an instance of the ' + symbols.FORALL +
+                    '-statement but using a new name.';
             }
             return 'Sometimes it makes sense to put in a show line to ' +
                 'show something it would be useful to have to complete the ' +
                 'derivation. Examples include showing the antecedent ' +
                 '(if-part) or negation of the consequent (then-part) of a ' +
-                'conditional to set up →O, or showing the negation of one ' +
-                'disjunct (one side) of a disjunction to set up ∨O. Is that ' +
-                'what you’re doing?';
+                'conditional to set up ' + symbols.IFTHEN +
+                'O, or showing the negation of one ' +
+                'disjunct (one side) of a disjunction to set up ' +
+                symbols.OR +
+                'O. Is that what you’re doing?';
         }
         return regularHint();
     }
 
     getAllAvailTo(line) {
-        let rv = [];
+        const rv = [];
         for (let checkline of this.deriv.lines) {
             if (parseInt(checkline.n) >= parseInt(line.n)) {
                 break;
@@ -540,20 +545,21 @@ export default class hardegreeDerivationHint {
     }
 
     getAllTerms() {
-        let rv = [];
+        const Formula = this.Formula;
+        const rv = [];
         if (!this.workingAvailLines) { return rv; }
         // we also need to consider terms only found in showline
-        let revShowLines = [];
-        for (let line of this.workingAvailLines) {
+        const revShowLines = [];
+        for (const line of this.workingAvailLines) {
             if (line.mysubderiv && line.mysubderiv.showline) {
                 if (revShowLines.indexOf(line.mysubderiv.showline) === -1) {
                     revShowLines.push(line.mysubderiv.showline);
                 }
             }
         }
-        for (let line of this.workingAvailLines.concat(revShowLines)) {
+        for (const line of this.workingAvailLines.concat(revShowLines)) {
             if (!line.s) { continue; }
-            let tt = Formula.from(line.s).terms;
+            const tt = Formula.from(line.s).terms;
             tt = tt.filter((t) => (!this.syntax.isvar(t)));
             rv = arrayUnion(rv, tt);
         }
@@ -561,24 +567,26 @@ export default class hardegreeDerivationHint {
     }
 
     getWorkingSubderiv(deriv) {
+        const symbols = this.symbols;
+        const Formula = this.Formula;
         // check derivation type
-        let dtype = deriv?.showline?.j ?? false;
+        const dtype = deriv?.showline?.j ?? false;
         // if ID or similar then look for inner showline
         // if found, then look in its subderivation
-        if (dtype == 'ID' || dtype == '∃D' ||
-            dtype == '~D' || dtype == '∨D') {
+        if (dtype == 'ID' || dtype == (symbols.EXISTS + 'D') ||
+            dtype == (symbols.NOT + 'D') || dtype == (symbols.OR + 'D')) {
             let f = Formula.from(deriv.showline.s);
             let pp = deriv.parts;
             for (let p of pp) {
                 if (p.parts && p.showline) {
-                    if (Formula.from(p.showline.s).normal == '✖') {
+                    if (Formula.from(p.showline.s).normal == symbols.FALSUM) {
                         return this.getWorkingSubderiv(p);
                     }
                 }
             }
             return [deriv, 'To set up a ' + dtype + ' you must ' +
                 'assume the opposite and then put in a new show ' +
-                'line for ✖.', true];
+                'line for ' +symbols.FALSUM + '.', true];
         }
         // similar with CD
         if (dtype == 'CD') {
@@ -614,11 +622,11 @@ export default class hardegreeDerivationHint {
                 }
             }
             return [deriv, 'To set up a UD, you need a new show ' +
-                'line with an instance of the ∀-statement using a ' +
-                'new name.', true];
+                'line with an instance of the ' + symbols.FORALL +
+                '-statement using a new name.', true];
         }
         // for DD we need to make show lines for both sides found
-        if (dtype == '&D') {
+        if (dtype == (symbols.AND + 'D')) {
             let f = Formula.from(deriv.showline.s);
             let slfound = [ false, false ];
             let pp = deriv.parts;
@@ -638,21 +646,21 @@ export default class hardegreeDerivationHint {
             if (slfound[0] && slfound[1]) {
                 return [false, false, false];
             }
-            return [deriv, 'To complete a &D, you should put in ' +
+            return [deriv, 'To complete a ' + symbols.AND + 'D, you should put in ' +
                 'show lines for both conjuncts separately, and ' +
                 'complete their subderivations.', true];
         }
         // similar with ↔D
-        if (dtype == '↔D') {
+        if (dtype == (symbols.IFF + 'D')) {
             let f = Formula.from(deriv.showline.s);
             let slfound = [ false, false ];
             let pp = deriv.parts;
             for (let p of pp) {
                 if (p.parts && p.showline) {
                     let g = Formula.from(p.showline.s).normal;
-                    let wayone = (f?.left?.wrapifneeded() ?? '') + ' → ' +
+                    let wayone = (f?.left?.wrapifneeded() ?? '') + ' ' + symbols.IFTHEN + ' ' +
                         (f?.right?.wrapifneeded() ?? '');
-                    let waytwo = (f?.right?.wrapifneeded() ?? '') + ' → ' +
+                    let waytwo = (f?.right?.wrapifneeded() ?? '') + ' ' + symbols.IFTHEN + ' ' +
                         (f?.left?.wrapifneeded() ?? '');
                     if (g == wayone || g == waytwo) {
                         if (g == wayone) { slfound[0] = true; };
@@ -667,8 +675,8 @@ export default class hardegreeDerivationHint {
             if (slfound[0] && slfound[1]) {
                 return [false, false, false];
             }
-            return [deriv, 'To complete a ↔D, you should put in ' +
-                'show lines for each one-way → statement separately, ' +
+            return [deriv, 'To complete a ' + symbols.IFF + 'D, you should put in ' +
+                'show lines for each one-way ' + symbols.IFTHEN + ' statement separately, ' +
                 'and complete their subderivations.', true];
         }
         // should either be DD or main deriv
@@ -769,20 +777,20 @@ export default class hardegreeDerivationHint {
             // nothing to do for simple statements
             if (!f.op) { continue; }
             // we will handle Universals later
-            if (f.op == '∀') { continue; }
+            if (f.op == symbols.FORALL) { continue; }
             // shouldn't be here since everything follows
             // from so should have been imminent, but what the hey
-            if (f.op == '✖') {
-                if (this.ruleIsAvail('✖O')) {
-                    return 'You have ✖ and anything follows from ✖O.';
+            if (f.op == symbols.NOT) {
+                if (this.ruleIsAvail(symbols.FALSUM + 'O')) {
+                    return 'You have ' + symbols.FALSUM + ' and anything follows from ' + symbols.FALSUM + 'O.';
                 }
                 continue;
             }
             // check if rule is available
             let rule = (f.op + 'O');
-            if (f.op == '~') {
+            if (f.op == symbols.NOT) {
                 // add to wouldBeNice if whatisneeded is ✖
-                if (f.right && whatisneeded == '✖') {
+                if (f.right && whatisneeded == symbols.FALSUM) {
                     this.wouldBeNice.push({
                         want: f.right.normal,
                         reason: 'to get a contradiction with what you already have',
@@ -793,14 +801,14 @@ export default class hardegreeDerivationHint {
                     // no out rule for negations of atomics
                     continue;
                 } else {
-                    if (f.right.op == '✖') {
-                        // no such rule as ~✖O
+                    if (f.right.op == symbols.FALSUM) {
+                        // no such rule as ~ FALSUM O
                         continue;
                     }
-                    if (f.right.op == '~') {
+                    if (f.right.op == symbols.NOT) {
                         rule = 'DN';
                     } else {
-                        rule = '~' + f.right.op + 'O';
+                        rule = symbols.NOT + f.right.op + 'O';
                     }
                 }
             }
@@ -812,18 +820,18 @@ export default class hardegreeDerivationHint {
             if (applied) { continue; }
             // check if we have partner premise for →O, ∨O
             let partnerat = false;
-            if (f.op == '∨' || f.op == '→') {
+            if (f.op == symbols.OR || f.op == symbols.IFTHEN) {
                 let partners = [];
-                if (f.op == '∨') {
+                if (f.op == symbols.OR) {
                     partners = [
-                        '~' + f.left.wrapifneeded(),
-                        '~' + f.right.wrapifneeded()
+                        symbols.NOT + f.left.wrapifneeded(),
+                        symbols.NOT + f.right.wrapifneeded()
                     ]
                 }
-                if (f.op == '→') {
+                if (f.op == symbols.IFTHEN) {
                     partners = [
                         f.left.normal,
-                        '~' + f.right.wrapifneeded()
+                        symbols.NOT + f.right.wrapifneeded()
                     ];
                 }
                 lineloop: for (let sl of this.workingAvailLines) {
@@ -870,13 +878,13 @@ export default class hardegreeDerivationHint {
                 }
                 let f = Formula.from(desired.want);
                 // no new desire for atomics and splat
-                if (!f.op || f.op == '✖') {
+                if (!f.op || f.op == symbols.FALSUM) {
                     continue;
                 }
                 // can get double negations with in rules, but
                 // no other negations
-                if (f.op == '~') {
-                    if (f.right.op == '~') {
+                if (f.op == symbols.NOT) {
+                    if (f.right.op == symbols.NOT) {
                         if (!this.ruleIsAvail("DN")) { continue; }
                         newNice.push({
                             reason: 'to then get ' + desired.want +
@@ -887,44 +895,44 @@ export default class hardegreeDerivationHint {
                     }
                     continue;
                 }
-                if (f.op == '∨') {
-                    if (!this.ruleIsAvail("∨I")) { continue; }
+                if (f.op == symbols.OR) {
+                    if (!this.ruleIsAvail(symbols.OR + "I")) { continue; }
                     for (const s of [f.left.normal, f.right.normal]) {
                         newNice.push({
                             reason: 'to then get ' + desired.want +
-                                ' by vI, ' + desired.reason,
+                                ' by ' + symbols.OR + 'I, ' + desired.reason,
                             want: s,
                             dmable: false
                         });
                     }
                 }
-                if (f.op == '∃') {
-                    if (!this.ruleIsAvail("∃I")) { continue; }
+                if (f.op == symbols.EXISTS) {
+                    if (!this.ruleIsAvail(symbols.EXISTS + "I")) { continue; }
                     let tt = this.getAllTerms();
                     for (const t of tt) {
                         newNice.push({
                             reason: 'to then get ' + desired.want +
-                                ' by ∃I, ' + desired.reason,
+                                ' by ' + symbols.EXISTS + 'I, ' + desired.reason,
                             want: f.right.instantiate(f.boundvar, t),
                             dmable: false
                         });
                     }
                 }
-                if (f.op == '&' || f.op == '↔') {
+                if (f.op == symbols.AND || f.op == symbols.IFF) {
                     if (!this.ruleIsAvail(f.op + 'I')) {
                         continue;
                     }
                     let sides = [];
                     let sidesneeded = [ true, true ];
-                    if (f.op == '↔') {
+                    if (f.op == symbols.IFF) {
                         sides = [
-                            f.left.wrapifneeded() + ' → ' +
+                            f.left.wrapifneeded() + ' ' + symbols.IFTHEN + ' ' +
                                 f.right.wrapifneeded(),
-                            f.right.wrapifneeded() + ' → ' +
+                            f.right.wrapifneeded() + ' ' + symbols.IFTHEN + ' ' +
                                 f.left.wrapifneeded()
                         ]
                     }
-                    if (f.op == '&') {
+                    if (f.op == symbols.AND) {
                         sides = [f.left.normal, f.right.normal];
                     }
                     // don't suggest getting half we already have 
@@ -962,7 +970,7 @@ export default class hardegreeDerivationHint {
             if (!line.s) { continue; }
             let f = Formula.from(line.s);
             let fn = f.normal;
-            if (!f.op || f.op != '∀') { continue; }
+            if (!f.op || f.op != symbols.FORALL) { continue; }
             // save first universal for possible random instantiation
             if (!firstUniv) { firstUniv = f; }
             termloop: for (const t of allTerms) {
@@ -994,7 +1002,7 @@ export default class hardegreeDerivationHint {
         if (this.dmable.length > 0) {
             return 'Desperate times call for desperate measures. ' +
                 'Sometimes it is necessary to add a show line ' +
-                'to get something that will set up doing a →O or ∨O; ' +
+                'to get something that will set up doing a ' + symbols.IFTHEN + 'O or ' + symbols.OR + 'O; ' +
                 'for example, try SHOW: ' + this.dmable[0].want +
                 ' to get what you need ' + this.dmable[0].reason + '.';
         }
@@ -1004,21 +1012,21 @@ export default class hardegreeDerivationHint {
             if (!line.s) { continue; }
             let f = Formula.from(line.s);
             // only consider negations
-            if (!f.op || f.op != '~') {
+            if (!f.op || f.op != symbols.NOT) {
                 continue;
             }
             for (let compline of this.workingAvailLines) {
                 if (!compline.s) { continue; }
                 let g = Formula.from(compline.s);
-                if (f.normal == '~' + g.wrapifneeded()) {
+                if (f.normal == symbols.NOT + g.wrapifneeded()) {
                     let l = parseInt(line.n);
                     let m = parseInt(compline.n);
                     let o = Math.min(l,m).toString();
                     let p = Math.max(l,m).toString();
-                    if (this.ruleIsAvail('✖O')) {
+                    if (this.ruleIsAvail(symbols.FALSUM + 'O')) {
                         return 'Lines ' + o + ' and ' + p +
-                            ' contradict. You can get ✖ from them ' +
-                            ' and use ✖O to get whatever you want.';
+                            ' contradict. You can get ' + symbols.FALSUM + ' from them ' +
+                            ' and use ' + symbols.FALSUM + 'O to get whatever you want.';
                     } else {
                         // ercommend strategy via ∨Ǐ, ∨O
                         return 'What rule allows you to add ' +
@@ -1030,9 +1038,9 @@ export default class hardegreeDerivationHint {
         }
         // random instantiate
         if (considerRandomInstantiation && firstUniv) {
-            return 'I don’t usually recommend applying ∀O when ' +
+            return 'I don’t usually recommend applying ' + symbols.FORALL + 'O when ' +
                 'there’s no old name/constant in the problem, but ' +
-                'this may be an exception. Consider ∀O on ' +
+                'this may be an exception. Consider ' + symbols.FORALL + 'O on ' +
                 firstUniv.normal + ' using a name/constant of ' +
                 'your choice.';
         }
