@@ -11,6 +11,21 @@ import hardegreeDerivCheck from '../checkers/derivation-hardegree.js';
 import hardegreeDerivationHint from './derivation-hardegree-hint.js';
 import tr from '../translate.js';
 
+
+function getPartsUntil(
+
+function fillInTo(probinfo, i) {
+    const rv = {}
+    if ("closed" in probinfo) {
+        rv.closed = probinfo.closed;
+    }
+    if ("autocheck" in probinfo) {
+        rv.autocheck = probinfo.autocheck;
+    }
+    const [parts, n] = getPartsUntil(probinfo.parts, (i+1));
+    rv.parts = getLineFrom
+}
+
 export function chargeup(probelem) {
     probelem.showansButton = addelem('button', probelem.buttonDiv, {
         innerHTML: tr('show answer'),
@@ -76,7 +91,7 @@ export function chargeup(probelem) {
         // first first line without everything filled in
         let i = 0;
         const max = lines.length - 1;
-        while ((i<=max) &&
+        while ((i<max) &&
             (lines[i].input.value != '' && lines[i].jinput.value != '')) {
             i++;
         }
@@ -122,6 +137,12 @@ export function chargeup(probelem) {
         }
         // actually get hint
         const probinfo = this.getAnswer();
+        let probinfoToUse = probinfo;
+        let skippingBackUp = false;
+        if (i<max) {
+            probinfoToUse = fillInTo(probinfo, i);
+            skippingBackUp = true;
+        }
         console.log(probinfo);
         this.setComment('<span class="regularhint"><strong>' +
             tr('Hint.') + ' </strong>' +
