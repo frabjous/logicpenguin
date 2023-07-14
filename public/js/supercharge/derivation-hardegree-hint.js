@@ -532,7 +532,7 @@ export default class hardegreeDerivationHint {
 
     getAllAvailTo(line) {
         const rv = [];
-        for (let checkline of this.deriv.lines) {
+        for (const checkline of this.deriv.lines) {
             if (parseInt(checkline.n) >= parseInt(line.n)) {
                 break;
             }
@@ -575,9 +575,9 @@ export default class hardegreeDerivationHint {
         // if found, then look in its subderivation
         if (dtype == 'ID' || dtype == (symbols.EXISTS + 'D') ||
             dtype == (symbols.NOT + 'D') || dtype == (symbols.OR + 'D')) {
-            let f = Formula.from(deriv.showline.s);
-            let pp = deriv.parts;
-            for (let p of pp) {
+            const f = Formula.from(deriv.showline.s);
+            const pp = deriv.parts;
+            for (const p of pp) {
                 if (p.parts && p.showline) {
                     if (Formula.from(p.showline.s).normal == symbols.FALSUM) {
                         return this.getWorkingSubderiv(p);
@@ -590,11 +590,11 @@ export default class hardegreeDerivationHint {
         }
         // similar with CD
         if (dtype == 'CD') {
-            let f = Formula.from(deriv.showline.s);
-            let pp = deriv.parts;
-            for (let p of pp) {
+            const f = Formula.from(deriv.showline.s);
+            const pp = deriv.parts;
+            for (const p of pp) {
                 if (p.parts && p.showline) {
-                    let g = Formula.from(p.showline.s).normal;
+                    const g = Formula.from(p.showline.s).normal;
                     if (g == f?.right?.normal) {
                         return this.getWorkingSubderiv(p);
                     }
@@ -606,14 +606,14 @@ export default class hardegreeDerivationHint {
         }
         // similar with UD
         if (dtype == 'UD') {
-            let f = Formula.from(deriv.showline.s);
-            let pp = deriv.parts;
-            for (let p of pp) {
+            const f = Formula.from(deriv.showline.s);
+            const pp = deriv.parts;
+            for (const p of pp) {
                 if (p.parts && p.showline) {
-                    let g = Formula.from(p.showline.s);
-                    let tt = g.terms;
+                    const g = Formula.from(p.showline.s);
+                    const tt = g.terms;
                     for (let i=0; i<tt.length; i++) {
-                        let t = g.terms[i];
+                        const t = g.terms[i];
                         if (f.right.instantiate(f.boundvar, t)
                             == g.normal) {
                             return this.getWorkingSubderiv(p);
@@ -627,16 +627,16 @@ export default class hardegreeDerivationHint {
         }
         // for DD we need to make show lines for both sides found
         if (dtype == (symbols.AND + 'D')) {
-            let f = Formula.from(deriv.showline.s);
-            let slfound = [ false, false ];
-            let pp = deriv.parts;
-            for (let p of pp) {
+            const f = Formula.from(deriv.showline.s);
+            const slfound = [ false, false ];
+            const pp = deriv.parts;
+            for (const p of pp) {
                 if (p.parts && p.showline) {
-                    let g = Formula.from(p.showline.s).normal;
+                    const g = Formula.from(p.showline.s).normal;
                     if (g == f?.left?.normal || g == f?.right?.normal) {
                         if (g == f?.left?.normal) { slfound[0] = true; };
                         if (g == f?.right?.normal) { slfound[1] = true; };
-                        let [x, y, z] = this.getWorkingSubderiv(p);
+                        const [x, y, z] = this.getWorkingSubderiv(p);
                         if (x !== false) {
                             return [x, y, z];
                         }
@@ -650,22 +650,22 @@ export default class hardegreeDerivationHint {
                 'show lines for both conjuncts separately, and ' +
                 'complete their subderivations.', true];
         }
-        // similar with ↔D
+        // similar with IFF D
         if (dtype == (symbols.IFF + 'D')) {
-            let f = Formula.from(deriv.showline.s);
-            let slfound = [ false, false ];
-            let pp = deriv.parts;
-            for (let p of pp) {
+            const f = Formula.from(deriv.showline.s);
+            const slfound = [ false, false ];
+            const pp = deriv.parts;
+            for (const p of pp) {
                 if (p.parts && p.showline) {
-                    let g = Formula.from(p.showline.s).normal;
-                    let wayone = (f?.left?.wrapifneeded() ?? '') + ' ' + symbols.IFTHEN + ' ' +
+                    const g = Formula.from(p.showline.s).normal;
+                    const wayone = (f?.left?.wrapifneeded() ?? '') + ' ' + symbols.IFTHEN + ' ' +
                         (f?.right?.wrapifneeded() ?? '');
-                    let waytwo = (f?.right?.wrapifneeded() ?? '') + ' ' + symbols.IFTHEN + ' ' +
+                    const waytwo = (f?.right?.wrapifneeded() ?? '') + ' ' + symbols.IFTHEN + ' ' +
                         (f?.left?.wrapifneeded() ?? '');
                     if (g == wayone || g == waytwo) {
                         if (g == wayone) { slfound[0] = true; };
                         if (g == waytwo) { slfound[1] = true; };
-                        let [x, y, z] = this.getWorkingSubderiv(p);
+                        const [x, y, z] = this.getWorkingSubderiv(p);
                         if (x !== false) {
                             return [x, y, z];
                         }
@@ -683,23 +683,23 @@ export default class hardegreeDerivationHint {
         let foundconc = false;
         let needednorm = false;
         if (dtype == 'DD') {
-            let neededs = deriv?.showline?.s ?? false;
+            const neededs = deriv?.showline?.s ?? false;
             if (neededs) {
                 needednorm = Formula.from(neededs).normal;
             }
         }
         // check parts now
-        let pp = deriv.parts;
-        for (let p of pp) {
+        const pp = deriv.parts;
+        for (const p of pp) {
             // check any internal
             if (p.parts && p.showline) {
-                let [x, y, z] = this.getWorkingSubderiv(p);
+                const [x, y, z] = this.getWorkingSubderiv(p);
                 if (x !== false) {
                     return [x, y, z];
                 }
             }
             if (p.s) {
-                let g = Formula.from(p.s).normal;
+                const g = Formula.from(p.s).normal;
                 if (g == needednorm) {
                     foundconc = true;
                 }
@@ -733,8 +733,10 @@ export default class hardegreeDerivationHint {
     }
 
     regularHint() {
+        const Formula = this.Formula;
+        const symbols = this.symbols;
         // determine last incomplete derivation
-        let [workingsubderiv, whatisneeded, showlineneeded] =
+        const [workingsubderiv, whatisneeded, showlineneeded] =
             this.getWorkingSubderiv(this.deriv);
         // if not set up right; we give a hint about that
         if (showlineneeded) {
@@ -746,7 +748,7 @@ export default class hardegreeDerivationHint {
         this.workingline = workingsubderiv.parts[
             workingsubderiv.parts.length - 1
         ];
-        let thingyToCheck = this.workingline;
+        const thingyToCheck = this.workingline;
         if (this.workingline.parts && this.workingline.showline) {
             this.workingline = this.workingline.showline;
         }
@@ -757,7 +759,7 @@ export default class hardegreeDerivationHint {
             this.workingAvailLines.push(this.workingline);
         }
         // see if showline is imminent
-        let imminent = this.canIGet(whatisneeded);
+        const imminent = this.canIGet(whatisneeded);
         // all answers but false should be description of how to get it
         if (imminent !== false) {
             return imminent + ' This will complete the subderivation.';
@@ -771,9 +773,8 @@ export default class hardegreeDerivationHint {
         }];
         // look for unapplied out-rules
         ///////////////////////////////////////// OUTRULE APPLY
-        let repd = false; // TODO
         for (const line of this.workingAvailLines) {
-            let f = Formula.from(line.s);
+            const f = Formula.from(line.s);
             // nothing to do for simple statements
             if (!f.op) { continue; }
             // we will handle Universals later
@@ -787,7 +788,7 @@ export default class hardegreeDerivationHint {
                 continue;
             }
             // check if rule is available
-            let rule = (f.op + 'O');
+            const rule = (f.op + 'O');
             if (f.op == symbols.NOT) {
                 // add to wouldBeNice if whatisneeded is ✖
                 if (f.right && whatisneeded == symbols.FALSUM) {
@@ -816,12 +817,12 @@ export default class hardegreeDerivationHint {
                 continue;
             }
             // check if out-rule already applied
-            let applied = this.checkIfOutRuleApplied(f);
+            const applied = this.checkIfOutRuleApplied(f);
             if (applied) { continue; }
             // check if we have partner premise for →O, ∨O
             let partnerat = false;
             if (f.op == symbols.OR || f.op == symbols.IFTHEN) {
-                let partners = [];
+                const partners = [];
                 if (f.op == symbols.OR) {
                     partners = [
                         symbols.NOT + f.left.wrapifneeded(),
@@ -834,9 +835,9 @@ export default class hardegreeDerivationHint {
                         symbols.NOT + f.right.wrapifneeded()
                     ];
                 }
-                lineloop: for (let sl of this.workingAvailLines) {
-                    for (let alt of partners) {
-                        let slf = Formula.from(sl.s).normal;
+                lineloop: for (const sl of this.workingAvailLines) {
+                    for (const alt of partners) {
+                        const slf = Formula.from(sl.s).normal;
                         if (slf == alt) {
                             partnerat = sl.n
                             break lineloop;
@@ -845,7 +846,7 @@ export default class hardegreeDerivationHint {
                 }
                 // couldn't find partner, add to would be nice
                 if (partnerat === false) {
-                    for (let alt of partners) {
+                    for (const alt of partners) {
                         this.wouldBeNice.push({
                             want: alt,
                             dmable: true,
@@ -869,14 +870,14 @@ export default class hardegreeDerivationHint {
         // ###################################### IN RULES
         this.dmable = this.wouldBeNice.filter((e) => (e.dmable));
         while (this.wouldBeNice.length > 0) {
-            let newNice = [];
-            for (let desired of this.wouldBeNice) {
-                let canget = this.canIGet(desired.want);
+            const newNice = [];
+            for (const desired of this.wouldBeNice) {
+                const canget = this.canIGet(desired.want);
                 if (canget !== false) {
                     return canget + ' This is needed ' +
                         desired.reason + '.';
                 }
-                let f = Formula.from(desired.want);
+                const f = Formula.from(desired.want);
                 // no new desire for atomics and splat
                 if (!f.op || f.op == symbols.FALSUM) {
                     continue;
@@ -908,7 +909,7 @@ export default class hardegreeDerivationHint {
                 }
                 if (f.op == symbols.EXISTS) {
                     if (!this.ruleIsAvail(symbols.EXISTS + "I")) { continue; }
-                    let tt = this.getAllTerms();
+                    const tt = this.getAllTerms();
                     for (const t of tt) {
                         newNice.push({
                             reason: 'to then get ' + desired.want +
@@ -923,7 +924,7 @@ export default class hardegreeDerivationHint {
                         continue;
                     }
                     let sides = [];
-                    let sidesneeded = [ true, true ];
+                    const sidesneeded = [ true, true ];
                     if (f.op == symbols.IFF) {
                         sides = [
                             f.left.wrapifneeded() + ' ' + symbols.IFTHEN + ' ' +
@@ -936,17 +937,17 @@ export default class hardegreeDerivationHint {
                         sides = [f.left.normal, f.right.normal];
                     }
                     // don't suggest getting half we already have 
-                    for (let sline of this.workingAvailLines) {
+                    for (const sline of this.workingAvailLines) {
                         if (!sline.s) { continue; }
-                        let here = Formula.from(sline.s);
-                        for (let i of [0,1]) {
+                        const here = Formula.from(sline.s);
+                        for (const i of [0,1]) {
                             if (here.normal == sides[i]) {
                                 sidesneeded[i] = false;
                             }
                         }
                     }
                     // finally add needed side
-                    for (let i of [0,1]) {
+                    for (const i of [0,1]) {
                         if (!sidesneeded[i]) { continue; }
                         newNice.push({
                             want: sides[i],
@@ -960,23 +961,23 @@ export default class hardegreeDerivationHint {
             this.wouldBeNice = newNice;
         }
         // ##################################### END IN RULES
-        // ∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀ UNIV OUT
-        let allTerms = this.getAllTerms();
-        let considerRandomInstantiation = (allTerms.length == 0);
+        // ################################# UNIV OUT
+        const allTerms = this.getAllTerms();
+        const considerRandomInstantiation = (allTerms.length == 0);
         let firstUniv = false;
         // find universals and count instances for each
-        let termsneeded = {};
+        const termsneeded = {};
         for (const line of this.workingAvailLines) {
             if (!line.s) { continue; }
-            let f = Formula.from(line.s);
-            let fn = f.normal;
+            const f = Formula.from(line.s);
+            const fn = f.normal;
             if (!f.op || f.op != symbols.FORALL) { continue; }
             // save first universal for possible random instantiation
             if (!firstUniv) { firstUniv = f; }
             termloop: for (const t of allTerms) {
                 for (const sline of this.workingAvailLines) {
                     if (!sline.s) { continue; }
-                    let g = Formula.from(sline.s);
+                    const g = Formula.from(sline.s);
                     if (g.normal == f.right.instantiate( f.boundvar, t)) {
                         continue termloop;
                     }
@@ -989,15 +990,15 @@ export default class hardegreeDerivationHint {
         }
         // apply to universals with least applications so far
         for (let n = allTerms.length; n > 0; n--) {
-            for (let w in termsneeded) {
+            for (const w in termsneeded) {
                 if (termsneeded[w].length == n) {
                     return w + ' says something about everything, ' +
                         'which includes ' + termsneeded[w].join(' and ') +
-                        ' — consider using ∀O.';
+                        ' — consider using ' + symbols.FORALL + 'O.';
                 }
             }
         }
-        // ∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀∀ END UNIV OUT
+        // ############################### END UNIV OUT
         // Desoerate Measures -----------------
         if (this.dmable.length > 0) {
             return 'Desperate times call for desperate measures. ' +
@@ -1008,21 +1009,21 @@ export default class hardegreeDerivationHint {
         }
         // -------------------- end DM
         // Check for contradiction to get anything
-        for (let line of this.workingAvailLines) {
+        for (const line of this.workingAvailLines) {
             if (!line.s) { continue; }
-            let f = Formula.from(line.s);
+            const f = Formula.from(line.s);
             // only consider negations
             if (!f.op || f.op != symbols.NOT) {
                 continue;
             }
-            for (let compline of this.workingAvailLines) {
+            for (const compline of this.workingAvailLines) {
                 if (!compline.s) { continue; }
-                let g = Formula.from(compline.s);
+                const g = Formula.from(compline.s);
                 if (f.normal == symbols.NOT + g.wrapifneeded()) {
-                    let l = parseInt(line.n);
-                    let m = parseInt(compline.n);
-                    let o = Math.min(l,m).toString();
-                    let p = Math.max(l,m).toString();
+                    const l = parseInt(line.n);
+                    const m = parseInt(compline.n);
+                    const o = Math.min(l,m).toString();
+                    const p = Math.max(l,m).toString();
                     if (this.ruleIsAvail(symbols.FALSUM + 'O')) {
                         return 'Lines ' + o + ' and ' + p +
                             ' contradict. You can get ' + symbols.FALSUM + ' from them ' +
@@ -1041,8 +1042,7 @@ export default class hardegreeDerivationHint {
             return 'I don’t usually recommend applying ' + symbols.FORALL + 'O when ' +
                 'there’s no old name/constant in the problem, but ' +
                 'this may be an exception. Consider ' + symbols.FORALL + 'O on ' +
-                firstUniv.normal + ' using a name/constant of ' +
-                'your choice.';
+                firstUniv.normal + ' using a name/constant of your choice.';
         }
         return stumpedAnswer;
     }
