@@ -73,11 +73,13 @@ export function chargeup(probelem) {
         this.ishinting = false;
         // check line status indicators
         const lines = this.getElementsByClassName("derivationline");
-        // find last line with content
-        let i = lines.length - 1;
-        while (lines[i].input.value == '' &&
-            lines[i].jinput.value == '' &&
-            i > 0) { i--; }
+        // first first line without everything filled in
+        let i = 0;
+        const max = lines.length - 1;
+        while ((i<=max) &&
+            (lines[i].input.value != '' && lines[i].jinput.value != '')) {
+            i++;
+        }
         // include last line in error check if it has both
         let incll = (lines[i].input.value != '' &&
             lines[i].jinput.value != '');
