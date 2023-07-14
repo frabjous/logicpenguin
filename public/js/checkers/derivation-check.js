@@ -70,7 +70,7 @@ export default class DerivationCheck {
                 subderiv.lnmap[subderiv.showline.n] = subderiv.showline;
             }
         }
-        for (const p of subderiv?.parts) {
+        for (let p of subderiv?.parts) {
             // if a subderivation, get its analysis and merge
             if ("parts" in p) {
                 p = this.analyze(p);

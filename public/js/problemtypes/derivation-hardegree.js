@@ -74,7 +74,7 @@ export default class DerivationHardegree extends DerivationExercise {
             classes: ['derivchartlabel'],
             // preventing default helps keep other stuff from
             // blurring
-            onmousedown: function(e) { e.preventDefault(); }
+            onmousedown: function(e) { e.preventDefault(); },
             onclick: function(e) {
                 e.preventDefault();
                 this.myrp.target.focus();

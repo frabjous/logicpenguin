@@ -88,7 +88,7 @@ export function chargeup(probelem) {
         let errfound = false;
         let allgood = true;
         for (let j=0; j<=lltc; j++) {
-            constline = lines[j];
+            const line = lines[j];
             if (!line.checkButton) { continue; }
             const ico = line.checkButton.getElementsByTagName("div")?.[0];
             if (!ico) { continue; }

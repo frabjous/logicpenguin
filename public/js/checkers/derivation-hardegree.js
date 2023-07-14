@@ -13,7 +13,7 @@ import { justParse } from '../ui/justification-parse.js';
 // default notation from settings, but hardegree otherwise for hardegree
 // derivations
 let defaultnotation = 'hardegree';
-if ((typeof "process" != "undefined") && (process?.appsettings?.defaultnotation)) {
+if ((typeof process != "undefined") && (process?.appsettings?.defaultnotation)) {
     defaultnotation = process.appsettings.defaultnotation;
 }
 
@@ -22,7 +22,7 @@ function progresslinesin(deriv, errors) {
     let ttl = 0;
     // skip empty subderivations
     if (!("parts" in deriv)) { return 0; }
-    for (const pt of deriv.parts) {
+    for (let pt of deriv.parts) {
         // recursively apply to subdirevations
         if ("parts" in pt) {
             ttl+= progresslinesin(pt, errors);
