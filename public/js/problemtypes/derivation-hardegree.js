@@ -107,10 +107,6 @@ export default class DerivationHardegree extends DerivationExercise {
         rp.insertRuleCite = function(e) {
             if (!this.currentrule || !this.target) { return; }
             let targ = this.target;
-            const time = (new Date()).getTime();
-            const iblurred = targ?.myline?.input?.lastblurred ?? 0;
-            const blurred = Math.max(targ.lastblurred, iblurred);
-            if (time  - blurred > 500) { return; }
             targ = targ?.myline?.mysubderiv?.myprob?.lastfocusedJ;
             if (!targ) { return; }
             const oldval = targ.value;
@@ -124,7 +120,11 @@ export default class DerivationHardegree extends DerivationExercise {
             myrp: rp,
             classes: [ 'rulenamedisplay' ],
             tabIndex: -1,
-            onclick: function(e) { this.myrp.insertRuleCite(e); }
+            onmousedown: function(e) { e.preventDefault(); },
+            onclick: function(e) {
+                e.preventDefault();
+                this.myrp.insertRuleCite(e);
+            }
         });
         // thead cell for displaying the actual rule
         rp.ruleformcell = addelem('th', thr, {
@@ -132,7 +132,11 @@ export default class DerivationHardegree extends DerivationExercise {
             myrp: rp,
             classes: [ 'ruledisplay' ],
             tabIndex: -1,
-            onclick: function(e) { this.myrp.insertRuleCite(e); }
+            onmousedown: function(e) { e.preventDefault(); },
+            onclick: function(e) {
+                e.preventDefault();
+                this.myrp.insertRuleCite(e);
+            }
         });
         // put divs inside in case we need to do extra styling
         rp.innernamecell = addelem('div',rp.rulenamecell,{});
@@ -152,7 +156,11 @@ export default class DerivationHardegree extends DerivationExercise {
                 tabIndex: -1,
                 classes: ['ruleselect'],
                 title: tr('click to view form'),
+                onmousedown: function(e) {
+                    e.preventDefault();
+                },
                 onclick: function(e) {
+                    e.preventDefault();
                     this.myrp.target.focus();
                     if (this.classList.contains("meinongian")) { return; }
                     this.myrp.displayrule(this.myrule);
@@ -183,6 +191,7 @@ export default class DerivationHardegree extends DerivationExercise {
                 this.rulemap[rule].classList.remove("excluded");
             }
         }
+        rp.schematic = this.schematic;
         rp.displayrule = function(rule) {
             const ruleinfo = this.ruleset[rule];
             if (!ruleinfo) { return; }
