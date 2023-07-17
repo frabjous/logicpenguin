@@ -26,7 +26,7 @@ export function showRuleFor(syntax, op) {
         NOT : "ID",
         IFTHEN : "CD",
         IFF: symbols.IFF + "D",
-        ALL: "UD",
+        FORALL: "UD",
         EXISTS: "ID",
         FALSUM: "DD"
     }
@@ -547,7 +547,7 @@ export default class hardegreeDerivationHint {
 
     getAllTerms() {
         const Formula = this.Formula;
-        const rv = [];
+        let rv = [];
         if (!this.workingAvailLines) { return rv; }
         // we also need to consider terms only found in showline
         const revShowLines = [];
@@ -560,7 +560,7 @@ export default class hardegreeDerivationHint {
         }
         for (const line of this.workingAvailLines.concat(revShowLines)) {
             if (!line.s) { continue; }
-            const tt = Formula.from(line.s).terms;
+            let tt = Formula.from(line.s).terms;
             tt = tt.filter((t) => (!this.syntax.isvar(t)));
             rv = arrayUnion(rv, tt);
         }
@@ -782,14 +782,14 @@ export default class hardegreeDerivationHint {
             if (f.op == symbols.FORALL) { continue; }
             // shouldn't be here since everything follows
             // from so should have been imminent, but what the hey
-            if (f.op == symbols.NOT) {
+            if (f.op == symbols.FALSUM) {
                 if (this.ruleIsAvail(symbols.FALSUM + 'O')) {
                     return 'You have ' + symbols.FALSUM + ' and anything follows from ' + symbols.FALSUM + 'O.';
                 }
                 continue;
             }
             // check if rule is available
-            const rule = (f.op + 'O');
+            let rule = (f.op + 'O');
             if (f.op == symbols.NOT) {
                 // add to wouldBeNice if whatisneeded is falsum
                 if (f.right && whatisneeded == symbols.FALSUM) {
