@@ -8,6 +8,7 @@
 
 import tr from './translate.js';
 import { addelem, byid, sendAnswerToServer, localCheck } from './common.js';
+import { randomString } from './misc.js';
 import LP from '../load.js';
 
 // the problem is its HTML element, so we extend it
@@ -319,6 +320,27 @@ export default class LogicPenguinProblem extends HTMLElement {
             LP.superCharge(this.myproblemtype, this);
         }
         this.scrollIntoView();
+    }
+
+    static sampleProblemOpts(opts) {
+        let parentid = '';
+        let problem = {};
+        let answer = null;
+        let restore = null;
+        const options = {};
+        for (const opt in opts) {
+            if (opt=='parentid') {
+                parentid = opts.parentid;
+                continue;
+            }
+            if (opt=='parent') {
+                if (typeof opts.parent == != 'object') { continue; }
+                if (!opts?.parent?.id || opts.parent.id == '') {
+
+                }
+            }
+        }
+        return [ parentid, problem, answer, restore, options ];
     }
 
     // properties directly of class

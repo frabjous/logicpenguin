@@ -9,8 +9,10 @@
 import {addelem, byid, url, makeInfobox, infoboxMsg} from './js/common.js';
 import makeProgressBar from './js/ui/progress-bar.js';
 import tr from './js/translate.js';
+/*
 import { formulaTable, equivTables, argumentTables, comboTables } from './js/symbolic/libsemantics.js';
 import Formula from './js/symbolic/formula.js';
+*/
 let LP = {};
 
 // attach convenience functions for export
@@ -22,8 +24,8 @@ LP.infoboxMsg = infoboxMsg;
 LP.url = url;
 
 // start with no problem types loaded
-LP.problemTypes = [];
-LP.superChargers = [];
+LP.problemTypes = {};
+LP.superChargers = {};
 
 ////////////////
 // FUNCTIONS //
@@ -37,6 +39,30 @@ LP.loadCSS = function(name) {
     });
 }
 let loadCSS = LP.loadCSS;
+
+LP.embed = async function(opts) {
+    if (!("problemtype" in opts)) {
+        console.error('Logic penguin embedding error: no problemtype specified.');
+        return false;
+    }
+    const = problemtype = opts.problemtype;
+    if (!LP.problemTypes[problemtype]) {
+        LP.loadCSS(problemtype);
+        try {
+            let imported = await import(LP.url +
+                '/js/problemtypes/' + problemtype + '.js');
+            LP.problemTypes[problemtype] = imported.default;
+        } catch(err) {
+            console.error('Logic penguin embedding error: problem loading ' +
+                'script: ' + problemtype + '.js', err.toString(), err.stack);
+            return false;
+        }
+    }
+    const [ parentid, problem, answer, restore, options ] =
+        LP.problemTypes[problemtype].sampleProbOpts(opts);
+    await LT.sampleProblem(parentid, problemtype, problem, answer,
+        restore, options);
+}
 
 LP.makeProblems = async function(parentid, exerciseinfo,
     exerciseproblems, exerciseanswers, progressbar = true) {
@@ -93,7 +119,7 @@ LP.makeProblems = async function(parentid, exerciseinfo,
                     '/js/problemtypes/' + problemtype + '.js');
                 LP.problemTypes[problemtype] = imported.default;
             } catch(err) {
-                console.log("problem loading script",problemtype + '.js',err.toString(), err.stack);
+                console.error("problem loading script",problemtype + '.js',err.toString(), err.stack);
                 LP.infoboxMsg('Unable to load all types of problem. ' +
                     'Check your internet connection and reload. ' +
                     'If the problem persists, inform your instructor.',
