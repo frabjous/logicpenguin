@@ -292,15 +292,29 @@ export default class DerivationHardegree extends DerivationExercise {
 
     ruleset = rules;
 
-    // TODO: use notation
-    static schematic(s) {
-        return s.replace(/A/g,'𝒜')
-            .replace(/B/g,'ℬ')
-            .replace(/C/g,'𝒞')
-            .replace(/𝒜x/g,'𝒜')
-            .replace(/x/g,'𝓍')
-            .replace(/a/g,' [𝒶/𝓍]')
-            .replace(/n/g,' [𝓃/𝓍]');
+    static schematic(s, letters) {
+        const lta = [...letters];
+        const scA = lta[0];
+        const scB = 'ℬ';
+        const scC = '𝒞';
+        if (scA == 'p') {
+            scB = 'q';
+            scC = 'r';
+        }
+        if (scA == '𝑨') {
+            scB = '𝑩';
+            scC = '𝑪';
+        }
+        const scx = lta[2];
+        const sca = lta[3];
+        const scn = lta[4];
+        return s.replace(/Ax/g, scA+scx)
+            .replace(/A/g, scA)
+            .replace(/B/g,scB)
+            .replace(/C/g,scC)
+            .replace(/x/g,scx)
+            .replace(/a/g,' [' + sca + '/' + scx + ']')
+            .replace(/n/g,' [' + scn + '/' + scx + ']');
     }
 }
 
