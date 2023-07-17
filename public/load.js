@@ -504,7 +504,7 @@ addelem('link', document.head, {
 loadCSS('common');
 // attach module to window so regular javascript can use it
 // if need be
-if (window) {
+if (typeof window != 'undefined') {
     window.logicPenguin = LP;
 }
 export default LP;
