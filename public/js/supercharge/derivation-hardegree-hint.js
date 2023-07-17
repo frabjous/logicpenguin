@@ -528,7 +528,7 @@ export default class hardegreeDerivationHint {
                 symbols.OR +
                 'O. Is that what you’re doing?';
         }
-        return regularHint();
+        return this.regularHint();
     }
 
     getAllAvailTo(line) {
