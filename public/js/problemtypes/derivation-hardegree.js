@@ -10,10 +10,9 @@ import DerivationExercise from './derivation-base.js';
 import { addelem, htmlEscape } from '../common.js';
 import tr from '../translate.js';
 
-//TODO; allow any rule set
-import rules from '../checkers/rules/hardegree-rules.js';
-
-// TODO: use schematic letters from notatiton, etc.
+// TODO: perhaps rebase on derivation-km-base.js and allow any ruleset?
+import getRules from '../checkers/rules/hardegree-rules.js';
+import notations from '../symbolic/notations.js';
 
 export default class DerivationHardegree extends DerivationExercise {
 
@@ -58,10 +57,15 @@ export default class DerivationHardegree extends DerivationExercise {
     }
 
     makeProblem(problem, options, checksave) {
+        const notationname = options?.notation ?? 'hardegree';
+        this.rules = getRules(notationname);
+        this.schematicLetters = notations[notationname].schematicLetters;
+        this.schematic = ((s) => (DerivationHardegree.schematic(s, this.schematicLetters)));
         super.makeProblem(problem, options, checksave);
     }
 
     makeRulePanel() {
+        const rules = this.rules;
         // create panel
         const rp = document.createElement("div");
         rp.classList.add("rulepanel","logicpenguin","minimized");
