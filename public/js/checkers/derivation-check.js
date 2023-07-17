@@ -636,6 +636,7 @@ export class formFit {
         this.rulename = rulename;
         this.form = form;
         this.Formula = Formula;
+        this.syntax = this.Formula.syntax;
         this.message = '';
         this.line = line;
         this.resultf = Formula.from(line.s);
