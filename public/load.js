@@ -350,6 +350,9 @@ LP.sampleGHDerivation = async function(parentid, problem = null,
     if (!("rulepanel" in options) && !partial) {
         options.rulepanel = true;
     }
+    if (!("notation" in options)) {
+        options.notation = 'hardegree';
+    }
     // if we have an answer (And not partial), then enable hints/cheats
     if (answer && !partial) {
         options.hints = true;
