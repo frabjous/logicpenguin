@@ -12,7 +12,7 @@
 
 // TODO? it is probably best for hints to be specific to this ruleset,
 // but I may need to change how it's loaded
-import rules from '../checkers/rules/hardegree-rules.js';
+import getRules from '../checkers/rules/hardegree-rules.js';
 import getFormulaClass from '../symbolic/formula.js';
 import { default as DerivationCheck, formFit } from '../checkers/derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';
@@ -118,8 +118,9 @@ export default class hardegreeDerivationHint {
         this.Formula = getFormulaClass(this.notationname);
         this.syntax = this.Formula.syntax;
         this.symbols = this.syntax.symbols;
+        this.rules = getRules(this.notationname);
         this.lastlinefilled = lastlinefilled;
-        this.dc = new DerivationCheck(this.notationname, rules,
+        this.dc = new DerivationCheck(this.notationname, this.rules,
             this.deriv, [], '', false, true);
         this.dc.analyze(this.deriv);
     }
@@ -127,6 +128,7 @@ export default class hardegreeDerivationHint {
     // checks if a certain formula string an be obtained by the rules
     // right away, either returns false or a hint about how to get it
     canIGet(s) {
+        const rules=this.rules;
         if (!this.workingline) { return false; }
         if (!("workingAvailLines" in this)) { return false; }
         const allAvail = this.workingAvailLines;
@@ -247,6 +249,7 @@ export default class hardegreeDerivationHint {
     fillRegLineHint() {
         const symbols = this.symbols;
         const Formula = this.Formula;
+        const rules = this.rules;
         // if the formula string is not filled in (but maybe justificaiton is)
         if (this.lastline.s == '') {
             const { nums, ranges, citedrules } = justParse(this.lastline.j);
@@ -1049,6 +1052,7 @@ export default class hardegreeDerivationHint {
     }
 
     ruleIsAvail(r) {
+        const rules = this.rules;
         // meinongian rules are never available
         if ("meinongian" in rules[r]) { return false; }
         // if useonlyrules set, it must be among them

@@ -6,7 +6,7 @@
 // hardegree-specific derivation checker, uses derivation-check.js    //
 ////////////////////////////////////////////////////////////////////////
 
-import rules from './rules/hardegree-rules.js';
+import getRules from './rules/hardegree-rules.js';
 import DerivationCheck from './derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';
 
@@ -18,14 +18,14 @@ if ((typeof process != "undefined") && (process?.appsettings?.defaultnotation)) 
 }
 
 // try to determine which lines are actual progress
-function progresslinesin(deriv, errors) {
+function progresslinesin(deriv, errors, rules) {
     let ttl = 0;
     // skip empty subderivations
     if (!("parts" in deriv)) { return 0; }
     for (let pt of deriv.parts) {
         // recursively apply to subdirevations
         if ("parts" in pt) {
-            ttl+= progresslinesin(pt, errors);
+            ttl+= progresslinesin(pt, errors, rules);
             if ("showline" in pt) {
                 pt = pt.showline;
             } else {
@@ -72,6 +72,7 @@ export default async function(
     // clone the answer to avoid messing it up when checking it
     const ansclone = JSON.parse(JSON.stringify(givenans));
     const notationname = (options?.notation ?? defaultnotation);
+    const rules = getRules(notationname);
     const checkResult = new DerivationCheck(
         notationname, rules, ansclone, question.prems, question.conc, partialcredit, true
     ).report();
@@ -85,8 +86,8 @@ export default async function(
         const initialportion = checkResult.pointsportion;
         portion = initialportion;
         // check number of good lines versus answer's good lines
-        const goalprogress = progresslinesin(answer, {});
-        const actualprogress = progresslinesin(givenans, checkResult.errors);
+        const goalprogress = progresslinesin(answer, {}, rules);
+        const actualprogress = progresslinesin(givenans, checkResult.errors, rules);
         const progportion = (actualprogress / goalprogress);
         // if mostly wrong, we give points on the number of good steps
         if (initialportion < 0.5) {

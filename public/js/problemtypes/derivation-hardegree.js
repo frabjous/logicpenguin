@@ -59,6 +59,7 @@ export default class DerivationHardegree extends DerivationExercise {
     makeProblem(problem, options, checksave) {
         const notationname = options?.notation ?? 'hardegree';
         this.rules = getRules(notationname);
+        this.ruleset = this.rules;
         this.schematicLetters = notations[notationname].schematicLetters;
         this.schematic = ((s) => (DerivationHardegree.schematic(s, this.schematicLetters)));
         super.makeProblem(problem, options, checksave);
@@ -218,7 +219,7 @@ export default class DerivationHardegree extends DerivationExercise {
                     });
                     const showblock = addelem('div', formblock, {
                         classes: ['ruledisplayshowline'],
-                        innerHTML: '<span>' + tr('SHOW') + ':</span> <span>' + htmlEscape(DerivationHardegree.schematic(thisform.conc)) + '</span>'
+                        innerHTML: '<span>' + tr('SHOW') + ':</span> <span>' + htmlEscape(this.schematic(thisform.conc)) + '</span>'
                     });
                     const mainsubderiv = addelem('div', formblock, {
                         classes: ['ruledisplaysubderiv'] });
@@ -229,7 +230,7 @@ export default class DerivationHardegree extends DerivationExercise {
                             for (const n of subderiv.needs) {
                                 addelem('div', mainsubderiv, {
                                     classes: [ 'ruledisplaydrop', 'symbolic' ],
-                                    innerHTML: htmlEscape(DerivationHardegree.schematic(n))
+                                    innerHTML: htmlEscape(this.schematic(n))
                                 });
                             }
                             break;
@@ -237,13 +238,13 @@ export default class DerivationHardegree extends DerivationExercise {
                         if (subderiv.allows) {
                             const assumptionblock = addelem('div', mainsubderiv, {
                                 classes: ['ruledisplayassumption', 'symbolic'],
-                                innerHTML: htmlEscape(DerivationHardegree.schematic(subderiv.allows))
+                                innerHTML: htmlEscape(this.schematic(subderiv.allows))
                             });
                         }
                         for (const n of subderiv.needs) {
                             const showl = addelem('div', mainsubderiv, {
                                 classes: ['ruledisplayshowline'],
-                                innerHTML: '<span>' + tr('SHOW') + ':</span> <span class="symbolic">'+ htmlEscape(DerivationHardegree.schematic(n)) + '</span>'
+                                innerHTML: '<span>' + tr('SHOW') + ':</span> <span class="symbolic">'+ htmlEscape(this.schematic(n)) + '</span>'
                             });
                             const innersbd = addelem('div', mainsubderiv, {
                                 classes: ['ruledisplaysubderiv','withblank', 'symbolic']});
@@ -271,13 +272,13 @@ export default class DerivationHardegree extends DerivationExercise {
                     const tre = addelem('tr', argtblb, {});
                     const pcell = addelem('td', tre, {
                         classes: ['ruledisplaypremise', 'symbolic'],
-                        innerHTML: htmlEscape(DerivationHardegree.schematic(prem))
+                        innerHTML: htmlEscape(this.schematic(prem))
                     });
                 }
                 const concrow = addelem('tr', argtblb, {});
                 const conccell = addelem('td', concrow, {
                     classes: ['ruledisplayconclusion','symbolic'],
-                    innerHTML: htmlEscape(DerivationHardegree.schematic(thisform.conc))
+                    innerHTML: htmlEscape(this.schematic(thisform.conc))
                 });
                 if (thisform.mustbenew) {
                     addelem('div', formblock, {
@@ -289,8 +290,6 @@ export default class DerivationHardegree extends DerivationExercise {
         }
         return rp;
     }
-
-    ruleset = rules;
 
     static schematic(s, letters) {
         const lta = [...letters];
@@ -308,11 +307,11 @@ export default class DerivationHardegree extends DerivationExercise {
         const scx = lta[2];
         const sca = lta[3];
         const scn = lta[4];
-        return s.replace(/Ax/g, scA+scx)
+        return s.replace(/Ax/g, scA + scx)
             .replace(/A/g, scA)
-            .replace(/B/g,scB)
-            .replace(/C/g,scC)
-            .replace(/x/g,scx)
+            .replace(/B/g, scB)
+            .replace(/C/g, scC)
+            .replace(/x/g, scx)
             .replace(/a/g,' [' + sca + '/' + scx + ']')
             .replace(/n/g,' [' + scn + '/' + scx + ']');
     }
