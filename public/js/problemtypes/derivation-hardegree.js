@@ -303,8 +303,8 @@ export default class DerivationHardegree extends DerivationExercise {
     static schematic(s, letters) {
         const lta = [...letters];
         const scA = lta[0];
-        const scB = 'ℬ';
-        const scC = '𝒞';
+        let scB = 'ℬ';
+        let scC = '𝒞';
         if (scA == 'p') {
             scB = 'q';
             scC = 'r';
