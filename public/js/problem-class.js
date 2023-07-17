@@ -327,18 +327,47 @@ export default class LogicPenguinProblem extends HTMLElement {
         let problem = {};
         let answer = null;
         let restore = null;
-        const options = {};
+        let options = {};
+        // if options set, use them as options
+        if ("options" in opts) {
+            options = opts.options;
+        }
         for (const opt in opts) {
-            if (opt=='parentid') {
+            if (opt == 'parentid') {
                 parentid = opts.parentid;
                 continue;
             }
-            if (opt=='parent') {
-                if (typeof opts.parent == != 'object') { continue; }
+            if (opt == 'parent') {
+                if (typeof opts.parent != 'object') { continue; }
+                if (!document?.getElementById) { continue; }
                 if (!opts?.parent?.id || opts.parent.id == '') {
-
+                    let newid = randomString();
+                    while (document.getElementById(newid)) {
+                        newid = randomString();
+                    }
+                    opts.parent.id = newid;
+                    parentid = newid;
                 }
+                continue;
             }
+            if (opt == 'answer') {
+                answer = opts.answer;
+                continue;
+            }
+            if (opt == 'problem') {
+                problem = opts.problem;
+                continue;
+            }
+            if (opt == 'restore') {
+                restore = opts.restore;
+                continue;
+            }
+            // don't overwrite explicit options
+            if (opt in options) {
+                continue;
+            }
+            // otherwise, pass to options
+            options[opt] = opts[opts];
         }
         return [ parentid, problem, answer, restore, options ];
     }

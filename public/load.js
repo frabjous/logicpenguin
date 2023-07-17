@@ -45,7 +45,7 @@ LP.embed = async function(opts) {
         console.error('Logic penguin embedding error: no problemtype specified.');
         return false;
     }
-    const = problemtype = opts.problemtype;
+    const problemtype = opts.problemtype;
     if (!LP.problemTypes[problemtype]) {
         LP.loadCSS(problemtype);
         try {
