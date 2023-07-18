@@ -334,13 +334,22 @@ LP.sampleComboProb = async function(
     );
 }
 
+
+// here for legacy reasons and compatibility with my old lecture notes -KK
 LP.sampleFTT = async function(
     parentid, problem, restore = null, options = {}
 ) {
-    let f = Formula.from(problem);
+    await LP.embed({
+        parentid: parentid,
+        problem: problem,
+        restore: restore,
+        options: options,
+        notation: 'hardegree'
+    });
+/*    let f = Formula.from(problem);
     let answer = formulaTable(f);
     await LP.sampleProblem(parentid, 'formula-truth-table',
-        problem, answer, restore, options);
+        problem, answer, restore, options); */
     if (options?.nonumchooser) {
         let nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
         if (nc) { nc.classList.add("hidden"); }
