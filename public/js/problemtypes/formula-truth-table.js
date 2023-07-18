@@ -8,6 +8,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 import TruthTable from './truth-tables.js';
+import LogicPenguinProblem from '../problem-class.js';
 import MultipleChoiceExercise from './multiple-choice.js';
 import { addelem } from '../common.js';
 import getFormulaClass from '../symbolic/formula.js';
@@ -153,7 +154,7 @@ export default class FormulaTruthTable extends TruthTable {
 
     static sampleProblemOpts(opts) {
         let [parentid, problem, answer, restore, options] =
-            super(opts);
+            LogicPenguinProblem.sampleProblemOpts(opts);
         if ((answer === null) && ("notation" in options)) {
             const Formula = getFormulaClass(options.notation);
             const f = Formula.from(problem);

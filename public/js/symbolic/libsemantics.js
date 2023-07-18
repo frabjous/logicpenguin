@@ -84,9 +84,9 @@ libtf.evaluate = function(wff, interp, notationname) {
 // is a contradiction or tautology
 export function formulaTable(fml, notationname) {
     const interps = libtf.allinterps([fml]);
-    const taut = true;
-    const contra = true;
-    const opspot = 0;
+    let taut = true;
+    let contra = true;
+    let opspot = 0;
     const rows = interps.map( (interp) => {
         const e = libtf.evaluate(fml, interp, notationname);
         if (e.tv) { contra = false; } else { taut = false; }

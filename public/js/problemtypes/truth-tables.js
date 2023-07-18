@@ -417,6 +417,8 @@ export default class TruthTable extends LogicPenguinProblem {
         }
         // restore column checkboxes
         for (let c = 0; c < tdata.colhls.length; c++) {
+            console.log('tcc',table.colcheckboxes);
+            console.log('tdch',tdata.colhls);
             table.colcheckboxes[c].checked = tdata.colhls[c];
         }
     }

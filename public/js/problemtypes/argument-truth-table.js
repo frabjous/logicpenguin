@@ -8,6 +8,7 @@
 /////////////////////////////////////////////////////////////////////////
 
 import TruthTable from './truth-tables.js';
+import LogicPenguinProblem from '../problem-class.js';
 import MultipleChoiceExercise from './multiple-choice.js';
 import { addelem } from '../common.js';
 import getFormulaClass from '../symbolic/formula.js';
@@ -188,12 +189,12 @@ export default class ArgumentTruthTable extends TruthTable {
 
     static sampleProblemOpts(opts) {
         let [parentid, problem, answer, restore, options] =
-            super(opts);
+            LogicPenguinProblem.sampleProblemOpts(opts);
         if ((answer === null) && ("notation" in options)) {
             const Formula = getFormulaClass(options.notation);
-            const fa = Formula.from(problem.l);
-            const fb = Formula.from(problem.r);
-            answer = equivTables(fa, fb, options.notation);
+            const pwffs = problem.prems.map((p) => (Formula.from(p)));
+            const cwff = Formula.from(problem.conc);
+            answer = argumentTables(pwffs, cwff, options.notation);
         }
         return [parentid, problem, answer, restore, options];
     }
