@@ -14,6 +14,8 @@ import TranslationExercise from './symbolic-translation.js';
 import { addelem, htmlEscape } from '../common.js';
 import { getProseArgument } from '../ui/prose-argument.js';
 import tr from '../translate.js';
+import getFormulaClass from '../symbolic/formula.js';
+import { comboTables } from '../symbolic/libsemantics.js';
 
 export default class ComboTransTruthTable extends LogicPenguinProblem {
 
@@ -384,6 +386,28 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         this.ttProb.buttonDiv.style.display = "none";
         this.hasTable = true;
         this.everHadTable = true;
+    }
+
+    static sampleProblemOpts(opts) {
+        let [parentid, problem, answer, restore, options] =
+            LogicPenguinProblem.sampleProblemOpts(opts);
+
+        if ((answer === null) && ("notation" in options) &&
+            ("probinfo" in options) && ("index" in options.probinfo) &&
+            ("translations" in options.probinfo)
+        ) {
+            const probinfo = options.probinfo;
+            const Formula = getFormulaClass(options.notation);
+            const wffs = probinfo.translations.map((p) => (Formula.from(p)));
+            const tabdata = comboTables(wffs, probinfo.index, options.notation);
+            answer = {
+                index: probinfo.index,
+                translations: probinfo.translations,
+                tables: tabdata[0],
+                valid: tabdata[1]
+            }
+        }
+        return [parentid, problem, answer, restore, options];
     }
 
 }
