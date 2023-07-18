@@ -13,7 +13,7 @@ import tr from './js/translate.js';
 import { formulaTable, equivTables, argumentTables, comboTables } from './js/symbolic/libsemantics.js';
 import Formula from './js/symbolic/formula.js';
 */
-let LP = {};
+const LP = {};
 
 // attach convenience functions for export
 LP.byid = byid;
@@ -38,7 +38,7 @@ LP.loadCSS = function(name) {
         href: LP.url + '/stylesheets/' + name + '.css'
     });
 }
-let loadCSS = LP.loadCSS;
+const loadCSS = LP.loadCSS;
 
 LP.embed = async function(opts) {
     if (!("problemtype" in opts)) {
@@ -49,7 +49,7 @@ LP.embed = async function(opts) {
     if (!LP.problemTypes[problemtype]) {
         LP.loadCSS(problemtype);
         try {
-            let imported = await import(LP.url +
+            const imported = await import(LP.url +
                 '/js/problemtypes/' + problemtype + '.js');
             LP.problemTypes[problemtype] = imported.default;
         } catch(err) {
@@ -67,7 +67,7 @@ LP.embed = async function(opts) {
 LP.makeProblems = async function(parentid, exerciseinfo,
     exerciseproblems, exerciseanswers, progressbar = true) {
     // ensure we have an appropriate element; clear it out
-    let problemsdiv = byid(parentid);
+    const problemsdiv = byid(parentid);
     if (!problemsdiv) {
         problemsdiv = byid('problemsdiv');
     }
@@ -86,7 +86,7 @@ LP.makeProblems = async function(parentid, exerciseinfo,
     }
 
     // top message div
-    let pagehdr = byid("pageheader");
+    const pagehdr = byid("pageheader");
     if (pagehdr && !pagehdr.infobox && !exerciseinfo.suppressinfobox) {
         pagehdr.infobox = makeInfobox();
         pagehdr.append(pagehdr.infobox);
@@ -105,17 +105,17 @@ LP.makeProblems = async function(parentid, exerciseinfo,
     for (let probsetnum = 0; probsetnum < exerciseinfo.problemsets.length;
         probsetnum++) {
         // read set info
-        let probsetinfo = exerciseinfo.problemsets[probsetnum];
-        let probset = exerciseproblems[probsetnum];
+        const probsetinfo = exerciseinfo.problemsets[probsetnum];
+        const probset = exerciseproblems[probsetnum];
         if (!probset || !probsetinfo || !probsetinfo.problemtype) {
             return false;
         }
-        let problemtype = probsetinfo.problemtype;
+        const problemtype = probsetinfo.problemtype;
         // load problemtype if need be
         if (!LP.problemTypes[problemtype]) {
             LP.loadCSS(problemtype);
             try {
-                let imported = await import(LP.url +
+                const imported = await import(LP.url +
                     '/js/problemtypes/' + problemtype + '.js');
                 LP.problemTypes[problemtype] = imported.default;
             } catch(err) {
@@ -128,7 +128,7 @@ LP.makeProblems = async function(parentid, exerciseinfo,
             }
         }
         // create problem set div and header
-        let probsetdiv = addelem('div', problemsdiv, {
+        const probsetdiv = addelem('div', problemsdiv, {
             classes: [ 'problemset' ],
             id: 'probset' + probsetnum.toString(),
             myprobsetnumber: probsetnum
@@ -140,10 +140,10 @@ LP.makeProblems = async function(parentid, exerciseinfo,
             });
         }
         if ("lecturelink" in probsetinfo) {
-            let d = addelem('div', probsetdiv, {
+            const d = addelem('div', probsetdiv, {
                 classes: ['lecturelink']
             });
-            let l = addelem('a', d, {
+            const l = addelem('a', d, {
                 href: probsetinfo.lecturelink,
                 innerHTML: tr('lecture notes on this material'),
                 target: '_blank'
@@ -178,14 +178,21 @@ LP.makeProblems = async function(parentid, exerciseinfo,
             checksave = 'check';
         }
         // loop over problems
-        let ctr=0;
+        let ctr = 0;
         for (const problem of probset) {
             const problemitem = addelem('li', probsetdiv.problemlist, {});
-            let options = probsetinfo.options ?? {};
+            const options = probsetinfo.options ?? {};
             const problemelem = LP.makeProblemElem(
                 probsetinfo.problemtype, problem, probsetinfo.points,
                 options, checksave
             );
+            if (!problemelem) {
+                console.log("ptype", probsetinfo.problemtype);
+                console.log("problem", problem);
+                console.log("points", probsetinfo.points);
+                console.log("options", options);
+                console.log("checksavE", checksave);
+            }
             if (!problemitem) { return false; }
             problemitem.append(problemelem);
             problemelem.myprobsetnumber = probsetnum;
@@ -218,7 +225,7 @@ LP.makeProblems = async function(parentid, exerciseinfo,
 LP.makeProblemElem = function(probtype, problem, maxpoints, options,
         checksave) {
     if (!probtype || !problem) { return false; }
-    let probelement = document.createElement(probtype);
+    const probelement = document.createElement(probtype);
     if (probelement.makeProblem) {
         probelement.makeProblem(problem, options, checksave);
     }
@@ -266,12 +273,12 @@ LP.sampleATT = async function(
         notation: 'hardegree'
     });
     if (options?.nonumchooser) {
-        let nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
+        const nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
         if (nc) { nc.classList.add("hidden"); }
     }
     if (options?.hidecheckboxes) {
-        let ii = byid(parentid).getElementsByTagName("input");
-        for (let i of ii) {
+        const ii = byid(parentid).getElementsByTagName("input");
+        for (const i of ii) {
             if (i.type == "checkbox") { i.classList.add("hidden"); }
         }
     }
@@ -310,12 +317,12 @@ LP.sampleETT = async function(
         notation: 'hardegree'
     });
     if (options?.nonumchooser) {
-        let nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
+        const nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
         if (nc) { nc.classList.add("hidden"); }
     }
     if (options?.hidecheckboxes) {
-        let ii = byid(parentid).getElementsByTagName("input");
-        for (let i of ii) {
+        const ii = byid(parentid).getElementsByTagName("input");
+        for (const i of ii) {
             if (i.type == "checkbox") { i.classList.add("hidden"); }
         }
     }
@@ -338,85 +345,51 @@ LP.sampleFTT = async function(
     await LP.sampleProblem(parentid, 'formula-truth-table',
         problem, answer, restore, options); */
     if (options?.nonumchooser) {
-        let nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
+        const nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
         if (nc) { nc.classList.add("hidden"); }
     }
     if (options?.hidecheckboxes) {
-        let ii = byid(parentid).getElementsByTagName("input");
-        for (let i of ii) {
+        const ii = byid(parentid).getElementsByTagName("input");
+        for (const i of ii) {
             if (i.type == "checkbox") { i.classList.add("hidden"); }
         }
     }
 };
 
+// legacy reasons again
 LP.sampleGHDerivation = async function(parentid, problem = null,
     answer = null, restore = null, options = {}) {
-    // if no problem, try to reconstruct from answer
-    if ((problem === null) && answer) {
-        problem = { prems: [], conc: '' };
-        // go through parts of main derivation in answer
-        for (let pt of answer?.parts) {
-            // put premises in problem.prems
-            if (("j" in pt) && (pt.j == 'Pr') && ("s" in pt)) {
-                problem.prems.push(pt.s);
-            }
-            if (("parts" in pt) && ("showline" in pt) &&
-                ("s" in pt.showline)) {
-                problem.conc = pt.showline.s;
-                break;
-            }
-        }
-    }
-    // partial problems treated differently
-    let partial = (answer && answer.partial);
-    if (!("rulepanel" in options) && !partial) {
-        options.rulepanel = true;
-    }
-    if (!("notation" in options)) {
-        options.notation = 'hardegree';
-    }
-    // if we have an answer (And not partial), then enable hints/cheats
-    if (answer && !partial) {
-        options.hints = true;
-        options.checklines = true;
-        options.cheat = true;
-    } else {
-        options.cheat = false;
-    }
-    // if lowercase letter in conclusion, then it's predicate logic
-    if (/[a-z]/.test( problem.conc )) {
-        options.pred = true;
-    } else {
-        options.lazy = true;
-    }
-    // if partial, restore what was given as "answer"
-    if (partial && (restore === null) && answer) {
-        restore = answer;
-    }
-    await LP.sampleProblem(parentid, 'derivation-hardegree',
-        problem, answer, restore, options);
-    // hide ui elements for partial
-    if (partial) {
-        let pardiv = byid(parentid);
-        for (let sdb of pardiv.getElementsByClassName("subderivbuttons")) {
+    await LP.embed({
+        parentid: parentid,
+        problem: problem,
+        answer: answer,
+        restore: restore,
+        options: options,
+        notation: 'hardegree',
+        problemtype: 'derivation-hardegree'
+    });
+    if (answer && answer?.partial) {
+        const pardiv = byid(parentid);
+        for (const sdb of pardiv.getElementsByClassName("subderivbuttons")) {
             sdb.style.display = "none";
         }
-        for (let bd of pardiv.getElementsByClassName("buttondiv")) {
+        for (const bd of pardiv.getElementsByClassName("buttondiv")) {
             bd.style.display = "none";
         }
-        for (let dlb of pardiv.getElementsByClassName("derivlinebuttons")) {
+        for (const dlb of pardiv.getElementsByClassName("derivlinebuttons")) {
             dlb.style.display = "none";
         }
-        for (let i of pardiv.getElementsByTagName("input")) {
+        for (const i of pardiv.getElementsByTagName("input")) {
             i.readOnly = true;
         }
-        for (let indic of pardiv.getElementsByClassName("problemstatusindicator")) {
+        for (const indic of pardiv.getElementsByClassName("problemstatusindicator")) {
             indic.style.display = "none";
         }
-
     }
 }
 
+// core function for creating embedded problems; LP.embed is a wrapper
+// around this, basically
 LP.sampleProblem = async function(
     parentid,
     problemtype,
@@ -425,10 +398,10 @@ LP.sampleProblem = async function(
     restore = null,
     options = {}
 ) {
-    let pardiv = byid(parentid);
+    const pardiv = byid(parentid);
     if (!pardiv) { return; }
     pardiv.classList.add("logicpenguin");
-    let exerciseinfo = {
+    const exerciseinfo = {
         startnum: 1,
         saveable: false,
         servergraded: false,
@@ -444,7 +417,7 @@ LP.sampleProblem = async function(
             manallygraded: false
         }]
     }
-    let exerciseproblems = [[problem]];
+    const exerciseproblems = [[problem]];
     let exerciseanswers = null;
     if (answer === false) {
         exerciseanswers = [[false]];
@@ -457,7 +430,7 @@ LP.sampleProblem = async function(
         exerciseproblems, exerciseanswers, false);
     pardiv.classList.add("sampleproblem");
     if (restore !== null) {
-        let prob = pardiv.getElementsByTagName(problemtype)[0];
+        const prob = pardiv.getElementsByTagName(problemtype)[0];
         prob.restoreAnswer(restore);
     }
 }
@@ -477,6 +450,7 @@ LP.sampleTrans = async function(
     });
 }
 
+// adds hints, cheats, to problem, if it is appropriate
 LP.superCharge = async function(problemtype, probelem) {
     if (!LP.superChargers[problemtype]) {
         try {

@@ -139,6 +139,9 @@ export default class TranslationExercise extends LogicPenguinProblem {
         if ((!("nofalsum" in options)) || (options.nofalsum === null)) {
             options.nofalsum = true;
         }
+        if (!options.pred && (!("lazy" in options) || (options.lazy === null))) {
+            options.lazy = true;
+        }
         return [parentid, problem, answer, restore, options];
     }
 

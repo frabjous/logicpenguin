@@ -6,6 +6,7 @@
 // Kalish-Montague style derivations using Hardegree's rule set       //
 ////////////////////////////////////////////////////////////////////////
 
+import LogicPenguinProblem from '../problem-class.js';
 import DerivationExercise from './derivation-base.js';
 import { addelem, htmlEscape } from '../common.js';
 import tr from '../translate.js';
@@ -324,6 +325,69 @@ export default class DerivationHardegree extends DerivationExercise {
             .replace(/a/g,' [' + sca + '/' + scx + ']')
             .replace(/n/g,' [' + scn + '/' + scx + ']');
     }
+
+    static sampleProblemOpts(opts) {
+        let [parentid, problem, answer, restore, options] =
+            LogicPenguinProblem.sampleProblemOpts(opts);
+
+        // if no problem, try to reconstruct from answer
+        if ((problem === null) && answer) {
+            problem = { prems: [], conc: '' };
+            // go through parts of main derivation in answer
+            for (const pt of answer?.parts) {
+                // put premises in problem.prems
+                if (("j" in pt) && (pt.j == 'Pr') && ("s" in pt)) {
+                    problem.prems.push(pt.s);
+                }
+                if (("parts" in pt) && ("showline" in pt) &&
+                    ("s" in pt.showline)) {
+                    problem.conc = pt.showline.s;
+                    break;
+                }
+            }
+        }
+
+        // use hardegree notation if not set
+        if (!("notation" in options)) {
+            options.notation = 'hardegree';
+        }
+
+        // partial problems treated differently
+        const partial = (answer && answer?.partial);
+        if (!("rulepanel" in options) && !partial) {
+            options.rulepanel = true;
+        }
+        // if we have an answer (And not partial), then enable hints/cheats
+        if (answer && !partial) {
+            if ((!("hints" in options)) || (options.hints === null)) {
+                options.hints = true;
+            }
+            if ((!("checklines" in options)) || (options.checklines === null)) {
+                options.checklines = true;
+            }
+            if ((!("cheat" in options)) || (options.cheat === null)) {
+                options.cheat = true;
+            } else {
+                options.cheat = false;
+            }
+        } else {
+            options.cheat = false;
+        }
+        // if lowercase letter in conclusion, then it's predicate logic
+        if (((!("pred" in options)) || (options.pred === null)) &&
+            (/[a-z]/.test( problem.conc ))) {
+            options.pred = true;
+        } else {
+            options.lazy = true;
+        }
+        // if partial, restore what was given as "answer"
+        if (partial && (restore === null) && answer) {
+            restore = answer;
+        }
+
+        return [parentid, problem, answer, restore, options];
+    }
+
 }
 
 customElements.define("derivation-hardegree", DerivationHardegree);
