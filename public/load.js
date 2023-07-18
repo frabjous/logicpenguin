@@ -275,18 +275,18 @@ LP.sampleATT = async function(
     }
 };
 
+// again, here for legacy reasons, try to use embed instead
 LP.sampleETT = async function(
     parentid, a, b, restore = null, options = {}
 ) {
-    let fa = Formula.from(a);
-    let fb = Formula.from(b);
-    let answer = equivTables(fa, fb);
-    let problem = {
-        l: fa.normal,
-        r: fb.normal
-    }
-    await LP.sampleProblem(parentid, 'equivalence-truth-table',
-        problem, answer, restore, options);
+    const problem = { l: a, r: b };
+    await LP.embed({
+        parentid: parentid,
+        problem: problem,
+        restore: restore,
+        options: options,
+        notation: 'hardegree'
+    });
     if (options?.nonumchooser) {
         let nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
         if (nc) { nc.classList.add("hidden"); }
@@ -459,8 +459,12 @@ LP.sampleProblem = async function(
     }
     let exerciseproblems = [[problem]];
     let exerciseanswers = null;
-    if (answer !== null) {
-        exerciseanswers = [[answer]];
+    if (answer === false) {
+        exerciseanswers = [[false]];
+    } else {
+        if (answer !== null) {
+            exerciseanswers = [[answer]];
+        }
     }
     await LP.makeProblems(parentid, exerciseinfo,
         exerciseproblems, exerciseanswers, false);
