@@ -59,8 +59,8 @@ LP.embed = async function(opts) {
         }
     }
     const [ parentid, problem, answer, restore, options ] =
-        LP.problemTypes[problemtype].sampleProbOpts(opts);
-    await LT.sampleProblem(parentid, problemtype, problem, answer,
+        LP.problemTypes[problemtype].sampleProblemOpts(opts);
+    await LP.sampleProblem(parentid, problemtype, problem, answer,
         restore, options);
 }
 

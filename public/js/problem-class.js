@@ -354,7 +354,7 @@ export default class LogicPenguinProblem extends HTMLElement {
                 answer = opts.answer;
                 continue;
             }
-            if (opt == 'problem') {
+            if (opt == 'problem' || opt == 'question') {
                 problem = opts.problem;
                 continue;
             }
