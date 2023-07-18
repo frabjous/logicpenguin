@@ -10,17 +10,27 @@ import notations from '../../symbolic/notations.js';
 
 const opnames = ['NOT','OR','AND','IFF','IFTHEN','FORALL','EXISTS','FALSUM'];
 
-const commonForallxRules = {
-    "R"   : { forms: [ { prems: ["A"], conc: "A" } ] },
-    "&I"  : { forms: [ { prems: ["A", "B"], conc: "A & B" } ] },
-    "&E"  : { forms: [ { prems: ["A & B"], conc: "A" }, { prems: ["A & B"], conc: "B" } ] },
+const cambridgeForallxRules = {
+    "∧I"  : { forms: [ { prems: ["A", "B"], conc: "A ∧ B" } ] },
+    "∧E"  : { forms: [ { prems: ["A ∧ B"], conc: "A" }, { prems: ["A ∧ B"], conc: "B" } ] },
     "∨I"  : { forms: [ { prems: ["A"], conc: "A ∨ B" }, { prems: ["A"], conc: "B ∨ A" } ] },
-    "∨E"  : { forms: [ { prems: ["A ∨ B", "~A"], conc: "B" }, { prems: ["A ∨ B", "~B"], conc: "A" } ] },
-    "→I"  : { forms: [ { conc: "A → B", subderivs: [ { "needs": ["B"], "allows": "A" } ] } ] },
-    "→E"  : { forms: [ { prems: ["A → C", "A"], conc: "C" }, { prems: ["A → C", "~C"], conc: "~A" } ] }, // might not allow MT?
-    "↔I"  : { forms: [ { conc: "A ↔ B", subderivs: [ { "needs": ["B"], "allows": "A" }, { "needs": ["A"], "allows": "B" }  ] } ] },
+    "∨E"  : { forms: [ { conc: "C", prems: ["A ∨ B"], subderivs: [ { wants: ["C"], allows: "A" }, { wants: ["C"], allows: "B" }  ] } ] },
+    "→I"  : { forms: [ { conc: "A → B", subderivs: [ { needs: ["B"], "allows": "A" } ] } ] },
+    "→E"  : { forms: [ { prems: ["A → C", "A"], conc: "C" } ] }, // might not allow MT?
+    "↔I"  : { forms: [ { conc: "A ↔ B", subderivs: [ { needs: ["B"], "allows": "A" }, { "needs": ["A"], "allows": "B" }  ] } ] },
+    "↔E"  : { forms: [ { prems: ["A ↔ B", "A"], conc: "B" } , { prems: ["A ↔ B", "B"], conc: "A" } ] },
+    "Ass" : { assumptionrule: true, hide: true },
+    "Pr"  : { premiserule: true, hide: true },
 }
-
+const magnusRules = {
+    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "R"   : { forms: [ { prems: ["A"], conc: "A" } ] },
+    "MT"  : { prems: ["A → C", "¬C"], conc: "¬A" },
+    "HS"  : { prems: ["A → B", "B → C"], conc: "A → C" },
+    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"],  conc: "C" } ] },
+    "¬I"  : { showrule: true, forms: [ { conc: "¬A", subderivs: [ { "needs": ["B","¬B"], "allows": "A" } ] } ] },
+    "¬E"  : { showrule: true, forms: [ { conc: "A", subderivs: [ { "needs": ["B","¬B"], "allows": "¬A" } ] } ] },
+}
 
 const hardegreeRules = {
     "→I"  : { meinongian: true, hint: "To establish a →-statement, use CD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
