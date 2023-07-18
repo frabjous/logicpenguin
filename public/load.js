@@ -478,25 +478,19 @@ LP.sampleProblem = async function(
     }
 }
 
+// for legacy reasons; use embed directly
 LP.sampleTrans = async function(
     parentid,
     problem,
-    answer
+    answer = null
 ) {
-    // predicate just in case lower case in answer
-    let ispred = (/[a-z]/.test(answer));
-    return await LP.sampleProblem(
-        parentid,
-        'symbolic-translation',
-        problem,
-        answer,
-        null,
-        {
-            pred: ispred,
-            hints: true,
-            nofalsum: true 
-        }
-    )
+    return await LP.embed({
+        parentid: parentid,
+        problem: problem,
+        problemtype: 'symbolic-translation',
+        notation: 'hardegree',
+        answer: answer
+    });
 }
 
 LP.superCharge = async function(problemtype, probelem) {

@@ -126,6 +126,22 @@ export default class TranslationExercise extends LogicPenguinProblem {
             this.setComment('');
         }
     }
+
+    static sampleProblemOpts(opts) {
+        let [parentid, problem, answer, restore, options] =
+            LogicPenguinProblem.sampleProblemOpts(opts);
+        if ((!("pred" in options)) || (options.pred === null)) {
+            options.pred = (/[a-z]/.test(answer));
+        }
+        if ((!("hints" in options)) || (options.hints === null)) {
+            options.hints = true;
+        }
+        if ((!("nofalsum" in options)) || (options.nofalsum === null)) {
+            options.nofalsum = true;
+        }
+        return [parentid, problem, answer, restore, options];
+    }
+
 }
 
 customElements.define("symbolic-translation", TranslationExercise);
