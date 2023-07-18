@@ -367,7 +367,7 @@ export default class LogicPenguinProblem extends HTMLElement {
                 continue;
             }
             // otherwise, pass to options
-            options[opt] = opts[opts];
+            options[opt] = opts[opt];
         }
         return [ parentid, problem, answer, restore, options ];
     }

@@ -157,6 +157,9 @@ export default class TruthTable extends LogicPenguinProblem {
     // basic set up for truth table problem
     makeProblem(problem, options, checksave) {
         this.options = options;
+        if ("notation" in this.options) {
+            this.notation = this.options.notation;
+        }
         this.checksave = checksave;
 
         // label to be shown prior to table
@@ -416,9 +419,14 @@ export default class TruthTable extends LogicPenguinProblem {
             }
         }
         // restore column checkboxes
-        for (let c = 0; c < tdata.colhls.length; c++) {
+        // TODO: get rid of this
+        if (tdata.colhls.length != table.colcheckboxes.length) {
             console.log('tcc',table.colcheckboxes);
             console.log('tdch',tdata.colhls);
+            this.style.backgroundColor = 'yellow';
+            console.log('not',this.options.notation);
+        }
+        for (let c = 0; c < tdata.colhls.length; c++) {
             table.colcheckboxes[c].checked = tdata.colhls[c];
         }
     }
