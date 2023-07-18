@@ -2,6 +2,12 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
+/////////////////////////// load.js ////////////////////////////////////////
+// this is the main public interface for logic penguin; it exports the LP //
+// object, loads necessary stylesheets and other scripts, etc. It is used //
+// both by exercise pages, and those embedding problems elsewhere         //
+////////////////////////////////////////////////////////////////////////////
+
 ////////////
 // SETUP //
 //////////
@@ -9,10 +15,6 @@
 import {addelem, byid, url, makeInfobox, infoboxMsg} from './js/common.js';
 import makeProgressBar from './js/ui/progress-bar.js';
 import tr from './js/translate.js';
-/*
-import { formulaTable, equivTables, argumentTables, comboTables } from './js/symbolic/libsemantics.js';
-import Formula from './js/symbolic/formula.js';
-*/
 const LP = {};
 
 // attach convenience functions for export
@@ -328,7 +330,8 @@ LP.sampleETT = async function(
     }
 };
 
-// once again here for legacy reasons and compatibility with my old lecture notes -KK
+// once again here for legacy reasons and compatibility
+// with my old lecture notes
 LP.sampleFTT = async function(
     parentid, problem, restore = null, options = {}
 ) {
