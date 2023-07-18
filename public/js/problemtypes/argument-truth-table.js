@@ -10,6 +10,8 @@
 import TruthTable from './truth-tables.js';
 import MultipleChoiceExercise from './multiple-choice.js';
 import { addelem } from '../common.js';
+import getFormulaClass from '../symbolic/formula.js';
+import { argumentTables } from '../symbolic/libsemantics.js';
 
 export default class ArgumentTruthTable extends TruthTable {
 
@@ -182,6 +184,18 @@ export default class ArgumentTruthTable extends TruthTable {
         if (("rowdiff" in ind) && (ind.rowdiff !== 0)) {
             this.rnchoosediv.classList.add("badnumber");
         }
+    }
+
+    static sampleProblemOpts(opts) {
+        let [parentid, problem, answer, restore, options] =
+            super(opts);
+        if ((answer === null) && ("notation" in options)) {
+            const Formula = getFormulaClass(options.notation);
+            const fa = Formula.from(problem.l);
+            const fb = Formula.from(problem.r);
+            answer = equivTables(fa, fb, options.notation);
+        }
+        return [parentid, problem, answer, restore, options];
     }
 
 }

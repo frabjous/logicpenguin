@@ -251,37 +251,15 @@ LP.restoreProblemStates = function(restoredata) {
     }
 }
 
+// here for legacy reasons with my own lecture notes; use "embed" instead
+// directly if possible
 LP.sampleATT = async function(
     parentid, prems, conc, restore = null, options = {}
 ) {
-    let pwffs = prems.map((p) => (Formula.from(p)));
-    let cwff = Formula.from(conc);
-    let answer = argumentTables(pwffs, cwff);
-    let problem = {
-        prems: pwffs.map((f) => (f.normal)),
-        conc: cwff.normal
-    }
-    await LP.sampleProblem(parentid, 'argument-truth-table',
-        problem, answer, restore, options);
-    if (options?.nonumchooser) {
-        let nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
-        if (nc) { nc.classList.add("hidden"); }
-    }
-    if (options?.hidecheckboxes) {
-        let ii = byid(parentid).getElementsByTagName("input");
-        for (let i of ii) {
-            if (i.type == "checkbox") { i.classList.add("hidden"); }
-        }
-    }
-};
-
-// again, here for legacy reasons, try to use embed instead
-LP.sampleETT = async function(
-    parentid, a, b, restore = null, options = {}
-) {
-    const problem = { l: a, r: b };
+    const problem = { prems: prems, conc: conc };
     await LP.embed({
         parentid: parentid,
+        problemtype: 'argument-truth-table',
         problem: problem,
         restore: restore,
         options: options,
@@ -334,8 +312,32 @@ LP.sampleComboProb = async function(
     );
 }
 
+// again, here for legacy reasons, try to use embed directly instead
+LP.sampleETT = async function(
+    parentid, a, b, restore = null, options = {}
+) {
+    const problem = { l: a, r: b };
+    await LP.embed({
+        parentid: parentid,
+        problemtype: 'equivalence-truth-table',
+        problem: problem,
+        restore: restore,
+        options: options,
+        notation: 'hardegree'
+    });
+    if (options?.nonumchooser) {
+        let nc = byid(parentid).getElementsByClassName("rownumchooser")?.[0];
+        if (nc) { nc.classList.add("hidden"); }
+    }
+    if (options?.hidecheckboxes) {
+        let ii = byid(parentid).getElementsByTagName("input");
+        for (let i of ii) {
+            if (i.type == "checkbox") { i.classList.add("hidden"); }
+        }
+    }
+};
 
-// here for legacy reasons and compatibility with my old lecture notes -KK
+// once again here for legacy reasons and compatibility with my old lecture notes -KK
 LP.sampleFTT = async function(
     parentid, problem, restore = null, options = {}
 ) {
@@ -344,6 +346,7 @@ LP.sampleFTT = async function(
         problem: problem,
         restore: restore,
         options: options,
+        problemtype: 'formula-truth-table',
         notation: 'hardegree'
     });
 /*    let f = Formula.from(problem);
