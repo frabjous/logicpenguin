@@ -12,24 +12,88 @@ const opnames = ['NOT','OR','AND','IFF','IFTHEN','FORALL','EXISTS','FALSUM'];
 
 const cambridgeForallxRules = {
     "∧I"  : { forms: [ { prems: ["A", "B"], conc: "A ∧ B" } ] },
-    "∧E"  : { forms: [ { prems: ["A ∧ B"], conc: "A" }, { prems: ["A ∧ B"], conc: "B" } ] },
-    "∨I"  : { forms: [ { prems: ["A"], conc: "A ∨ B" }, { prems: ["A"], conc: "B ∨ A" } ] },
-    "∨E"  : { forms: [ { conc: "C", prems: ["A ∨ B"], subderivs: [ { wants: ["C"], allows: "A" }, { wants: ["C"], allows: "B" }  ] } ] },
-    "→I"  : { forms: [ { conc: "A → B", subderivs: [ { needs: ["B"], "allows": "A" } ] } ] },
-    "→E"  : { forms: [ { prems: ["A → C", "A"], conc: "C" } ] }, // might not allow MT?
-    "↔I"  : { forms: [ { conc: "A ↔ B", subderivs: [ { needs: ["B"], "allows": "A" }, { "needs": ["A"], "allows": "B" }  ] } ] },
-    "↔E"  : { forms: [ { prems: ["A ↔ B", "A"], conc: "B" } , { prems: ["A ↔ B", "B"], conc: "A" } ] },
+    "∧E"  : { forms: [
+                { prems: ["A ∧ B"], conc: "A" },
+                { prems: ["A ∧ B"], conc: "B" }
+            ] },
+    "∨I"  : { forms: [
+                { prems: ["A"], conc: "A ∨ B" },
+                { prems: ["A"], conc: "B ∨ A" }
+            ] },
+    "∨E"  : { forms: [
+                { conc: "C", prems: ["A ∨ B"], subderivs: [
+                    { wants: ["C"], allows: "A" },
+                    { wants: ["C"], allows: "B" }
+                ] }
+            ] },
+    "→I"  : { forms: [ { conc: "A → B", subderivs: [
+                { needs: ["B"], "allows": "A" }
+            ] } ] },
+    "→E"  : { forms: [ { prems: ["A → C", "A"], conc: "C" } ] },
+    "↔I"  : { forms: [
+                { conc: "A ↔ B", subderivs: [
+                    { needs: ["B"], "allows": "A" },
+                    { needs: ["A"], "allows": "B" } 
+                ] }
+            ] },
+    "↔E"  : { forms: [
+                { prems: ["A ↔ B", "A"], conc: "B" },
+                { prems: ["A ↔ B", "B"], conc: "A" }
+            ] },
+    "¬E"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
+    "¬I"  : { forms: [ { conc: "¬A", subderivs: [
+                { wants: "⊥", allows: "A" }
+            ] } ] },
+    "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
+    "TND" : { forms: [ { conc: "B", subderivs: [
+                { wants: ["B"], allows: "A" },
+                { wants: ["B"], allows: "¬A" }
+            ] } ] },
     "Ass" : { assumptionrule: true, hide: true },
     "Pr"  : { premiserule: true, hide: true },
+    "R"   : { forms: [ { prems: ["A"], conc: "A" } ], derived: true },
+    "DS"  : { forms: [
+                { prems: ["A ∨ B", "¬A"], conc: "B" },
+                { prems: ["A ∨ B", "¬B"], conc: "A" }
+            ], derived: true },
+    "MT"  : { forms: [
+                { prems: ["A → B", "¬B"], conc: "¬A" }
+            ], derived: true },
+    "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
+    "DeM" : { forms: [
+                { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" },
+                { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" },
+                { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" },
+                { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" }
+            ], derived: true },
+    "∀E"  : { pred: true, forms: [
+                { prems: ["∀xAx"], conc: "Aa", subst: {"x":"a"} }
+            ] },
+    "∃I"  : { pred: true, forms: [
+                { prems: ["Aa"], conc: "∃xAx", subst: {"x":"a"} }
+            ] },
+    "∀I"  : { pred: true, forms: [
+                { prems: ["Aa"], conc: "∀xAx", mustbenew: ["a"], subst: {"a": "x"} }
+            ] },
+    "∃E"  : { pred: true, forms: [
+                { "conc": "B", prems: ["∃xAx"], mustbenew: ["n"], subst: {"x": "n"},
+                    subderivs: [ { wants: "B", allows: "An" } ] }
+            ] },
+    "CQ"  : { pred: true, forms: [
+                { prems: ["∀x¬Ax"], conc: "¬∃xAx" },
+                { prems: ["∃x¬Ax"], conc: "¬∀xAx" },
+                { prems: ["¬∀xAx"], conc: "∃x¬Ax" },
+                { prems: ["¬∃xAx"], conc: "∀x¬Ax" }
+            ], derived: true },
+    "=I"  : { pred: true, forms: [ { conc: "a = a", prems: [] } ] },
+    "=E"  : { pred: true, forms: [
+                { prems: ["Aa", "a = b"], conc: "Ab" },
+                { prems: ["Aa", "b = a"], conc: "Ab" }
+            ] }
 }
-const magnusRules = {
-    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
-    "R"   : { forms: [ { prems: ["A"], conc: "A" } ] },
-    "MT"  : { prems: ["A → C", "¬C"], conc: "¬A" },
+const otherRules = {
     "HS"  : { prems: ["A → B", "B → C"], conc: "A → C" },
-    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"],  conc: "C" } ] },
-    "¬I"  : { showrule: true, forms: [ { conc: "¬A", subderivs: [ { "needs": ["B","¬B"], "allows": "A" } ] } ] },
-    "¬E"  : { showrule: true, forms: [ { conc: "A", subderivs: [ { "needs": ["B","¬B"], "allows": "¬A" } ] } ] },
+    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"],  conc: "C" } ] }
 }
 
 const hardegreeRules = {
@@ -37,11 +101,12 @@ const hardegreeRules = {
     "↔I"  : { forms: [ { prems: ["A → B", "B → A"], conc: "A ↔ B" } ] },
     "✖I"  : { forms: [ { prems: ["A", "~A"], conc: "✖" } ] },
     "∀I"  : { pred: true, meinongian: true, hint: "To establish a ∀-statement, use UD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
-    "∃I"  : { pred: true, forms: [ { prems: ["Aa"], conc: "∃xAx", subst: {"x":"a"} } ] },
     "Ass" : { assumptionrule: true },
     "↔O"  : { forms: [ { prems: ["A ↔ B"], conc: "A → B" }, { prems: ["A ↔ B"], conc: "B → A" } ] },
     "✖O"  : { forms: [ { prems: ["✖"], conc: "A" } ] },
-    "∀O"  : { pred: true, forms: [ { prems: ["∀xAx"], conc: "Aa", subst: {"x":"a"} } ] },
+    
+    
+    
     "∃O"  : { pred: true, forms: [ { prems: ["∃xAx"], conc: "An", mustbenew: ["n"], subst: {"x":"n"} } ] },
     "R"   : { forms: [ { prems: ["A"], conc: "A" } ] },
     "~→O" : { forms: [ { prems: ["~(A → B)"], conc: "A & ~B" } ] },
