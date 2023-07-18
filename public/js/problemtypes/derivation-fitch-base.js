@@ -2,17 +2,16 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-///////////////// derivation-hardegree.js //////////////////////////////
-// Kalish-Montague style derivations using Hardegree's rule set       //
-////////////////////////////////////////////////////////////////////////
+///////////////// derivation-fitch-base.js ////////////////////////////////////
+// common ground of all Fitch-style derivation, built on derivation-base.js  //
+///////////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblem from '../problem-class.js';
 import DerivationExercise from './derivation-base.js';
 import { addelem, htmlEscape } from '../common.js';
 import tr from '../translate.js';
 
-// TODO: perhaps rebase on derivation-km-base.js and allow any ruleset?
-import getRules from '../checkers/rules/hardegree-rules.js';
+import getRules from '../checkers/rules/fitch-rules.js';
 import notations from '../symbolic/notations.js';
 
 export default class DerivationHardegree extends DerivationExercise {
