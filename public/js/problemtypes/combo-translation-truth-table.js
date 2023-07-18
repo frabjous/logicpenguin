@@ -394,8 +394,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
 
         if ((answer === null) && ("notation" in options) &&
             ("probinfo" in options) && ("index" in options.probinfo) &&
-            ("translations" in options.probinfo)
-        ) {
+            ("translations" in options.probinfo)) {
             const probinfo = options.probinfo;
             const Formula = getFormulaClass(options.notation);
             const wffs = probinfo.translations.map((p) => (Formula.from(p)));
@@ -407,9 +406,20 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
                 valid: tabdata[1]
             }
         }
+        if ((!("pred" in options)) || (options.pred === null)) {
+            options.pred = false;
+        }
+        if ((!("hints" in options)) || (options.hints === null)) {
+            options.hints = true;
+        }
+        if ((!("nofalsum" in options)) || (options.nofalsum === null)) {
+            options.nofalsum = true;
+        }
+        if (!options.pred && (!("lazy" in options) || (options.lazy === null))) {
+            options.lazy = true;
+        }
         return [parentid, problem, answer, restore, options];
     }
-
 }
 
 export class ComboTranslation extends TranslationExercise {

@@ -277,39 +277,23 @@ LP.sampleATT = async function(
     }
 };
 
+// again, here for legacy reasons; use embed directly
 LP.sampleComboProb = async function(
     parentid,
     probinfo,
     restore = null,
     options = {}
 ) {
-    let problem = probinfo.statements;
-    let answer = {
-        index: probinfo.index,
-        translations: probinfo.translations
-    };
-    let wffs = probinfo.translations.map((s) =>
-        (Formula.from(s)));
-    let tabdata = comboTables(wffs, probinfo.index);
-    answer.tables = tabdata[0];
-    answer.valid = tabdata[1];
-    // set default options
-    if (!("pred" in options)) {
-        options.pred = false;
-    }
-    if (!("lazy" in options)) {
-        options.lazy = true;
-    }
-    if (!("hints" in options)) {
-        options.hints = true;
-    }
-    if (!("nofalsum" in options)) {
-        options.nofalsum = true;
-    }
-    await LP.sampleProblem(parentid,
-        'combo-translation-truth-table',
-        problem, answer, restore, options
-    );
+    const problem = probinfo.statements;
+    options.probinfo = probinfo;
+    await LP.embed({
+        parentid: parentid,
+        problem: problem,
+        restore: restore,
+        problemtype: 'combo-translation-truth-table',
+        notation: 'hardegree',
+        options: options
+    });
 }
 
 // again, here for legacy reasons, try to use embed directly instead
