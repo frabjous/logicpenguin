@@ -1,7 +1,6 @@
 @charset 'utf-8';
 
 .logicpenguin.sampler > div:first-child {
-    display: table-cell;
     vertical-align: top;
 }
 

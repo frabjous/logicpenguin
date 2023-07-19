@@ -11,6 +11,33 @@ import LP from '../load.js';
 import { addelem, byid } from './common.js';
 import SymbolicArgumentInput from './ui/symbolic-argument-input.js';
 
+function makeDerivation() {
+    if (!this?.myarginput) { return; }
+    const arg = this.myarginput.getArgument();
+    if (!arg) { return; }
+    console.log("herE");
+
+    if (!("pred" in this.myopts)) {
+        this.myopts.pred = this.myarginput.pred;
+    }
+    if (!("lazy" in this.myopts)) {
+        if ("lazy" in this.myarginput) {
+            this.myopts.lazy = this.myarginput.lazy;
+        }
+    }
+    if (!("notation" in this.myopts)) {
+        if ("notation" in this.myarginput) {
+            this.myopts.notation = this.myarginput.notation;
+        }
+    }
+    LP.samplerProblem({
+        problem: arg,
+        problemtype: this.myproblemtype,
+        options: this.myopts
+    });
+}
+
+
 LP.sampler = function(opts) {
     // try to determine where to put widget
     let parentnode = false;
@@ -74,13 +101,21 @@ LP.sampler = function(opts) {
     const tflderivbtn = addelem('button', topleft, {
         type: 'button',
         title: 'create derivation problem',
-        innerHTML: 'derivation'
+        innerHTML: 'derivation',
+        myarginput: tflarginp,
+        myopts: opts,
+        myproblemtype: 'derivation-' + opts.system,
+        onclick: makeDerivation
     });
 
     const folderivbtn = addelem('button', topright, {
         type: 'button',
         title: 'create derivation problem',
-        innerHTML: 'derivation'
+        innerHTML: 'derivation',
+        myarginput: folarginp,
+        myopts: opts,
+        myproblemtype: 'derivation-' + opts.system,
+        onclick: makeDerivation
     });
     const argTTbtn = addelem('button', topleft, {
         type: 'button',
