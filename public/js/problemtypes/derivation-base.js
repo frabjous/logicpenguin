@@ -139,11 +139,18 @@ export default class DerivationExercise extends LogicPenguinProblem {
             classes: ['derivationcore']
         });
 
+        // premise root is active and has target for
+        // derivations without showlines
+        let mainTarget = false;
+        if (!this.useShowLines) {
+            mainTarget = problem.conc;
+        }
+
         // premises in the "premise root"
         this.premDeriv = addelem('sub-derivation', formulaarea, {});
         this.premDeriv.initialSetup({
             parentderiv: false,
-            target: false
+            target: mainTarget
         });
         this.premDeriv.classList.add("premiseroot");
         this.premDeriv.myprob = this;
@@ -152,15 +159,22 @@ export default class DerivationExercise extends LogicPenguinProblem {
             const line = this.premDeriv.addLine(prem, false);
             line.jinput.value = this.premiseAbbr ?? tr('premise');
             line.jinput.readOnly = true;
+            // hide inputs completely for those w/o showlines
+            if (!this.useShowLines) {
+                line.jinput.myrwrap.style.display = 'none';
+            }
         }
 
-        // main derivation targets the conclusion
-        this.mainDeriv =
-            this.premDeriv.addSubderivation(problem.conc, false);
-        this.mainDeriv.classList.add("mainderivation");
+        this.mainDeriv = premDeriv.
+        if (this.useShowLines) {
+            // main derivation targets the conclusion
+            this.mainDeriv =
+                this.premDeriv.addSubderivation(problem.conc, false);
+            this.mainDeriv.classList.add("mainderivation");
 
-        this.lastfocusedJ = (this?.mainDeriv
-            ?.getElementsByClassName("justification")?.[0]);
+            this.lastfocusedJ = (this?.mainDeriv
+                ?.getElementsByClassName("justification")?.[0]);
+        }
 
         this.renumberLines();
 
@@ -643,6 +657,8 @@ export class SubDerivation extends HTMLElement {
         line.jinput = JustificationInput.getnew(inputopts);
         jwrap.appendChild(line.jinput);
         line.jinput.myline = line;
+        line.jinput.myjwrap = jwrap;
+        line.jinput.myrwrap = rightwrap;
         line.jinput.blurHook = SubDerivation.blurHook;
         line.jinput.focusHook = SubDerivation.focusHook;
         line.jinput.title = tr('enter line justification');
