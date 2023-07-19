@@ -148,12 +148,13 @@ export default class DerivationExercise extends LogicPenguinProblem {
 
         // premises in the "premise root"
         this.premDeriv = addelem('sub-derivation', formulaarea, {});
+        this.premDeriv.useShowLines = this.useShowLines;
+        this.premDeriv.myprob = this;
         this.premDeriv.initialSetup({
             parentderiv: false,
             target: mainTarget
         });
         this.premDeriv.classList.add("premiseroot");
-        this.premDeriv.myprob = this;
         let prems = problem?.prems ?? [];
         for (const prem of prems) {
             const line = this.premDeriv.addLine(prem, false);
@@ -533,6 +534,7 @@ export class SubDerivation extends HTMLElement {
         this.parentderiv = setupopts?.parentderiv ?? false;
         if (this.parentderiv) {
             this.myprob = this?.parentderiv?.myprob ?? false;
+            this.useShowLines = this?.parentderiv?.useShowLines ?? false;
         }
         this.target = setupopts?.target ?? false;
         // inner and outer divs
@@ -543,8 +545,8 @@ export class SubDerivation extends HTMLElement {
             classes: ['innersubderiv']
         });
 
-        // premise root has no buttons
-        if (!this.parentderiv) { return; }
+        // premise root has no buttons if there are show lines
+        if (!this.parentderiv && this.useShowLines) { return; }
 
         // buttons
         this.buttons = addelem('div', this.inner, {
@@ -571,7 +573,10 @@ export class SubDerivation extends HTMLElement {
             }
         });
 
-        if (this.parentderiv?.parentderiv) {
+        const isSubderiv = 
+            ((!this.useShowLines && this?.parentderiv) ||
+                (this.useShowLines && this?.parentderiv?.parentderiv));
+        if (isSubderiv) {
             this.buttons.remove = addelem('div', this.buttons, {
                 classes: ['material-symbols-outlined'],
                 innerHTML: this.myprob.icons['rmderiv'],
@@ -675,6 +680,9 @@ export class SubDerivation extends HTMLElement {
         line.buttons = addelem('div', jwrap, {
             classes: ['derivlinebuttons']
         });
+        //
+        // TODO: I AM HERE
+        // 
         // for subderivations that are not main
         if (this?.parentderiv?.parentderiv || (this.parentderiv && !showline)) {
             line.menuButton = addelem('div', line.buttons, {
@@ -783,9 +791,9 @@ export class SubDerivation extends HTMLElement {
         line.input.enterHook = function(e) {
             this.tabHook(e, true);
         }
-        if (s) {
+        if (s && s != '') {
             line.input.value = s;
-            line.numbox.classList.remove("invisibile");
+            line.numbox.classList.remove("invisible");
         }
         // initial premises are read-only
         if ((!this.parentderiv) ||
