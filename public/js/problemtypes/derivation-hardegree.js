@@ -40,7 +40,7 @@ export default class DerivationHardegree extends DerivationExercise {
     justKeydownExtra(e, elem) {
         if (e.ctrlKey || e.altKey) { return; }
         // e for ∃
-        if ((e.key == 'e') && (this.options.pred)) {
+        if (((e.key == 'e') || (e.key == 'E')) && (this.options.pred)) {
             e.preventDefault();
             elem.insertHere(this.symbols.EXISTS);
         }

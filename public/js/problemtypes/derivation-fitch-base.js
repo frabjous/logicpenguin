@@ -20,6 +20,7 @@ export default class DerivationHardegree extends DerivationExercise {
         super();
     }
 
+    // TODO
     addSubDerivHook(subderiv) {
         const l = subderiv.addLine(subderiv.target, true);
         if (!this.isRestoring) {
@@ -38,10 +39,23 @@ export default class DerivationHardegree extends DerivationExercise {
     // in justifications, certain letters auto-uppercase
     justKeydownExtra(e, elem) {
         if (e.ctrlKey || e.altKey) { return; }
-        // e for ∃
-        if ((e.key == 'e') && (this.options.pred)) {
-            e.preventDefault();
-            elem.insertHere(this.symbols.EXISTS);
+        // e for ∃, simetimes
+        if (((e.key == 'e') || (e.key == 'E')) && (this.options.pred)) {
+            const atStart = (elem.selectionStart == 0);
+            let spaceBefore = false;
+            if (!atStart) {
+                const charBefore = this.value[ (elem.selectionStart - 1) ];
+                spaceBefore = (
+                    (charBefore == ',') ||
+                    (charBefore == ' ') ||
+                    (charBefore == ' ') || // thin space
+                    (charBefore == ' ') || // nonbreaking space
+                    (charBefore == ' ')); // narrow nonbreaking space
+            }
+            if (atStart || spaceBefore) {
+                e.preventDefault();
+                elem.insertHere(this.symbols.EXISTS);
+            }
         }
         // a for ∀, if notation uses quantifier
         if ((e.key == 'a') && (this.options.pred) &&

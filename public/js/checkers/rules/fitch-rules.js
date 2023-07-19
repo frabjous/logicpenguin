@@ -45,10 +45,6 @@ const commonForallxRules = {
                 { needs: ["⊥"], allows: "A" }
             ] } ] },
     "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
-    "TND" : { forms: [ { conc: "B", subderivs: [
-                { needs: ["B"], allows: "A" },
-                { needs: ["B"], allows: "¬A" }
-            ] } ] },
     "Hyp" : { assumptionrule: true, hide: true },
     "Pr"  : { premiserule: true, hide: true },
     "R"   : { forms: [ { prems: ["A"], conc: "A" } ], derived: true },
@@ -92,6 +88,13 @@ const commonForallxRules = {
             ] }
 }
 
+const cambridgeRules = {
+    "TND" : { forms: [ { conc: "B", subderivs: [
+            { needs: ["B"], allows: "A" },
+            { needs: ["B"], allows: "¬A" }
+        ] } ] }
+}
+
 const calgaryRules = {
     "IP"  : { forms: [ { conc: "A", subderivs: [
                 { needs: ["⊥"], allows: "¬A" }
@@ -119,6 +122,11 @@ export default function getFitchRules(rulesetname, notationname = null) {
     // start with common rules
     ruleset = commonForallxRules;
     // add calgary rules if need be
+    if (rulesetname == 'cambridge') {
+        for (const rule of cambridgeRules) {
+            ruleset[rule] = cambridgeRules[rule];
+        }
+    }
     if (rulesetname == 'calgary') {
         for (const rule of calgaryRules) {
             ruleset[rule] = calgaryRules[rule];
