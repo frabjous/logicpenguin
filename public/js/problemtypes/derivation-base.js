@@ -110,11 +110,25 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.options = options;
         this.checksave = checksave;
 
+        // default to no showlines
+        if (!("useShowLines" in this)) {
+            this.useShowLines = false;
+        }
+
         // assign notation, symbols, syntax from options
         this.notationname = options?.notation ?? 'cambridge';
         this.syntax = getSyntax(this.notationname);
         this.symbols = this.syntax.symbols;
         this.notation = this.syntax.notation;
+
+        // top contains problem if not revealed with showlines
+        if (!this.useShowLines) {
+            const problemsummary = addelem('div', this, {
+                classes: ['derivationproblemsummary', 'symbolic'],
+                innerHTML: htmlEscape(problem.prems.join(', ') + ' ∴ ' +
+                    problem.conc)
+            });
+        }
 
         // outer wrap container, full width
         const container = addelem('div', this, {
