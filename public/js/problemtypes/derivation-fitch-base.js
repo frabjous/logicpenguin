@@ -84,11 +84,19 @@ export default class DerivationHardegree extends DerivationExercise {
     makeProblem(problem, options, checksave) {
         const rulesetname = options?.ruleset ?? 'cambridge';
         const notationname = options?.notation ?? rulesetname;
+        // default to rulesFirst for forallx
+        if ("rulesFirst" in options) {
+            this.rulesFirst = options.rulesFirst;
+        } else {
+            options.rulesFirst = true;
+            this.rulesFirst = true;
+        }
         this.rules = getRules(notationname, rulesetname);
         this.ruleset = this.rules;
         this.rulesetname = rulesetname;
         this.schematicLetters = notations[notationname].schematicLetters;
-        this.schematic = ((s) => (DerivationHardegree.schematic(s, this.schematicLetters)));
+        // TODO: make this normal, maybe?
+        //this.schematic = ((s) => (DerivationHardegree.schematic(s, this.schematicLetters)));
         super.makeProblem(problem, options, checksave);
     }
 
@@ -155,7 +163,7 @@ export default class DerivationHardegree extends DerivationExercise {
         });
         // thead cell for displaying the actual rule
         rp.ruleformcell = addelem('th', thr, {
-            colSpan: "6",
+            colSpan: "7",
             myrp: rp,
             classes: [ 'ruledisplay' ],
             tabIndex: -1,
@@ -174,7 +182,7 @@ export default class DerivationHardegree extends DerivationExercise {
         // add each rule
         for (const rule in rules) {
             if (rules[rule].hidden) { continue; }
-            if (ctr % 8 == 0) {
+            if (ctr % 9 == 0) {
                 tre = addelem('tr', tbody, {});
             }
             const td = addelem('td', tre, {
@@ -205,8 +213,8 @@ export default class DerivationHardegree extends DerivationExercise {
             ctr++;
         }
         // add dummy cell in last row of rules, spanning what's left
-        const remcells = (8-(ctr % 8));
-        if (remcells > 0 && remcells < 8) {
+        const remcells = (9-(ctr % 9));
+        if (remcells > 0 && remcells < 9) {
             const filler = addelem('td', tre, {
                 classes: ["blank"],
                 colSpan: remcells.toString()
@@ -218,7 +226,10 @@ export default class DerivationHardegree extends DerivationExercise {
                 this.rulemap[rule].classList.remove("excluded");
             }
         }
-        rp.schematic = this.schematic;
+        // TODO: fix this
+        //rp.schematic = this.schematic;
+        rp.displayrule = function(rule) { console.log('displaying rule', rule); };
+        /* 
         rp.displayrule = function(rule) {
             const ruleinfo = this.ruleset[rule];
             if (!ruleinfo) { return; }
@@ -226,75 +237,6 @@ export default class DerivationHardegree extends DerivationExercise {
             rp.innernamecell.innerHTML = htmlEscape(rule);
             // clear out old
             this.innerformcell.innerHTML = '';
-            // some rules are special
-            if (ruleinfo.assumptionrule) {
-                const textblock = addelem('div', this.innerformcell, {
-                    classes: ['ruledisplayform'],
-                    innerHTML: '<strong>' + tr('Assumption') +
-                        '</strong><br>(' + tr('only allowed within') +
-                        '<br>' + tr('certain kinds of') +
-                        '<br>' + tr('derivations for certain') +
-                        '<br>' + tr('kinds of showlines') + ')'
-                });
-                return;
-            }
-            if (ruleinfo.premiserule) {
-                const textblock = addelem('div', this.innerformcell, {
-                    classes: ['ruledisplayform'],
-                    innerHTML: '<strong>' + tr('Premise') + '</strong><br>(' +
-                        tr('these are taken as “given”') +
-                        '<br>' + tr('for the problem and are') +
-                        '<br>' + tr('filled in for you') + ')'
-                });
-                return;
-            }
-            if (ruleinfo.showrule) {
-                for (const thisform of ruleinfo.forms) {
-                    const formblock = addelem('div', this.innerformcell, {
-                        classes: ['ruledisplayform']
-                    });
-                    const showblock = addelem('div', formblock, {
-                        classes: ['ruledisplayshowline'],
-                        innerHTML: '<span>' + tr('SHOW') + ':</span> <span>' + htmlEscape(this.schematic(thisform.conc)) + '</span>'
-                    });
-                    const mainsubderiv = addelem('div', formblock, {
-                        classes: ['ruledisplaysubderiv'] });
-                    let wantsnew = false;
-                    for (const subderiv of thisform.subderivs) {
-                        if (subderiv.wantsasnew) { wantsnew = true; }
-                        if (subderiv.mustbedirect) {
-                            for (const n of subderiv.needs) {
-                                addelem('div', mainsubderiv, {
-                                    classes: [ 'ruledisplaydrop', 'symbolic' ],
-                                    innerHTML: htmlEscape(this.schematic(n))
-                                });
-                            }
-                            break;
-                        }
-                        if (subderiv.allows) {
-                            const assumptionblock = addelem('div', mainsubderiv, {
-                                classes: ['ruledisplayassumption', 'symbolic'],
-                                innerHTML: htmlEscape(this.schematic(subderiv.allows))
-                            });
-                        }
-                        for (const n of subderiv.needs) {
-                            const showl = addelem('div', mainsubderiv, {
-                                classes: ['ruledisplayshowline'],
-                                innerHTML: '<span>' + tr('SHOW') + ':</span> <span class="symbolic">'+ htmlEscape(this.schematic(n)) + '</span>'
-                            });
-                            const innersbd = addelem('div', mainsubderiv, {
-                                classes: ['ruledisplaysubderiv','withblank', 'symbolic']});
-                        }
-                    }
-                    if (wantsnew) {
-                        const newnote = addelem('div', formblock, {
-                            classes: ['rulenote'],
-                            innerHTML: tr('𝓃 must be a new name')
-                        });
-                    }
-                }
-                return;
-            }
             // reg rule ; box for each form
             for (const thisform of ruleinfo.forms) {
                 const formblock = addelem('div', this.innerformcell, {
@@ -324,10 +266,11 @@ export default class DerivationHardegree extends DerivationExercise {
                 }
             }
         }
+        */
         return rp;
     }
 
-    static schematic(s, letters) {
+    schematic(s, letters) {
         const lta = [...letters];
         const scA = lta[0];
         let scB = 'ℬ';
@@ -342,6 +285,12 @@ export default class DerivationHardegree extends DerivationExercise {
         }
         const scx = lta[2];
         const sca = lta[3];
+        let scb = '𝒷';
+        let scc = '𝒸';
+        if (sca == '𝒂') {
+            scb = '𝒃';
+            scc = '𝒄';
+        }
         const scn = lta[4];
         return s.replace(/Ax/g, scA + scx)
             .replace(/A/g, scA)

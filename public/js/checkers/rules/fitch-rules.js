@@ -44,7 +44,7 @@ const cambridgeRules = {
 
 const calgaryRules = {
     "IP"  : { forms: [ { conc: "A", subderivs: [ { needs: ["⊥"], allows: "¬A" } ] } ] },
-    "LEM" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { nneds: ["B"], allows: "¬A" } ] } ], derived: true }
+    "LEM" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ], derived: true }
 }
 
 function substituteSymbols(s, notationname) {
