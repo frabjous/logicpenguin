@@ -624,12 +624,12 @@ a#lplogo:hover span {
     background-color: var(--lpbgblue);
 }
 
-.symbolinsertwidget {
+.logicpenguin.symbolinsertwidget {
     display: inline-block;
     position: fixed;
     left: 5px;
     bottom: 5px;
-    font-size: 125%;
+    font-size: 25px;
 }
 
 .symbolinsertwidget table {

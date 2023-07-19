@@ -247,12 +247,12 @@
     padding: 1ex;
     border-radius: 10px;
 }
-.logicpenguin .rulepanel .derivchartlabel {
+.logicpenguin.rulepanel .derivchartlabel {
     text-align: center;
     width: 100%;
     cursor: pointer;
 }
-.logicpenguin .rulepanel .derivhidewidget {
+.logicpenguin.rulepanel .derivhidewidget {
     float: right;
     margin-right: 2px;
     margin-left: 1.5em;
@@ -261,7 +261,7 @@
     display: inline-block;
     top: -5px;
 }
-.logicpenguin .rulepanel .derivchartlabel:hover {
+.logicpenguin.rulepanel .derivchartlabel:hover {
     color: var(--lpbgmagenta);
 }
 .logicpenguin.rulepanel table.ruleclicktable {
@@ -342,7 +342,7 @@
     background-color: var(--lpgray1);
 }
 
-.logicpenguin .rulepanel .ruledisplayform {
+.logicpenguin.rulepanel .ruledisplayform {
     display: inline-block;
     text-align: left;
     padding: 1ex 1em 1ex 1em;
@@ -353,25 +353,25 @@
     margin-left: 1em;
 }
 
-.logicpenguin .rulepanel table > thead:hover .ruledisplayform {
+.logicpenguin.rulepanel table > thead:hover .ruledisplayform {
     background-color: var(--lpbgblue);
 }
 
-.logicpenguin .rulepanel .ruledisplayform:first-child  {
+.logicpenguin.rulepanel .ruledisplayform:first-child  {
     margin-left: 0;
 }
 
-.logicpenguin .rulepanel .ruledisplayargtbl tr:last-child td {
+.logicpenguin.rulepanel .ruledisplayargtbl tr:last-child td {
     border-top: 2px solid var(--lpbgblack);
 }
 
-.logicpenguin .rulepanel .ruledisplayshowline span:first-child {
+.logicpenguin.rulepanel .ruledisplayshowline span:first-child {
     text-decoration: line-through;
     text-decoration-thickness: 3px;
     margin-right: 0.5em;
 }
 
-.logicpenguin .rulepanel .ruledisplaydrop {
+.logicpenguin.rulepanel .ruledisplaydrop {
     margin-top: 6ex;
 }
 
