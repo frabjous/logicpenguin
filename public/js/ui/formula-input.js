@@ -313,7 +313,8 @@ export default class FormulaInput {
 
         // XX also becomes falsum
         if (e.key == 'X') {
-            if (this.value.at(this.selectionStart - 1) == 'X') {
+            if ((this.selectionStart > 0) &&
+                (this.value.at(this.selectionStart - 1) == 'X')) {
                 e.preventDefault();
                 this.autoChange(/\s*X$/, '', ' ' + this.symbols.FALSUM, null, null);
             }
@@ -322,7 +323,8 @@ export default class FormulaInput {
 
         // \/ also becomes disjunction
         if (e.key == '/') {
-            if (this.value.at(this.selectionStart - 1) == '\\') {
+            if ((this.selectionStart > 0) &&
+                (this.value.at(this.selectionStart - 1) == '\\')) {
                 e.preventDefault();
                 this.autoChange(/\\$/, '', '', null, null);
                 this.insOp('OR');
@@ -332,7 +334,8 @@ export default class FormulaInput {
 
         // || becomes disjunction as well
         if (e.key == '|') {
-            if (this.value.at(this.selectionStart - 1) == '|') {
+            if ((this.sectionStart > 0) &&
+                (this.value.at(this.selectionStart - 1) == '|')) {
                 e.preventDefault();
                 this.autoChange(/\|$/, '', '', null, null);
                 this.insOp('OR');
@@ -342,6 +345,7 @@ export default class FormulaInput {
 
         // hyphens not preceding '>' or numbers are negations?
         if (!(/[0-9?-]/.test(e.key)) &&
+            (this.sectionStart > 0) &&
             (this.value.at(this.selectionStart - 1) == '-') &&
             e.key.length == 1) {
             e.preventDefault();
@@ -360,7 +364,8 @@ export default class FormulaInput {
                 e.preventDefault();
                 this.insOp('FORALL');
             }
-            if (e.key == 'E') {
+            // E cannot turn to ∃ in justifications for Elim rules
+            if ((e.key == 'E') && !this.classList.contains("justification")) {
                 e.preventDefault();
                 this.insOp('EXISTS');
             }
