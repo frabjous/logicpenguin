@@ -95,6 +95,7 @@ export default class DerivationFitch extends DerivationExercise {
         this.ruleset = this.rules;
         this.rulesetname = rulesetname;
         this.schematicLetters = notations[notationname].schematicLetters;
+        this.classList.add('fitch-style-derivation');
         super.makeProblem(problem, options, checksave);
     }
 

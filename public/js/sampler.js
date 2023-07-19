@@ -67,6 +67,9 @@ LP.sampler = function(opts) {
     if (!("folname" in opts)) {
         opts.folname = 'First-order logic';
     }
+    if (!("derivname" in opts)) {
+        opts.derivname = 'deduction';
+    }
     const wrapper = addelem('div', parentnode,
         { classes: ['logicpenguin', 'sampler'] });
     const toppart = addelem('div', wrapper);
@@ -100,8 +103,8 @@ LP.sampler = function(opts) {
 
     const tflderivbtn = addelem('button', topleft, {
         type: 'button',
-        title: 'create derivation problem',
-        innerHTML: 'derivation',
+        title: 'create ' + opts.derivname + ' problem',
+        innerHTML: opts.derivname,
         myarginput: tflarginp,
         myopts: opts,
         myproblemtype: 'derivation-' + opts.system,
@@ -110,8 +113,8 @@ LP.sampler = function(opts) {
 
     const folderivbtn = addelem('button', topright, {
         type: 'button',
-        title: 'create derivation problem',
-        innerHTML: 'derivation',
+        title: 'create ' + opts.derivname + ' problem',
+        innerHTML: opts.derivname,
         myarginput: folarginp,
         myopts: opts,
         myproblemtype: 'derivation-' + opts.system,
