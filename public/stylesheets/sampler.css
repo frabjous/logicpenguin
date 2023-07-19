@@ -12,4 +12,8 @@
 
 .logicpenguin.sampler div.symbolicargumentinput input.formulainput {
     width: 12rem;
+    margin-bottom: 0.3rem;
+}
+.logicpenguin.sampler div.symbolicargumentinput input.formulainput.error {
+    background-color: var(--lpbgred);
 }

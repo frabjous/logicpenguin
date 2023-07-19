@@ -87,11 +87,13 @@ LP.sampler = function(opts) {
         notation: opts.notation,
         pred: false
     });
+    tflarginp.pred = false;
     const folarginp = SymbolicArgumentInput.getnew({
         notation: opts.notation,
         pred: true,
         lazy: true
     });
+    folarginp.pred = true;
 
     topleft.appendChild(tflarginp);
     topright.appendChild(folarginp);
@@ -118,7 +120,16 @@ LP.sampler = function(opts) {
     const argTTbtn = addelem('button', topleft, {
         type: 'button',
         title: 'argument truth-table problem',
-        innerHTML: 'argument TT'
+        innerHTML: 'argument TT',
+        myopts: opts,
+        myarginput: tflarginp,
+        onclick: function() {
+            const arg = this.myarginput.getArgument();
+            if (!arg) { return; }
+            this.myopts.problemtype = 'argument-truth-table';
+            this.myopts.problem = arg;
+            LP.samplerProblem(this.myopts);
+        }
     });
     const br = addelem('br', topleft);
     const formulaTTbtn = addelem('button', topleft, {
@@ -137,6 +148,7 @@ LP.sampler = function(opts) {
 
 LP.samplerProblem = function(opts) {
     opts.parentid = 'logicpenguinsampleproblem';
+    byid(opts.parentid).innerHTML = '';
     LP.embed(opts);
 }
 

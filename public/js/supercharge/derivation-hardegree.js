@@ -64,8 +64,7 @@ function fillInTo(probinfo, i) {
 export function chargeup(probelem) {
     // if an answer is set to "true", it just means allow cheating
     // and no actual show answer is possible
-    if (this.myanswer !== true) {
-        console.log("got herE");
+    if (probelem.myanswer !== true) {
         probelem.showansButton = addelem('button', probelem.buttonDiv, {
             innerHTML: tr('show answer'),
             type: 'button',

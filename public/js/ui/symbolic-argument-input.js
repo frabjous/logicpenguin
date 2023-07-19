@@ -25,7 +25,7 @@ export default class SymbolicArgumentInput {
             opts.notation = this.Formula.syntax.notationname;
         }
         pr.myinput = FormulaInput.getnew( (this.options ?? {}) );
-        pr.myinput.onchange = function() {
+        pr.myinput.oninput = function() {
             this.classList.remove('error');
         }
         pr.appendChild(pr.myinput);
@@ -152,7 +152,7 @@ export default class SymbolicArgumentInput {
 
         // conclusion input field
         concdiv.myinput = FormulaInput.getnew(options);
-        concdiv.myinput.onchange = function() {
+        concdiv.myinput.oninput = function() {
             this.classList.remove('error');
         }
         concdiv.appendChild(concdiv.myinput);
