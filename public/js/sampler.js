@@ -9,6 +9,7 @@
 
 import LP from '../load.js';
 import { addelem, byid } from './common.js';
+import SymbolicArgumentInput from './ui/symbolic-argument-input.js';
 
 LP.sampler = function(opts) {
     // try to determine where to put widget
@@ -41,6 +42,34 @@ LP.sampler = function(opts) {
     if (!("folname" in opts)) {
         opts.folname = 'First Order Logic';
     }
+    const wrapper = addelem('div', parentnode,
+        { classes: ['logicpenguin', 'sampler'] });
+    const toppart = addelem('div', wrapper);
+    const topleft = addelem('div', toppart);
+    const topright = addelem('div', toppart);
+    const probarea = addelem('div', wrapper);
+
+    // left side: truth functional logic
+    const leftlabel = addelem('h3', topleft, {
+        innerHTML: opts.tflname
+    });
+    // right side, first order logic
+    const rightlabel = addelem('h3', topright, {
+        innerHTML: opts.folname
+    });
+    const tflarginp = SymbolicArgumentInput.getnew({
+        notation: opts.notation,
+        pred: false
+    });
+    const folarginp = SymbolicArgumentInput.getnew({
+        notation: opts.notation,
+        pred: true,
+        lazy: true
+    });
+
+    topleft.appendChild(tflarginp);
+    topright.appendChild(folarginp);
+
 }
 
 export default LP;
