@@ -1,0 +1,16 @@
+@charset 'utf-8';
+
+.logicpenguin.sampler > div:first-child {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.logicpenguin.sampler > div:first-child > div {
+    display: inline-block;
+    margin-right: 2rem;
+    vertical-align: top;
+}
+
+.logicpenguin.sampler div.symbolicargumentinput input.formulainput {
+    width: 12rem;
+}

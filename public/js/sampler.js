@@ -37,10 +37,10 @@ LP.sampler = function(opts) {
         opts.system = opts.notation;
     }
     if (!("tflname" in opts)) {
-        opts.tflname = 'Truth Functional Logic';
+        opts.tflname = 'Truth-functional logic';
     }
     if (!("folname" in opts)) {
-        opts.folname = 'First Order Logic';
+        opts.folname = 'First-order logic';
     }
     const wrapper = addelem('div', parentnode,
         { classes: ['logicpenguin', 'sampler'] });
@@ -48,6 +48,7 @@ LP.sampler = function(opts) {
     const topleft = addelem('div', toppart);
     const topright = addelem('div', toppart);
     const probarea = addelem('div', wrapper);
+    probarea.id = 'logicpenguinsampleproblem';
 
     // left side: truth functional logic
     const leftlabel = addelem('h3', topleft, {
@@ -70,6 +71,41 @@ LP.sampler = function(opts) {
     topleft.appendChild(tflarginp);
     topright.appendChild(folarginp);
 
+    const tflderivbtn = addelem('button', topleft, {
+        type: 'button',
+        title: 'create derivation problem',
+        innerHTML: 'derivation'
+    });
+
+    const folderivbtn = addelem('button', topright, {
+        type: 'button',
+        title: 'create derivation problem',
+        innerHTML: 'derivation'
+    });
+    const argTTbtn = addelem('button', topleft, {
+        type: 'button',
+        title: 'argument truth-table problem',
+        innerHTML: 'argument TT'
+    });
+    const br = addelem('br', topleft);
+    const formulaTTbtn = addelem('button', topleft, {
+        type: 'button',
+        title: 'formula truth-table problem (first premise)',
+        innerHTML: 'formula TT'
+    });
+    const equivTTbtn = addelem('button', topleft, {
+        type: 'button',
+        title: 'equivalence truth-table problem (first premise and conclusion)',
+        innerHTML: 'equivalence TT'
+    });
+
+
 }
 
+LP.samplerProblem = function(opts) {
+    opts.parentid = 'logicpenguinsamplerproblem';
+    LP.embed(opts);
+}
+
+LP.loadCSS('sampler');
 export default LP;
