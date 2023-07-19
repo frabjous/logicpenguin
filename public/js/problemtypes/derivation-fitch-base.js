@@ -56,6 +56,17 @@ export default class DerivationHardegree extends DerivationExercise {
                 e.preventDefault();
                 elem.insertHere(this.symbols.EXISTS);
             }
+            // otherwise uppercase E unless part of DeM, obnoxious
+        } else if (e.key == 'e') {
+            const atStart = (elem.selectionStart == 0);
+            let charBefore = '';
+            if (!atStart) {
+                charBefore = this.value[ (elem.selectionStart - 1) ];
+            }
+            if (charBefore != 'D') {
+                e.preventDefault();
+                elem.insertHere('E');
+            }
         }
         // a for ∀, if notation uses quantifier
         if ((e.key == 'a') && (this.options.pred) &&
@@ -63,17 +74,19 @@ export default class DerivationHardegree extends DerivationExercise {
             e.preventDefault();
             elem.insertHere(this.symbols.FORALL);
         }
-        // should be determined by rule set
-        if (/^[oiucdnp]$/.test(e.key)) {
+        // letters used in names of rules should be uppercase
+        if (/^[cdilmnpqrstx]$/.test(e.key)) {
             e.preventDefault();
             elem.insertHere(e.key.toUpperCase());
         }
     }
 
     makeProblem(problem, options, checksave) {
-        const notationname = options?.notation ?? 'hardegree';
-        this.rules = getRules(notationname);
+        const rulesetname = options?.ruleset ?? 'cambridge';
+        const notationname = options?.notation ?? rulesetname;
+        this.rules = getRules(notationname, rulesetname);
         this.ruleset = this.rules;
+        this.rulesetname = rulesetname;
         this.schematicLetters = notations[notationname].schematicLetters;
         this.schematic = ((s) => (DerivationHardegree.schematic(s, this.schematicLetters)));
         super.makeProblem(problem, options, checksave);
