@@ -15,8 +15,6 @@ function makeDerivation() {
     if (!this?.myarginput) { return; }
     const arg = this.myarginput.getArgument();
     if (!arg) { return; }
-    console.log("herE");
-
     if (!("pred" in this.myopts)) {
         this.myopts.pred = this.myarginput.pred;
     }
@@ -138,7 +136,7 @@ LP.sampler = function(opts) {
 }
 
 LP.samplerProblem = function(opts) {
-    opts.parentid = 'logicpenguinsamplerproblem';
+    opts.parentid = 'logicpenguinsampleproblem';
     LP.embed(opts);
 }
 

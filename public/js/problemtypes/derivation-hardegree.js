@@ -357,8 +357,8 @@ export default class DerivationHardegree extends DerivationExercise {
         if (!("rulepanel" in options) && !partial) {
             options.rulepanel = true;
         }
-        // if we have an answer (And not partial), then enable hints/cheats
-        if (answer && !partial) {
+        // Enable hints/cheats if not partial
+        if (!partial) {
             if ((!("hints" in options)) || (options.hints === null)) {
                 options.hints = true;
             }
@@ -373,6 +373,11 @@ export default class DerivationHardegree extends DerivationExercise {
         } else {
             options.cheat = false;
         }
+        // if no answer, but hints or cheats are allowed, make the
+        // answer "true"
+        if ((!answer) && (options.cheat || options.hints)) {
+            answer = true;
+        }
         // if lowercase letter in conclusion, then it's predicate logic
         if (((!("pred" in options)) || (options.pred === null)) &&
             (/[a-z]/.test( problem.conc ))) {
@@ -384,7 +389,6 @@ export default class DerivationHardegree extends DerivationExercise {
         if (partial && (restore === null) && answer) {
             restore = answer;
         }
-
         return [parentid, problem, answer, restore, options];
     }
 

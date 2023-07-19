@@ -62,14 +62,19 @@ function fillInTo(probinfo, i) {
 }
 
 export function chargeup(probelem) {
-    probelem.showansButton = addelem('button', probelem.buttonDiv, {
-        innerHTML: tr('show answer'),
-        type: 'button',
-        myprob: probelem,
-        onclick: function() {
-            this.myprob.getSolution();
-        }
-    });
+    // if an answer is set to "true", it just means allow cheating
+    // and no actual show answer is possible
+    if (this.myanswer !== true) {
+        console.log("got herE");
+        probelem.showansButton = addelem('button', probelem.buttonDiv, {
+            innerHTML: tr('show answer'),
+            type: 'button',
+            myprob: probelem,
+            onclick: function() {
+                this.myprob.getSolution();
+            }
+        });
+    }
     probelem.checkLines = async function() {
         const question = this.myquestion;
         const answer = this.myanswer;
