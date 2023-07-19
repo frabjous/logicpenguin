@@ -542,6 +542,7 @@ export class SubDerivation extends HTMLElement {
                 this.mysubderiv.addSubderivation('', true);
             }
         });
+
         if (this.parentderiv?.parentderiv) {
             this.buttons.remove = addelem('div', this.buttons, {
                 classes: ['material-symbols-outlined'],

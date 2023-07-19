@@ -63,6 +63,7 @@ export default class DerivationHardegree extends DerivationExercise {
         this.ruleset = this.rules;
         this.schematicLetters = notations[notationname].schematicLetters;
         this.schematic = ((s) => (DerivationHardegree.schematic(s, this.schematicLetters)));
+        this.useShowLines = true;
         super.makeProblem(problem, options, checksave);
     }
 
