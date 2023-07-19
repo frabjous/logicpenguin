@@ -128,6 +128,7 @@ LP.sampler = function(opts) {
             if (!arg) { return; }
             this.myopts.problemtype = 'argument-truth-table';
             this.myopts.problem = arg;
+            this.myopts.question = true;
             LP.samplerProblem(this.myopts);
         }
     });
@@ -135,12 +136,45 @@ LP.sampler = function(opts) {
     const formulaTTbtn = addelem('button', topleft, {
         type: 'button',
         title: 'formula truth-table problem (first premise)',
-        innerHTML: 'formula TT'
+        innerHTML: 'formula TT',
+        myopts: opts,
+        myarginput: tflarginp,
+        onclick: function() {
+            const arg = this.myarginput.getArgument();
+            let prem = '';
+            if (arg) {
+                prem = arg.prems[0];
+            } else {
+                const ii = this.myarginput.getElementsByTagName("input");
+                if (!ii) { return; }
+                if (ii[0].classList.contains('error')) { return; }
+                prem = ii[0].value;
+            }
+            this.myopts.problemtype = 'formula-truth-table';
+            this.myopts.problem = prem;
+            this.myopts.question = true;
+            LP.samplerProblem(this.myopts);
+        }
     });
     const equivTTbtn = addelem('button', topleft, {
         type: 'button',
         title: 'equivalence truth-table problem (first premise and conclusion)',
-        innerHTML: 'equivalence TT'
+        innerHTML: 'equivalence TT',
+        myopts: opts,
+        myarginput: tflarginp,
+        onclick: function() {
+            const arg = this.myarginput.getArgument();
+            if (!arg) { return; }
+            // sanity check
+            if (arg.prems.length < 1) { return; }
+            this.myopts.problemtype = 'equivalence-truth-table';
+            this.myopts.problem = {
+                l: arg.prems[0],
+                r: arg.conc
+            };
+            this.myopts.question = true;
+            LP.samplerProblem(this.myopts);
+        }
     });
 
 

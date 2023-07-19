@@ -354,9 +354,15 @@ export default class LogicPenguinProblem extends HTMLElement {
                 answer = opts.answer;
                 continue;
             }
-            if (opt == 'problem' || opt == 'question') {
+            if (opt == 'problem') {
                 problem = opts.problem;
                 continue;
+            }
+            if (opt == 'question') {
+                if (!problem) {
+                    problem = opts.question;
+                }
+                // don't return to let it get passed on
             }
             if (opt == 'restore') {
                 restore = opts.restore;
