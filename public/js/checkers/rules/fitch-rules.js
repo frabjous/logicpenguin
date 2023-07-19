@@ -62,15 +62,15 @@ export default function getFitchRules(rulesetname, notationname = null) {
         notationname = rulesetname;
     }
     // start with common rules
-    ruleset = commonForallxRules;
+    const ruleset = commonForallxRules;
     // add calgary rules if need be
     if (rulesetname == 'cambridge') {
-        for (const rule of cambridgeRules) {
+        for (const rule in cambridgeRules) {
             ruleset[rule] = cambridgeRules[rule];
         }
     }
     if (rulesetname == 'calgary') {
-        for (const rule of calgaryRules) {
+        for (const rule in calgaryRules) {
             ruleset[rule] = calgaryRules[rule];
         }
     }

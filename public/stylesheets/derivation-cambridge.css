@@ -1,0 +1,156 @@
+@charset 'utf-8';
+@import './derivations.css';
+
+.logicpenguin {
+    counter-reset: probnum;
+}
+
+.logicpenguin  ol.derivation-cambridge-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-right: 0;
+}
+
+.logicpenguin .derivation-cambridge-list li::before {
+    counter-increment: probnum;
+    content: "Problem #" counter(probnum);
+}
+
+.logicpenguin  .sampleproblem .derivation-cambridge-list li::before {
+    counter-increment: probnum;
+    content: "";
+}
+
+
+.logicpenguin derivation-cambridge {
+    vertical-align: text-top;
+    margin-top: 1ex;
+}
+
+.logicpenguin derivation-cambridge .derivationline {
+    width: 100%;
+}
+
+.logicpenguin derivation-cambridge .derivationline.derivationshowline .showlineshow {
+    display: inline-block;
+    color: var(--lpmagenta);
+    cursor: pointer;
+    padding-left: 4px;
+}
+
+.logicpenguin derivation-cambridge .derivationline .showlineshow {
+    display: inline-block;
+    width: 3.5em;
+    color: var(--lpmagenta);
+    cursor: pointer;
+}
+
+.logicpenguin derivation-cambridge sub-derivation.closed
+    > div > .derivationline .showlineshow {
+    text-decoration: line-through;
+    text-decoration-color: var(--lpmagenata);
+    text-decoration-thickness: 3px;
+    color: var(--lpgray3);
+}
+
+.logicpenguin derivation-cambridge .derivationline .showlineshow:hover {
+    background-color: var(--lpbgmagenta);
+    text-decoration: line-through;
+    text-decoration-color: var(--lpblack);
+    text-decoration-thickness: 3px;
+}
+
+.logicpenguin derivation-cambridge sub-derivation.closed > div >
+    .derivationline .showlineshow:hover {
+    background-color: var(--lpbgmagenta);
+    color: var(--lpmagenta);
+    text-decoration: none;
+}
+
+.logicpenguin derivation-cambridge .derivationline input.formulainput {
+    width: calc(100% - 1em);
+}
+
+.logicpenguin derivation-cambridge .derivationline.derivationshowline input.formulainput {
+    width: calc(100% - 4.5em - 4px);
+}
+
+.logicpenguin derivation-cambridge .derivationline {
+    padding: 1px;
+}
+
+.logicpenguin derivation-cambridge .derivationcore {
+    position: relative;
+    margin-left: 2.2em;
+    display: inline-block;
+    vertical-align: text-top;
+    width: 21em;
+}
+
+.logicpenguin derivation-cambridge .derivationlinenumber {
+    position: absolute;
+    color: var(--lpgreen);
+    right: 100%;
+    padding-right: 0.2em;
+    padding-top: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.logicpenguin derivation-cambridge .derivationlinenumber::before {
+    content: '(';
+}
+
+.logicpenguin derivation-cambridge .derivationlinenumber::after {
+    content: ')';
+}
+
+.logicpenguin derivation-cambridge sub-derivation .derivationline .jbwrap {
+    position: absolute;
+    left: 100%;
+    padding-left: 0.2em;
+    display: inline-block;
+}
+
+.logicpenguin derivation-cambridge sub-derivation sub-derivation .derivationline .jbwrap input {
+    position: relative;
+    bottom: 6px;
+}
+
+
+.logicpenguin derivation-cambridge .innersubderiv {
+    border: 3px dashed var(--lpgray5);
+    margin-left: 0.7em;
+    margin-right: 0.1em;
+    margin-top: 0.5ex;
+    margin-bottom: 0.5ex;
+    padding: 0.5ex;
+}
+
+.logicpenguin derivation-cambridge sub-derivation.closed > div > .innersubderiv {
+    border: 3px solid var(--lpgray2);
+}
+
+.logicpenguin derivation-cambridge sub-derivation.premiseroot > div >
+    .innersubderiv {
+    border: none;
+    margin-left: 0;
+    margin-top: 0;
+    padding: 0;
+}
+
+.logicpenguin derivation-cambridge .subderivbuttons {
+    margin-top: 1ex;
+}
+
+.logicpenguin derivation-cambridge .subderivbuttons div {
+    margin-bottom: 0.3ex;
+}
+
+.logicpenguin derivation-cambridge sub-derivation.closed > div >
+    .innersubderiv > .subderivbuttons {
+        display: none;
+}
+
+
+
