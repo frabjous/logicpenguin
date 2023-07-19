@@ -49,7 +49,7 @@ const commonForallxRules = {
                 { needs: ["B"], allows: "A" },
                 { needs: ["B"], allows: "¬A" }
             ] } ] },
-    "Ass" : { assumptionrule: true, hide: true },
+    "Hyp" : { assumptionrule: true, hide: true },
     "Pr"  : { premiserule: true, hide: true },
     "R"   : { forms: [ { prems: ["A"], conc: "A" } ], derived: true },
     "DS"  : { forms: [
@@ -92,10 +92,7 @@ const commonForallxRules = {
             ] }
 }
 
-cambridgeRules = {
-}
-
-calgaryRules = {
+const calgaryRules = {
     "IP"  : { forms: [ { conc: "A", subderivs: [
                 { needs: ["⊥"], allows: "¬A" }
             ] } ] },
@@ -103,60 +100,10 @@ calgaryRules = {
                 { needs: ["B"], allows: "A" },
                 { nneds: ["B"], allows: "¬A" }
             ] } ], derived: true }
-
-}
-
-/* The Magnus System has these, but the Magnus system is currently
- * unsupported due to the lack of equivalence-style rules 
-const otherRules = {
-    "HS"  : { prems: ["A → B", "B → C"], conc: "A → C" },
-    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"],  conc: "C" } ] }
-}
-*/
-
-const hardegreeRules = {
-    "→I"  : { meinongian: true, hint: "To establish a →-statement, use CD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
-    "↔I"  : { forms: [ { prems: ["A → B", "B → A"], conc: "A ↔ B" } ] },
-    "✖I"  : { forms: [ { prems: ["A", "~A"], conc: "✖" } ] },
-    "∀I"  : { pred: true, meinongian: true, hint: "To establish a ∀-statement, use UD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
-    "Ass" : { assumptionrule: true },
-    "↔O"  : { forms: [ { prems: ["A ↔ B"], conc: "A → B" }, { prems: ["A ↔ B"], conc: "B → A" } ] },
-    "✖O"  : { forms: [ { prems: ["✖"], conc: "A" } ] },
-    
-    
-    
-    "∃O"  : { pred: true, forms: [ { prems: ["∃xAx"], conc: "An", mustbenew: ["n"], subst: {"x":"n"} } ] },
-    "R"   : { forms: [ { prems: ["A"], conc: "A" } ] },
-    "~→O" : { forms: [ { prems: ["~(A → B)"], conc: "A & ~B" } ] },
-    "~∨O" : { forms: [ { prems: ["~(A ∨ B)"], conc: "~A" }, { prems: ["~(A ∨ B)"], conc: "~B" } ] },
-    "~&O" : { forms: [ { prems: ["~(A & B)"], conc: "A → ~B" } ] },
-    "~↔O" : { forms: [ { prems: ["~(A ↔ B)"], conc: "~A ↔ B" } ] },
-    "~✖O" : { meinongian: true, hint: "There is no rule for negations of ✖. A statement like ~✖ is a trivial tautology and the only things that follow from it are things you can prove another way." },
-    "~∀O" : { pred: true, forms: [ { prems: ["~∀xAx"], conc: "∃x~Ax" } ] },
-    "~∃O" : { pred: true, forms: [ { prems: ["~∃xAx"], conc: "∀x~Ax" } ] },
-    "DN"  : { forms: [ { prems: ["A"], conc: "~~A" }, { prems: ["~~A"], conc: "A" } ] },
-    "ID"  : { showrule: true, forms: [ { conc: "A", subderivs: [ { "needs": ["✖"], "allows": "~A" } ] }, { conc: "~A", subderivs: [ { "needs": ["✖"], "allows": "A" } ] } ] },
-    "&D"  : { showrule: true, isnew: true, forms: [ { conc: "A & B", subderivs: [ { "needs": ["A", "B"] } ] } ] },
-    "↔D"  : { showrule: true, isnew: true, forms: [ { conc: "A ↔ B", subderivs: [ { "needs": ["A → B", "B → A"] } ] } ] },
-    "DD"  : { showrule: true, forms: [ { conc: "A", subderivs: [ { "needs": ["A"], mustbedirect: true } ] } ] },
-    "UD"  : { pred: true, showrule: true, forms: [ { conc: "∀xAx", subst: {"x":"n"}, subderivs: [ { "needs": ["An"], wantsasnew: ["n"], subshowsrequired: true } ] } ] },
-    "∃D"  : { pred: true, showrule: true, isnew: true, forms: [ { conc: "∃xAx", subderivs: [ { "needs": ["✖"], "allows": "~∃xAx" } ] } ] },
-    "~D"  : { showrule: true, forms: [ { conc: "~A", subderivs: [ { "needs": ["✖"], "allows": "A" } ] } ], isnew: true, hidden: true },
-    "∨D"  : { showrule: true, forms: [ { conc: "A ∨ B", subderivs: [ { "needs": ["✖"], "allows": "~(A ∨ B)" } ] } ], isnew: true, hidden: true },
-    "Rep" : { isnew: true, hidden: true, forms: [ { prems: ["A"], conc: "A" } ] },
-    "Pr"  : { premiserule: true },
-    "As"  : { assumptionrule: true, hidden: true },
-    "~→I" : { hidden: true, meinongian: true, hint: "Although in-rules would be nice, only out-rules exist for negations." },
-    "~∨I" : { hidden: true, meinongian: true, hint: "Although in-rules would be nice, only out-rules exist for negations." },
-    "~&I" : { hidden: true, meinongian: true, hint: "Although in-rules would be nice, only out-rules exist for negations." },
-    "~↔I" : { hidden: true, meinongian: true, hint: "Although in-rules would be nice, only out-rules exist for negations." },
-    "~✖I" : { hidden: true, meinongian: true, hint: "Although in-rules would be nice, only out-rules exist for negations." },
-    "~∀I" : { pred: true, hidden: true, meinongian: true, hint: "Although in-rules would be nice, only out-rules exist for negations." },
-    "~∃I" : { pred: true, hidden: true, meinongian: true, hint: "Although in-rules would be nice, only out-rules exist for negations." }
 }
 
 function substituteSymbols(s, notationname) {
-    const innotation = notations["hardegree"];
+    const innotation = notations["cambridge"];
     const outnotation = notations[notationname];
     for (const op of opnames) {
         s = s.replaceAll(innotation[op], outnotation[op]);
@@ -164,19 +111,30 @@ function substituteSymbols(s, notationname) {
     return s;
 }
 
-export default function getHardegreeRuleset(notationname) {
-    // don't bother if we are just returning the name
-    if (notationname == 'hardegree') { return hardegreeRules; }
+export default function getFitchRules(rulesetname, notationname = null) {
+    // rulesetname same as notationname unless specified
+    if (notationname === null) {
+        notationname = rulesetname;
+    }
+    // start with common rules
+    ruleset = commonForallxRules;
+    // add calgary rules if need be
+    if (rulesetname == 'calgary') {
+        for (const rule of calgaryRules) {
+            ruleset[rule] = calgaryRules[rule];
+        }
+    }
+    // don't bother with notation change if we are just returning the same
+    if (notationname == 'cambridge' || notationname == 'calgary') {
+        return ruleset;
+    }
     // bind change function to new notation
     const change = ((s) => (substituteSymbols(s, notationname)));
     // start a new rule set and populate with changed rules
-    const ruleset = {};
-    for (const rulename in hardegreeRules) {
+    const newruleset = {};
+    for (const rulename in ruleset) {
         const newrulename = change(rulename);
-        const rule = hardegreeRules[rulename];
-        if ("hint" in rule) {
-            rule.hint = change(rule.hint);
-        }
+        const rule = ruleset[rulename];
         if ("forms" in rule) {
             for (const form of rule.forms) {
                 if ("conc" in form) {
@@ -201,7 +159,7 @@ export default function getHardegreeRuleset(notationname) {
                 }
             }
         }
-        ruleset[newrulename] = rule;
+        newruleset[newrulename] = rule;
     }
-    return ruleset;
+    return newruleset;
 }
