@@ -10,7 +10,7 @@ import notations from '../../symbolic/notations.js';
 
 const opnames = ['NOT','OR','AND','IFF','IFTHEN','FORALL','EXISTS','FALSUM'];
 
-const cambridgeForallxRules = {
+const commonForallxRules = {
     "∧I"  : { forms: [ { prems: ["A", "B"], conc: "A ∧ B" } ] },
     "∧E"  : { forms: [
                 { prems: ["A ∧ B"], conc: "A" },
@@ -22,8 +22,8 @@ const cambridgeForallxRules = {
             ] },
     "∨E"  : { forms: [
                 { conc: "C", prems: ["A ∨ B"], subderivs: [
-                    { wants: ["C"], allows: "A" },
-                    { wants: ["C"], allows: "B" }
+                    { needs: ["C"], allows: "A" },
+                    { needs: ["C"], allows: "B" }
                 ] }
             ] },
     "→I"  : { forms: [ { conc: "A → B", subderivs: [
@@ -42,12 +42,12 @@ const cambridgeForallxRules = {
             ] },
     "¬E"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "¬I"  : { forms: [ { conc: "¬A", subderivs: [
-                { wants: "⊥", allows: "A" }
+                { needs: ["⊥"], allows: "A" }
             ] } ] },
     "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "TND" : { forms: [ { conc: "B", subderivs: [
-                { wants: ["B"], allows: "A" },
-                { wants: ["B"], allows: "¬A" }
+                { needs: ["B"], allows: "A" },
+                { needs: ["B"], allows: "¬A" }
             ] } ] },
     "Ass" : { assumptionrule: true, hide: true },
     "Pr"  : { premiserule: true, hide: true },
@@ -77,7 +77,7 @@ const cambridgeForallxRules = {
             ] },
     "∃E"  : { pred: true, forms: [
                 { "conc": "B", prems: ["∃xAx"], mustbenew: ["n"], subst: {"x": "n"},
-                    subderivs: [ { wants: "B", allows: "An" } ] }
+                    subderivs: [ { needs: ["B"], allows: "An" } ] }
             ] },
     "CQ"  : { pred: true, forms: [
                 { prems: ["∀x¬Ax"], conc: "¬∃xAx" },
@@ -91,10 +91,28 @@ const cambridgeForallxRules = {
                 { prems: ["Aa", "b = a"], conc: "Ab" }
             ] }
 }
+
+cambridgeRules = {
+}
+
+calgaryRules = {
+    "IP"  : { forms: [ { conc: "A", subderivs: [
+                { needs: ["⊥"], allows: "¬A" }
+            ] } ] },
+    "LEM" : { forms: [ { conc: "B", subderivs: [
+                { needs: ["B"], allows: "A" },
+                { nneds: ["B"], allows: "¬A" }
+            ] } ], derived: true }
+
+}
+
+/* The Magnus System has these, but the Magnus system is currently
+ * unsupported due to the lack of equivalence-style rules 
 const otherRules = {
     "HS"  : { prems: ["A → B", "B → C"], conc: "A → C" },
     "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"],  conc: "C" } ] }
 }
+*/
 
 const hardegreeRules = {
     "→I"  : { meinongian: true, hint: "To establish a →-statement, use CD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
