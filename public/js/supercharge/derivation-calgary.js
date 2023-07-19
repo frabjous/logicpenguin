@@ -1,0 +1,64 @@
+// LICENSE: GNU GPL v3 You should have received a copy of the GNU General
+// Public License along with this program. If not, see
+// https://www.gnu.org/licenses/.
+
+///////////////// supercharge/derivation-calgary.js ///////////////////
+// adds line checking to calgary derivation problems                 //
+///////////////////////////////////////////////////////////////////////
+
+import { addelem, htmlEscape } from '../common.js';
+import calgaryDerivCheck from '../checkers/derivation-calgary.js';
+import tr from '../translate.js';
+
+export function chargeup(probelem) {
+    if (this.myanswer) {
+        probelem.showansButton = addelem('button', probelem.buttonDiv, {
+            innerHTML: tr('show answer'),
+            type: 'button',
+            myprob: probelem,
+            onclick: function() {
+                this.myprob.getSolution();
+            }
+        });
+    }
+    probelem.checkLines = async function() {
+        const question = this.myquestion;
+        const answer = this.myanswer;
+        const givenans = this.getAnswer();
+        const partialcredit = false;
+        const points = -1;
+        const cheat = true;
+        const options = this.options;
+        // set to checking
+        const lines = this.getElementsByClassName("derivationline");
+        for (const line of lines) {
+            if (line?.checkButton && line?.checkButton?.update) {
+                if ((line.input.value != '') || (line.jinput.value != '')) {
+                    line.checkButton.update('checking');
+                }
+            }
+        }
+        const ind = await calgaryDerivCheck(
+            question, answer, givenans, partialcredit, points, cheat, options
+        );
+        // save problem automatically if check reveals whole thing correct
+        const forceSave = (ind.successstatus == 'correct' && !this.ishinting);
+        ind.successstatus = 'edited';
+        ind.savedstatus = 'unsaved';
+        if (!this.isRestoring) {
+            this.setIndicator(ind);
+        }
+        if (forceSave) {
+            // remove empty line at end
+            const lastline = lines[lines.length - 1];
+            if ((lastline.input.value == '')
+                && (lastline.jinput.value == '')) {
+                lastline.parentNode.removeChild(lastline);
+            }
+            // check/save answer
+            this.processAnswer();
+        }
+    }
+    return;
+}
+

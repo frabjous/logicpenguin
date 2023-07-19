@@ -2,13 +2,13 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-///////////////// derivation-cambridge.js /////////////////////////////////////
-// Fitch-style derivations using the cambridge rule set                      //
-///////////////////////////////////////////////////////////////////////////////
+///////////////// derivation-calgary.js /////////////////////////////////
+// Fitch-style derivations using the calgary rule set                  //
+/////////////////////////////////////////////////////////////////////////
 
 import DerivationFitch from './derivation-fitch-base.js';
 
-export default class DerivationCambridge extends DerivationFitch {
+export default class DerivationCalgary extends DerivationFitch {
 
     constructor() {
         super();
@@ -23,11 +23,11 @@ export default class DerivationCambridge extends DerivationFitch {
     }
 
     makeProblem(problem, options, checksave) {
-        // always use Cambridge ruleset
-        options.ruleset = 'cambridge';
-        // default to Cambridge notation
+        // always use Calgary ruleset
+        options.ruleset = 'calgary';
+        // default to Calgary notation
         if (!("notation" in options)) {
-            options.notation = 'cambridge';
+            options.notation = 'calgary';
         }
         // default to rules first
         if (!("rulesFirst" in options)) {
@@ -38,4 +38,5 @@ export default class DerivationCambridge extends DerivationFitch {
 
 }
 
-customElements.define("derivation-cambridge", DerivationCambridge);
+customElements.define("derivation-calgary", DerivationCalgary);
+

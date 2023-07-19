@@ -313,50 +313,19 @@ export default class DerivationFitch extends DerivationExercise {
                 if (("j" in pt) && (pt.j == 'Pr') && ("s" in pt)) {
                     problem.prems.push(pt.s);
                 }
-                if (("parts" in pt) && ("showline" in pt) &&
-                    ("s" in pt.showline)) {
-                    problem.conc = pt.showline.s;
+                if (("parts" in pt) && ("wants" in pt)) {
+                    problem.conc = pt.wants;
                     break;
                 }
             }
         }
 
-        // use cambridge notation if not set
-        if (!("notation" in options)) {
-            options.notation = 'cambridge';
-        }
-
-        // partial problems treated differently
-        const partial = (answer && answer?.partial);
-        if (!("rulepanel" in options) && !partial) {
-            options.rulepanel = true;
-        }
-        // if we have an answer (And not partial), then enable hints/cheats
-        if (answer && !partial) {
-            if ((!("hints" in options)) || (options.hints === null)) {
-                options.hints = true;
-            }
-            if ((!("checklines" in options)) || (options.checklines === null)) {
-                options.checklines = true;
-            }
-            if ((!("cheat" in options)) || (options.cheat === null)) {
-                options.cheat = true;
-            } else {
-                options.cheat = false;
-            }
-        } else {
-            options.cheat = false;
-        }
         // if lowercase letter in conclusion, then it's predicate logic
         if (((!("pred" in options)) || (options.pred === null)) &&
             (/[a-z]/.test( problem.conc ))) {
             options.pred = true;
         } else {
             options.lazy = true;
-        }
-        // if partial, restore what was given as "answer"
-        if (partial && (restore === null) && answer) {
-            restore = answer;
         }
 
         return [parentid, problem, answer, restore, options];
