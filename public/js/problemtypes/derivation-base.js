@@ -1451,27 +1451,41 @@ export class SubDerivation extends HTMLElement {
             if (this.myline.input) { this.myline.input.focus(); }
             return;
         }
-        if (this.myline.jinput) { this.myline.jinput.focus(); }
+        if (this.myline.jinput && (!this.myline.jinput.myrwrap.classList.contains("premisejwrap"))) {
+            this.myline.jinput.focus();
+        }
     }
 
     static moveDown(e) {
         if (!this.myline) { return; }
-        const nextline = this.myline.mysubderiv.lineAfter(this.myline, false);
+        let nextline = this.myline.mysubderiv.lineAfter(this.myline, false);
         if (!nextline) { return; }
-        if (this.classList.contains("justification")) {
-            if (nextline.jinput) { nextline.jinput.focus(); return; }
+        if (!this.classList.contains("justification")) {
+            if (nextline.input) { nextline.input.focus(); }
+            return;
         }
-        if (nextline.input) { nextline.input.focus(); }
+        while ((nextline) && (nextline.jinput.myrwrap.classList.contains("premisejwrap"))) {
+            nextline = nextline.mysubderiv.lineAfter(nextline, false);
+        }
+        if (nextline && nextline?.jinput) {
+            nextline.jinput.focus();
+        }
     }
 
     static moveUp(e) {
         if (!this.myline) { return; }
-        const prevline = this.myline.mysubderiv.lineBefore(this.myline);
+        let prevline = this.myline.mysubderiv.lineBefore(this.myline);
         if (!prevline) { return; }
-        if (this.classList.contains("justification")) {
-            if (prevline.jinput) { prevline.jinput.focus(); return; }
+        if (!this.classList.contains("justification")) {
+            if (prevline.input) { prevline.input.focus(); }
+            return;
         }
-        if (prevline.input) { prevline.input.focus(); }
+        while ((prevline) && (prevline.jinput.myrwrap.classList.contains("premisejwrap"))) {
+            prevline = prevline.mysubderiv.lineBefore(prevline, false);
+        }
+        if (prevline && prevline?.jinput) {
+                prevline.jinput.focus();
+        }
     }
 }
 
