@@ -161,9 +161,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
             line.jinput.value = this.premiseAbbr ?? tr('premise');
             line.jinput.readOnly = true;
             // hide inputs completely for those w/o showlines
-            if (!this.useShowLines) {
-                line.jinput.myrwrap.style.display = 'none';
-            }
+            line.jinput.myrwrap.classList.add('premisejwrap');
         }
 
         this.mainDeriv = this.premDeriv;
@@ -581,26 +579,26 @@ export class SubDerivation extends HTMLElement {
             }
         });
 
-        const isSubderiv = 
+        const isSubderiv =
             ((!this.useShowLines && this?.parentderiv) ||
                 (this.useShowLines && this?.parentderiv?.parentderiv));
         // button for closing it
-        let closebtnicon = this.myprob.icons['closederiv'];
-        let closebtntitle = 'close subderivation';
-        if (!isSubderiv) {
-            closebtnicon = this.myprob.icons['closemainderiv'];
-            closebtntitle = 'close derivation';
-        }
-        this.buttons.close = addelem('div', this.buttons, {
-            classes: ['material-symbols-outlined'],
-            innerHTML: closebtnicon,
-            mysubderiv: this,
-            title: tr(closebtntitle),
-            onclick: function() {
-                this.mysubderiv.close();
+        if (isSubderiv || !this.useShowLines) {
+            let closebtnicon = this.myprob.icons['closederiv'];
+            let closebtntitle = 'close subderivation';
+            if (!isSubderiv) {
+                closebtntitle = 'close derivation';
             }
-        });
-
+            this.buttons.close = addelem('div', this.buttons, {
+                classes: ['material-symbols-outlined'],
+                innerHTML: closebtnicon,
+                mysubderiv: this,
+                title: tr(closebtntitle),
+                onclick: function() {
+                    this.mysubderiv.close();
+                }
+            });
+        }
         if (isSubderiv) {
             // subderivs have button for removing them
             this.buttons.remove = addelem('div', this.buttons, {
@@ -761,7 +759,7 @@ export class SubDerivation extends HTMLElement {
         }
 
         // line check indicator/button
-        if (this.parentderiv) {
+        if (this.parentderiv || !this.useShowLines) {
             line.checkButton = addelem('div', line.buttons, {
                 myline: line,
                 myprob: this.myprob,
@@ -786,6 +784,7 @@ export class SubDerivation extends HTMLElement {
                 onclick: function() { this.myderiv.toggle(); }
             });
         }
+        // HERE
         // formula input box
         line.input = FormulaInput.getnew(inputopts);
         line.appendChild(line.input);

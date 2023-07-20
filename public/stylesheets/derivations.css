@@ -134,15 +134,12 @@
 
 /* popup menu button */
 
-/*
 .logicpenguin sub-derivation .derivationline .jbwrap div .derivmenubutton {
     position: relative;
     padding-left: 0.5ex;
-    padding-top: 6px;
-    bottom: 3px;
+    top: 0.2rem;
     user-select: none;
 }
-*/
 
 .logicpenguin sub-derivation .derivationline .derivmenubutton > .material-symbols-outlined {
     cursor: pointer;

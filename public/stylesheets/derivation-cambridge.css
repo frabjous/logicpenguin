@@ -72,8 +72,6 @@
     border-left: 3px solid var(--lpgray2);
 }
 
-/* always show buttons in main deriv??
-.logicpenguin sub-derivation.premiseroot.closed > div > .innersubderiv .subderivbuttons {
-        display: block;
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline .jbwrap.premisejwrap {
+    display: none !important;
 }
-*/

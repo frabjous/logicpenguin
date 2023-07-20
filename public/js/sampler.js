@@ -178,14 +178,13 @@ LP.sampler = function(opts) {
         }
     });
 
-
 }
 
 LP.samplerProblem = async function(opts) {
     opts.parentid = 'logicpenguinsampleproblem-' + opts.system;
     byid(opts.parentid).innerHTML = '';
     await LP.embed(opts);
-    byid(opts.parentid).scrollIntoView(false);
+    byid(opts.parentid).scrollIntoView();
 }
 
 LP.loadCSS('sampler');
