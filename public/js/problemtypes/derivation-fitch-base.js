@@ -21,9 +21,11 @@ export default class DerivationFitch extends DerivationExercise {
     }
 
     addSubDerivHook(subderiv) {
+        // focus on just added line if not restoring
         if (!this.isRestoring) {
-            const l = subderiv.addLine(subderiv.target, false);
-            l.input.focus();
+            const ll = subderiv.getElementsByClassName("derivationline");
+            if (!ll) { return; }
+            ll[0].input.focus();
         }
     }
 

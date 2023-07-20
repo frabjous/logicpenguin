@@ -818,7 +818,7 @@ export class SubDerivation extends HTMLElement {
             line.numbox.classList.remove("invisible");
         }
         // adding a line usually changes the problem
-        if (!this.myprob.settingUp)
+        if (!this.myprob.settingUp) {
             this.myprob.makeChanged();
         }
         return line;
@@ -854,10 +854,7 @@ export class SubDerivation extends HTMLElement {
             this.myprob.addSubDerivHook(subderiv);
         }
         // make changed if real subderiv
-        if (this?.myprob &&
-            ((!this.useShowLines && this?.parentderiv) ||
-            (this.useShowLines &&
-            this?.parentderiv?.parentderiv))) {
+        if (!this.myprob.settingUp) {
             this.myprob.makeChanged();
         }
         return subderiv;
@@ -866,6 +863,19 @@ export class SubDerivation extends HTMLElement {
     close() {
         let changed = false;
         const lines = Array.from(this.getElementsByClassName("derivationline"));
+        // check if there are any non-empty lines
+        let hasNonEmpty = false;
+        for (const line of lines) {
+            if (((line.jinput.value != '') || (line.input.value != '')) &&
+                (!line.classList.contains('derivationshowline'))) {
+                hasNonEmpty = true;
+                break;
+            }
+        }
+        // don't close or even remove lines from an empty subderivation
+        if (!hasNonEmpty) {
+            return;
+        }
         // remove blank lines
         lines.forEach((line) => {
             if (line.jinput.value == '' && line.input.value == '' &&
