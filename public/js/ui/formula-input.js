@@ -93,6 +93,11 @@ export default class FormulaInput {
         // set the value so we can tell if edits changed it later on
         this.oldvalue = this.value;
 
+        // check if script calling it has added a hook to focus
+        if (this.focusHook) {
+            this.focusHook(e);
+        }
+        
         // don't show widget if the input is read-only
         if (this.readOnly) { return; }
 
@@ -101,10 +106,6 @@ export default class FormulaInput {
             this.symbolwidget.showfor(this);
         }
 
-        // check if script calling it has added a hook to focus
-        if (this.focusHook) {
-            this.focusHook(e);
-        }
     }
 
     // create a new formula input and return it

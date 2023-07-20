@@ -32,7 +32,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
     // turn auto-check on or off
     set autocheck(b) { // b here is a boolean
         const lines = this.mainDeriv.getElementsByClassName("derivationline");
-        // hide or unhide checkbutton for each line
+        // hide or unhide check button for each line
         for (const line of lines) {
             if (!line.checkButton) { continue; };
             if (b) {
@@ -88,7 +88,6 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.scrollIntoView();
     }
 
-    // TODO: this needs to be ruleset specific, I think
     hideRulePanel() {
         if (window?.rulepanel?.parentNode) {
             window.rulepanel.parentNode.removeChild(window.rulepanel);
@@ -110,7 +109,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.options = options;
         this.checksave = checksave;
 
-        // default to no showlines
+        // default to no show lines
         if (!("useShowLines" in this)) {
             this.useShowLines = false;
         }
@@ -124,7 +123,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         // mark as setting up
         this.settingUp  = true;
 
-        // top contains problem if not revealed with showlines
+        // top contains problem if not revealed with show lines
         if (!this.useShowLines) {
             const problemsummary = addelem('div', this, {
                 classes: ['derivationproblemsummary', 'symbolic'],
@@ -1122,6 +1121,10 @@ export class SubDerivation extends HTMLElement {
                 this.myline.mysubderiv.open();
             }
         }
+
+        // don't do anything else unless not readOnly
+        if (this.readOnly) { return; }
+
         // mark this line's as last focused justification input
         if (this?.myline?.jinput &&
             this?.myline?.mysubderiv?.myprob) {
