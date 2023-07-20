@@ -121,6 +121,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.symbols = this.syntax.symbols;
         this.notation = this.syntax.notation;
 
+        // mark as setting up
+        this.settingUp  = true;
+
         // top contains problem if not revealed with showlines
         if (!this.useShowLines) {
             const problemsummary = addelem('div', this, {
@@ -180,6 +183,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
         }
 
         this.renumberLines();
+
+        // no longer setting up
+        this.settingUp = false;
 
         // comment area
         this.commentDiv = addelem('div', this, {
@@ -431,10 +437,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     showRulePanelFor(inp) {
-        // TODO: make rule panels ruleset-specific
         if (!this.options.rulepanel || !this.ruleset) { return; }
         if (!window.rulepanel ||
-            window.rulepanel.problemtype != this.problemtype) {
+            window.rulepanel.ruleset != this.ruleset) {
             if (!this.makeRulePanel) { return; }
             window.rulepanel = this.makeRulePanel();
             window.rulepanel.ruleset = this.ruleset;
@@ -784,7 +789,6 @@ export class SubDerivation extends HTMLElement {
                 onclick: function() { this.myderiv.toggle(); }
             });
         }
-        // HERE
         // formula input box
         line.input = FormulaInput.getnew(inputopts);
         line.appendChild(line.input);
@@ -807,16 +811,14 @@ export class SubDerivation extends HTMLElement {
             line.numbox.classList.remove("invisible");
         }
         // initial premises are read-only
-        if ((!this.parentderiv) ||
-            (!this.parentderiv.parentderiv && showline)) {
+        if (this.useShowLines &&
+            ((!this.parentderiv) ||
+            (!this.parentderiv.parentderiv && showline))) {
             line.input.readOnly = true;
             line.numbox.classList.remove("invisible");
         }
         // adding a line usually changes the problem
-        if (this?.myprob &&
-            (this?.parentderiv?.parentderiv &&
-                !(!this?.parentderiv?.parentderiv && showline)
-            )) {
+        if (!this.myprob.settingUp)
             this.myprob.makeChanged();
         }
         return line;
