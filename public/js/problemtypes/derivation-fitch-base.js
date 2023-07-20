@@ -20,10 +20,9 @@ export default class DerivationFitch extends DerivationExercise {
         super();
     }
 
-    // TODO
     addSubDerivHook(subderiv) {
-        const l = subderiv.addLine(subderiv.target, true);
         if (!this.isRestoring) {
+            const l = subderiv.addLine(subderiv.target, false);
             l.input.focus();
         }
     }
