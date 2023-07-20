@@ -795,6 +795,11 @@ export class SubDerivation extends HTMLElement {
                 onclick: function() { this.myderiv.toggle(); }
             });
         }
+        // a pseudo element created to put a partial line there
+        line.bottom = addelem('div', line, {
+            classes: ['bottombar'];
+        }
+            
         // formula input box
         line.input = FormulaInput.getnew(inputopts);
         line.appendChild(line.input);

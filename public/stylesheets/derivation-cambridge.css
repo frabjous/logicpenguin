@@ -81,23 +81,27 @@
 
 .logicpenguin .fitch-style-derivation .derivationline.lastpremise,
 .logicpenguin .fitch-style-derivation .derivationline.hypothesis {
+    position: relative;
+}
+
+.logicpenguin .fitch-style-derivation .derivationline.lastpremise::before,
+.logicpenguin .fitch-style-derivation .derivationline.hypothesis::before {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 5rem;
+    content: "";
     border-bottom: 3px dashed var(--lpgray5);
 }
 
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise,
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis {
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise::before,
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis::before {
     border-bottom: 3px solid var(--lpgray2);
 }
 
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise,
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis {
-    border-bottom: 3px solid var(--lpgray2);
-}
-
-
-.logicpenguin .fitch-style-derivation sub-derivation .derivationline.lastpremise input.formulainput:hover,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput:hover,
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput:hover,
-.logicpenguin .fitch-style-derivation sub-derivation .derivationline.lastpremise input.formulainput,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput,
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput {
     border-bottom: none;
 }

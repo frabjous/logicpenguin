@@ -31,6 +31,10 @@
     width: 100%;
 }
 
+.logicpenguin derivation-hardegree .derivationline.derivationshowline .bottombar {
+    display: none !important;
+}
+
 .logicpenguin derivation-hardegree .derivationline.derivationshowline .showlineshow {
     display: inline-block;
     color: var(--lpmagenta);
