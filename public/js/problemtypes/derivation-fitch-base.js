@@ -26,6 +26,9 @@ export default class DerivationFitch extends DerivationExercise {
             const ll = subderiv.getElementsByClassName("derivationline");
             if (!ll) { return; }
             ll[0].input.focus();
+            ll.classList.add("hypothesis");
+            ll.jinput.value = 
+            ll.myrwrap.classList.add('premisejwrap');
         }
     }
 

@@ -60,7 +60,7 @@
     margin-top: 1ex;
 }
 
-.logicpenguin sub-derivation.closed .innersubderiv .subderivbuttons {
+.logicpenguin sub-derivation.closed > div > .innersubderiv > .subderivbuttons {
         display: none;
 }
 

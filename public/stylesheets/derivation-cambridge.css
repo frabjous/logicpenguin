@@ -75,3 +75,7 @@
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline .jbwrap.premisejwrap {
     display: none !important;
 }
+
+.logicpenguin .fitch-style-derivation sub-derivation + sub-derivation .outersubderiv {
+   padding-top: 0.5rem;
+}

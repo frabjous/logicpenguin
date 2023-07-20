@@ -159,12 +159,17 @@ export default class DerivationExercise extends LogicPenguinProblem {
         });
         this.premDeriv.classList.add("premiseroot");
         let prems = problem?.prems ?? [];
+        let lastprem false;
         for (const prem of prems) {
             const line = this.premDeriv.addLine(prem, false);
+            lastprem = line;
             line.jinput.value = this.premiseAbbr ?? tr('premise');
             line.jinput.readOnly = true;
             // hide inputs completely for those w/o showlines
             line.jinput.myrwrap.classList.add('premisejwrap');
+        }
+        if (lastprem) {
+            lastprem.classList.apply("lastpremise");
         }
 
         this.mainDeriv = this.premDeriv;
@@ -830,7 +835,10 @@ export class SubDerivation extends HTMLElement {
             const lines = this.getElementsByClassName("derivationline");
             if (lines && lines.length > 0) {
                 const lline = lines[ lines.length - 1 ];
-                if (!lline.classList.contains("derivationshowline")) {
+                console.log(this);
+                console.log(lline.parentNode.parentNode);
+                if ((!lline.classList.contains("derivationshowline")) &&
+                    (lline.mysubderiv == this)) {
                     if ((lline.input.value == '') && (lline.jinput.value == '')) {
                         lline.parentNode.removeChild(lline);
                     }
