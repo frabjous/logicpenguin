@@ -30,7 +30,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     // turn auto-check on or off
-    set autocheck(b) {
+    set autocheck(b) { // b here is a boolean
         const lines = this.mainDeriv.getElementsByClassName("derivationline");
         // hide or unhide checkbutton for each line
         for (const line of lines) {
@@ -43,15 +43,15 @@ export default class DerivationExercise extends LogicPenguinProblem {
         }
         // set the toggle button on or off
         if (this.clToggle) {
-            if (b) { 
-                this.clToggle.innerHTML =
-                    '<div class="material-symbols-outlined ' +
-                    'autocheckon">' + this.icons['autocheckon'] + '</div>';
+            if (b) {
+                this.clToggle.innerHTML = this.icons['autocheckon'];
+                this.clToggle.classList.remove('autocheckoff');
+                this.clToggle.classList.add('autocheckon');
                 this.clToggle.title = 'turn off autocheck';
             } else {
-                this.clToggle.innerHTML =
-                    '<div class="material-symbols-outlined ' +
-                    'autocheckoff">' + this.icons['autocheckoff'] + '</div>';
+                this.clToggle.innerHTML = this.icons['autocheckoff'];
+                this.clToggle.classList.remove('autocheckon');
+                this.clToggle.classList.add('autocheckoff');
                 this.clToggle.title = 'turn on autocheck';
             }
         }
@@ -594,18 +594,18 @@ export class SubDerivation extends HTMLElement {
             });
         } else { // main deriv has button for toggling autocheck on/off
             this.myprob.clToggle = addelem('div', this.buttons, {
-                classes: ['derivchecklinestoggle'],
+                classes: ['material-symbols-outlined','derivchecklinestoggle'],
                 myprob: this.myprob,
-                innerHTML: '<div class="material-symbols-outlined autocheckoff">' +
-                    this.myprob.icons["autocheckoff"] + '</div>'
+                innerHTML: this.myprob.icons["autocheckoff"],
+                title: tr('toggle autochecking on/off')
             });
             if (this.myprob.options.checklines) {
                 this.myprob.clToggle.onclick = function(e) {
                     this.myprob.autocheck = (!this.myprob.autocheck);
                 }
-            } else {
+            } /*TODO else {
                 this.myprob.clToggle.classList.add("hidden");
-            }
+            }*/
         }
 
         let closeicon = this.myprob.icons['closederiv'];

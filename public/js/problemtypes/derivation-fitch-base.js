@@ -330,6 +330,28 @@ export default class DerivationFitch extends DerivationExercise {
             options.lazy = true;
         }
 
+        // partial problems treated differently
+        const partial = (answer && answer?.partial);
+        if (!("rulepanel" in options) && !partial) {
+            options.rulepanel = true;
+        }
+        // Enable hints/cheats if not partial
+        if (!partial) {
+            if ((!("hints" in options)) || (options.hints === null)) {
+                options.hints = true;
+            }
+            if ((!("checklines" in options)) || (options.checklines === null)) {
+                options.checklines = true;
+            }
+            if ((!("cheat" in options)) || (options.cheat === null)) {
+                options.cheat = true;
+            } else {
+                options.cheat = false;
+            }
+        } else {
+            options.cheat = false;
+        }
+
         return [parentid, problem, answer, restore, options];
     }
 

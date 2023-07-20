@@ -69,6 +69,22 @@
     background-color: var(--lpcyan);
     color: var(--lpwhite);
 }
+
+/* check toggle button */
+.logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle:hover,
+.logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle.autocheckoff:hover {
+    background-color: var(--lpgreen);
+}
+
+.logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle.autocheckon {
+    background-color: var(--lpmagenta);
+}
+
+.logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle.autocheckon:hover {
+    color: var(--lpgray5);
+    background-color: var(--lpbgwhite)
+}
+
 /* LINE BUTTONS */
 
 /* common */
@@ -160,33 +176,6 @@
     margin-left: 1ex;
     font-size: inherit;
     text-align: center;
-}
-
-/* check toggle button */
-
-.logicpenguin sub-derivation .derivchecklinestoggle {
-    padding-left: 0.5ex;
-    padding-top: 6px;
-    cursor: pointer;
-    display: inline-block;
-}
-
-.logicpenguin sub-derivation .derivchecklinestoggle .autocheckoff {
-    color: var(--lpbgwhite);
-    background-color: var(--lpgray5);
-}
-.logicpenguin sub-derivation .derivchecklinestoggle .autocheckoff:hover {
-    background-color: var(--lpgreen);
-}
-
-.logicpenguin sub-derivation .derivchecklinestoggle .autocheckon {
-    background-color: var(--lpmagenta);
-    color: var(--lpgray6);
-}
-
-.logicpenguin sub-derivation .derivchecklinestoggle .autocheckon:hover {
-    color: var(--lpgray5);
-    background-color: var(--lpbgwhite)
 }
 
 /* CHECK "BUTTON" (really an indicator, meant as a button originally) */
