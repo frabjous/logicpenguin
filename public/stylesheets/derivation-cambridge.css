@@ -65,7 +65,6 @@
     margin-right: 0.1em;
     margin-top: 0.5ex;
     margin-bottom: 0.5ex;
-    padding: 0.5ex;
 }
 
 .logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv {
@@ -78,4 +77,32 @@
 
 .logicpenguin .fitch-style-derivation sub-derivation + sub-derivation .outersubderiv {
    padding-top: 0.5rem;
+}
+
+.logicpenguin .fitch-style-derivation .derivationline.lastpremise,
+.logicpenguin .fitch-style-derivation .derivationline.hypothesis {
+    border-bottom: 3px dashed var(--lpgray5);
+}
+
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise,
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis {
+    border-bottom: 3px solid var(--lpgray2);
+}
+
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise,
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis {
+    border-bottom: 3px solid var(--lpgray2);
+}
+
+
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.lastpremise input.formulainput:hover,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput:hover,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.lastpremise input.formulainput,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput {
+    border-bottom: none;
+}
+
+.logicpenguin .fitch-style-derivation sub-derivation .subderivbuttons {
+    margin-top: 1ex;
+    margin-left: 1rem;
 }
