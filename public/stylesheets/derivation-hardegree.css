@@ -75,10 +75,6 @@
     width: calc(100% - 4.5em - 4px);
 }
 
-.logicpenguin derivation-hardegree .derivationline {
-    padding: 1px;
-}
-
 .logicpenguin derivation-hardegree .derivationcore {
     position: relative;
     margin-left: 2.2em;
@@ -119,20 +115,5 @@
     margin-top: 0;
     padding: 0;
 }
-
-/*
-.logicpenguin derivation-hardegree .subderivbuttons {
-    margin-top: 1ex;
-}
-
-.logicpenguin derivation-hardegree .subderivbuttons div {
-    margin-bottom: 0.3ex;
-}
-*/
-.logicpenguin derivation-hardegree sub-derivation.closed > div >
-    .innersubderiv > .subderivbuttons {
-        display: none;
-}
-
 
 

@@ -37,10 +37,6 @@
     width: calc(100% - 1em);
 }
 
-.logicpenguin .fitch-style-derivation .derivationline {
-    padding: 1px;
-}
-
 .logicpenguin .fitch-style-derivation .derivationcore {
     position: relative;
     margin-left: 2.2em;
@@ -76,29 +72,8 @@
     border-left: 3px solid var(--lpgray2);
 }
 
-/* premise root no different from others
-.logicpenguin .fitch-style-derivation sub-derivation.premiseroot > div >
-    .innersubderiv {
-    border: none;
-    margin-left: 0;
-    margin-top: 0;
-    padding: 0;
+/* always show buttons in main deriv??
+.logicpenguin sub-derivation.premiseroot.closed > div > .innersubderiv .subderivbuttons {
+        display: block;
 }
 */
-
-/*
-.logicpenguin .fitch-style-derivation .subderivbuttons {
-    margin-top: 1ex;
-}
-
-.logicpenguin .fitch-style-derivation .subderivbuttons div {
-    margin-bottom: 0.3ex;
-}
-*/
-
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div >
-    .innersubderiv > .subderivbuttons {
-        display: none;
-}
-
-

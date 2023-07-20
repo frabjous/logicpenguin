@@ -584,17 +584,24 @@ export class SubDerivation extends HTMLElement {
         const isSubderiv = 
             ((!this.useShowLines && this?.parentderiv) ||
                 (this.useShowLines && this?.parentderiv?.parentderiv));
+        // button for closing it
+        let closebtnicon = this.myprob.icons['closederiv'];
+        let closebtntitle = 'close subderivation';
+        if (!isSubderiv) {
+            closebtnicon = this.myprob.icons['closemainderiv'];
+            closebtntitle = 'close derivation';
+        }
+        this.buttons.close = addelem('div', this.buttons, {
+            classes: ['material-symbols-outlined'],
+            innerHTML: closebtnicon,
+            mysubderiv: this,
+            title: tr(closebtntitle),
+            onclick: function() {
+                this.mysubderiv.close();
+            }
+        });
+
         if (isSubderiv) {
-            // subderivs have button for closing it
-            this.buttons.close = addelem('div', this.buttons, {
-                classes: ['material-symbols-outlined'],
-                innerHTML: this.myprob.icons['closederiv'],
-                mysubderiv: this,
-                title: tr('close subderivation'),
-                onclick: function() {
-                    this.mysubderiv.close();
-                }
-            });
             // subderivs have button for removing them
             this.buttons.remove = addelem('div', this.buttons, {
                 classes: ['material-symbols-outlined'],

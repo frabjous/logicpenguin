@@ -55,14 +55,24 @@
 
 /* SUBDERIVATION BUTTONS */
 
+
+.logicpenguin sub-derivation .subderivbuttons {
+    margin-top: 1ex;
+}
+
+.logicpenguin sub-derivation.closed .innersubderiv .subderivbuttons {
+        display: none;
+}
+
 .logicpenguin sub-derivation .subderivbuttons > div {
     margin-right: 1ex;
     background-color: var(--lpblue);
     color: var(--lpbgwhite);
-    /* padding: 0.2ex; */
+    padding: 0.2ex;
     border-radius: 5px;
     cursor: pointer;
     user-select: none;
+    margin-bottom: 0.3ex;
 }
 
 .logicpenguin sub-derivation .subderivbuttons > div:hover {
