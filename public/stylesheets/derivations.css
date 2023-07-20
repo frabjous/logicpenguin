@@ -59,7 +59,7 @@
     margin-right: 1ex;
     background-color: var(--lpblue);
     color: var(--lpbgwhite);
-    padding: 0.2ex;
+    /* padding: 0.2ex; */
     border-radius: 5px;
     cursor: pointer;
     user-select: none;
@@ -102,6 +102,7 @@
 
 /* popup menu button */
 
+/*
 .logicpenguin sub-derivation .derivationline .jbwrap div .derivmenubutton {
     position: relative;
     padding-left: 0.5ex;
@@ -109,6 +110,7 @@
     bottom: 3px;
     user-select: none;
 }
+*/
 
 .logicpenguin sub-derivation .derivationline .derivmenubutton > .material-symbols-outlined {
     cursor: pointer;
@@ -182,7 +184,7 @@
 
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck {
     font-size: 125%;
-    padding: 4px;
+   /* padding: 4px; */
 }
 
 /* colors, etc., for line check icon */
