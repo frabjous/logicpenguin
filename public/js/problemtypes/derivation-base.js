@@ -136,13 +136,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
         const container = addelem('div', this, {
             classes: ['derivationcontainer']
         });
+
         // formula area only contains the formulas, not the side boxes
         const formulaarea = addelem('div', container, {
             classes: ['derivationcore']
         });
 
-        // premise root is active and has target for
-        // derivations without showlines
+        // premise root is active and has target for derivations without
+        // show lines; otherwise, there is no target of premise root
         let mainTarget = false;
         if (!this.useShowLines) {
             mainTarget = problem.conc;
@@ -828,10 +829,10 @@ export class SubDerivation extends HTMLElement {
             line.input.readOnly = true;
             line.numbox.classList.remove("invisible");
         }
-        // adding a line usually changes the problem
-        if (!this.myprob.settingUp) {
+        // adding a line usually changes the problem; EDIT: no it does not
+        /*if (!this.myprob.settingUp) {
             this.myprob.makeChanged();
-        }
+        }*/
         return line;
     }
 
@@ -849,14 +850,17 @@ export class SubDerivation extends HTMLElement {
                 }
             }
         }
+        // create and add element
         const subderiv = addelem('sub-derivation', this.inner, {});
         subderiv.initialSetup({
             parentderiv: this,
             target: (s ?? false)
         });
+        // has the subderivation class unless it has no parent
         if (this.parentderiv) {
             subderiv.classList.add("subderivation");
         }
+        // move the subderivation before the buttons
         if (this.buttons) {
             this.inner.insertBefore(subderiv, this.buttons);
         }
@@ -875,6 +879,7 @@ export class SubDerivation extends HTMLElement {
     close() {
         let changed = false;
         const lines = Array.from(this.getElementsByClassName("derivationline"));
+
         // check if there are any non-empty lines
         let hasNonEmpty = false;
         for (const line of lines) {
@@ -900,9 +905,9 @@ export class SubDerivation extends HTMLElement {
 
         if (!this.classList.contains("closed")) {
             this.classList.add('closed');
-            // EDITED: don't mark as changed just for marking closed
-            // changed = true;
         }
+
+        // only mark as changed if lines were removed
         if (changed) {
             this.myprob.renumberLines();
             this.myprob.makeChanged();
@@ -911,9 +916,12 @@ export class SubDerivation extends HTMLElement {
 
     getLineInfo(line) {
         const info = {};
+
+        // get input values
         info.s = line?.input?.value ?? '';
         info.j = line?.jinput?.value ?? '';
-        // return something falsey if no values
+
+        // get status of line indicators
         const cbCL = line?.checkButton?.getElementsByTagName("div")?.[0]?.classList;
         if (cbCL) {
             for (const cl of cbCL) {
@@ -923,6 +931,8 @@ export class SubDerivation extends HTMLElement {
                 }
             }
         }
+
+        // get line number
         info.n = line?.numbox?.innerHTML ?? '';
         return info;
     }
