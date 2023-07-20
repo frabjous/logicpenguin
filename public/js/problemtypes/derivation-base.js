@@ -1246,7 +1246,7 @@ export class SubDerivation extends HTMLElement {
                 if (targetSD?.classList?.contains("closed") && !targetSD?.useShowLines
                     && targetSD?.parentderiv) {
                     targetP = targetSD;
-                    targetSD = target.SD.parentderiv;
+                    targetSD = targetSD.parentderiv;
                 }
                 // create line
                 const nl = targetSD.addLine('', false);
@@ -1295,15 +1295,23 @@ export class SubDerivation extends HTMLElement {
             descr: 'insert subderivation below',
             numinp: false,
             fn: function(e) {
+                // check if closed if no showlines
+                let targetP = this.myline;
+                let targetSD = this.myline.mysubderiv;
+                if (targetSD.classList.contains("closed") && (!targetSD.useShowLines) &&
+                    targetSD?.parentderiv) {
+                    targetP = targetSD;
+                    targetSD = targetSD.parentderiv;
+                }
                 // add the subderivation
-                const sd = this.myline.mysubderiv.addSubderivation('', false);
+                const sd = targetSD.addSubderivation('', false);
                 // put into place, for showline, it goes in parent
-                if (this.myline.classList.contains("derivationshowline")) {
-                    this.myline.mysubderiv.inner.insertBefore(sd,
-                        this.myline.mysubderiv.inner.firstChild);
+                if (targetP.classList.contains("derivationshowline")) {
+                    targetP.mysubderiv.inner.insertBefore(sd,
+                        targetP.mysubderiv.inner.firstChild);
                 } else {
-                    this.myline.parentNode.insertBefore(sd,
-                        this.myline.nextSibling);
+                    targetP.parentNode.insertBefore(sd,
+                        targetP.nextSibling);
                 }
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
@@ -1326,7 +1334,7 @@ export class SubDerivation extends HTMLElement {
                     return;
                 }
                 if (targ?.input?.readOnly) {
-                    alert('You cannot edit the argument itself.');
+                    alert('You cannot move the line there.');
                     return;
                 }
                 const isshow = this.myline.classList.contains("derivationshowline");
@@ -1340,7 +1348,12 @@ export class SubDerivation extends HTMLElement {
                 if (isshow) {
                     movee = this.myline.mysubderiv;
                 }
+                // goes in parent if we are talking about a show line
+                // or a first line
                 if (targ.classList.contains("derivationshowline")) {
+                    targ = targ.mysubderiv;
+                }
+                if (targ.classList.contains("hypothesis")) {
                     targ = targ.mysubderiv;
                 }
                 // actually do the move
@@ -1362,7 +1375,9 @@ export class SubDerivation extends HTMLElement {
                     alert("No such line!");
                     return;
                 }
-                if (targ?.input?.readOnly) {
+                if ((targ.classList.contains('premiseline')) &&
+                    (!targ.classList.contains('lastpremise')) ||
+                    (targ.mysubderiv.useShowLines)) {
                     alert('You cannot edit the argument itself.');
                     return;
                 }
@@ -1411,8 +1426,6 @@ export class SubDerivation extends HTMLElement {
                 );
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
-                // close the menu asap; not sure this is neeeded
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
             }
         },
         menucancel: {
