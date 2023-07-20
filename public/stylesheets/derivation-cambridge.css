@@ -79,18 +79,31 @@
    padding-top: 0.5rem;
 }
 
-.logicpenguin .fitch-style-derivation .derivationline.lastpremise,
-.logicpenguin .fitch-style-derivation .derivationline.hypothesis {
-    position: relative;
+
+.logicpenguin .fitch-style-derivation .derivationline.lastpremise .bottombar,
+.logicpenguin .fitch-style-derivation .derivationline.hypothesis .bottombar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5rem;
+    height: 38px;
+    border-bottom: 3px dashed var(--lpgray5);
 }
 
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise .bottombar,
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis .bottombar {
+    border-bottom: 3px solid var(--lpgray2);
+}
+
+
+/*
 .logicpenguin .fitch-style-derivation .derivationline.lastpremise::before,
 .logicpenguin .fitch-style-derivation .derivationline.hypothesis::before {
     position: absolute;
     left: 0;
     bottom: 0;
     width: 5rem;
-    content: "";
+    content: "",
     border-bottom: 3px dashed var(--lpgray5);
 }
 
@@ -98,7 +111,7 @@
 .logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis::before {
     border-bottom: 3px solid var(--lpgray2);
 }
-
+*/
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput:hover,
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput:hover,
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput,

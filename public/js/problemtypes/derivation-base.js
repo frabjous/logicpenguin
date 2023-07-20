@@ -797,8 +797,8 @@ export class SubDerivation extends HTMLElement {
         }
         // a pseudo element created to put a partial line there
         line.bottom = addelem('div', line, {
-            classes: ['bottombar'];
-        }
+            classes: ['bottombar']
+        });
             
         // formula input box
         line.input = FormulaInput.getnew(inputopts);
