@@ -1189,13 +1189,24 @@ export class SubDerivation extends HTMLElement {
                 return;
             }
         }
-        // go to justification input on prev line
+        // go to prev line
         const prevline =
             this.myline.mysubderiv.lineBefore(this.myline);
-        if (prevline && prevline.jinput) {
-            prevline.jinput.focus();
-            return;
+
+        if (prevline) {
+            // go to justification input if there and not hidden
+            if (prevline.jinput &&
+                (!prevline.jinput.myrwrap.classList.contains('premisejwrap'))) {
+                prevline.jinput.focus();
+                return;
+            }
+            // otherwise go to main input
+            if (prevline.input) {
+                prevline.input.focus();
+                return;
+            }
         }
+        // fell through; no where to go
     }
 
     // these what get menu items in the little line menu
@@ -1216,8 +1227,10 @@ export class SubDerivation extends HTMLElement {
                 targspot.parentNode.insertBefore(nl, targspot);
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
+                /* this will always add a blank line so no use yet in marking as changed
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
+                */
                 if (nl.input) { nl.input.focus();}
             }
         },
@@ -1225,19 +1238,31 @@ export class SubDerivation extends HTMLElement {
             descr: 'insert line below',
             numinp: false,
             fn: function(e) {
+                let targetP = this.myline;
+                let targetSD = this.myline.mysubderiv;
+                // depending on whether subderivation closed, line either
+                // goes in this subderivation, or the parent subderivation
+                // for derivations without show lines
+                if (targetSD?.classList?.contains("closed") && !targetSD?.useShowLines
+                    && targetSD?.parentderiv) {
+                    targetP = targetSD;
+                    targetSD = target.SD.parentderiv;
+                }
                 // create line
-                const nl = this.myline.mysubderiv.addLine('', false);
+                const nl = targetSD.addLine('', false);
                 // move into place
-                if (this.myline.classList.contains("derivationshowline")) {
-                    this.myline.mysubderiv.inner.insertBefore(nl,
+                if (targetP.classList.contains("derivationshowline")) {
+                    targetP.mysubderiv.inner.insertBefore(nl,
                         this.myline.mysubderiv.inner.firstChild);
                 } else {
-                    this.myline.parentNode.insertBefore(nl, this.myline.nextSibling);
+                    targetP.parentNode.insertBefore(nl, targetP.nextSibling);
                 }
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
+                /* this will always add a blank line so no use making changed
                 this.myline.mysubderiv.myprob.makeChanged();
                 this.myline.mysubderiv.myprob.renumberLines();
+                */
                 if (nl.input) { nl.input.focus();}
             }
         },
