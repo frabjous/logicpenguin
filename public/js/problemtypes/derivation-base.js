@@ -166,7 +166,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
             }
         }
 
-        this.mainDeriv = premDeriv.
+        this.mainDeriv = this.premDeriv;
         if (this.useShowLines) {
             // main derivation targets the conclusion
             this.mainDeriv =

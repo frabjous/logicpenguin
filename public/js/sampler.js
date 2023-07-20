@@ -28,11 +28,15 @@ function makeDerivation() {
             this.myopts.notation = this.myarginput.notation;
         }
     }
-    LP.samplerProblem({
+    this.myopts.problem = arg;
+    this.myopts.problemtype = this.myproblemtype;
+    LP.samplerProblem(this.myopts);
+/*
+        {
         problem: arg,
         problemtype: this.myproblemtype,
         options: this.myopts
-    });
+    });*/
 }
 
 
@@ -76,7 +80,7 @@ LP.sampler = function(opts) {
     const topleft = addelem('div', toppart);
     const topright = addelem('div', toppart);
     const probarea = addelem('div', wrapper);
-    probarea.id = 'logicpenguinsampleproblem';
+    probarea.id = 'logicpenguinsampleproblem-' + opts.system;
 
     // left side: truth functional logic
     const leftlabel = addelem('h3', topleft, {
@@ -184,7 +188,7 @@ LP.sampler = function(opts) {
 }
 
 LP.samplerProblem = function(opts) {
-    opts.parentid = 'logicpenguinsampleproblem';
+    opts.parentid = 'logicpenguinsampleproblem-' + opts.system;
     byid(opts.parentid).innerHTML = '';
     LP.embed(opts);
 }

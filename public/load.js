@@ -56,7 +56,7 @@ LP.embed = async function(opts) {
             LP.problemTypes[problemtype] = imported.default;
         } catch(err) {
             console.error('Logic penguin embedding error: problem loading ' +
-                'script: ' + problemtype + '.js', err.toString(), err.stack);
+                'script: ' + problemtype + '.js', err.toString(), err, err.stack);
             return false;
         }
     }
@@ -121,7 +121,7 @@ LP.makeProblems = async function(parentid, exerciseinfo,
                     '/js/problemtypes/' + problemtype + '.js');
                 LP.problemTypes[problemtype] = imported.default;
             } catch(err) {
-                console.error("problem loading script",problemtype + '.js',err.toString(), err.stack);
+                console.error("problem loading script",problemtype + '.js',err.toString(), err, err.stack);
                 LP.infoboxMsg('Unable to load all types of problem. ' +
                     'Check your internet connection and reload. ' +
                     'If the problem persists, inform your instructor.',

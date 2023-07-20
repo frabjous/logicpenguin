@@ -5,22 +5,24 @@
     counter-reset: probnum;
 }
 
-.logicpenguin  ol..fitch-style-derivation-list {
+.logicpenguin ol.derivation-calgary-list,
+.logicpenguin ol.derivation-cambridge-list {
     list-style-type: none;
     padding-left: 0;
     margin-right: 0;
 }
 
-.logicpenguin ..fitch-style-derivation-list li::before {
+.logicpenguin .derivation-calgary-list li::before
+.logicpenguin .derivation-cambridge-list li::before {
     counter-increment: probnum;
     content: "Problem #" counter(probnum);
 }
 
-.logicpenguin  .sampleproblem ..fitch-style-derivation-list li::before {
+.logicpenguin .sampleproblem .derivation-calgary-list li::before
+.logicpenguin .sampleproblem .derivation-cambridge-list li::before {
     counter-increment: probnum;
     content: "";
 }
-
 
 .logicpenguin .fitch-style-derivation {
     vertical-align: text-top;
@@ -31,48 +33,8 @@
     width: 100%;
 }
 
-.logicpenguin .fitch-style-derivation .derivationline.derivationshowline .showlineshow {
-    display: inline-block;
-    color: var(--lpmagenta);
-    cursor: pointer;
-    padding-left: 4px;
-}
-
-.logicpenguin .fitch-style-derivation .derivationline .showlineshow {
-    display: inline-block;
-    width: 3.5em;
-    color: var(--lpmagenta);
-    cursor: pointer;
-}
-
-.logicpenguin .fitch-style-derivation sub-derivation.closed
-    > div > .derivationline .showlineshow {
-    text-decoration: line-through;
-    text-decoration-color: var(--lpmagenata);
-    text-decoration-thickness: 3px;
-    color: var(--lpgray3);
-}
-
-.logicpenguin .fitch-style-derivation .derivationline .showlineshow:hover {
-    background-color: var(--lpbgmagenta);
-    text-decoration: line-through;
-    text-decoration-color: var(--lpblack);
-    text-decoration-thickness: 3px;
-}
-
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div >
-    .derivationline .showlineshow:hover {
-    background-color: var(--lpbgmagenta);
-    color: var(--lpmagenta);
-    text-decoration: none;
-}
-
 .logicpenguin .fitch-style-derivation .derivationline input.formulainput {
     width: calc(100% - 1em);
-}
-
-.logicpenguin .fitch-style-derivation .derivationline.derivationshowline input.formulainput {
-    width: calc(100% - 4.5em - 4px);
 }
 
 .logicpenguin .fitch-style-derivation .derivationline {
@@ -89,7 +51,7 @@
 
 .logicpenguin .fitch-style-derivation .derivationlinenumber {
     position: absolute;
-    color: var(--lpgreen);
+    color: var(--lpmagenta);
     right: 100%;
     padding-right: 0.2em;
     padding-top: 6px;
@@ -97,12 +59,13 @@
     user-select: none;
 }
 
+/* no decoration around line numbers; hope this isn't a mistake */
 .logicpenguin .fitch-style-derivation .derivationlinenumber::before {
-    content: '(';
+    content: '';
 }
 
 .logicpenguin .fitch-style-derivation .derivationlinenumber::after {
-    content: ')';
+    content: '';
 }
 
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline .jbwrap {
