@@ -80,9 +80,9 @@
     bottom: 6px;
 }
 
-
+/* TODO: remove padding? */
 .logicpenguin .fitch-style-derivation .innersubderiv {
-    border: 3px dashed var(--lpgray5);
+    border-left: 3px dashed var(--lpgray5);
     margin-left: 0.7em;
     margin-right: 0.1em;
     margin-top: 0.5ex;
@@ -91,9 +91,10 @@
 }
 
 .logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv {
-    border: 3px solid var(--lpgray2);
+    border-left: 3px solid var(--lpgray2);
 }
 
+/* premise root no different from others
 .logicpenguin .fitch-style-derivation sub-derivation.premiseroot > div >
     .innersubderiv {
     border: none;
@@ -101,6 +102,7 @@
     margin-top: 0;
     padding: 0;
 }
+*/
 
 .logicpenguin .fitch-style-derivation .subderivbuttons {
     margin-top: 1ex;
@@ -114,6 +116,5 @@
     .innersubderiv > .subderivbuttons {
         display: none;
 }
-
 
 

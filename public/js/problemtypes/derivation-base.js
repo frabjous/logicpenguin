@@ -175,6 +175,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
 
             this.lastfocusedJ = (this?.mainDeriv
                 ?.getElementsByClassName("justification")?.[0]);
+        } else {
+            // add a line to get started
+            const firstline = this.mainDeriv.addline('', false);
         }
 
         this.renumberLines();
@@ -471,7 +474,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
 
     icons = {
         addline:        'playlist_add',
-        addsubderiv:    'variables',//format_indent_increase also worth considering
+        addsubderiv:    'format_indent_increase',
         autocheckoff:   'unpublished',
         autocheckon:    'check_circle',
         baddependency:  'nearby_error',
@@ -840,7 +843,11 @@ export class SubDerivation extends HTMLElement {
         if (this?.myprob?.addSubDerivHook) {
             this.myprob.addSubDerivHook(subderiv);
         }
-        if (this?.myprob && this?.parentderiv?.parentderiv) {
+        // make changed if real subderiv
+        if (this?.myprob &&
+            ((!this.useShowLines && this?.parentderiv) ||
+            (this.useShowLines &&
+            this?.parentderiv?.parentderiv))) {
             this.myprob.makeChanged();
         }
         return subderiv;
