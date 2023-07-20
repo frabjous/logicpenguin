@@ -800,7 +800,7 @@ export class SubDerivation extends HTMLElement {
         line.bottom = addelem('div', line, {
             classes: ['bottombar']
         });
-            
+
         // formula input box
         line.input = FormulaInput.getnew(inputopts);
         line.appendChild(line.input);
@@ -1151,8 +1151,10 @@ export class SubDerivation extends HTMLElement {
     static focusNextInput(e, stayinsubderiv = false) {
         if (!this.myline) { return; }
         // for formula line consider going to justification input
+        // unless it is for a premise
         if (this.classList.contains("formulainput")) {
-            if (this.myline.jinput) {
+            if (this.myline.jinput &&
+                (!this.myline.jinput.myrwrap.classList.contains("premisejwrap"))) {
                 this.myline.jinput.focus();
                 return;
             }
