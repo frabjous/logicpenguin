@@ -462,7 +462,7 @@ LP.superCharge = async function(problemtype, probelem) {
         } catch(err) {
             probelem.setIndicator({
                 savestatus: 'malfunction',
-                sucessstatus: 'malfunciton',
+                sucessstatus: 'malfunction',
                 points: -1,
                 message: 'Cannot load some scripts. Check your internet '
                     + 'connection, and reload. If the problem persists, '
