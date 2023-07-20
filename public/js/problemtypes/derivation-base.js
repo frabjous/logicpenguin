@@ -177,7 +177,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 ?.getElementsByClassName("justification")?.[0]);
         } else {
             // add a line to get started
-            const firstline = this.mainDeriv.addline('', false);
+            const firstline = this.mainDeriv.addLine('', false);
+            this.lastfocusedJ = firstline.jinput;
         }
 
         this.renumberLines();
