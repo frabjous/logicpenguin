@@ -31,6 +31,7 @@
 
 .logicpenguin .fitch-style-derivation .derivationline {
     width: 100%;
+    padding-bottom: 2px;
 }
 
 .logicpenguin .fitch-style-derivation .derivationline input.formulainput {
@@ -71,6 +72,10 @@
     border-left: 3px solid var(--lpgray2);
 }
 
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline .jbwrap {
+    padding-bottom: 2px;
+}
+
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline .jbwrap.premisejwrap {
     display: none !important;
 }
@@ -79,44 +84,44 @@
    padding-top: 0.5rem;
 }
 
+.logicpenguin .fitch-style-derivation .derivationline .bottombar,
+.logicpenguin .fitch-style-derivation .derivationline .bottombar {
+    display: none;
+}
 
 .logicpenguin .fitch-style-derivation .derivationline.lastpremise .bottombar,
 .logicpenguin .fitch-style-derivation .derivationline.hypothesis .bottombar {
+    position: relative;
+    display: inline-block;
+}
+
+.logicpenguin .fitch-style-derivation .derivationline.lastpremise .bottombar::before,
+.logicpenguin .fitch-style-derivation .derivationline.hypothesis .bottombar::before {
     position: absolute;
     left: 0;
-    top: 0;
-    width: 5rem;
-    height: 38px;
+    top: 10px;
+    width: 9rem;
+    content: "";
     border-bottom: 3px dashed var(--lpgray5);
 }
 
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise .bottombar,
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis .bottombar {
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise .bottombar::before,
+.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis .bottombar::before {
     border-bottom: 3px solid var(--lpgray2);
 }
 
-
-/*
-.logicpenguin .fitch-style-derivation .derivationline.lastpremise::before,
-.logicpenguin .fitch-style-derivation .derivationline.hypothesis::before {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 5rem;
-    content: "",
-    border-bottom: 3px dashed var(--lpgray5);
-}
-
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.lastpremise::before,
-.logicpenguin .fitch-style-derivation sub-derivation.closed > div > .innersubderiv > .derivationline.hypothesis::before {
-    border-bottom: 3px solid var(--lpgray2);
-}
-*/
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput:hover,
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput:hover,
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput,
 .logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput {
-    border-bottom: none;
+    border-bottom: 2px solid transparent;
+}
+
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput:focus:hover,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput:focus:hover,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.premiseline input.formulainput:focus,
+.logicpenguin .fitch-style-derivation sub-derivation .derivationline.hypothesis input.formulainput:focus {
+        border-bottom: 2px solid var(--lpblue);
 }
 
 .logicpenguin .fitch-style-derivation sub-derivation .subderivbuttons {

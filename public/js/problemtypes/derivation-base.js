@@ -166,6 +166,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
             line.classList.add("premiseline");
             line.jinput.value = this.premiseAbbr ?? tr('premise');
             line.jinput.readOnly = true;
+            line.input.readOnly = true;
             // hide inputs completely for those w/o showlines
             line.jinput.myrwrap.classList.add('premisejwrap');
         }
