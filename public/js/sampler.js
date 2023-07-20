@@ -31,12 +31,6 @@ function makeDerivation() {
     this.myopts.problem = arg;
     this.myopts.problemtype = this.myproblemtype;
     LP.samplerProblem(this.myopts);
-/*
-        {
-        problem: arg,
-        problemtype: this.myproblemtype,
-        options: this.myopts
-    });*/
 }
 
 
@@ -187,10 +181,11 @@ LP.sampler = function(opts) {
 
 }
 
-LP.samplerProblem = function(opts) {
+LP.samplerProblem = async function(opts) {
     opts.parentid = 'logicpenguinsampleproblem-' + opts.system;
     byid(opts.parentid).innerHTML = '';
-    LP.embed(opts);
+    await LP.embed(opts);
+    byid(opts.parentid).scrollIntoView(false);
 }
 
 LP.loadCSS('sampler');

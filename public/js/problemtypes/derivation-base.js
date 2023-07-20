@@ -567,11 +567,15 @@ export class SubDerivation extends HTMLElement {
             }
         });
 
+        let addsubderivtext = 'add subderivation';
+        if (this.useShowLines) {
+            addsubderivtext = 'add showline + subderivation';
+        }
         this.buttons.addsubderiv = addelem('div', this.buttons, {
             classes: ['material-symbols-outlined'],
             innerHTML: this.myprob.icons['addsubderiv'],
             mysubderiv: this,
-            title: tr('add showline + subderivation'),
+            title: tr(addsubderivtext),
             onclick: function() {
                 this.mysubderiv.addSubderivation('', true);
             }
@@ -580,7 +584,18 @@ export class SubDerivation extends HTMLElement {
         const isSubderiv = 
             ((!this.useShowLines && this?.parentderiv) ||
                 (this.useShowLines && this?.parentderiv?.parentderiv));
-        if (isSubderiv) { // subderivations have button for removing them
+        if (isSubderiv) {
+            // subderivs have button for closing it
+            this.buttons.close = addelem('div', this.buttons, {
+                classes: ['material-symbols-outlined'],
+                innerHTML: this.myprob.icons['closederiv'],
+                mysubderiv: this,
+                title: tr('close subderivation'),
+                onclick: function() {
+                    this.mysubderiv.close();
+                }
+            });
+            // subderivs have button for removing them
             this.buttons.remove = addelem('div', this.buttons, {
                 classes: ['material-symbols-outlined'],
                 innerHTML: this.myprob.icons['rmderiv'],
@@ -603,26 +618,10 @@ export class SubDerivation extends HTMLElement {
                 this.myprob.clToggle.onclick = function(e) {
                     this.myprob.autocheck = (!this.myprob.autocheck);
                 }
-            } /*TODO else {
+            } else {
                 this.myprob.clToggle.classList.add("hidden");
-            }*/
-        }
-
-        let closeicon = this.myprob.icons['closederiv'];
-        let closetitle = 'finish subderivation';
-        if (!this.parentderiv?.parentderiv) {
-            closeicon = this.myprob.icons['closemainderiv'];
-            closetitle = 'complete derivation';
-        }
-        this.buttons.close = addelem('div', this.buttons, {
-            classes: ['material-symbols-outlined'],
-            innerHTML: closeicon,
-            mysubderiv: this,
-            title: tr(closetitle),
-            onclick: function() {
-                this.mysubderiv.close();
             }
-        });
+        }
     }
 
     addLine(s, showline = false) {
@@ -699,60 +698,61 @@ export class SubDerivation extends HTMLElement {
         line.buttons = addelem('div', jwrap, {
             classes: ['derivlinebuttons']
         });
-        //
-        // for subderivations that are not main
-        const hasButtons = (
-            !this.useShowLines || (this?.parentderiv?.parentderiv || (this.parentderiv && !showline))
-        );
-        if (hasButtons) {
-            line.menuButton = addelem('div', line.buttons, {
-                classes: [ 'derivmenubutton' ],
-                onclick: function() {
-                    this.classList.add("opened");
-                }
-            });
-            const icon = addelem('div', line.menuButton, {
-                classes: [ 'material-symbols-outlined' ],
-                innerHTML: this.myprob.icons['derivlinemenu'],
-                title: tr('line menu')
-            });
-            // popup menu
-            const popUp = addelem('table', line.menuButton, {
-                classes: [ 'derivlinepopupmenu' ],
-                mywidg: line.menuButton,
-                onmouseleave: function() {
-                    this.mywidg.classList.remove("opened");
-                }
-            });
-            const tbody = addelem('tbody', popUp, {});
-            const actions = SubDerivation.lineActions;
-            for (const actionname in actions) {
-                const action = actions[actionname];
-                const tre = addelem('tr', tbody, {});
-                const icontd = addelem('td', tre, {
-                    innerHTML: '<div class="material-symbols-outlined">'
-                        + this.myprob.icons[actionname] + '</div>',
-                    classes: [actionname],
-                });
-                const descrtd = addelem('td', tre, {
-                    innerHTML: tr(action.descr),
-                });
-                if (action.numinp) {
-                    const ni = addelem('input',descrtd, {
-                        type: "number",
-                        myline: line,
-                        onchange: action.fn
-                    });
-                } else {
-                    icontd.myline = line;
-                    icontd.onclick = action.fn;
-                    descrtd.myline = line;
-                    descrtd.onclick = action.fn;
-                }
+
+        line.menuButton = addelem('div', line.buttons, {
+            classes: [ 'derivmenubutton' ],
+            onclick: function() {
+                this.classList.add("opened");
             }
-        } else {
-            // if no buttons // 
+        });
+        const icon = addelem('div', line.menuButton, {
+            classes: [ 'material-symbols-outlined' ],
+            innerHTML: this.myprob.icons['derivlinemenu'],
+            title: tr('line menu')
+        });
+        // popup menu
+        const popUp = addelem('table', line.menuButton, {
+            classes: [ 'derivlinepopupmenu' ],
+            mywidg: line.menuButton,
+            onmouseleave: function() {
+                this.mywidg.classList.remove("opened");
+            }
+        });
+        const tbody = addelem('tbody', popUp, {});
+        const actions = SubDerivation.lineActions;
+        for (const actionname in actions) {
+            const action = actions[actionname];
+            const tre = addelem('tr', tbody, {});
+            const icontd = addelem('td', tre, {
+                innerHTML: '<div class="material-symbols-outlined">'
+                    + this.myprob.icons[actionname] + '</div>',
+                classes: [actionname],
+            });
+            const descrtd = addelem('td', tre, {
+                innerHTML: tr(action.descr),
+            });
+            if (action.numinp) {
+                const ni = addelem('input',descrtd, {
+                    type: "number",
+                    myline: line,
+                    onchange: action.fn
+                });
+            } else {
+                icontd.myline = line;
+                icontd.onclick = action.fn;
+                descrtd.myline = line;
+                descrtd.onclick = action.fn;
+            }
         }
+
+        // hide buttons in main derivation  unless no showlines
+        const hasButtons = ( !this.useShowLines ||
+            (this?.parentderiv?.parentderiv || (this.parentderiv && !showline))
+        );
+        if (!hasButtons) {
+            line.buttons.classList.add("invisible");
+        }
+
         // line check indicator/button
         if (this.parentderiv) {
             line.checkButton = addelem('div', line.buttons, {

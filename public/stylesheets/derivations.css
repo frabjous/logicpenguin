@@ -73,11 +73,11 @@
 /* check toggle button */
 .logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle:hover,
 .logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle.autocheckoff:hover {
-    background-color: var(--lpgreen);
+    background-color: var(--lpmagenta);
 }
 
 .logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle.autocheckon {
-    background-color: var(--lpmagenta);
+    background-color: var(--lpgreen);
 }
 
 .logicpenguin sub-derivation .subderivbuttons > div.derivchecklinestoggle.autocheckon:hover {
