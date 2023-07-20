@@ -580,7 +580,7 @@ export class SubDerivation extends HTMLElement {
         const isSubderiv = 
             ((!this.useShowLines && this?.parentderiv) ||
                 (this.useShowLines && this?.parentderiv?.parentderiv));
-        if (isSubderiv) {
+        if (isSubderiv) { // subderivations have button for removing them
             this.buttons.remove = addelem('div', this.buttons, {
                 classes: ['material-symbols-outlined'],
                 innerHTML: this.myprob.icons['rmderiv'],
@@ -592,7 +592,22 @@ export class SubDerivation extends HTMLElement {
                     this.mysubderiv.remove();
                 }
             });
+        } else { // main deriv has button for toggling autocheck on/off
+            this.myprob.clToggle = addelem('div', this.buttons, {
+                classes: ['derivchecklinestoggle'],
+                myprob: this.myprob,
+                innerHTML: '<div class="material-symbols-outlined autocheckoff">' +
+                    this.myprob.icons["autocheckoff"] + '</div>'
+            });
+            if (this.myprob.options.checklines) {
+                this.myprob.clToggle.onclick = function(e) {
+                    this.myprob.autocheck = (!this.myprob.autocheck);
+                }
+            } else {
+                this.myprob.clToggle.classList.add("hidden");
+            }
         }
+
         let closeicon = this.myprob.icons['closederiv'];
         let closetitle = 'finish subderivation';
         if (!this.parentderiv?.parentderiv) {
@@ -685,10 +700,11 @@ export class SubDerivation extends HTMLElement {
             classes: ['derivlinebuttons']
         });
         //
-        // TODO: I AM HERE
-        // 
         // for subderivations that are not main
-        if (this?.parentderiv?.parentderiv || (this.parentderiv && !showline)) {
+        const hasButtons = (
+            !this.useShowLines || (this?.parentderiv?.parentderiv || (this.parentderiv && !showline))
+        );
+        if (hasButtons) {
             line.menuButton = addelem('div', line.buttons, {
                 classes: [ 'derivmenubutton' ],
                 onclick: function() {
@@ -735,22 +751,7 @@ export class SubDerivation extends HTMLElement {
                 }
             }
         } else {
-            // for those that are in main derivation
-            if (showline) {
-                this.myprob.clToggle = addelem('div', line.buttons, {
-                    classes: ['derivchecklinestoggle'],
-                    myprob: this.myprob,
-                    innerHTML: '<div class="material-symbols-outlined autocheckoff">' +
-                        this.myprob.icons["autocheckoff"] + '</div>'
-                });
-                if (this.myprob.options.checklines) {
-                    this.myprob.clToggle.onclick = function(e) {
-                        this.myprob.autocheck = (!this.myprob.autocheck);
-                    }
-                } else {
-                    this.myprob.clToggle.classList.add("invisible");
-                }
-            }
+            // if no buttons // 
         }
         // line check indicator/button
         if (this.parentderiv) {

@@ -72,7 +72,6 @@
 /* LINE BUTTONS */
 
 /* common */
-.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle div,
 .logicpenguin .derivationline .derivmenubutton > .material-symbols-outlined ,
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck div {
     border-radius: 5px;
@@ -165,26 +164,27 @@
 
 /* check toggle button */
 
-.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle {
+.logicpenguin sub-derivation .derivchecklinestoggle {
     padding-left: 0.5ex;
     padding-top: 6px;
     cursor: pointer;
+    display: inline-block;
 }
 
-.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckoff {
+.logicpenguin sub-derivation .derivchecklinestoggle .autocheckoff {
     color: var(--lpbgwhite);
     background-color: var(--lpgray5);
 }
-.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckoff:hover {
+.logicpenguin sub-derivation .derivchecklinestoggle .autocheckoff:hover {
     background-color: var(--lpgreen);
 }
 
-.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckon {
+.logicpenguin sub-derivation .derivchecklinestoggle .autocheckon {
     background-color: var(--lpmagenta);
     color: var(--lpgray6);
 }
 
-.logicpenguin sub-derivation .derivlinebuttons .derivchecklinestoggle .autocheckon:hover {
+.logicpenguin sub-derivation .derivchecklinestoggle .autocheckon:hover {
     color: var(--lpgray5);
     background-color: var(--lpbgwhite)
 }
@@ -339,7 +339,7 @@
 
 .logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.excluded:hover {
     color: var(--lpbgblack);
-    background-color: var(--lpgray1);
+    background-color: var(--lpgray1);gv
 }
 
 .logicpenguin.rulepanel .ruledisplayform {
