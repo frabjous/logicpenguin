@@ -120,6 +120,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.symbols = this.syntax.symbols;
         this.notation = this.syntax.notation;
 
+        // introduce autocheck timer
+        this.autocheckTimeout = false;
+
         // mark as setting up
         this.settingUp  = true;
 
@@ -236,12 +239,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
             line.mysubderiv.myprob.renumberLines();
         }
         // check the lines if need be
+        /* NOTE: changed to doing this through makeChanged
         if (line.mysubderiv.myprob.autocheck && line?.mysubderiv?.myprob?.checkLines) {
             // don't check with line partly done
             if ((line.jinput.value != '') && (line.input.value != '')) {
                 line.mysubderiv.myprob.checkLines();
             }
         };
+        */
     }
 
     renumberLines() {
