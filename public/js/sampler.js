@@ -15,14 +15,8 @@ function makeDerivation() {
     if (!this?.myarginput) { return; }
     const arg = this.myarginput.getArgument();
     if (!arg) { return; }
-    if (!("pred" in this.myopts)) {
-        this.myopts.pred = this.myarginput.pred;
-    }
-    if (!("lazy" in this.myopts)) {
-        if ("lazy" in this.myarginput) {
-            this.myopts.lazy = this.myarginput.lazy;
-        }
-    }
+    this.myopts.pred = this.myarginput.pred;
+    this.myopts.lazy = this.myarginput.lazy;
     if (!("notation" in this.myopts)) {
         if ("notation" in this.myarginput) {
             this.myopts.notation = this.myarginput.notation;
@@ -86,15 +80,18 @@ LP.sampler = function(opts) {
     });
     const tflarginp = SymbolicArgumentInput.getnew({
         notation: opts.notation,
+        lazy: true,
         pred: false
     });
     tflarginp.pred = false;
+    tflarginp.lazy = true;
     const folarginp = SymbolicArgumentInput.getnew({
         notation: opts.notation,
         pred: true,
-        lazy: true
+        lazy: false
     });
     folarginp.pred = true;
+    folarginp.lazy = false;
 
     topleft.appendChild(tflarginp);
     topright.appendChild(folarginp);
