@@ -100,7 +100,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         super.makeChanged();
         // remove markers on lines
         this.markAllUnchecked();
-        if (allowtimer && this?.autocheck && this?.checkLines) {
+        if (allowtimer && this?.autocheck && this?.checkLines && !this?.ishinting) {
             this.startAutoCheckTimer();
         }
     }
@@ -727,10 +727,6 @@ export class SubDerivation extends HTMLElement {
                 e.preventDefault();
                 const targ = this.myline?.mysubderiv?.myprob?.lastfocusedJ;
                 if (targ) {
-                    const time = (new Date()).getTime();
-                    const iblurred = targ?.myline?.input?.lastblurred ?? 0;
-                    const blurred = Math.max(targ.lastblurred, iblurred);
-                    if (time  - blurred > 500) { return; }
                     const oldval = targ.value;
                     targ.insertLineNum(this.innerHTML);
                     targ.focus();

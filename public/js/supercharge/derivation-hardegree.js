@@ -96,7 +96,7 @@ export function chargeup(probelem) {
         const forceSave = (ind.successstatus == 'correct' && !this.ishinting);
         ind.successstatus = 'edited';
         ind.savedstatus = 'unsaved';
-        if (!this.isRestoring) {
+        if (!this.isRestoring && !this.ishinting) {
             this.setIndicator(ind);
         }
         if (forceSave) {
@@ -116,7 +116,12 @@ export function chargeup(probelem) {
         innerHTML: tr('give hint'),
         type: 'button',
         myprob: probelem,
-        onclick: function() {
+        onmousedown: function(e) {
+            e.preventDefault();
+        },
+        onclick: function(e) {
+            // may need to register line
+            e.preventDefault();
             this.myprob.giveHint();
         }
     });
