@@ -233,6 +233,12 @@ export default class DerivationFitch extends DerivationExercise {
         // TODO: fix this
         //rp.schematic = this.schematic;
         rp.displayrule = function(rule) {
+            const targ = this.target;
+            if (!targ) { return; }
+            const prob = targ?.myline?.mysubderiv?.myprob;
+            if (!prob) { return; }
+            this.schematic = prob.schematic;
+            this.schematicLetters = prob.schematicLetters;
             const ruleinfo = this.ruleset[rule];
             if (!ruleinfo) { return; }
             this.currentrule = rule;
@@ -333,6 +339,7 @@ export default class DerivationFitch extends DerivationExercise {
                     }
                 }
                 if ("conc" in thisform) {
+                    const conc = thisform.conc;
                     const conctr = addelem('tr',argtbb, {
                         classes: ['conclusionrow']
                     });

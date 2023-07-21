@@ -34,8 +34,8 @@ const commonForallxRules = {
     "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
     "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
     "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true },
-    "Pr"  : { premiserule: true, hide: true },
-    "Hyp" : { assumptionrule: true, hide: true }
+    "Pr"  : { premiserule: true, hidden: true },
+    "Hyp" : { assumptionrule: true, hidden: true }
 }
 
 const cambridgeRules = {
