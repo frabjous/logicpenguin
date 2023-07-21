@@ -5,6 +5,7 @@
     counter-reset: probnum;
 }
 
+
 .logicpenguin ol.derivation-calgary-list,
 .logicpenguin ol.derivation-cambridge-list {
     list-style-type: none;
@@ -22,6 +23,11 @@
 .logicpenguin .sampleproblem .derivation-cambridge-list li::before {
     counter-increment: probnum;
     content: "";
+}
+
+/* these have wider justifications */
+.logicpenguin .fitch-style-derivation .derivationline input.justification {
+    width: 7rem;
 }
 
 .logicpenguin .fitch-style-derivation {

@@ -309,9 +309,11 @@ export default class DerivationExercise extends LogicPenguinProblem {
             if (line.jinput == this.lastfocusedJ && !allowchange) {
                 continue;
             }
+            const jval = line.jinput.value ?? '';
+            // if it's blank we don't need to do anything
+            if (jval == '') { continue; }
             // justFix should have been run on justification, so
             // it should only have space in between numbers and rules
-            const jval = line.jinput.value ?? '';
             const jvalsplit = jval.split(' ');
             let cites = '';
             let rules = '';
@@ -322,6 +324,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 } else {
                     cites = jvalsplit?.[0];
                     rules = jvalsplit?.[1];
+                }
+            } else {
+                // if no spaces, then we have numbers if there are numbers
+                if (/[0-9]/.test(jvalsplit?.[0])) {
+                    cites = jvalsplit?.[0];
+                } else {
+                    // otherwise we have rules
+                    rules = jvalsplit?.[0];
                 }
             }
             // if cites does not exist, or has no numbers,
