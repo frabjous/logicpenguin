@@ -11,7 +11,6 @@ import hardegreeDerivCheck from '../checkers/derivation-hardegree.js';
 import hardegreeDerivationHint from './derivation-hardegree-hint.js';
 import tr from '../translate.js';
 
-
 function getPartsUntil(inparts, numtoget) {
     let ctr = 0;
     let rv = [];

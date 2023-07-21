@@ -300,25 +300,29 @@ export default class DerivationExercise extends LogicPenguinProblem {
             // push it to array of lines
             this.linesByNum.push(line);
         }
-        // stop here if we can't change
-        if (!allowchange) { return; }
         // time to fix old citations
         for (const line of this.linesByNum) {
             // again shouldn't be here without a justification input
             // but just in case, we don't want a crash
             if (!line?.jinput) { continue; }
+            // don't mess up justification currently being worked on
+            if (line.jinput == this.lastfocusedJ && !allowchange) {
+                continue;
+            }
             // justFix should have been run on justification, so
             // it should only have space in between numbers and rules
             const jval = line.jinput.value ?? '';
             const jvalsplit = jval.split(' ');
             let cites = '';
             let rules = '';
-            if (this?.rulesFirst) {
-                rules = jvalsplit?.[0];
-                cites = jvalsplit?.[1];
-            } else {
-                cites = jvalsplit?.[0];
-                rules = jvalsplit?.[1];
+            if (jvalsplit.length > 1) {
+                if (this?.rulesFirst) {
+                    rules = jvalsplit?.[0];
+                    cites = jvalsplit?.[1];
+                } else {
+                    cites = jvalsplit?.[0];
+                    rules = jvalsplit?.[1];
+                }
             }
             // if cites does not exist, or has no numbers,
             // no updating is needed

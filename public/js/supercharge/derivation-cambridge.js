@@ -10,8 +10,11 @@ import { addelem, htmlEscape } from '../common.js';
 import cambridgeDerivCheck from '../checkers/derivation-cambridge.js';
 import tr from '../translate.js';
 
+// a "myanswer" of true should mean there's no real answer,
+// but we want the problem "charged up" anyway
+// then there shouldn't be a show answer button
 export function chargeup(probelem) {
-    if (this.myanswer) {
+    if (probelem?.myanswer && probelem.myanswer !== true) {
         probelem.showansButton = addelem('button', probelem.buttonDiv, {
             innerHTML: tr('show answer'),
             type: 'button',
@@ -21,6 +24,7 @@ export function chargeup(probelem) {
             }
         });
     }
+
     probelem.checkLines = async function() {
         const question = this.myquestion;
         const answer = this.myanswer;
@@ -30,14 +34,7 @@ export function chargeup(probelem) {
         const cheat = true;
         const options = this.options;
         // set to checking
-        const lines = this.getElementsByClassName("derivationline");
-        for (const line of lines) {
-            if (line?.checkButton && line?.checkButton?.update) {
-                if ((line.input.value != '') || (line.jinput.value != '')) {
-                    line.checkButton.update('checking');
-                }
-            }
-        }
+        this.markLinesAsChecking();
         const ind = await cambridgeDerivCheck(
             question, answer, givenans, partialcredit, points, cheat, options
         );
@@ -49,6 +46,7 @@ export function chargeup(probelem) {
             this.setIndicator(ind);
         }
         if (forceSave) {
+            const lines = this.getElementsByClassName("derivationline");
             // remove empty line at end
             const lastline = lines[lines.length - 1];
             if ((lastline.input.value == '')
