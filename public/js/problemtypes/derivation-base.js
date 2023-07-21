@@ -96,16 +96,13 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     // making it changed also removes all line check markers
-    makeChanged(renumber = true, allowtimer = true) {
-        console.log("here with renumber", renumber);
+    makeChanged(renumberchange = true, allowtimer = true) {
         super.makeChanged();
         // renumber the lines
-        if (renumber) {
-            this.renumberLines();
-        }
+        this.renumberLines(renumberchange);
         // remove markers on lines
         this.markAllUnchecked();
-        if (allowtimer && this?.autocheck && this?.checkLines && !this?.ishinting) {
+        if (allowtimer && renumberchange && this?.autocheck && this?.checkLines && !this?.ishinting) {
             this.startAutoCheckTimer();
         }
     }
@@ -271,7 +268,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
 
     // note: makeRulePanel: specific to specific type of derivation problem
 
-    renumberLines() {
+    renumberLines(allowchange = true) {
         const lines = this.getElementsByClassName("derivationline");
         // we want to start with 1, so we start the array with a
         // dummy entry
@@ -303,6 +300,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
             // push it to array of lines
             this.linesByNum.push(line);
         }
+        // stop here if we can't change
+        if (!allowchange) { return; }
         // time to fix old citations
         for (const line of this.linesByNum) {
             // again shouldn't be here without a justification input
@@ -1143,12 +1142,15 @@ export class SubDerivation extends HTMLElement {
             this.myline.mysubderiv.myprob.hideRulePanel();
         }
         // check if anything changed
-        if (this.value == this.oldvalue) { return; }
+        if (this.value == this?.oldvalue) { return; }
         // update old value
         this.oldvalue = this.value;
         // any changes means the problem is changed, when not restoring
         if (this?.myline?.mysubderiv?.myprob?.isRestoring) {
             return true;
+        }
+        if (this?.myline?.mysubderiv?.myprob?.makeChanged) {
+            this.myline.mysubderiv.myprob.makeChanged();
         }
         return true;
     }
