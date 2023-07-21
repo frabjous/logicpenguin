@@ -126,7 +126,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         if ("autocheckdelay" in this.options) {
             this.autocheckdelay = this.options.autocheckdelay;
         } else {
-            this.autocheckdekay = 400;
+            this.autocheckdekay = 1000;
         }
 
 
@@ -532,8 +532,8 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.markLinesAsChecking();
         // autocheck timeout
         console.log('tgA',this.getAnswer);
-        this.autocheckTimeout = setTimeout( this.checkLines,
-            (this?.autocheckdelay ?? 400));
+        this.autocheckTimeout = setTimeout( () => (this.checkLines()),
+            (this?.autocheckdelay ?? 1000));
     }
 
     icons = {

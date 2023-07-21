@@ -51,6 +51,10 @@ export default class JustificationInput extends FormulaInput {
         }
         // if has numbers after, remove current rule coming before
         this.value = this.inputfix(this.value + ', ' + rule);
+        // make changed
+        if (this?.myline?.mysubderiv?.myprob.makeChanged) {
+            this?.myline?.mysubderiv?.myprob.makeChanged();
+        }
     }
 
     // unlike regular formula inputs, spaces are only put before operators
@@ -61,6 +65,7 @@ export default class JustificationInput extends FormulaInput {
         // if there was a negation before it, it's ok to eliminate that space
         this.autoChange(
             new RegExp(symbols.NOT + '\\s+','g'),symbols.NOT,'', /^\s+/, '');
+        // autoChange will trigger makeChanged
     }
 
     // parse the justification, and make it appear pretty

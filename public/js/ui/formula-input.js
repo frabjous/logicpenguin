@@ -31,6 +31,10 @@ export default class FormulaInput {
         this.value = before + ins + after;
         this.focus();
         this.setSelectionRange(pos, pos);
+        // trigger change
+        if (this?.myline?.mysubderiv?.myprob.makeChanged) {
+            this?.myline?.mysubderiv?.myprob.makeChanged();
+        }
     }
 
     // functin called on formula inputs when they are unfocused/blurred
@@ -127,6 +131,12 @@ export default class FormulaInput {
         elem.addEventListener("blur", FormulaInput.blur);
         elem.addEventListener("focus", FormulaInput.focus);
         elem.addEventListener("keydown", FormulaInput.keydown);
+        // input always make the problem changed
+        elem.addEventListener("input", () => {
+            if (this?.myline?.mysubderiv?.myprob.makeChanged) {
+                this?.myline?.mysubderiv?.myprob.makeChanged();
+            }
+        });
 
         // add the static functions
         elem.insOp = FormulaInput.insOp;
@@ -156,6 +166,7 @@ export default class FormulaInput {
         } else {
             this.insertHere(symb);
         }
+        // doesn't need to makechanged, since the others it calls always will
     }
 
     // stick a symbol right where the cursor is
@@ -164,6 +175,10 @@ export default class FormulaInput {
         this.setRangeText(c);
         this.focus();
         this.setSelectionRange(pos+1, pos+1);
+        //trigger change
+        if (this?.myline?.mysubderiv?.myprob.makeChanged) {
+            this?.myline?.mysubderiv?.myprob.makeChanged();
+        }
     }
 
     // function for handling keys; making many changes
@@ -229,11 +244,6 @@ export default class FormulaInput {
                 e.preventDefault();
                 return;
             }
-        }
-
-        // make as changed; solves problems later
-        if (this?.myline?.mysubderiv?.myprob.makeChanged) {
-            this?.myline?.mysubderiv?.myprob.makeChanged();
         }
 
         // v's and wedges become disjunctions
@@ -434,6 +444,7 @@ function makeSymbolWidgetFor(notationname) {
             td.onclick = () => {
                 if (!symbolwidget.targetInput) { return; }
                 symbolwidget.targetInput.insOp(td.myOp);
+                // note: insOp will trigger makeChanged
             };
         }
         // function to show up for a given input; may have options to
