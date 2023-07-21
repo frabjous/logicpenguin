@@ -97,7 +97,7 @@ export default class FormulaInput {
         if (this.focusHook) {
             this.focusHook(e);
         }
-        
+
         // don't show widget if the input is read-only
         if (this.readOnly) { return; }
 

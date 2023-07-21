@@ -74,6 +74,7 @@ export function chargeup(probelem) {
             }
         });
     }
+
     probelem.checkLines = async function() {
         const question = this.myquestion;
         const answer = this.myanswer;
@@ -82,18 +83,15 @@ export function chargeup(probelem) {
         const points = -1;
         const cheat = true;
         const options = this.options;
-        // set to checking
-        const lines = this.getElementsByClassName("derivationline");
-        for (const line of lines) {
-            if (line?.checkButton && line?.checkButton?.update) {
-                if ((line.input.value != '') || (line.jinput.value != '')) {
-                    line.checkButton.update('checking');
-                }
-            }
-        }
+        // set to checking; should already be done when timer set, but
+        // just in case
+        this.markLinesAsChecking();
         const ind = await hardegreeDerivCheck(
             question, answer, givenans, partialcredit, points, cheat, options
         );
+        // after check, mark them all unchecked, setting the indicator
+        // will fill in what it needs to, I guess?
+        this.markAllUnchecked();
         // save problem automatically if check reveals whole thing correct
         const forceSave = (ind.successstatus == 'correct' && !this.ishinting);
         ind.successstatus = 'edited';
@@ -102,6 +100,7 @@ export function chargeup(probelem) {
             this.setIndicator(ind);
         }
         if (forceSave) {
+            const lines = this.getElementsByClassName("derivationline");
             // remove empty line at end
             const lastline = lines[lines.length - 1];
             if ((lastline.input.value == '')
@@ -112,6 +111,7 @@ export function chargeup(probelem) {
             this.processAnswer();
         }
     }
+
     probelem.hintButton = addelem('button', probelem.buttonDiv, {
         innerHTML: tr('give hint'),
         type: 'button',
@@ -120,6 +120,7 @@ export function chargeup(probelem) {
             this.myprob.giveHint();
         }
     });
+
     probelem.giveHint = async function() {
         //do a check first
         this.ishinting = true;

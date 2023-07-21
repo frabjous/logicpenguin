@@ -96,11 +96,12 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     // making it changed also removes all line check markers
-    makeChanged() {
+    makeChanged(allowtimer = true) {
         super.makeChanged();
         // remove markers on lines
-        for (const line of this.getElementsByClassName("derivationline")) {
-            if (line.checkButton) { line.checkButton.update("unchecked"); }
+        this.markAllUnchecked();
+        if (allowtimer && this?.autocheck && this?.checkLines) {
+            this.startAutoCheckTimer();
         }
     }
 
@@ -120,8 +121,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
         this.symbols = this.syntax.symbols;
         this.notation = this.syntax.notation;
 
-        // introduce autocheck timer
+        // introduce autocheck timer; defaults to 400 ms
         this.autocheckTimeout = false;
+        if ("autocheckdelay" in this.options) {
+            this.autocheckdelay = this.options.autocheckdelay;
+        } else {
+            this.autocheckdekay = 400;
+        }
+
 
         // mark as setting up
         this.settingUp  = true;
@@ -230,18 +237,30 @@ export default class DerivationExercise extends LogicPenguinProblem {
         });
     }
 
-    markLinesAsChecking() {
-        const lines = this.getElementsByClassName("derivationline");
-        for (const line of lines) {
-            if (line?.checkButton && line?.checkButton?.update) {
-                if ((line.input.value != '') || (line.jinput.value != '')) {
-                    line.checkButton.update('checking');
-                }
+    markAllUnchecked() {
+        for (const line of this.getElementsByClassName("derivationline")) {
+            // skip lines without markers
+            if (!line?.checkButton || !line?.checkButton?.update) {
+                continue;
             }
+            line.checkButton.update("unchecked");
         }
     }
 
-
+    markLinesAsChecking() {
+        const lines = this.getElementsByClassName("derivationline");
+        for (const line of lines) {
+            // skip lines without markers
+            if (!line?.checkButton || !line?.checkButton?.update) {
+                continue;
+            }
+            // skip empty lines
+            if ((line.input.value == '') && (line.jinput.value == '')) {
+                continue;
+            }
+            line.checkButton.update('checking');
+        }
+    }
 
     // note: makeRulePanel: specific to specific type of derivation problem
 
@@ -507,14 +526,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
             clearTimeout(this.autocheckTimeout);
         }
         // don't do it if shouldn't
-        if (!line.mysubderiv.myprob.autocheck || !line?.mysubderiv?.myprob?.checkLines) {
+        if (!this?.autocheck || !this?.checkLines) {
             return;
         }
         this.markLinesAsChecking();
         // autocheck timeout
-        this.autocheckTimeout = setTimeout(
-            , this.autocheckdelay
-        );
+        console.log('tgA',this.getAnswer);
+        this.autocheckTimeout = setTimeout( this.checkLines,
+            (this?.autocheckdelay ?? 400));
     }
 
     icons = {
