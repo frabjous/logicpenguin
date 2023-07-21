@@ -143,6 +143,8 @@ export function chargeup(probelem) {
         // include last line in error check if it has both
         let incll = (lines[i].input.value != '' &&
             lines[i].jinput.value != '');
+        const llblank = (lines[i].input.value == '' &&
+            lines[i].jinput.value == '');
         // lltc = last line to check, depends on incll
         let lltc = incll ? i : i - 1;
         if (lltc < 0) { return; }
@@ -173,7 +175,7 @@ export function chargeup(probelem) {
                 return;
             }
         }
-        if (allgood & incll) {
+        if (allgood & (incll || llblank )) {
             this.setComment('<span class="celebratehint"><strong>' +
                 tr('Hint.') + ' </strong><span>' +
                 tr('Go ahead and celebrate. You’re done!') +

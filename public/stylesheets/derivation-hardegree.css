@@ -123,6 +123,7 @@
 /* show line check button only for main showline */
 .logicpenguin sub-derivation.mainderivation div.derivationshowline div.derivlinebuttons.invisible {
     visibility: visible !important;
+    cursor: default !important;
 }
 
 .logicpenguin sub-derivation.mainderivation div.derivationshowline div.derivlinebuttons.invisible div.derivmenubutton {
@@ -131,4 +132,5 @@
 
 .logicpenguin sub-derivation.mainderivation div.derivationshowline div.derivlinebuttons.invisible div.derivlinecheck {
     visibility: visible !important;
+    cursor: default !important;
 }
