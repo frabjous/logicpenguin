@@ -226,6 +226,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
             myprob: this,
             innerHTML: tr('start over'),
             onclick: function() {
+                const autoch = this.myprob.autocheck;
                 this.myprob.startOver();
                 // start with focus on main showline? TODO: fitch different?
                 const sh = this?.myprob?.
@@ -233,6 +234,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 if (sh) {
                     sh.jinput.focus();
                 }
+                this.myprob.autocheck = autoch;
             }
         });
     }
@@ -531,7 +533,6 @@ export default class DerivationExercise extends LogicPenguinProblem {
         }
         this.markLinesAsChecking();
         // autocheck timeout
-        console.log('tgA',this.getAnswer);
         this.autocheckTimeout = setTimeout( () => (this.checkLines()),
             (this?.autocheckdelay ?? 1000));
     }

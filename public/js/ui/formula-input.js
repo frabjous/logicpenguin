@@ -137,6 +137,12 @@ export default class FormulaInput {
                 this?.myline?.mysubderiv?.myprob.makeChanged();
             }
         });
+        elem.addEventListener("change", () => {
+            if (this?.myline?.mysubderiv?.myprob.makeChanged) {
+                this?.myline?.mysubderiv?.myprob.makeChanged();
+            }
+        });
+
 
         // add the static functions
         elem.insOp = FormulaInput.insOp;
@@ -398,6 +404,14 @@ export default class FormulaInput {
                 this.insertHere(e.key.toUpperCase());
             }
             return;
+        }
+
+        // process other keys that change the content
+        if ((/^[A-Za-z0-9]$/.test(e.key)) || (e.key == 'Backspace') ||
+            (e.key == 'Delete')) {
+            if (this?.myline?.mysubderiv?.myprob.makeChanged) {
+                this?.myline?.mysubderiv?.myprob.makeChanged();
+            }
         }
     }
 }
