@@ -343,7 +343,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
 
     restoreAnswer(ans) {
         this.isRestoring = true;
-        if (!ans.parts) { this.isRetoring = false; return; }
+        if (!ans.parts) { this.isRestoring = false; return; }
         if ("autocheck" in ans && ans.autocheck) {
             this._autocheck = true;
         }
@@ -870,6 +870,9 @@ export class SubDerivation extends HTMLElement {
         /*if (!this.myprob.settingUp) {
             this.myprob.makeChanged();
         }*/
+        if (!this.myprob.isRestoring && !this.myprob.settingUp) {
+            line.input.focus();
+        }
         return line;
     }
 

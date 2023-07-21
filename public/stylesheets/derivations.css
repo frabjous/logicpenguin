@@ -5,8 +5,9 @@
     font-size: inherit;
     padding: 4px;
     width: 4.5em;
+    width: 4.5em;
     outline: 1px solid transparent;
-   font-family: 
+    font-family:
         'Fira Sans', 'Fira Sans',
         'LogicPenguin',
         'Noto Sans', 'Noto Sans Math',
@@ -213,7 +214,9 @@
 
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck {
     font-size: 125%;
-   /* padding: 4px; */
+    position: relative;
+    top: 0.2rem;
+    padding-left: 0.2rem;
 }
 
 /* colors, etc., for line check icon */
