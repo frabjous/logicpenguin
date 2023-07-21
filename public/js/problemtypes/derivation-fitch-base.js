@@ -232,8 +232,6 @@ export default class DerivationFitch extends DerivationExercise {
         }
         // TODO: fix this
         //rp.schematic = this.schematic;
-        rp.displayrule = function(rule) { console.log('displaying rule', rule); };
-        /* 
         rp.displayrule = function(rule) {
             const ruleinfo = this.ruleset[rule];
             if (!ruleinfo) { return; }
@@ -241,36 +239,118 @@ export default class DerivationFitch extends DerivationExercise {
             rp.innernamecell.innerHTML = htmlEscape(rule);
             // clear out old
             this.innerformcell.innerHTML = '';
-            // reg rule ; box for each form
+            if (ruleinfo?.hidden) { return; }
+            if ((!("forms" in ruleinfo)) || (ruleinfo.forms.length == 0)) {
+                return;
+            }
             for (const thisform of ruleinfo.forms) {
                 const formblock = addelem('div', this.innerformcell, {
                     classes: ['ruledisplayform']
                 });
-                const argtbl = addelem('table', formblock, {
-                    classes: ['ruledisplayargtbl']
-                });
-                const argtblb = addelem('tbody', argtbl, {});
-                for (const prem of thisform.prems) {
-                    const tre = addelem('tr', argtblb, {});
-                    const pcell = addelem('td', tre, {
-                        classes: ['ruledisplaypremise', 'symbolic'],
+                const argtbl = addelem('table', formblock);
+                const argtbb = addelem('tbody', argtbl);
+                // premise rows
+                const prems = thisform?.prems ?? [];
+                const premletters = 'mnopqrstuv';
+                let justify = '';
+                let premindex = 0;
+                for (const prem of prems) {
+                    const trow = addelem('tr', argtbb);
+                    const ntd = addelem('td', trow, {
+                        innerHTML: premletters.at(premindex)
+                    });
+                    if (premindex > 0) {
+                        justify += ', '; // note, narrow space
+                    }
+                    justify += '<em>' + premletters.at(premindex) + '</em>';
+                    premindex++;
+                    const fmld = addelem('td', trow, {
+                        colSpan: 3,
+                        classes: ['symbolic'],
                         innerHTML: htmlEscape(this.schematic(prem))
                     });
                 }
-                const concrow = addelem('tr', argtblb, {});
-                const conccell = addelem('td', concrow, {
-                    classes: ['ruledisplayconclusion','symbolic'],
-                    innerHTML: htmlEscape(this.schematic(thisform.conc))
-                });
-                if (thisform.mustbenew) {
-                    addelem('div', formblock, {
-                        classes:['rulenote'],
-                        innerHTML: tr('𝓃 must be a new name')
+                // subderivation rows
+                const subderivs = thisform.subderivs ?? [];
+                const subderivletters = 'ijklabcdef';
+                let sdindex = 0;
+                for (const subderiv of subderivs) {
+                    // invisible spacer row
+                    if (sdindex != 0) {
+                        const spacertr = addelem('tr', argtbb, {
+                            classes: ['spacerrow']
+                        });
+                        const spacerleft = addelem('td', spacertr);
+                        const spacerright = addelem('td', spacertr, {
+                            colSpan: 3
+                        });
+                    }
+                    // hypothesis
+                    if ("allows" in subderiv) {
+                        const allowstr = addelem('tr', argtbb, {
+                            classes: ['subderivallowsrow']
+                        });
+                        const numtd = addelem('td', allowstr, {
+                            innerHTML: subderivletters.at(sdindex)
+                        });
+                        if (justify != '') {
+                            justify += ', ';
+                        }
+                        justify += '<em>' +
+                            subderivletters.at(sdindex) + '</em>–';
+                        sdindex++;
+                        const spacetd = addelem('td', allowstr);
+                        const fmltd = addelem('td', allowstr, {
+                            classes: ['subderivhyp','symbolic'],
+                            innerHTML: htmlEscape(this.schematic(subderiv.allows))
+                        });
+                        const rtd = addelem('td', allowstr);
+                    }
+                    // results
+                    if (("needs" in subderiv) && (subderiv.needs.length > 0)) {
+                        for (let i=0; i<subderiv.needs.length; i++) {
+                            const need=subderiv.needs[i];
+                            const lastneed = (i = (subderiv.needs.length - 1));
+                            const needtr = addelem('tr', argtbb, {
+                                classes: ['subderivneedsrow']
+                            });
+                            const numtd = addelem('td', needtr);
+                            if (lastneed) {
+                                const l = subderivletters.at(sdindex);
+                                sdindex++;
+                                numtd.innerHTML = l;
+                                justify += '<em>' + l + '</em>';
+                            } else {
+                                numtd.innerHTML = '';
+                            }
+                            const spacetd = addelem('td', needtr);
+                            const fmltd = addelem('td', needtr, {
+                                classes: ['subderivtarget','symbolic'],
+                                innerHTML: htmlEscape(this.schematic(need))
+                            });
+                            const rtd = addelem('td', needtr);
+                        }
+                    }
+                }
+                if ("conc" in thisform) {
+                    const conctr = addelem('tr',argtbb, {
+                        classes: ['conclusionrow']
+                    });
+                    const concntd = addelem('td', conctr);
+                    const fmltd = addelem('td', conctr, {
+                        colSpan: 2,
+                        classes: ['symbolic'],
+                        innerHTML: htmlEscape(this.schematic(conc))
+                    });
+                    const jtd = addelem('td', conctr, {
+                        classes: ['rulejustification'],
+                        innerHTML: '<span class="symbolic">' +
+                            htmlEscape(rule) + '</span> ' + justify
                     });
                 }
+                // TODO: restrictions
             }
-        }
-        */
+        };
         return rp;
     }
 
