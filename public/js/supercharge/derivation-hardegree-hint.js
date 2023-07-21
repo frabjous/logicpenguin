@@ -719,8 +719,8 @@ export default class hardegreeDerivationHint {
         // find last line
         if (!this.lastlinefilled) {
             let lasti = this.deriv.lines.length - 1;
-            while (this.deriv.lines[lasti].j == '' &&
-                this.deriv.lines[lasti].s == '' &&
+            while ((!this.deriv.lines[lasti]?.j || this.deriv.lines[lasti].j == '') &&
+                (!this.deriv.lines[lasti]?.s || this.deriv.lines[lasti].s == '') &&
                 lasti > 0) {
                 lasti--;
             }
@@ -731,7 +731,9 @@ export default class hardegreeDerivationHint {
             if (this.lastline.isshowline) {
                 return this.fillShowLineHint();
             }
-            return this.fillRegLineHint();
+            if (this.lastline.j == '' || this.lastline.s == '') {
+                return this.fillRegLineHint();
+            }
         }
         return this.regularHint();
     }

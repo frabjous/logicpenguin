@@ -93,7 +93,6 @@ function mkexistential(v) {
 // changes to input string you'd be all right applying even to
 // input fields, here we remove redundant spaces
 function inputfix(s) {
-    console.log(s);
     // remove spaces
     let rv = s.replace(/\s/g,'');
     // spaces only surround binary operators …

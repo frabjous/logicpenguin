@@ -96,7 +96,7 @@ export function chargeup(probelem) {
         const forceSave = (ind.successstatus == 'correct' && !this.ishinting);
         ind.successstatus = 'edited';
         ind.savedstatus = 'unsaved';
-        if (!this.isRestoring && !this.ishinting) {
+        if (!this.isRestoring) {
             this.setIndicator(ind);
         }
         if (forceSave) {
