@@ -53,7 +53,7 @@ export default class JustificationInput extends FormulaInput {
         this.value = this.inputfix(this.value + ', ' + rule);
         // make changed
         if (this?.myline?.mysubderiv?.myprob.makeChanged) {
-            this?.myline?.mysubderiv?.myprob.makeChanged();
+            this?.myline?.mysubderiv?.myprob.makeChanged(false, true);
         }
     }
 

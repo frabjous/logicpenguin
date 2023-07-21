@@ -96,8 +96,13 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     // making it changed also removes all line check markers
-    makeChanged(allowtimer = true) {
+    makeChanged(renumber = true, allowtimer = true) {
+        console.log("here with renumber", renumber);
         super.makeChanged();
+        // renumber the lines
+        if (renumber) {
+            this.renumberLines();
+        }
         // remove markers on lines
         this.markAllUnchecked();
         if (allowtimer && this?.autocheck && this?.checkLines && !this?.ishinting) {
@@ -265,23 +270,6 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     // note: makeRulePanel: specific to specific type of derivation problem
-
-    // makes changes when a line is updated, renumbering things and
-    // checking when autocheck is on
-    processLine(line) {
-        if (line?.mysubderiv?.myprob?.renumberLines) {
-            line.mysubderiv.myprob.renumberLines();
-        }
-        // check the lines if need be
-        /* NOTE: changed to doing this through makeChanged
-        if (line.mysubderiv.myprob.autocheck && line?.mysubderiv?.myprob?.checkLines) {
-            // don't check with line partly done
-            if ((line.jinput.value != '') && (line.input.value != '')) {
-                line.mysubderiv.myprob.checkLines();
-            }
-        };
-        */
-    }
 
     renumberLines() {
         const lines = this.getElementsByClassName("derivationline");
@@ -959,7 +947,6 @@ export class SubDerivation extends HTMLElement {
 
         // only mark as changed if lines were removed
         if (changed) {
-            this.myprob.renumberLines();
             this.myprob.makeChanged();
         }
     }
@@ -1087,7 +1074,7 @@ export class SubDerivation extends HTMLElement {
     open() {
         if (this.classList.contains("closed")) {
             this.classList.remove("closed");
-            this.myprob.makeChanged();
+            this.myprob.makeChanged(false, false);
         }
     }
 
@@ -1162,13 +1149,6 @@ export class SubDerivation extends HTMLElement {
         // any changes means the problem is changed, when not restoring
         if (this?.myline?.mysubderiv?.myprob?.isRestoring) {
             return true;
-        }
-        if (this?.myline?.mysubderiv?.myprob?.makeChanged) {
-            this.myline.mysubderiv.myprob.makeChanged();
-        }
-        // process the line
-        if (this?.myline?.mysubderiv?.myprob?.processLine) {
-            this.myline.mysubderiv.myprob.processLine(this.myline);
         }
         return true;
     }
@@ -1277,10 +1257,6 @@ export class SubDerivation extends HTMLElement {
                 targspot.parentNode.insertBefore(nl, targspot);
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
-                /* this will always add a blank line so no use yet in marking as changed
-                this.myline.mysubderiv.myprob.makeChanged();
-                this.myline.mysubderiv.myprob.renumberLines();
-                */
                 if (nl.input) { nl.input.focus();}
             }
         },
@@ -1309,10 +1285,7 @@ export class SubDerivation extends HTMLElement {
                 }
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
-                /* this will always add a blank line so no use making changed
-                this.myline.mysubderiv.myprob.makeChanged();
-                this.myline.mysubderiv.myprob.renumberLines();
-                */
+                // this will always add a blank line so no use making changed
                 if (nl.input) { nl.input.focus();}
             }
         },
@@ -1335,7 +1308,6 @@ export class SubDerivation extends HTMLElement {
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 line.mysubderiv.myprob.makeChanged();
-                line.mysubderiv.myprob.renumberLines();
                 // focus on first input in new subderiv
                 const ii = sd.getElementsByClassName("derivationline");
                 if (ii?.[0]?.input) { ii[0].input.focus(); };
@@ -1366,7 +1338,6 @@ export class SubDerivation extends HTMLElement {
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
-                this.myline.mysubderiv.myprob.renumberLines();
                 // focus first input
                 const ii = sd.getElementsByClassName("derivationline");
                 if (ii?.[0]?.input) { ii[0].input.focus(); };
@@ -1411,7 +1382,6 @@ export class SubDerivation extends HTMLElement {
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
-                this.myline.mysubderiv.myprob.renumberLines();
             }
         },
         movemebelow: {
@@ -1452,7 +1422,6 @@ export class SubDerivation extends HTMLElement {
                 // close the menu asap
                 setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 this.myline.mysubderiv.myprob.makeChanged();
-                this.myline.mysubderiv.myprob.renumberLines();
             }
         },
         removeme: {
@@ -1464,7 +1433,6 @@ export class SubDerivation extends HTMLElement {
                 if (!this.myline.classList.contains("derivationshowline")) {
                     this.myline.parentNode.removeChild(this.myline);
                     this.myline.mysubderiv.myprob.makeChanged();
-                    this.myline.mysubderiv.myprob.renumberLines();
                     return;
                 }
                 // confirm for showlines
@@ -1475,7 +1443,6 @@ export class SubDerivation extends HTMLElement {
                     this.myline.mysubderiv
                 );
                 this.myline.mysubderiv.myprob.makeChanged();
-                this.myline.mysubderiv.myprob.renumberLines();
             }
         },
         menucancel: {

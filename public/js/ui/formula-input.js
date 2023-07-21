@@ -33,7 +33,7 @@ export default class FormulaInput {
         this.setSelectionRange(pos, pos);
         // trigger change
         if (this?.myline?.mysubderiv?.myprob.makeChanged) {
-            this?.myline?.mysubderiv?.myprob.makeChanged();
+            this?.myline?.mysubderiv?.myprob.makeChanged(false, true);
         }
     }
 
@@ -134,7 +134,7 @@ export default class FormulaInput {
         // input always make the problem changed
         elem.addEventListener("input", () => {
             if (this?.myline?.mysubderiv?.myprob.makeChanged) {
-                this?.myline?.mysubderiv?.myprob.makeChanged();
+                this?.myline?.mysubderiv?.myprob.makeChanged(false, true);
             }
         });
         elem.addEventListener("change", () => {
@@ -183,7 +183,7 @@ export default class FormulaInput {
         this.setSelectionRange(pos+1, pos+1);
         //trigger change
         if (this?.myline?.mysubderiv?.myprob.makeChanged) {
-            this?.myline?.mysubderiv?.myprob.makeChanged();
+            this?.myline?.mysubderiv?.myprob.makeChanged(false, true);
         }
     }
 
@@ -410,7 +410,7 @@ export default class FormulaInput {
         if ((/^[A-Za-z0-9]$/.test(e.key)) || (e.key == 'Backspace') ||
             (e.key == 'Delete')) {
             if (this?.myline?.mysubderiv?.myprob.makeChanged) {
-                this?.myline?.mysubderiv?.myprob.makeChanged();
+                this?.myline?.mysubderiv?.myprob.makeChanged(false, true);
             }
         }
     }
