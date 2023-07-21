@@ -230,6 +230,19 @@ export default class DerivationExercise extends LogicPenguinProblem {
         });
     }
 
+    markLinesAsChecking() {
+        const lines = this.getElementsByClassName("derivationline");
+        for (const line of lines) {
+            if (line?.checkButton && line?.checkButton?.update) {
+                if ((line.input.value != '') || (line.jinput.value != '')) {
+                    line.checkButton.update('checking');
+                }
+            }
+        }
+    }
+
+
+
     // note: makeRulePanel: specific to specific type of derivation problem
 
     // makes changes when a line is updated, renumbering things and
@@ -486,6 +499,22 @@ export default class DerivationExercise extends LogicPenguinProblem {
             }
         }
         window.rulepanel.target = inp;
+    }
+
+    startAutoCheckTimer() {
+        // clear current timeout, if any
+        if (typeof this.autocheckTimeout == 'number') {
+            clearTimeout(this.autocheckTimeout);
+        }
+        // don't do it if shouldn't
+        if (!line.mysubderiv.myprob.autocheck || !line?.mysubderiv?.myprob?.checkLines) {
+            return;
+        }
+        this.markLinesAsChecking();
+        // autocheck timeout
+        this.autocheckTimeout = setTimeout(
+            , this.autocheckdelay
+        );
     }
 
     icons = {
