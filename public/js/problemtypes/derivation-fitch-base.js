@@ -48,7 +48,7 @@ export default class DerivationFitch extends DerivationExercise {
             const atStart = (elem.selectionStart == 0);
             let spaceBefore = false;
             if (!atStart) {
-                const charBefore = this.value[ (elem.selectionStart - 1) ];
+                const charBefore = elem.value[ (elem.selectionStart - 1) ];
                 spaceBefore = (
                     (charBefore == ',') ||
                     (charBefore == ' ') ||
