@@ -484,6 +484,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 for (const sd of this.getElementsByTagName("sub-derivation")) {
                     sd.classList.add("closed")
                 }
+                for (const ii of this.getElementsByTagName("input")) {
+                    ii.blur();
+                }
             }, 100);
         }
     }

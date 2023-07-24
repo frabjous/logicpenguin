@@ -812,6 +812,7 @@ export class formFit {
                 // made it to end of need loop;
                 // so all needs for this subderiv met; now we need
                 // to check assumptions
+                //
                 if (subDeriv?.assumptions?.length > 0) {
                     for (const hyp of subDeriv.assumptions) {
                         // if it allows nothing, we must continue orderloop
