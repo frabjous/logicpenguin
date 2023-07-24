@@ -489,7 +489,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
                     sd.classList.add("closed")
                 }
                 for (const ii of this.getElementsByTagName("input")) {
+                    ii.noregblur = true;
                     ii.blur();
+                    ii.noregblur = false;
                 }
             }, 100);
         }
@@ -1178,7 +1180,10 @@ export class SubDerivation extends HTMLElement {
         if (this?.myline?.mysubderiv?.myprob?.isRestoring) {
             return true;
         }
-        if (this?.myline?.mysubderiv?.myprob?.makeChanged) {
+        const makechanged =
+            ((!("noregblur" in this) || !this.noregblur) &&
+            this?.myline?.mysubderiv?.myprob?.makeChanged);
+        if (makechanged) {
             this.myline.mysubderiv.myprob.makeChanged();
         }
         return true;
