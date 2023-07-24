@@ -315,13 +315,27 @@ export default class DerivationCheck {
         }
         let errMsg = '';
         for (const form of forms) {
-            const fitresult = (new formFit(rule, rulename, form, line, Formula)).result();
+            const thisformfit =  (new formFit(rule, rulename, form, line, Formula));
+            const fitresult = thisformfit.result();
             if (fitresult.success) {
+                let hypsok = true;
+                if ("notinhyps" in form) {
+                    for (const n of form.notinhyps) {
+                        if (thisformfit?.assigns?.[n]
+                            && thisformfit?.assigns?.[n]?.length > 0) {
+                            const newname = thisformfit.assigns[n][0];
+
+                        }
+                    }
+                }
+
+                
                 line.checkedOK = true;
                 return line;
+                
             }
             if (fitresult.message) {
-                errMsg = fitresult.message;
+                errMsg += fitresult.message;
             }
         }
         //TODO: thorough check
@@ -380,19 +394,25 @@ export default class DerivationCheck {
         }
     }
 
-    isAvailableLineTo(num, line) {
+    isAvailableLineTo(num, line, adderrors = true) {
         const zbnum = num - 1;
         // note: I think we can make this low, b/c it can't pass the rule test
         if (this.deriv.lines.length < num || zbnum < 0) {
-            this.adderror(line.n, "justification", "low", "cites a line that does not exist");
+            if (adderrors) {
+                this.adderror(line.n, "justification", "low", "cites a line that does not exist");
+            }
             return false;
         }
         if (parseInt(line.n) == num) {
-            this.adderror(line.n, "justification", "high", "cites its own line number");
+            if (adderrors) {
+                this.adderror(line.n, "justification", "high", "cites its own line number");
+            }
             return false;
         }
         if (parseInt(line.n) < num) {
-            this.adderror(line.n, "justification", "high", "cites a line later in the derivation");
+            if (adderrors) {
+                this.adderror(line.n, "justification", "high", "cites a line later in the derivation");
+            }
             return false;
         }
         const citedline = this.deriv.lines[zbnum];
@@ -414,8 +434,10 @@ export default class DerivationCheck {
                 checkpart = currsubderiv?.parts?.[ currindex - 1 ] ?? false;
             } else {
                 if (currsubderiv?.showline == citedline) {
-                    this.adderror(line.n, "justification", "high",
-                        "cites a show line it is itself being used to demonstrate");
+                    if (adderrors) {
+                        this.adderror(line.n, "justification", "high",
+                           "cites a show line it is itself being used to demonstrate");
+                    }
                     return false;
                 }
                 // move into parent deriv
@@ -439,15 +461,21 @@ export default class DerivationCheck {
             }
             // see if we jumped over it
             if (checkpart.n && parseInt(checkpart.n) < num) {
-                this.adderror(line.n, "justification", "high",
-                "cites a line within a subderivation that is no longer available");
+                if (adderrors) {
+                    this.adderror(line.n, "justification", "high",
+                    "cites a line within a subderivation that is no longer available");
+                }
+                return false;
             }
             if (checkpart == citedline) {
                 return true;
             }
         }
-        this.adderror(line.n, "justification", "high",
-            "cites a line within a subderivation that is no longer available");
+        if (adderrors) {
+            this.adderror(line.n, "justification", "high",
+                "cites a line within a subderivation that is no longer available");
+        }
+        return false;
     }
 
     isAvailableRangeTo(start, end, line) {
@@ -685,7 +713,7 @@ export class formFit {
     }
 
     checkNewness() {
-        if (!this.form.mustbenew) { return true; }
+        if (!this.form?.mustbenew) { return true; }
         for (const n of this.form.mustbenew) {
             if (!this?.assigns?.[n] || this?.assigns?.[n]?.length < 1) { continue; }
             const newname = this.assigns[n][0];
