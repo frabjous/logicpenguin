@@ -759,7 +759,7 @@ export class formFit {
             const assignstry = { ...this.assigns };
             subderivloop: for (let i=0; i<this.form.subderivs.length; i++) {
                 const derivruleinfo = this.form.subderivs[i];
-                const subDeriv = subDerivs[i];
+                const subDeriv = subDerivs[order[i]];
                 let satisfaction = true;
                 needloop: for (let need of derivruleinfo.needs) {
                     const schema = Formula.from(need);
@@ -813,7 +813,6 @@ export class formFit {
                 // so all needs for this subderiv met; now we need
                 // to check assumptions
                 //
-                console.log("here with ", derivruleinfo.allows, " assumptions ", subDeriv.assumptions, "assignstry", assignstry);
                 if (subDeriv?.assumptions?.length > 0) {
                     for (const hyp of subDeriv.assumptions) {
                         // if it allows nothing, we must continue orderloop
