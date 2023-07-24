@@ -595,16 +595,34 @@ export default class DerivationCheck {
                         'one or more incomplete subderivations');
                 }
             } else {
-                if (!line.citednums || line.citednums.length == 0) {
-                    continue;
+                if (line.citednums && line.citednums.length != 0) {
+                    for (const cln of line.citednums) {
+                        if (!this.errors[cln]) { continue; }
+                        const itserrcats = Object.keys(this.errors[cln]);
+                        if (itserrcats.length > 0) {
+                            this.adderror(ln, 'dependency', 'low',
+                                'depends on a line that contains errors, so may not be correct'
+                            );
+                            break;
+                        }
+                    }
                 }
-                for (const cln of line.citednums) {
-                    if (!this.errors[cln]) { continue; }
-                    const itserrcats = Object.keys(this.errors[cln]);
-                    if (itserrcats.length > 0) {
-                        this.adderror(ln, 'dependency', 'low',
-                            'depends on a line that contains errors, so may not be correct'
-                        );
+                if (line.citedsubderivs && line.citedsubderivs.length != 0) {
+                    citedsubderivloop: for (const citedsubderiv of line.citedsubderivs) {
+                        if (!("lnmap" in citedsubderiv)) {
+                            continue;
+                        }
+                        for (const derivln in citedsubderiv.lnmap) {
+                            if (!this.errors[derivln]) { continue; }
+                            const itserrcats = Object.keys(this.errors[derivln]);
+                            if (itserrcats.length > 0) {
+                                this.adderror(ln, 'dependency', 'low',
+                                    'depends on a subderivation that contains ' +
+                                    'errors, so may not be correct'
+                                );
+                                break citedsubderivloop;
+                            }
+                        }
                     }
                 }
             }

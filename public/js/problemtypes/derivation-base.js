@@ -219,7 +219,13 @@ export default class DerivationExercise extends LogicPenguinProblem {
             type: 'button',
             myprob: this,
             innerHTML: tr(checksave),
-            onclick: function(e) { this.myprob.processAnswer(); }
+            onmousedown: function(e) {
+                e.preventDefault();
+            },
+            onclick: function(e) {
+                e.preventDefault();
+                this.myprob.processAnswer();
+            }
         });
 
         this.startOverButton = addelem('button', this.buttonDiv, {
