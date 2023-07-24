@@ -318,6 +318,8 @@ export default class DerivationCheck {
             const thisformfit =  (new formFit(rule, rulename, form, line, Formula));
             const fitresult = thisformfit.result();
             if (fitresult.success) {
+                // check whether the rule uses a name it shouldn't because
+                // they cannot occur in hypotheses/premises, e.g. forall x ∀I
                 let hypsok = true;
                 if ("notinhyps" in form) {
                     for (const n of form.notinhyps) {
@@ -326,7 +328,7 @@ export default class DerivationCheck {
                             const newname = thisformfit.assigns[n][0];
                             for (let i=1; i<line.n; i++) {
                                 let posshyp = this.deriv.lnmap[i.toString()];
-                                if (this.isAvailableLineTo(i, line)) {
+                                if (this.isAvailableLineTo(i, line, false)) {
                                     if (!posshyp?.j || !posshyp?.s) {
                                         continue;
                                     }

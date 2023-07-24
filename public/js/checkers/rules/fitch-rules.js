@@ -26,7 +26,7 @@ const commonForallxRules = {
     "↔E"  : { forms: [ { prems: ["A ↔ B", "A"], conc: "B" }, { prems: ["A ↔ B", "B"], conc: "A" } ] },
     "¬E"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "∀E"  : { pred: true, forms: [ { prems: ["∀xAx"], conc: "Aa", subst: {"x":"a"} } ] },
-    "∃E"  : { pred: true, forms: [ { "conc": "B", prems: ["∃xAx"], mustbenew: ["n"], subst: {"x": "n"}, subderivs: [ { needs: ["B"], allows: "An" } ] } ] },
+    "∃E"  : { pred: true, forms: [ { conc: "B", prems: ["∃xAx"], notinhyps: ["n"], cannotbein: {"n":["Ax","B"]}, subst: {"x": "n"}, subderivs: [ { needs: ["B"], allows: "An" } ] } ] },
     "=E"  : { pred: true, forms: [ { prems: ["Aa", "a = b"], conc: "Ab" }, { prems: ["Aa", "b = a"], conc: "Ab" } ] },
     "MT"  : { forms: [ { prems: ["A → B", "¬B"], conc: "¬A" } ], derived: true },
     "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
