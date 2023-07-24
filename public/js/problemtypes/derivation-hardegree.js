@@ -57,8 +57,10 @@ export default class DerivationHardegree extends DerivationExercise {
         }
         // make s lowercase for Ass
         if (/^[S]$/.test(e.key)) {
-            e.preventDefault();
-            elem.insertHere(e.key.toLowerCase());
+            if (!("forallSwap" in e)  || (!e.forallSwap)) {
+                e.preventDefault();
+                elem.insertHere(e.key.toLowerCase());
+            }
         }
     }
 

@@ -57,6 +57,7 @@ export default class DerivationCheck {
         if (subderiv.analyzed) { return subderiv; }
         subderiv.lines = [];
         subderiv.lnmap = {};
+        subderiv.assumptions = [];
         // process showline
         if (subderiv.showline &&
             (subderiv.showline?.j && subderiv.showline?.j != '') ||
