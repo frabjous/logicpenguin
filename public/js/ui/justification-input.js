@@ -39,12 +39,11 @@ export default class JustificationInput extends FormulaInput {
     static insertRuleCite(rule) {
         this.value = this.inputfix(this.value);
         // if has numbers before, remove current rule coming afterwards
-        if (/[0-9 ,?]/.test(this.value)) {
+        if (/[0-9][ ]+[^0-9]*$/.test(this.value)) {
             this.value = this.value.replace(/ .*/,'');
         } else {
             // if numbers at the end, remove what is before them
-            if (/ [0-9].*/.test(this.value)) {
-                console.log("got here");
+            if (/[0-9]/.test(this.value)) {
                 this.value = this.value.replace(/^[^0-9]*/,'');
             } else {
                 this.value = '';

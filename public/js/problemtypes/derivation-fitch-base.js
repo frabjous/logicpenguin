@@ -169,7 +169,7 @@ export default class DerivationFitch extends DerivationExercise {
         rp.ruleformcell = addelem('th', thr, {
             colSpan: "7",
             myrp: rp,
-            classes: [ 'ruledisplay' ],
+            classes: [ 'ruledisplay', 'fitchstyle' ],
             tabIndex: -1,
             onmousedown: function(e) { e.preventDefault(); },
             onclick: function(e) {

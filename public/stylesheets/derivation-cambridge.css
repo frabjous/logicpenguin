@@ -142,32 +142,32 @@
     white-space: nowrap;
 }
 
-.logicpenguin.rulepanel div.ruledisplayform table {
+.logicpenguin.rulepanel .fitchstyle div.ruledisplayform table {
     border-collapse: collapse;
     border-spacing: 0;
 }
 
-.logicpenguin.rulepanel div.ruledisplayform table td {
+.logicpenguin.rulepanel .fitchstyle div.ruledisplayform table td {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     padding-bottom: 0.3rem;
     padding-top: 0.3rem;
 }
 
-.logicpenguin.rulepanel div.ruledisplayform table td:first-child {
+.logicpenguin.rulepanel .fitchstyle div.ruledisplayform table td:first-child {
     border-right: 2px solid var(--lpgray2);
     font-style: italic;
 }
 
-.logicpenguin.rulepanel div.ruledisplayform table tr.spacerrow td {
+.logicpenguin.rulepanel .fitchstyle div.ruledisplayform table tr.spacerrow td {
     height: 0.7rem;
 }
 
-.logicpenguin.rulepanel div.ruledisplayform table td.subderivhyp {
+.logicpenguin.rulepanel .fitchstyle div.ruledisplayform table td.subderivhyp {
     border-left: 2px solid var(--lpgray2);
     border-bottom: 2px solid var(--lpgray2);
 }
 
-.logicpenguin.rulepanel div.ruledisplayform table td.subderivtarget {
+.logicpenguin.rulepanel .fitchstyle div.ruledisplayform table td.subderivtarget {
     border-left: 2px solid var(--lpgray2);
 }
