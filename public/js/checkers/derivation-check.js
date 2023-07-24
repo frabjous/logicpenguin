@@ -277,6 +277,7 @@ export default class DerivationCheck {
             }
             return line;
         }
+        // ASSUMPTION
         // if the derivation uses show lines assumptions are checked like
         // normal rules, if it doesn't, then they're OK, but will be
         // checked when regular rule citing them is
@@ -285,9 +286,9 @@ export default class DerivationCheck {
             line.checkedOK = true;
             return line;
         }
-        // forms either come from rule of what showlines allow for assumption
+        // forms either come from rule of what show lines allow for assumption
         const forms = rule?.forms ?? [];
-        // ASSUMPTION
+        // if we're here the assumption rule could only be with show lines
         if (rule.assumptionrule) {
             let checksl = line?.mysubderiv?.showline;
             while (checksl) {
@@ -791,13 +792,28 @@ export class formFit {
                     continue orderloop;
                 }
                 // made it to end of need loop;
-                // so all needs for this subderiv met
+                // so all needs for this subderiv met; now we need
+                // to check assumptions
+                if (subDeriv?.assumptions?.length > 0) {
+                    for (const hyp of subDeriv.assumptions) {
+                        // if it allows nothing, we must continue orderloop
+                        if (!("allows" in derivruleinfo)) {
+                            continue orderloop;
+                        }
+                        const schema = Formula.from(derivruleinfo.allows);
+                        const attempt = this.extendAssign(schema,
+                            Formula.from(hyp), assignstry );
+                        if (!attempt) {
+                            continue orderloop;
+                        }
+                    }
+                }
             }
-            // all subderivs had their needs met, so
+            // all subderivs had their thinues met, so
             // this is a good order
             foundgood = true;
             break orderloop;
-        } // al orders
+        } // all orders
         if (!foundgood) {
             if (this.line.isshowline) {
                 let msg = "what is needed to complete a derivation by " +
