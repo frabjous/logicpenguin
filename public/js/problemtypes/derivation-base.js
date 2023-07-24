@@ -232,7 +232,11 @@ export default class DerivationExercise extends LogicPenguinProblem {
             type: 'button',
             myprob: this,
             innerHTML: tr('start over'),
-            onclick: function() {
+            onmousedown: function(e) {
+                e.preventDefault();
+            },
+            onclick: function(e) {
+                e.preventDefault();
                 const autoch = this.myprob.autocheck;
                 this.myprob.startOver();
                 // start with focus on main showline? TODO: fitch different?
