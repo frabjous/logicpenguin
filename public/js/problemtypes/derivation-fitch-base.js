@@ -442,6 +442,10 @@ export default class DerivationFitch extends DerivationExercise {
         } else {
             options.cheat = false;
         }
+        // answer should be "true" if none applied
+        if (!answer) {
+            answer = true;
+        }
 
         return [parentid, problem, answer, restore, options];
     }

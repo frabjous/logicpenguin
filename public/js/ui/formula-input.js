@@ -321,8 +321,8 @@ export default class FormulaInput {
         }
 
         // falsums
-        if (e.key == '#' || e.key == '✖' || e.key == '×'
-            || e.key == '⊥' || e.key == '⨳' || e.key == '↯') {
+        if (e.key == '#' || e.key == '✖' || e.key == '×' || e.key == '_' ||
+            e.key == '⊥' || e.key == '⨳' || e.key == '↯') {
             e.preventDefault();
             this.insOp('FALSUM');
             return;

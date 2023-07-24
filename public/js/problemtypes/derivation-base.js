@@ -131,7 +131,6 @@ export default class DerivationExercise extends LogicPenguinProblem {
             this.autocheckdekay = 300;
         }
 
-
         // mark as setting up
         this.settingUp  = true;
 
