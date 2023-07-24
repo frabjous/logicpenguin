@@ -277,11 +277,18 @@ export default class DerivationCheck {
             }
             return line;
         }
+        // if the derivation uses show lines assumptions are checked like
+        // normal rules, if it doesn't, then they're OK, but will be
+        // checked when regular rule citing them is
+        if (rule.assumptionrule && !this.numberedShowLines) {
+            line.mysubderiv.assumptions.push(Formula.from(line.s).normal);
+            line.checkedOK = true;
+            return line;
+        }
         // forms either come from rule of what showlines allow for assumption
         const forms = rule?.forms ?? [];
         // ASSUMPTION
         if (rule.assumptionrule) {
-            // TODO: assumptions compatible with other systems
             let checksl = line?.mysubderiv?.showline;
             while (checksl) {
                 if (checksl.rulechecked &&
