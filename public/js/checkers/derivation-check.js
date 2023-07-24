@@ -248,6 +248,9 @@ export default class DerivationCheck {
         line.citedsubderivs = line.citedrangenums
             .map(([start, end]) => (this?.deriv?.lines?.[start]?.mysubderiv ?? false))
             .filter((sd) => (sd !== false));
+        if (line.n == 2) {
+            console.log('msd',line.mysubderiv);
+        }
         // show rules cite their own subderiv
         if (line.isshowline && line.mysubderiv) {
             line.citedsubderivs.push(line.mysubderiv);
