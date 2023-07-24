@@ -246,11 +246,8 @@ export default class DerivationCheck {
             .map((n) => (this?.deriv?.lines?.[parseInt(n)-1] ?? false))
             .filter((l) => (l !== false));
         line.citedsubderivs = line.citedrangenums
-            .map(([start, end]) => (this?.deriv?.lines?.[start]?.mysubderiv ?? false))
+            .map(([start, end]) => (this?.deriv?.lines?.[start-1]?.mysubderiv ?? false))
             .filter((sd) => (sd !== false));
-        if (line.n == 2) {
-            console.log('msd',line.mysubderiv);
-        }
         // show rules cite their own subderiv
         if (line.isshowline && line.mysubderiv) {
             line.citedsubderivs.push(line.mysubderiv);
@@ -816,6 +813,7 @@ export class formFit {
                 // so all needs for this subderiv met; now we need
                 // to check assumptions
                 //
+                console.log("here with ", derivruleinfo.allows, " assumptions ", subDeriv.assumptions, "assignstry", assignstry);
                 if (subDeriv?.assumptions?.length > 0) {
                     for (const hyp of subDeriv.assumptions) {
                         // if it allows nothing, we must continue orderloop
