@@ -324,15 +324,39 @@ export default class DerivationCheck {
                         if (thisformfit?.assigns?.[n]
                             && thisformfit?.assigns?.[n]?.length > 0) {
                             const newname = thisformfit.assigns[n][0];
-
+                            for (let i=1; i<line.n; i++) {
+                                let posshyp = this.deriv.lnmap[i.toString()];
+                                if (this.isAvailableLineTo(i, line)) {
+                                    if (!posshyp?.j || !posshyp?.s) {
+                                        continue;
+                                    }
+                                    if (!posshyp?.rulechecked) {
+                                        continue;
+                                    }
+                                    const posshyprule = this.rules[posshyp.rulechecked];
+                                    if (!posshyprule?.premiserule && !posshyprule?.assumptionrule) {
+                                        continue;
+                                    }
+                                    const posshypF = Formula.from(posshyp.s);
+                                    if (posshypF.terms.indexOf(newname) != -1) {
+                                        hypsok = false;
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
 
-                
-                line.checkedOK = true;
+                if (hypsok) {
+                    line.checkedOK = true;
+                    return line;
+                }
+                this.adderror(line.n, 'rule', 'high',
+                    'the line applies the rule ' + rulename + ' using ' +
+                    'a name that occurs in an undischarged premise ' +
+                    'or assumption, which is not allowed');
                 return line;
-                
             }
             if (fitresult.message) {
                 errMsg += fitresult.message;
