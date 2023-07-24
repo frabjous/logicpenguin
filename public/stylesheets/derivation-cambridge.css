@@ -5,7 +5,6 @@
     counter-reset: probnum;
 }
 
-
 .logicpenguin ol.derivation-calgary-list,
 .logicpenguin ol.derivation-cambridge-list {
     list-style-type: none;
@@ -135,4 +134,27 @@
     margin-left: 1rem;
 }
 
-.logicpenguin.rulepanel 
+.logicpenguin.rulepanel div.ruledisplayform table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.logicpenguin.rulepanel div.ruledisplayform table td {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    padding-bottom: 0.3rem;
+}
+
+.logicpenguin.rulepanel div.ruledisplayform table td:first-child {
+    border-right: 2px solid var(--lpgray2);
+    font-style: italic;
+}
+
+.logicpenguin.rulepanel div.ruledisplayform table td.subderivhyp {
+    border-left: 2px solid var(--lpgray2);
+    border-bottom: 2px solid var(--lpgray2);
+}
+
+.logicpenguin.rulepanel div.ruledisplayform table td.subderivtarget {
+    border-left: 2px solid var(--lpgray2);
+}
