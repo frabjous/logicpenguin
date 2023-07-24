@@ -271,10 +271,11 @@ export default class DerivationFitch extends DerivationExercise {
                     justify += '<em>' + premletters.at(premindex) + '</em>';
                     premindex++;
                     const fmld = addelem('td', trow, {
-                        colSpan: 3,
+                        colSpan: 2,
                         classes: ['symbolic'],
                         innerHTML: htmlEscape(this.schematic(prem))
                     });
+                    const emptyd = addelem('td', trow);
                 }
                 // subderivation rows
                 const subderivs = thisform.subderivs ?? [];
@@ -316,7 +317,7 @@ export default class DerivationFitch extends DerivationExercise {
                     if (("needs" in subderiv) && (subderiv.needs.length > 0)) {
                         for (let i=0; i<subderiv.needs.length; i++) {
                             const need=subderiv.needs[i];
-                            const lastneed = (i = (subderiv.needs.length - 1));
+                            const lastneed = (i == (subderiv.needs.length - 1));
                             const needtr = addelem('tr', argtbb, {
                                 classes: ['subderivneedsrow']
                             });
@@ -351,8 +352,7 @@ export default class DerivationFitch extends DerivationExercise {
                     });
                     const jtd = addelem('td', conctr, {
                         classes: ['rulejustification'],
-                        innerHTML: '<span class="symbolic">' +
-                            htmlEscape(rule) + '</span> ' + justify
+                        innerHTML: htmlEscape(rule) + ' ' + justify
                     });
                 }
                 // TODO: restrictions

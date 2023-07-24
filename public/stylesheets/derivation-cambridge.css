@@ -134,6 +134,14 @@
     margin-left: 1rem;
 }
 
+.logicpenguin.rulepanel table.ruleclicktable tbody td.ruleselect {
+    width: 2.8rem;
+}
+
+.logicpenguin.rulepanel table.ruleclicktable th {
+    white-space: nowrap;
+}
+
 .logicpenguin.rulepanel div.ruledisplayform table {
     border-collapse: collapse;
     border-spacing: 0;
@@ -142,12 +150,16 @@
 .logicpenguin.rulepanel div.ruledisplayform table td {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
-    padding-bottom: 0.3rem;
+    padding-bottom: 0.5rem;
 }
 
 .logicpenguin.rulepanel div.ruledisplayform table td:first-child {
     border-right: 2px solid var(--lpgray2);
     font-style: italic;
+}
+
+.logicpenguin.rulepanel div.ruledisplayform table tr.spacerrow td {
+    height: 0.7rem;
 }
 
 .logicpenguin.rulepanel div.ruledisplayform table td.subderivhyp {
