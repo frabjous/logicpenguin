@@ -351,7 +351,7 @@ export default class FormulaInput {
 
         // || becomes disjunction as well
         if (e.key == '|') {
-            if ((this.sectionStart > 0) &&
+            if ((this.selectionStart > 0) &&
                 (this.value.at(this.selectionStart - 1) == '|')) {
                 e.preventDefault();
                 this.autoChange(/\|$/, '', '', null, null);
@@ -362,14 +362,13 @@ export default class FormulaInput {
 
         // hyphens not preceding '>' or numbers are negations?
         if (!(/[0-9?-]/.test(e.key)) &&
-            (this.sectionStart > 0) &&
+            (this.selectionStart > 0) &&
             (this.value.at(this.selectionStart - 1) == '-') &&
             e.key.length == 1) {
-            e.preventDefault();
             const len = this.value.substr(0,this.selectionStart)
                 .match(/-+$/g)[0].length;
             const nots = this.symbols.NOT.repeat(len);
-            this.autoChange(/-+$/,'', nots + e.key, null, null);
+            this.autoChange(/-+$/,'', nots, null, null);
         }
 
         // quantifiers, etc. if in predicate mode
@@ -390,6 +389,7 @@ export default class FormulaInput {
             if (e.key == 's' || e.key == 'S') {
                 if (this.value.at(this.selectionStart - 1) == '∀') {
                     e.preventDefault();
+                    e.forallSwap = true;
                     this.autoChange(/∀$/,'A','s',null,null);
                 }
             }
