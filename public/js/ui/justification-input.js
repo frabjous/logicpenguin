@@ -44,6 +44,7 @@ export default class JustificationInput extends FormulaInput {
         } else {
             // if numbers at the end, remove what is before them
             if (/ [0-9].*/.test(this.value)) {
+                console.log("got here");
                 this.value = this.value.replace(/^[^0-9]*/,'');
             } else {
                 this.value = '';

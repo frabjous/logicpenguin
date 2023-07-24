@@ -321,6 +321,15 @@
     background-color: var(--lpblack);
     color: var(--lpbgmagenta);
 }
+
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.blank {
+    cursor: default;
+}
+
+.logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.blank:hover {
+    background-color: var(--lpgray1);
+}
+    
 .logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian:hover {
     background-color: var(--lpgray1);
     color: var(--lpgray4);

@@ -65,7 +65,7 @@ export default class DerivationFitch extends DerivationExercise {
             const atStart = (elem.selectionStart == 0);
             let charBefore = '';
             if (!atStart) {
-                charBefore = this.value[ (elem.selectionStart - 1) ];
+                charBefore = elem.value[ (elem.selectionStart - 1) ];
             }
             if (charBefore != 'D') {
                 e.preventDefault();

@@ -135,7 +135,7 @@
 }
 
 .logicpenguin.rulepanel table.ruleclicktable tbody td.ruleselect {
-    width: 2.8rem;
+    width: 2.7rem;
 }
 
 .logicpenguin.rulepanel table.ruleclicktable th {
@@ -150,7 +150,8 @@
 .logicpenguin.rulepanel div.ruledisplayform table td {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+    padding-top: 0.3rem;
 }
 
 .logicpenguin.rulepanel div.ruledisplayform table td:first-child {
