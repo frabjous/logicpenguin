@@ -798,7 +798,40 @@ export class formFit {
     }
 
     checkRestrictions() {
-        
+        const Formula = this.Formula;
+        // rule must have a restriction
+        if (!("cannotbein" in this.form)) { return true; }
+        console.log("here with ", this.form.cannotbein, " assigns ", this.assigns);
+        for (const term in this.form.cannotbein) {
+            // term must be assigned to something for there to be
+            // problem
+            if (!(term in this.assigns)) {
+                continue;
+            }
+            const assignedterms = this.assigns[term];
+            const cantbein = this.form.cannotbein[term];
+            // probably only one term can be in the assignment, but we'll
+            // make them all meet the requirement
+            for (const possassign of assignedterms) {
+                for (const barred of cantbein) {
+                    // has to have an assignment
+                    if (!(barred in this.assigns)) {
+                        continue;
+                    }
+                    const barredfrom = this.assigns[barred];
+                    const barredformula = Formula.from(barredfrom);
+                    if (barredformula.terms.indexOf(possassign) != - 1) {
+                        if (this.message != '') { this.message += '; ';}
+                        this.message += 'has the term ' + possassign +
+                            ' included in a line it cannot be in for ' +
+                            'the rule ' + this.rulename + ' to apply';
+                        this.possible = false;
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     checkSubDerivs() {
