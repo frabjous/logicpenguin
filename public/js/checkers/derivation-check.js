@@ -1004,10 +1004,39 @@ export class formFit {
         // unassigned: assign it
             assigns[schema.normal] = f.normal;
         }
-        // check for identity
+        // check for identity; which must also be what it is mapped to
         if (schema.pletter == '=') {
             if (!f.pletter || f.pletter != '=') {
                 return false;
+            }
+            // terms in an identity schema must be precisely what's there
+            // must have same number of terms
+            if (schema.terms.length != f.terms.length) {
+                return false;
+            }
+            // each term must be exactly that
+            for (let stermindex =0; stermindex<schema.terms.length;
+                stermindex++) {
+                const schematerm = schema.terms[stermindex];
+                const onlypossibility = f.terms[stermindex];
+                if (syntax.isvar(schematerm)) {
+                    if (schematerm in assigns) {
+                        if (assigns[schematerm] != onlypossibility) {
+                            return false;
+                        }
+                        // if here, should already be mapped to right thing
+                    } else {
+                        assigns[schematerm] = onlypossibility;
+                    }
+                } else {
+                    // constant; must be among possibilities?
+                    if (schematerm in assigns) {
+                        if (assigns[schematerm].indexOf(onlypossibility) == -1) {
+                            return false;
+                        }
+                    }
+                    assigns[schematerm] = [onlypossibility];
+                }
             }
         }
         // check terms
