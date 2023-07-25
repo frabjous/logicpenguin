@@ -321,6 +321,9 @@ export default class DerivationCheck {
                 // check whether the rule uses a name it shouldn't because
                 // they cannot occur in hypotheses/premises, e.g. forall x ∀I
                 let hypsok = true;
+                let restrictionsok = true;
+                let badterm = '';
+                let badplace = '';
                 if ("notinhyps" in form) {
                     for (const n of form.notinhyps) {
                         if (thisformfit?.assigns?.[n]
@@ -342,23 +345,66 @@ export default class DerivationCheck {
                                     const posshypF = Formula.from(posshyp.s);
                                     if (posshypF.terms.indexOf(newname) != -1) {
                                         hypsok = false;
+                                        badterm = 'newname';
                                         break;
                                     }
                                 }
                             }
                         }
                     }
+/*
+                    checkRestrictions() {
+                        const Formula = this.Formula;
+                        // rule must have a restriction
+                        if (!("cannotbein" in this.form)) { return true; }
+                        console.log("here with ", this.form.cannotbein, " assigns ", this.assigns);
+                        for (const term in this.form.cannotbein) {
+                            // term must be assigned to something for there to be
+                            // problem
+                            if (!(term in this.assigns)) {
+                                continue;
+                            }
+                            const assignedterms = this.assigns[term];
+                            const cantbein = this.form.cannotbein[term];
+                            // probably only one term can be in the assignment, but we'll
+                            // make them all meet the requirement
+                            for (const possassign of assignedterms) {
+                                for (const barred of cantbein) {
+                                    // has to have an assignment
+                                    if (!(barred in this.assigns)) {
+                                        continue;
+                                    }
+                                    const barredfrom = this.assigns[barred];
+                                    const barredformula = Formula.from(barredfrom);
+                                    if (barredformula.terms.indexOf(possassign) != - 1) {
+                                        if (this.message != '') { this.message += '; ';}
+                                        this.message += 'has the term ' + possassign +
+                                            ' included in a line it cannot be in for ' +
+                                            'the rule ' + this.rulename + ' to apply';
+                                        this.possible = false;
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                        return true;
+                    }
+
+*/
                 }
 
-                if (hypsok) {
+                if (hypsok && restrictionsok) {
                     line.checkedOK = true;
                     return line;
                 }
-                this.adderror(line.n, 'rule', 'high',
-                    'the line applies the rule ' + rulename + ' using ' +
-                    'a name that occurs in an undischarged premise ' +
-                    'or assumption, which is not allowed');
-                return line;
+                if (!hpsok) {
+                    this.adderror(line.n, 'rule', 'high',
+                        'the line applies the rule ' + rulename + ' using ' +
+                        'a name that occurs in an undischarged premise ' +
+                        'or assumption, which is not allowed');
+                    return line;
+                }
+                //this.adderror(line.n, 'rule', 'high', 
             }
             if (fitresult.message) {
                 errMsg += fitresult.message;
@@ -801,7 +847,6 @@ export class formFit {
         const Formula = this.Formula;
         // rule must have a restriction
         if (!("cannotbein" in this.form)) { return true; }
-        console.log("here with ", this.form.cannotbein, " assigns ", this.assigns);
         for (const term in this.form.cannotbein) {
             // term must be assigned to something for there to be
             // problem
@@ -833,6 +878,7 @@ export class formFit {
         }
         return true;
     }
+
 
     checkSubDerivs() {
         const Formula = this.Formula;
@@ -922,6 +968,7 @@ export class formFit {
             // all subderivs had their thinues met, so
             // this is a good order
             foundgood = true;
+            this.assigns = assignstry;
             break orderloop;
         } // all orders
         if (!foundgood) {
