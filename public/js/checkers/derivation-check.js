@@ -321,9 +321,7 @@ export default class DerivationCheck {
                 // check whether the rule uses a name it shouldn't because
                 // they cannot occur in hypotheses/premises, e.g. forall x ∀I
                 let hypsok = true;
-                let restrictionsok = true;
                 let badterm = '';
-                let badplace = '';
                 if ("notinhyps" in form) {
                     for (const n of form.notinhyps) {
                         if (thisformfit?.assigns?.[n]
@@ -345,65 +343,24 @@ export default class DerivationCheck {
                                     const posshypF = Formula.from(posshyp.s);
                                     if (posshypF.terms.indexOf(newname) != -1) {
                                         hypsok = false;
-                                        badterm = 'newname';
+                                        badterm = newname;
                                         break;
                                     }
                                 }
                             }
                         }
                     }
-/*
-                    checkRestrictions() {
-                        const Formula = this.Formula;
-                        // rule must have a restriction
-                        if (!("cannotbein" in this.form)) { return true; }
-                        console.log("here with ", this.form.cannotbein, " assigns ", this.assigns);
-                        for (const term in this.form.cannotbein) {
-                            // term must be assigned to something for there to be
-                            // problem
-                            if (!(term in this.assigns)) {
-                                continue;
-                            }
-                            const assignedterms = this.assigns[term];
-                            const cantbein = this.form.cannotbein[term];
-                            // probably only one term can be in the assignment, but we'll
-                            // make them all meet the requirement
-                            for (const possassign of assignedterms) {
-                                for (const barred of cantbein) {
-                                    // has to have an assignment
-                                    if (!(barred in this.assigns)) {
-                                        continue;
-                                    }
-                                    const barredfrom = this.assigns[barred];
-                                    const barredformula = Formula.from(barredfrom);
-                                    if (barredformula.terms.indexOf(possassign) != - 1) {
-                                        if (this.message != '') { this.message += '; ';}
-                                        this.message += 'has the term ' + possassign +
-                                            ' included in a line it cannot be in for ' +
-                                            'the rule ' + this.rulename + ' to apply';
-                                        this.possible = false;
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                        return true;
-                    }
-
-*/
                 }
-
-                if (hypsok && restrictionsok) {
+                if (hypsok) {
                     line.checkedOK = true;
                     return line;
                 }
-                if (!hpsok) {
-                    this.adderror(line.n, 'rule', 'high',
-                        'the line applies the rule ' + rulename + ' using ' +
-                        'a name that occurs in an undischarged premise ' +
-                        'or assumption, which is not allowed');
-                    return line;
-                }
+                this.adderror(line.n, 'rule', 'high',
+                    'the line applies the rule ' + rulename + ' using ' +
+                    'the name “' + badterm + '”, which occurs in an ' +
+                    'undischarged premise or assumption, and this is ' +
+                    'not allowed');
+                return line;
                 //this.adderror(line.n, 'rule', 'high', 
             }
             if (fitresult.message) {
@@ -867,9 +824,10 @@ export class formFit {
                     const barredformula = Formula.from(barredfrom);
                     if (barredformula.terms.indexOf(possassign) != - 1) {
                         if (this.message != '') { this.message += '; ';}
-                        this.message += 'has the term ' + possassign +
-                            ' included in a line it cannot be in for ' +
-                            'the rule ' + this.rulename + ' to apply';
+                        this.message += 'applies the rule ' +
+                            this.rulename + ' using the term “' +
+                            possassign + '” in a line it is not allowed ' +
+                            'to occur in for that rule to apply.';
                         this.possible = false;
                         return false;
                     }
