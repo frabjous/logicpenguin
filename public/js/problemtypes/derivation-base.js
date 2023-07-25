@@ -425,7 +425,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 // build table of errors
                 if (ind.errors[ln]) {
                     if (ch == '') { ch = '<table class="errortable"><tbody>'; };
-                    ch += '<tr><td>Line ' + ln + '</td><td>';
+                    // don't report a line number if only one error, a
+                    // completion error on line 1
+                    if ((ln == '1') && (Object.keys(ind.errors[ln]).length == 1) &&
+                        Object.keys(ind.errors[ln])[0] == 'completion') {
+                        ch += '<tr><td></td><td>';
+                    } else {
+                        ch += '<tr><td>Line ' + ln + '</td><td>';
+                    }
                     let needbr = false;
                     for (const category in ind.errors[ln]) {
                         const errIconType = DerivationExercise.errIconType[category] ?? '';

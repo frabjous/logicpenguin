@@ -364,7 +364,7 @@ export default class DerivationCheck {
                 //this.adderror(line.n, 'rule', 'high', 
             }
             if (fitresult.message) {
-                errMsg += fitresult.message;
+                errMsg = fitresult.message;
             }
         }
         //TODO: thorough check
