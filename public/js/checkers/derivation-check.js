@@ -126,7 +126,7 @@ export default class DerivationCheck {
             }
         }
         if (!foundConc) {
-            this.adderror('1',"rule","high","final conclusion of " +
+            this.adderror('1',"completion","high","final conclusion of " +
                 "argument not shown");
         }
     }
@@ -797,6 +797,10 @@ export class formFit {
         }
     }
 
+    checkRestrictions() {
+        
+    }
+
     checkSubDerivs() {
         const Formula = this.Formula;
         if (!this.form.subderivs ||
@@ -1086,6 +1090,7 @@ export class formFit {
         this.checkConc();
         this.checkPrems();
         this.checkSubDerivs();
+        this.checkRestrictions();
         const newresult = this.checkNewness();
         if (!newresult) {
             if (this.message != '') { this.message += '; '; }
