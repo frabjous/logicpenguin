@@ -113,11 +113,10 @@ export default class FormulaInput {
     }
 
     static hideWidgets() {
-        if (window?.symbolwidgets) {
-        console.log("here with ", window.symbolwidgets);
-            for (const wg in window.symbolswidgets) {
-                window.symbolwidgets[wg].hide();
-            }
+        let ww = document.getElementsByClassName("symbolinsertwidget");
+        while (ww.length > 0) {
+            const w = ww[ ww.length - 1 ];
+            w.parentNode.removeChild(w);
         }
     }
 
