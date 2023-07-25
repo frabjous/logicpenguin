@@ -232,7 +232,7 @@ export default class FormulaInput {
         }
         if (e.key == 'ArrowLeft' && e.shiftKey && this.shiftArrowLeftHook) {
             e.preventDefault();
-            this.shiftArrowLeftHook(e);
+            this.shiftArrowLeftHook(e, true);
             return;
         }
         if (e.key == 'ArrowRight' && e.shiftKey && this.shiftArrowRightHook) {

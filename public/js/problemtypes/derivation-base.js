@@ -1232,6 +1232,7 @@ export class SubDerivation extends HTMLElement {
             if (this.myline.jinput &&
                 (!this.myline.jinput.myrwrap.classList.contains("premisejwrap"))) {
                 this.myline.jinput.focus();
+                this.myline.jinput.setSelectionRange(0,0);
                 return;
             }
         }
@@ -1240,6 +1241,7 @@ export class SubDerivation extends HTMLElement {
             this.myline.mysubderiv.lineAfter(this.myline, stayinsubderiv);
         if (nextline && nextline.input) {
             nextline.input.focus();
+            nextline.input.setSelectionRange(0,0);
             return;
         }
         // don't create after blank line
@@ -1256,12 +1258,16 @@ export class SubDerivation extends HTMLElement {
         if (newline?.input) { newline.input.focus(); }
     }
 
-    static focusPrevInput(e) {
+    static focusPrevInput(e, putatend = false) {
         if (!this.myline) { return; }
         // for justification go back to formula input
         if (this.classList.contains("justification")) {
             if (this.myline.input) {
                 this.myline.input.focus();
+                if (putatend) {
+                    const len = this.myline.input.value.length;
+                    this.myline.input.setSelectionRange(len, len);
+                }
                 return;
             }
         }
@@ -1274,11 +1280,19 @@ export class SubDerivation extends HTMLElement {
             if (prevline.jinput &&
                 (!prevline.jinput.myrwrap.classList.contains('premisejwrap'))) {
                 prevline.jinput.focus();
+                if (putatend) {
+                    const len = prevline.jinput.value.length;
+                    prevline.jinput.setSelectionRange(len, len);
+                }
                 return;
             }
             // otherwise go to main input
             if (prevline.input) {
                 prevline.input.focus();
+                if (putatend) {
+                    const len = prevline.input.value.length;
+                    prevline.input.setSelectionRange(len, len);
+                }
                 return;
             }
         }
