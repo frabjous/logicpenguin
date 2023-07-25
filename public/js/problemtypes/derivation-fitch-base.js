@@ -49,12 +49,14 @@ export default class DerivationFitch extends DerivationExercise {
             let spaceBefore = false;
             if (!atStart) {
                 const charBefore = elem.value[ (elem.selectionStart - 1) ];
+                // poorly named because we also want numbers before
                 spaceBefore = (
                     (charBefore == ',') ||
                     (charBefore == ' ') ||
                     (charBefore == ' ') || // thin space
                     (charBefore == ' ') || // nonbreaking space
-                    (charBefore == ' ')); // narrow nonbreaking space
+                    (charBefore == ' ') || // narrow nonbreaking space
+                    (/[0-9]/.test(charBefore)));
             }
             if (atStart || spaceBefore) {
                 e.preventDefault();

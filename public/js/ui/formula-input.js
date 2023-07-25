@@ -257,7 +257,7 @@ export default class FormulaInput {
                 return;
             }
         }
-        
+
         if (e.key == 'ArrowLeft' && this.arrowLeftHook) {
             if (this.selectionStart == 0) {
                 e.preventDefault();
