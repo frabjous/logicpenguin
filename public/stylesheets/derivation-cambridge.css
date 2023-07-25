@@ -67,9 +67,9 @@
 /* TODO: remove padding? */
 .logicpenguin .fitch-style-derivation .innersubderiv {
     border-left: 3px dashed var(--lpgray5);
-    margin-left: 0.7em;
+    margin-left: 1.1em;
     margin-right: 0.1em;
-    margin-top: 0.5ex;
+    margin-top: 0.6em;
     margin-bottom: 0.5ex;
 }
 

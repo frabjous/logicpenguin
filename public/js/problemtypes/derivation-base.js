@@ -771,6 +771,11 @@ export class SubDerivation extends HTMLElement {
         line.jinput.shiftArrowRightHook = SubDerivation.moveHorizontally;
         line.jinput.arrowUpHook = SubDerivation.moveUp;
         line.jinput.arrowDownHook = SubDerivation.moveDown;
+        // the arrow right and arrow left hooks are only fired
+        // when at the start or end of input
+        line.jinput.arrowRightHook = SubDerivation.focusNextInput;
+        line.jinput.arrowLeftHook = SubDerivation.focusPrevInput;
+        // on the other hand, the tab hooks are always fired
         line.jinput.shiftTabHook = SubDerivation.focusPrevInput;
         line.jinput.tabHook = SubDerivation.focusNextInput;
         line.jinput.enterHook = function(e) {
@@ -878,6 +883,11 @@ export class SubDerivation extends HTMLElement {
         line.input.shiftArrowRightHook = SubDerivation.moveHorizontally;
         line.input.arrowUpHook = SubDerivation.moveUp;
         line.input.arrowDownHook = SubDerivation.moveDown;
+        // the arrow right and arrow left hooks are only fired
+        // when at the start or end of input
+        line.input.arrowRightHook = SubDerivation.focusNextInput;
+        line.input.arrowLeftHook = SubDerivation.focusPrevInput;
+        // on the other hand, the tab hooks are always fired
         line.input.shiftTabHook = SubDerivation.focusPrevInput;
         line.input.tabHook = SubDerivation.focusNextInput;
         line.input.enterHook = function(e) {

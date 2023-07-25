@@ -241,6 +241,23 @@ export default class FormulaInput {
             return;
         }
 
+        // these are only fired when at the start or end of input
+        if (e.key == 'ArrowRight' && this.arrowRightHook) {
+            if (this.selectionStart == this.value.length) {
+                e.preventDefault();
+                this.arrowRightHook(e);
+                return;
+            }
+        }
+        
+        if (e.key == 'ArrowLeft' && this.arrowLeftHook) {
+            if (this.selectionStart == 0) {
+                e.preventDefault();
+                this.arrowLeftHook(e);
+                return;
+            }
+        }
+
         // other changes only apply when the field can actually be edited
         if (this.readOnly) { return; }
 
