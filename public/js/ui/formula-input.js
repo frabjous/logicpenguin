@@ -112,6 +112,15 @@ export default class FormulaInput {
 
     }
 
+    static hideWidgets() {
+        if (window?.symbolwidgets) {
+        console.log("here with ", window.symbolwidgets);
+            for (const wg in window.symbolswidgets) {
+                window.symbolwidgets[wg].hide();
+            }
+        }
+    }
+
     // create a new formula input and return it
     static getnew(options = {}) {
 

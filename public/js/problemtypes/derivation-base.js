@@ -238,7 +238,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
             onclick: function(e) {
                 e.preventDefault();
                 const autoch = this.myprob.autocheck;
+                this.myprob.hideRulePanel();
                 this.myprob.startOver();
+                FormulaInput.hideWidgets();
                 // start with focus on main showline? TODO: fitch different?
                 const sh = this?.myprob?.
                     getElementsByClassName("derivationshowline")?.[0];
