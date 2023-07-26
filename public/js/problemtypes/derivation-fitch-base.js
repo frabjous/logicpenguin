@@ -97,7 +97,7 @@ export default class DerivationFitch extends DerivationExercise {
             options.rulesFirst = true;
             this.rulesFirst = true;
         }
-        this.rules = getRules(notationname, rulesetname);
+        this.rules = getRules(rulesetname, notationname);
         this.ruleset = this.rules;
         this.rulesetname = rulesetname;
         this.notation = notations[notationname];
@@ -375,6 +375,36 @@ export default class DerivationFitch extends DerivationExercise {
                         innerHTML: htmlEscape(rule) + ' ' + justify
                     });
                 }
+                if ("notinhyps" in thisform) {
+                    let nihm = this.schematic('c', ruleinfo, damb) +
+                        tr(' must not occur in any undischarged assumption');
+                    if (firsthypnum != '') {
+                        nihm += ' ' + tr('before line') + ' <em>' +
+                            firsthypnum + '</em>';
+                    }
+                    addelem('div',formblock, {
+                        classes: ['rulerestriction'],
+                        innerHTML: nihm
+                    });
+                }
+                if ("cannotbein" in thisform) {
+                    for (const n in thisform.cannotbein) {
+                        for (const s of thisform.cannotbein[n]) {
+                            let schematics;
+                            if (s == "Ax") {
+                                schematics = this.schematic('∃xAx', ruleinfo, damb, true);
+                            } else {
+                                schematics = this.schematic(s, ruleinfo, damb);
+                            }
+                            addelem('div',formblock, {
+                                classes:['rulerestriction'],
+                                innerHTML: this.schematic('c', ruleinfo, damb) +
+                                    ' ' + tr('must not occur in') + ' ' +
+                                    schematics
+                            });
+                        }
+                    }
+                }
                 // TODO: restrictions
             }
         };
@@ -388,7 +418,7 @@ export default class DerivationFitch extends DerivationExercise {
         const scA = lta[0];
         let spacer = '';
         if (scA == '𝒜') {
-            spacer = ' ';
+            spacer = ' ';
         }
         let scB = 'ℬ';
         let scC = '𝒞';

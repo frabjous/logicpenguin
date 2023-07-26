@@ -183,6 +183,11 @@
     text-align: center;
 }
 
+.logicpenguin.rulepanel .fitchstyle div.ruledisplayform div.rulerestriction {
+    white-space: normal;
+    max-width: 16em;
+}
+
 .logicpenguin.rulepanel .fitchstyle div.ruledisplayform table {
     border-collapse: collapse;
     border-spacing: 0;
