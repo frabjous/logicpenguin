@@ -276,6 +276,7 @@ export default class DerivationFitch extends DerivationExercise {
                 const premletters = 'mnopqrstuv';
                 let justify = '';
                 let premindex = 0;
+                let firsthypnum = '';
                 for (const prem of prems) {
                     const trow = addelem('tr', argtbb);
                     const ntd = addelem('td', trow, {
@@ -316,6 +317,9 @@ export default class DerivationFitch extends DerivationExercise {
                         const numtd = addelem('td', allowstr, {
                             innerHTML: subderivletters.at(sdindex)
                         });
+                        if (firsthypnum == '') {
+                            firsthypnum = subderivletters.at(sdindex);
+                        }
                         if (justify != '') {
                             justify += ', ';
                         }
@@ -377,7 +381,6 @@ export default class DerivationFitch extends DerivationExercise {
         return rp;
     }
 
-    // TODO: needs work
     schematic(s, ruleinfo, damb, ispremise = false) {
         const letters = this.notation.schematicLetters;
         const notation = this.notation;
@@ -385,7 +388,7 @@ export default class DerivationFitch extends DerivationExercise {
         const scA = lta[0];
         let spacer = '';
         if (scA == '𝒜') {
-            spacer = ' ';
+            spacer = ' ';
         }
         let scB = 'ℬ';
         let scC = '𝒞';
@@ -413,10 +416,10 @@ export default class DerivationFitch extends DerivationExercise {
             scb = '𝒷';
             scc = '𝒸';
         }
-        if (scc == '𝙖' || scc == '𝙘') {
-            sca = '𝙖';
-            scb = '𝙗';
-            scc = '𝙘';
+        if (scc == '𝒂' || scc == '𝒄') {
+            sca = '𝒂';
+            scb = '𝒃';
+            scc = '𝒄';
         }
         // ∀xAx is always ∀xA(...x...x...)
         const forallxFxRegex = new RegExp('^\\(?' + notation.FORALL +

@@ -18,7 +18,7 @@ const commonForallxRules = {
     "¬I"  : { forms: [ { conc: "¬A", subderivs: [ { needs: ["⊥"], allows: "A" } ] } ] },
     "∀I"  : { pred: true, forms: [ { prems: ["Aa"], conc: "∀xAx", notinhyps: ["a"], subst: {"x": "a"} } ] },
     "∃I"  : { pred: true, forms: [ { prems: ["Aa"], conc: "∃xAx", subst: {"x":"a"} } ] },
-    "=I"  : { pred: true, forms: [ { conc: "a = a", prems: [] } ] },
+    "=I"  : { pred: true, forms: [ { conc: "c = c", prems: [] } ] },
     "R"   : { forms: [ { prems: ["A"], conc: "A" } ], derived: true },
     "∨E"  : { forms: [ { conc: "C", prems: ["A ∨ B"], subderivs: [ { needs: ["C"], allows: "A" }, { needs: ["C"], allows: "B" } ] } ] },
     "∧E"  : { forms: [ { prems: ["A ∧ B"], conc: "A" }, { prems: ["A ∧ B"], conc: "B" } ] },
