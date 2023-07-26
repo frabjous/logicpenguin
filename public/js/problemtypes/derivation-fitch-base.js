@@ -155,9 +155,17 @@ export default class DerivationFitch extends DerivationExercise {
             targ.focus();
             targ.oldvalue = oldval;
         }
-        // thead cell for rule name
-        rp.rulenamecell = addelem('th', thr, {
-            colSpan: "2",
+        // thead cell for names and rule display
+        rp.ruledisplaycell = addelem('th', thr, {
+            colSpan: 9,
+            classes: ['omnicell']
+        });
+        rp.topinnertable = addelem('table', rp.ruledisplaycell, {
+            classes: ['ruledisplayinnertable','fitchstyle']
+        });
+        const topitbdy = addelem('tbody', rp.topinnertable);
+        const topitr = addelem('tr', topitbdy);
+        rp.rulenamecell = addelem('td', topitr, {
             myrp: rp,
             classes: [ 'rulenamedisplay' ],
             tabIndex: -1,
@@ -168,8 +176,7 @@ export default class DerivationFitch extends DerivationExercise {
             }
         });
         // thead cell for displaying the actual rule
-        rp.ruleformcell = addelem('th', thr, {
-            colSpan: "7",
+        rp.ruleformcell = addelem('td', topitr, {
             myrp: rp,
             classes: [ 'ruledisplay', 'fitchstyle' ],
             tabIndex: -1,
@@ -251,7 +258,10 @@ export default class DerivationFitch extends DerivationExercise {
             if ((!("forms" in ruleinfo)) || (ruleinfo.forms.length == 0)) {
                 return;
             }
+            let ctr = 0;
             for (const thisform of ruleinfo.forms) {
+                ctr++;
+                if (ctr == 3) { addelem('br', this.innerformcell); }
                 const formblock = addelem('div', this.innerformcell, {
                     classes: ['ruledisplayform']
                 });

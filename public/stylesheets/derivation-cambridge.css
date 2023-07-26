@@ -138,7 +138,31 @@
     width: 2.7rem;
 }
 
-.logicpenguin.rulepanel table.ruleclicktable th {
+.logicpenguin.rulepanel .ruleclicktable > thead > tr > th.omnicell {
+    padding-bottom: 0;
+}
+
+.logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplayform {
+    display: inline-block;
+    text-align: left;
+    padding: 1ex 1em 1ex 1em;
+    border-radius: 15px;
+    background-color: var(--lpgray6);
+    color: var(--lpblack);
+    margin-top: 1ex;
+    margin-left: 1em;
+}
+
+.logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle td {
+    vertical-align: middle;
+}
+
+.logicpanel.rulepanel table.ruledisplayinnertable.fitchstyle > tbody > tr > td:first-child {
+    font-weight: bold;
+}
+
+.logicpanel.rulepanel table.ruledisplayinnertable.fitchstyle > tbody > tr > td:last-child {
+    font-weight: normal;
     white-space: nowrap;
 }
 
