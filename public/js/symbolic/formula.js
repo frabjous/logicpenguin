@@ -583,6 +583,11 @@ function generateFormulaClass(notationname) {
             if (this.terms === false) {
                 this._wellformed = false;
             }
+            // identity should have exactly two terms
+            if (this.pletter == '=' && this.terms.length != 2) {
+                this.syntaxError('uses the identity predicate “=” without ' +
+                    'exactly one term on each side');
+            }
             // shouldn't have any errors from checking pletter and terms
             for (let prob in this._syntaxerrors) {
                 this._wellformed = false;
@@ -781,9 +786,3 @@ export default function getFormulaClass(notationname) {
     return fClass;
 }
 
-let Formula = getFormulaClass('cambridge');
-console.log(Formula.differsAtMostBy(
-    Formula.from('∀x(∃yRby → Rbb)'),
-    Formula.from('∀x(∃yRay → Rba)'),
-    'b', 'a'
-));

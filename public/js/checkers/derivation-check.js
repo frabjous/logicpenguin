@@ -776,8 +776,8 @@ export class formFit {
             this.possible = false;
             if (this.message != '') { this.message += '; '; }
             this.message += 'the formula ' + this.assigns[fgetschema] +
-                ' is too different from ' + this.assigns[fstartschema] +
-                ' to result from the allowed substitutions alone';
+                ' does not differ from ' + this.assigns[fstartschema] +
+                ' only by the substitution of the one term for the other';
             return false;
         }
         return true;
