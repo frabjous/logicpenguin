@@ -324,6 +324,10 @@ export default class DerivationHardegree extends DerivationExercise {
             scB = '𝑩';
             scC = '𝑪';
         }
+        if (scA == 'φ') {
+            scB = 'ψ';
+            scC = 'χ';
+        }
         const scx = lta[2];
         const sca = lta[3];
         const scn = lta[4];
