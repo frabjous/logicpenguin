@@ -27,7 +27,7 @@ const commonForallxRules = {
     "¬E"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "∀E"  : { pred: true, forms: [ { prems: ["∀xAx"], conc: "Aa", subst: {"x":"a"} } ] },
     "∃E"  : { pred: true, forms: [ { conc: "B", prems: ["∃xAx"], notinhyps: ["n"], cannotbein: {"n":["Ax","B"]}, subst: {"x": "n"}, subderivs: [ { needs: ["B"], allows: "An" } ] } ] },
-    "=E"  : { pred: true, forms: [ { prems: ["A", "a = b"], conc: "B", differsatmostby: ["B","A","b","a"] }, { prems: ["A", "b = a"], conc: "B", differsatmostby: ["B","A","b","a"] } ] },
+    "=E"  : { pred: true, forms: [ { prems: ["A", "a = b"], conc: "B", differsatmostby: ["B","A","b","a"] }, { prems: ["A", "a = b"], conc: "B", differsatmostby: ["B","A","a","b"] } ] },
     "MT"  : { forms: [ { prems: ["A → B", "¬B"], conc: "¬A" } ], derived: true },
     "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
