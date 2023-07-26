@@ -980,8 +980,13 @@ export class formFit {
                 }
                 this.message = msg;
             } else {
-                this.message = 'the cited subderivation does not contain what is ' +
-                    'necessary to show this line by ' + this.rulename;
+                if (this.line.citedsubderivs.length > 1) {
+                    this.message = 'the cited subderivations do not contain what is ' +
+                        'necessary to show this line by ' + this.rulename;
+                } else {
+                    this.message = 'the cited subderivation does not contain what is ' +
+                        'necessary to show this line by ' + this.rulename;
+                }
             }
             this.possible = false;
         }
