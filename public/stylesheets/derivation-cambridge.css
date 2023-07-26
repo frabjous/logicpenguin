@@ -143,19 +143,18 @@
 }
 
 .logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplay > div {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: 1em 1ex;
-    justify-items: center;
-    align-items: center;
-    align-content: center;
-    justify-content: space-around;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    padding-top: 1ex;
+    font-weight: normal;
 }
 
 .logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplay > div .ruledisplayform {
     margin-top: 0;
-    margin-right: 0;
-    place-self: center center;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    text-align: left;
 }
 
 .logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplayform {
@@ -167,7 +166,7 @@
     width: 100%;
 }
 
-.logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle td {
+.logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle > tbody > td {
     vertical-align: middle;
     text-align: center;
 }
