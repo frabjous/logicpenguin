@@ -742,8 +742,8 @@ export class formFit {
     }
 
     checkDiffersBy() {
-        const Formula = this.Formula;
         if (!this.form?.differsatmostby) { return true; }
+        const Formula = this.Formula;
         const fgetschema = this.form.differsatmostby[0];
         const fstartschema = this.form.differsatmostby[1];
         const newtermschema = this.form.differsatmostby[2];
@@ -753,10 +753,34 @@ export class formFit {
         if (!(fstartschema in this.assigns)) { return true; }
         const fstart = Formula.from(this.assigns[fstartschema]);
         if (!(newtermschema in this.assigns)) { return true; }
-        const possnewterm = this.assigns[newtermschema];
+        const possnewterms = this.assigns[newtermschema];
         if (!(oldtermschema in this.assigns)) { return true; }
-        const possoldterm = this.assigns[oldtermschema];
-        // HERE
+        const possoldterms = this.assigns[oldtermschema];
+        const newpossibilities = {};
+        let allposslist = [];
+        for (const newterm of possnewterms) {
+            const newposslist = [];
+            for (const oldterm of possoldterms) {
+                if (Formula.differsAtMostBy(fget, fstart, newterm, oldterm)) {
+                    newposslist.push(oldterm);
+                }
+            }
+            if (newposslist.length > 0) {
+                newpossibilities[newterm] = newposslist;
+                allposslist = arrayUnion(allposslist, newposslist);
+            }
+        }
+        this.assigns[newtermschema] = Object.keys(newpossibilities);
+        this.assigns[oldtermschema] = allposslist;
+        if (this.assigns[newtermschema].length == 0) {
+            this.possible = false;
+            if (this.message != '') { this.message += '; '; }
+            this.message += 'the formula ' + this.assigns[fgetschema] +
+                ' is too different from ' + this.assigns[fstartschema] +
+                ' to result from the allowed substitutions alone';
+            return false;
+        }
+        return true;
     }
 
     checkNewness() {
