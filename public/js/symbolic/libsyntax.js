@@ -48,7 +48,7 @@ function isquant(c) {
 
 // tests if a character is a propositional constant/zero-place operator
 function ispropconst(c) {
-    return (this.isop(c) && (symbolcat[operators[c]] == 0));
+    return (this.isop(c) && (symbolcat[this.operators[c]] == 0));
 }
 
 // check if symbols is an operator

@@ -645,6 +645,75 @@ function generateFormulaClass(notationname) {
             return atomicstr;
         }
 
+        // here fget and fstart are formulas
+        // checks whether fget can result from fstart by replacing
+        // zero or more occurrences of oldterm with newterm;
+        // used for checking substitution of identicals
+        static differsAtMostBy(fget, fstart, newterm, oldterm) {
+            // false if one has an operator and
+            // the other does not
+            if ((fget.op && !fstart.op) || (fstart.op && !fget.op)) {
+                return false;
+            }
+            // if neither is atomic
+            if (fget.op && fstart.op) {
+                // must have same operator
+                if (fget.op != fstart.op) {
+                    return false;
+                }
+                // if the op is 0-place, being the same is sufficient
+                if (Formula.syntax.ispropconst(fget.op)) {
+                    return true;
+                }
+                // quantifiers must use same variable
+                if (Formula.syntax.isquant(fget.op) &&
+                    (fget.boundvar != fstart.boundvar)) {
+                    return false;
+                }
+                // must have compatible right sides
+                if (!Formula.differsAtMostBy(fget.right, fstart.right,
+                    newterm, oldterm)) {
+                    return false;
+                }
+                // if monadic operators, the above is enough
+                if (Formula.syntax.ismonop(fget.op)) {
+                    return true;
+                }
+                // if made it here, must be binary operator, and
+                // have compatible left sides, which is also enough
+                return Formula.differsAtMostBy(fget.left, fstart.left,
+                    newterm, oldterm);
+            }
+            // must be atomic if made it here
+            // have to have same predicate
+            if (fget.pletter != fstart.pletter) { return false; }
+            // move on to terms, first check same length
+            if (fget.terms.length != fstart.terms.length) {
+                return false;
+            }
+            // check each term
+            for (let i=0; i < fget.terms.length; i++) {
+                const fgetterm = fget.terms[i];
+                const fstartterm = fstart.terms[i];
+                // check differently if it's the one we can substitute for
+                // always OK for them to be the same
+                if (fgetterm == fstartterm) { continue; }
+                // if we made it here, they're different, which is only
+                // allowed when it's the term we're substituting for
+                if (fstartterm != oldterm) {
+                    return false;
+                }
+                // since they're different, the new one must be the
+                // replacement
+                if (fgetterm != newterm) {
+                    return false;
+                }
+                // getting here is OK, move on to check next
+            }
+            // atomics are same except substitution, which is OK
+            return true;
+        }
+
         // function for checking if something is an instance
         // of a qauntified formula
         static isInstanceOf(i, f) {
@@ -712,4 +781,9 @@ export default function getFormulaClass(notationname) {
     return fClass;
 }
 
-
+let Formula = getFormulaClass('cambridge');
+console.log(Formula.differsAtMostBy(
+    Formula.from('∀x(∃yRby → Rbb)'),
+    Formula.from('∀x(∃yRay → Rba)'),
+    'b', 'a'
+));
