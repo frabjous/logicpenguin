@@ -741,6 +741,24 @@ export class formFit {
         }
     }
 
+    checkDiffersBy() {
+        const Formula = this.Formula;
+        if (!this.form?.differsatmostby) { return true; }
+        const fgetschema = this.form.differsatmostby[0];
+        const fstartschema = this.form.differsatmostby[1];
+        const newtermschema = this.form.differsatmostby[2];
+        const oldtermschema = this.form.differsatmostby[3];
+        if (!(fgetschema in this.assigns)) { return true; }
+        const fget = Formula.from(this.assigns[fgetschema]);
+        if (!(fstartschema in this.assigns)) { return true; }
+        const fstart = Formula.from(this.assigns[fstartschema]);
+        if (!(newtermschema in this.assigns)) { return true; }
+        const possnewterm = this.assigns[newtermschema];
+        if (!(oldtermschema in this.assigns)) { return true; }
+        const possoldterm = this.assigns[oldtermschema];
+        // HERE
+    }
+
     checkNewness() {
         if (!this.form?.mustbenew) { return true; }
         for (const n of this.form.mustbenew) {
@@ -1157,6 +1175,7 @@ export class formFit {
         this.checkConc();
         this.checkPrems();
         this.checkSubDerivs();
+        this.checkDiffersBy();
         this.checkRestrictions();
         const newresult = this.checkNewness();
         if (!newresult) {
