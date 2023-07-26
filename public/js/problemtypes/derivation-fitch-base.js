@@ -100,7 +100,7 @@ export default class DerivationFitch extends DerivationExercise {
         this.rules = getRules(notationname, rulesetname);
         this.ruleset = this.rules;
         this.rulesetname = rulesetname;
-        this.schematicLetters = notations[notationname].schematicLetters;
+        this.notation = notations[notationname];
         this.classList.add('fitch-style-derivation');
         this.useShowLines = false;
         super.makeProblem(problem, options, checksave);
@@ -175,7 +175,7 @@ export default class DerivationFitch extends DerivationExercise {
                 this.myrp.insertRuleCite(e);
             }
         });
-        // thead cell for displaying the actual rule
+        // cell for displaying the actual rule
         rp.ruleformcell = addelem('td', topitr, {
             myrp: rp,
             classes: [ 'ruledisplay', 'fitchstyle' ],
@@ -247,7 +247,7 @@ export default class DerivationFitch extends DerivationExercise {
             const prob = targ?.myline?.mysubderiv?.myprob;
             if (!prob) { return; }
             this.schematic = prob.schematic;
-            this.schematicLetters = prob.schematicLetters;
+            this.notation = prob.notation;
             const ruleinfo = this.ruleset[rule];
             if (!ruleinfo) { return; }
             this.currentrule = rule;
@@ -260,6 +260,10 @@ export default class DerivationFitch extends DerivationExercise {
             }
             let ctr = 0;
             for (const thisform of ruleinfo.forms) {
+                let damb=['a','b'];
+                if ("differsatmostby" in thisform) {
+                    damb = thisform.differsatmostby;
+                }
                 ctr++;
                 if (ctr == 3) { addelem('br', this.innerformcell); }
                 const formblock = addelem('div', this.innerformcell, {
@@ -285,7 +289,7 @@ export default class DerivationFitch extends DerivationExercise {
                     const fmld = addelem('td', trow, {
                         colSpan: 2,
                         classes: ['symbolic'],
-                        innerHTML: htmlEscape(this.schematic(prem))
+                        innerHTML: htmlEscape(this.schematic(prem, ruleinfo, damb, true))
                     });
                     const emptyd = addelem('td', trow);
                 }
@@ -321,7 +325,7 @@ export default class DerivationFitch extends DerivationExercise {
                         const spacetd = addelem('td', allowstr);
                         const fmltd = addelem('td', allowstr, {
                             classes: ['subderivhyp','symbolic'],
-                            innerHTML: htmlEscape(this.schematic(subderiv.allows))
+                            innerHTML: htmlEscape(this.schematic(subderiv.allows, ruleinfo, damb))
                         });
                         const rtd = addelem('td', allowstr);
                     }
@@ -345,7 +349,7 @@ export default class DerivationFitch extends DerivationExercise {
                             const spacetd = addelem('td', needtr);
                             const fmltd = addelem('td', needtr, {
                                 classes: ['subderivtarget','symbolic'],
-                                innerHTML: htmlEscape(this.schematic(need))
+                                innerHTML: htmlEscape(this.schematic(need, ruleinfo, damb))
                             });
                             const rtd = addelem('td', needtr);
                         }
@@ -360,7 +364,7 @@ export default class DerivationFitch extends DerivationExercise {
                     const fmltd = addelem('td', conctr, {
                         colSpan: 2,
                         classes: ['symbolic'],
-                        innerHTML: htmlEscape(this.schematic(conc))
+                        innerHTML: htmlEscape(this.schematic(conc, ruleinfo, damb))
                     });
                     const jtd = addelem('td', conctr, {
                         classes: ['rulejustification'],
@@ -374,10 +378,15 @@ export default class DerivationFitch extends DerivationExercise {
     }
 
     // TODO: needs work
-    schematic(s) {
-        const letters = this.schematicLetters;
+    schematic(s, ruleinfo, damb, ispremise = false) {
+        const letters = this.notation.schematicLetters;
+        const notation = this.notation;
         const lta = [...letters];
         const scA = lta[0];
+        let spacer = '';
+        if (scA == '𝒜') {
+            spacer = ' ';
+        }
         let scB = 'ℬ';
         let scC = '𝒞';
         if (scA == 'p') {
@@ -392,21 +401,73 @@ export default class DerivationFitch extends DerivationExercise {
             scB = 'ψ';
             scC = 'χ';
         }
-        const scx = lta[2];
-        const sca = lta[3];
-        let scb = '𝒷';
-        let scc = '𝒸';
-        if (sca == '𝒂') {
-            scb = '𝒃';
-            scc = '𝒄';
+        if (!ruleinfo?.pred) {
+            return s.replace(/A/g, scA)
+                .replace(/B/g, scB)
+                .replace(/C/g, scB);
         }
-        const scn = lta[4];
-        return s.replace(/A/g, scA)
+        const scx = lta[2];
+        let scc = lta[3]; let sca; let scb; let scn;
+        if (scc == '𝒶' || scc == '𝒸') {
+            sca = '𝒶';
+            scb = '𝒷';
+            scc = '𝒸';
+        }
+        if (scc == '𝙖' || scc == '𝙘') {
+            sca = '𝙖';
+            scb = '𝙗';
+            scc = '𝙘';
+        }
+        // ∀xAx is always ∀xA(...x...x...)
+        const forallxFxRegex = new RegExp('^\\(?' + notation.FORALL +
+            'x\\)?A\\(?x\\)?$');
+        if (forallxFxRegex.test(s)) {
+            const startswithparen = (s.at(0) == '(');
+            return (((startswithparen) ? '(' : '') + notation.FORALL +
+                scx + ((startswithparen) ? ')' : '') + scA + spacer + '(…' +
+                scx + '…' + scx + '…)');
+        }
+        // ∃xAx is ∃xA(...x...x...) when a premise, but
+        // ∃xA(...x...c...) otherwise
+        const forsomexFxRegex = new RegExp('^\\(?' + notation.EXISTS +
+            'x\\)?A\\(?x\\)?$');
+        if (forsomexFxRegex.test(s)) {
+            const startswithparen = (s.at(0) == '(');
+            let secspot = scc;
+            if (ispremise) {
+                secspot = scx;
+            }
+            return (((startswithparen) ? '(' : '') + notation.EXISTS +
+                scx + ((startswithparen) ? ')' : '') + scA + spacer + '(…' +
+                scx + '…' + secspot + '…)');
+        }
+        //Aa An is always A(...c...c...)
+        if (s == 'Aa' || s == 'An') {
+            return scA + spacer + '(…' + scc + '…' + scc + '…)';
+        }
+        // =E is special and annoying
+        if ("differsatmostby" in ruleinfo?.forms?.[0]) {
+            let sub = scb;
+            let subfor = sca;
+            if (damb[2] == 'a') {
+                sub = sca;
+                subfor = scb;
+            }
+            if (s == damb[0]) {
+                return scA + spacer + '(…' + sub + '…' + subfor + '…)';
+            }
+            if (s == damb[1]) {
+                return scA + spacer + '(…' + subfor + '…' + subfor + '…)';
+            }
+        }
+        return s.replace(/Ax?/g, scA)
             .replace(/B/g, scB)
             .replace(/C/g, scC)
             .replace(/x/g, scx)
-            .replace(/a/g,' [' + sca + '/' + scx + ']')
-            .replace(/n/g,' [' + scn + '/' + scx + ']');
+            .replace(/a/g, sca)
+            .replace(/b/g, scb)
+            .replace(/c/g, scc)
+            .replace(/n/g, scc);
     }
 
     static sampleProblemOpts(opts) {
