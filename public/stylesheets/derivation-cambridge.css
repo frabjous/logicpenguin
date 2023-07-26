@@ -142,28 +142,46 @@
     padding-bottom: 0;
 }
 
+.logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplay > div {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 1em 1ex;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    justify-content: space-around;
+}
+
+.logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplay > div .ruledisplayform {
+    margin-top: 0;
+    margin-right: 0;
+    place-self: center center;
+}
+
 .logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplayform {
-    display: inline-block;
-    text-align: left;
-    padding: 1ex 1em 1ex 1em;
-    border-radius: 15px;
-    background-color: var(--lpgray6);
-    color: var(--lpblack);
     margin-top: 1ex;
-    margin-left: 1em;
+    margin-right: 0;
+}
+
+.logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle {
+    width: 100%;
 }
 
 .logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle td {
     vertical-align: middle;
+    text-align: center;
 }
 
 .logicpanel.rulepanel table.ruledisplayinnertable.fitchstyle > tbody > tr > td:first-child {
     font-weight: bold;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 .logicpanel.rulepanel table.ruledisplayinnertable.fitchstyle > tbody > tr > td:last-child {
     font-weight: normal;
     white-space: nowrap;
+    text-align: center;
 }
 
 .logicpenguin.rulepanel .fitchstyle div.ruledisplayform table {
