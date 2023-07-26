@@ -67,7 +67,7 @@ const notations = {
         constantsRange: 'a-w',
         predicatesRange: '=A-Z',
         quantifierForm: '(Q?x)',
-        schematicLetters: 'pℱ𝓍𝒶𝒶',
+        schematicLetters: 'pℱ𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
     },
