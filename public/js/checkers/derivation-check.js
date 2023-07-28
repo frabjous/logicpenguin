@@ -862,6 +862,9 @@ export class formFit {
             if (("vacuous" in this) && ("subst" in this.form)) {
                 let isvacuous = false;
                 for (const v in this.form.subst) {
+                    if (this.vacuous.indexOf(v) == -1) {
+                        continue;
+                    }
                     if (this.form.subst[v] == term) {
                         isvacuous = true;
                         break;
