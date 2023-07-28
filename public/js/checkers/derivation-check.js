@@ -57,6 +57,8 @@ export default class DerivationCheck {
         if (subderiv.analyzed) { return subderiv; }
         subderiv.lines = [];
         subderiv.lnmap = {};
+        // populating assumptions does not happen here but when
+        // processing assumption lines (in non-show-line derivations)
         subderiv.assumptions = [];
         // process showline
         if (subderiv.showline &&
@@ -125,6 +127,10 @@ export default class DerivationCheck {
                 break;
             }
         }
+        // we attach the error to line one, which we really shouldn't but
+        // set indicator won't give it a line number if it's the only
+        // error for line 1, which it should be given that line 1 is
+        // nearly always a premise
         if (!foundConc) {
             this.adderror('1',"completion","high","final conclusion of " +
                 "argument not shown");
@@ -852,6 +858,17 @@ export class formFit {
             if (!(term in this.assigns)) {
                 continue;
             }
+            // if instance of a vacuous variable then it doesn't matter
+            if (("vacuous" in this) && ("subst" in this.form)) {
+                let isvacuous = false;
+                for (const v in this.form.subst) {
+                    if (this.form.subst[v] == term) {
+                        isvacuous = true;
+                        break;
+                    }
+                }
+                if (isvacuous) { continue; }
+            }
             const assignedterms = this.assigns[term];
             const cantbein = this.form.cannotbein[term];
             // probably only one term can be in the assignment, but we'll
@@ -1097,7 +1114,14 @@ export class formFit {
                         if (a == schema.instantiate(t, b) &&
                             (t in assigns)) {
                             if (f.freevars.indexOf(assigns[t]) == -1) {
-                                if (f.normal != assigns[a]) { return false; }
+                                if (f.normal == assigns[a]) {
+                                    if (!("vacuous" in this)) {
+                                        this.vacuous = [];
+                                    }
+                                    this.vacuous.push(t);
+                                } else {
+                                    return false;
+                                }
                             } else {
                                 const couldbe = assigns[b].filter(
                                     (c) => (assigns[a] == f.instantiate(assigns[t], c)));
@@ -1131,7 +1155,14 @@ export class formFit {
                                 }
                                 const pfinst = Formula.from(assigns[a]);
                                 if (pfinst.freevars.indexOf(assigns[v]) == -1) {
-                                    if (pfinst.normal != f.normal) { return false; }
+                                    if (pfinst.normal == f.normal) {
+                                        if (!("vacuous" in this)) {
+                                            this.vacuous = [];
+                                        }
+                                        this.vacuous.push(v);
+                                    } else {
+                                        return false;
+                                    }
                                     continue;
                                 }
                                 assigns[t] = assigns[t].filter(
