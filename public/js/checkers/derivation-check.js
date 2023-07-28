@@ -332,7 +332,6 @@ export default class DerivationCheck {
                     for (const n of form.notinhyps) {
                         // if it's an instance of a vacuous substitution
                         // then it's OK
-                        console.log("vac",thisformfit.vacuous,"subst",JSON.stringify(form.subst));
                         if (("vacuous" in thisformfit) && ("subst" in form)) {
                             let isvacuous = false;
                             for (const v of thisformfit.vacuous) {
@@ -1137,7 +1136,6 @@ export class formFit {
                                     if (!("vacuous" in this)) {
                                         this.vacuous = [];
                                     }
-                                    console.log("adding ", t, " to vacuous b/c ", f.normal, " equals ", assigns[a]);
                                     this.vacuous.push(t);
                                 } else {
                                     return false;
@@ -1170,6 +1168,11 @@ export class formFit {
                             for (const a in assigns) {
                                 if (a.at(0) != schema.pletter) { continue; }
                                 const pf = Formula.from(a);
+                                // form does not matter if it does not have
+                                // that variable free in it
+                                if (pf.freevars.indexOf(v) == -1) {
+                                    continue;
+                                }
                                 if (schema.normal != pf.instantiate(v, t)) {
                                     continue;
                                 }
@@ -1180,7 +1183,6 @@ export class formFit {
                                             this.vacuous = [];
                                         }
                                         this.vacuous.push(v);
-                                        console.log("B adding ", v, " to vacuous b/c ", f.normal, " equals ", pfinst.normal);
                                     } else {
                                         return false;
                                     }
