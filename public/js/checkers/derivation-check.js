@@ -330,9 +330,25 @@ export default class DerivationCheck {
                 let badterm = '';
                 if ("notinhyps" in form) {
                     for (const n of form.notinhyps) {
+                        // if it's an instance of a vacuous substitution
+                        // then it's OK
+                        console.log("vac",thisformfit.vacuous,"subst",JSON.stringify(form.subst));
+                        if (("vacuous" in thisformfit) && ("subst" in form)) {
+                            let isvacuous = false;
+                            for (const v of thisformfit.vacuous) {
+                                if ((v in form.subst) && (form.subst[v] == n)) {
+                                    isvacuous = true;
+                                    break;
+                                }
+                            }
+                            if (isvacuous) {
+                                continue;
+                            }
+                        }
                         if (thisformfit?.assigns?.[n]
                             && thisformfit?.assigns?.[n]?.length > 0) {
                             const newname = thisformfit.assigns[n][0];
+                            
                             for (let i=1; i<line.n; i++) {
                                 let posshyp = this.deriv.lnmap[i.toString()];
                                 if (this.isAvailableLineTo(i, line, false)) {
@@ -1121,6 +1137,7 @@ export class formFit {
                                     if (!("vacuous" in this)) {
                                         this.vacuous = [];
                                     }
+                                    console.log("adding ", t, " to vacuous b/c ", f.normal, " equals ", assigns[a]);
                                     this.vacuous.push(t);
                                 } else {
                                     return false;
@@ -1163,6 +1180,7 @@ export class formFit {
                                             this.vacuous = [];
                                         }
                                         this.vacuous.push(v);
+                                        console.log("B adding ", v, " to vacuous b/c ", f.normal, " equals ", pfinst.normal);
                                     } else {
                                         return false;
                                     }
