@@ -203,14 +203,12 @@ export default class DerivationCheck {
         if (!line.isshowline) {
             let needednumnums;
             if (ruleinfo.forms) {
-                needednumnums = ruleinfo.forms.map((form) =>
-                    (form?.prems?.length ?? 0));
+                needednumnums = ruleinfo.forms.map((form) => {
+                    if (ruleinfo.equivrule) { return 1; }
+                    return (form?.prems?.length ?? 0);
+                });
             } else {
-                if (ruleinfo.equivrule) {
-                    needednumnums = [1];
-                } else {
-                    needednumnums = [0];
-                }
+                needednumnums = [0];
             }
             if (needednumnums.indexOf(nums.length) == -1) {
                 this.adderror(line.n, "justification", "low", "cites the wrong " +
@@ -1301,7 +1299,7 @@ export class equivRuleCheck {
 
     // note: should return number of substitutions made
     // or -1 if impossible
-    differsFromBy(getstr, fromstr) {
+    differsFromBy(getstr, fromstr, form) {
         const Formula = this.Formula;
         const getf = Formula.from(getstr);
         const fromf = Formula.from(fromstr);
@@ -1312,10 +1310,10 @@ export class equivRuleCheck {
         // check if differ by rule
         const [getline, fromline] = this.pseudolines(getstr, fromstr);
         const aformfit = new formFit(this.rule, this.rulename,
-            { prems: [this.rule.a], conc: this.rule.b }, getline,
+            { prems: [form.a], conc: form.b }, getline,
             this.Formula);
         const bformfit = new formFit(this.rule, this.rulename,
-            { prems: [this.rule.b], conc: this.rule.a }, getline,
+            { prems: [form.b], conc: form.a }, getline,
             this.Formula);
         aformfit.checkConc();
         aformfit.checkPrems();
@@ -1342,7 +1340,8 @@ export class equivRuleCheck {
         if (!getf.right || !fromf.right) { return -1; }
         const getrightstr = getf.right.normal;
         const fromrightstr = fromf.right.normal;
-        const rightdifference = this.differsFromBy(getrightstr, fromrightstr);
+        const rightdifference = this.differsFromBy(getrightstr,
+            fromrightstr, form);
         // if they cannot match, then return that
         if (rightdifference == -1) { return -1; }
         // if it is a monadic operator, we're done
@@ -1353,7 +1352,8 @@ export class equivRuleCheck {
         if (!getf.left || !fromf.left) { return -1; }
         const getleftstr = getf.left.normal;
         const fromleftstr = fromf.left.normal;
-        const leftdifference = this.differsFromBy(getleftstr, fromleftstr);
+        const leftdifference = this.differsFromBy(getleftstr, fromleftstr,
+            form);
         if (leftdifference == -1 ) { return -1; }
         return (leftdifference + rightdifference);
     }
@@ -1378,18 +1378,13 @@ export class equivRuleCheck {
                 message: 'does not cite a line to be equivalent with'
             }
         }
-        // TODO: possibly allow more than one substitution?
-        if (this.differsFromBy(this.line.s, this.line.citedlines[0].s) == 1) {
-            return {
-                success: true,
-                message: this.message
-            }
-        }
-        // try other direction
-        if (this.differsFromBy(this.line.citedlines[0].s, this.line.s) == 1) {
-            return {
-                success: true,
-                message: this.message
+        for (const form of this.rule.forms) {
+            // TODO: possibly allow more than one substitution?
+            if (this.differsFromBy(this.line.s, this.line.citedlines[0].s, form) == 1) {
+                return {
+                    success: true,
+                    message: this.message
+                }
             }
         }
         return {
