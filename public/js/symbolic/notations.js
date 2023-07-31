@@ -71,6 +71,22 @@ const notations = {
         useTermParensCommas: false,
         variableRange: 'x-z'
     },
+    "loraincounty": {
+        OR      : '∨',
+        AND     : '&',
+        IFTHEN  : '→',
+        IFF     : '↔',
+        NOT     : '~',
+        FORALL  : '∀',
+        EXISTS  : '∃',
+        FALSUM  : '⊥',
+        constantsRange: 'a-w',
+        quantifierForm: 'Qx',
+        predicatesRange: '=A-Z',
+        schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
+        useTermParensCommas: false,
+        variableRange: 'x-z'
+    },
     "hardegree": {
         OR      : '∨',
         AND     : '&',
@@ -103,6 +119,22 @@ const notations = {
         useTermParensCommas: false,
         variableRange: 'x-z'
     },
+    "slu": {
+        OR      : '∨',
+        AND     : '∧',
+        IFTHEN  : '→',
+        IFF     : '↔',
+        NOT     : '¬',
+        FORALL  : '∀',
+        EXISTS  : '∃',
+        FALSUM  : '⊥',
+        constantsRange: 'a-r',
+        quantifierForm: 'Qx',
+        predicatesRange: '=A-Z',
+        schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
+        useTermParensCommas: false,
+        variableRange: 'x-zs-w'
+    },
     "ubc": {
         OR      : '∨',
         AND     : '&',
@@ -115,7 +147,7 @@ const notations = {
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
         predicatesRange: '=A-Z',
-        schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
+        schematicLetters: 'ΦΦ𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
     }

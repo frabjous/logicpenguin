@@ -6,13 +6,18 @@
 // defines the inference rules for various forallx-style derivation systems//
 /////////////////////////////////////////////////////////////////////////////
 
-// SLU same as Cambridge?
-    
+// Note: all rulesets should be done with Cambridge notation; will be
+// swapped out for the correct thingamig
+
+// UConn = Calgary rules with Cambridge notation
+
 import notations from '../../symbolic/notations.js';
 
 const opnames = ['NOT','OR','AND','IFF','IFTHEN','FORALL','EXISTS','FALSUM'];
 
-const commonForallxRules = {
+const allRules = {};
+
+allRules.common = {
     "∨I"  : { forms: [ { prems: ["A"], conc: "A ∨ B" }, { prems: ["A"], conc: "B ∨ A" } ] },
     "∧I"  : { forms: [ { prems: ["A", "B"], conc: "A ∧ B" } ] },
     "→I"  : { forms: [ { conc: "A → B", subderivs: [ { needs: ["B"], allows: "A" } ] } ] },
@@ -35,7 +40,7 @@ const commonForallxRules = {
     "Hyp" : { assumptionrule: true, hidden: true }
 }
 
-const magnusRules = {
+allRules.magnus = {
     "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
     "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
     "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
@@ -49,7 +54,7 @@ const magnusRules = {
     "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
-const cambridgeRules = {
+allRules.cambridge = {
     "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
@@ -58,7 +63,7 @@ const cambridgeRules = {
     "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true }
 }
 
-const calgaryRules = {
+allRules.calgary = {
     "IP"  : { forms: [ { conc: "A", subderivs: [ { needs: ["⊥"], allows: "¬A" } ] } ] },
     "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
@@ -68,7 +73,7 @@ const calgaryRules = {
     "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true }
 }
 
-const loraincountyRules = {
+allRules.loraincounty = {
     "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
     "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
     "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
@@ -92,7 +97,10 @@ const loraincountyRules = {
     "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
-const sluRules = {
+allRules.pitt = {
+}
+
+allRules.slu = {
     "⊥E"  : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "⊥I"  : { forms: [ { prems: ["A","¬A"], conc: "⊥" } ] },
     "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
@@ -103,7 +111,7 @@ const sluRules = {
 }
 
 
-const ubcRules = {
+allRules.ubc = {
     "↔I": { forms [ { conc: "A ↔ B", prems: [ "A → B", "B → A" ] } ] },
     "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
     "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
