@@ -2,9 +2,9 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-///////////////////// fitch-rules.js ///////////////////////////////////////
-// defines the inference rules for various fitch-style derivation systems //
-////////////////////////////////////////////////////////////////////////////
+///////////////////// forallx-rules.js //////////////////////////////////////
+// defines the inference rules for various forallx-style derivation systems//
+/////////////////////////////////////////////////////////////////////////////
 
 import notations from '../../symbolic/notations.js';
 
@@ -15,7 +15,6 @@ const commonForallxRules = {
     "∧I"  : { forms: [ { prems: ["A", "B"], conc: "A ∧ B" } ] },
     "→I"  : { forms: [ { conc: "A → B", subderivs: [ { needs: ["B"], allows: "A" } ] } ] },
     "↔I"  : { forms: [ { conc: "A ↔ B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["A"], allows: "B" } ] } ] },
-    "¬I"  : { forms: [ { conc: "¬A", subderivs: [ { needs: ["⊥"], allows: "A" } ] } ] },
     "∀I"  : { pred: true, forms: [ { prems: ["Aa"], conc: "∀xAx", notinhyps: ["a"], subst: {"x": "a"} } ] },
     "∃I"  : { pred: true, forms: [ { prems: ["Aa"], conc: "∃xAx", subst: {"x":"a"} } ] },
     "=I"  : { pred: true, forms: [ { conc: "c = c", prems: [] } ] },
@@ -24,26 +23,49 @@ const commonForallxRules = {
     "∧E"  : { forms: [ { prems: ["A ∧ B"], conc: "A" }, { prems: ["A ∧ B"], conc: "B" } ] },
     "→E"  : { forms: [ { prems: ["A → C", "A"], conc: "C" } ] },
     "↔E"  : { forms: [ { prems: ["A ↔ B", "A"], conc: "B" }, { prems: ["A ↔ B", "B"], conc: "A" } ] },
-    "¬E"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "∀E"  : { pred: true, forms: [ { prems: ["∀xAx"], conc: "Aa", subst: {"x":"a"} } ] },
     "∃E"  : { pred: true, forms: [ { conc: "B", prems: ["∃xAx"], notinhyps: ["n"], cannotbein: {"n":["Ax","B"]}, subst: {"x": "n"}, subderivs: [ { needs: ["B"], allows: "An" } ] } ] },
     "=E"  : { pred: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","b","a"] }, { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","a","b"] } ] },
     "MT"  : { forms: [ { prems: ["A → B", "¬B"], conc: "¬A" } ], derived: true },
-    "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
-    "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
-    "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
     "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true },
     "Pr"  : { premiserule: true, hidden: true },
     "Hyp" : { assumptionrule: true, hidden: true }
 }
 
+const magnusRules = {
+    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B -> C"], conc: "C" } ], derived: true },
+    "HS" : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
+    "Comm" : { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" }, { a: "A ∨ B", b: "B ∨ A" }, { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
+    "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
+    "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
+    "↔ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
+    "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ] }
+}
+
 const cambridgeRules = {
-    "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] }
+    "¬E"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
+    "¬I"  : { forms: [ { conc: "¬A", subderivs: [ { needs: ["⊥"], allows: "A" } ] } ] },
+    "∨E"  : { forms: [ { conc: "C", prems: ["A ∨ B"], subderivs: [ { needs: ["C"], allows: "A" }, { needs: ["C"], allows: "B" } ] } ] },
+    "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
+    "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
+    "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
+    "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true },
+    "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
 }
 
 const calgaryRules = {
+    "¬E"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
+    "¬I"  : { forms: [ { conc: "¬A", subderivs: [ { needs: ["⊥"], allows: "A" } ] } ] },
+    "∨E"  : { forms: [ { conc: "C", prems: ["A ∨ B"], subderivs: [ { needs: ["C"], allows: "A" }, { needs: ["C"], allows: "B" } ] } ] },
+    "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "IP"  : { forms: [ { conc: "A", subderivs: [ { needs: ["⊥"], allows: "¬A" } ] } ] },
+    "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
+    "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
+    "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true },
     "LEM" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ], derived: true }
 }
 
@@ -94,6 +116,12 @@ export default function getFitchRules(rulesetname, notationname = null) {
                     for (let i=0; i<form.prems.length; i++) {
                         form.prems[i] = change(form.prems[i]);
                     }
+                }
+                if ("a" in form) {
+                    form.a = change(form.a);
+                }
+                if ("b" in form) {
+                    form.b = change(form.b);
                 }
                 if ("subderivs" in form) {
                     for (const subderiv of form.subderivs) {

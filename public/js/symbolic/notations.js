@@ -102,6 +102,22 @@ const notations = {
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
+    },
+    "ubc": {
+        OR      : '∨',
+        AND     : '&',
+        IFTHEN  : '⊃',
+        IFF     : '≡',
+        NOT     : '¬',
+        FORALL  : '∀',
+        EXISTS  : '∃',
+        FALSUM  : '※',
+        constantsRange: 'a-w',
+        quantifierForm: 'Qx',
+        predicatesRange: '=A-Z',
+        schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
+        useTermParensCommas: false,
+        variableRange: 'x-z'
     }
 }
 export default notations;
