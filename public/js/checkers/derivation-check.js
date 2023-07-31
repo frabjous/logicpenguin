@@ -998,11 +998,11 @@ export class formFit {
                         let newnessOK = true;
                         if (derivruleinfo.wantsasnew) {
                             for (const n of derivruleinfo.wantsasnew) {
-                                if (!(n in thislinetry) ||
-                                    (thislinestry[n].length < 1)) {
+                                if (!(n in combotry) ||
+                                    (combotry[n].length < 1)) {
                                     continue;
                                 }
-                                const newname = thislinetry[n][0];
+                                const newname = combotry[n][0];
                                 if (!this.isNewAt(newname, line)) {
                                     newnessOK = false;
                                     break;
