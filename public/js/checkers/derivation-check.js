@@ -347,7 +347,7 @@ export default class DerivationCheck {
                         if (thisformfit?.assigns?.[n]
                             && thisformfit?.assigns?.[n]?.length > 0) {
                             const newname = thisformfit.assigns[n][0];
-                            
+
                             for (let i=1; i<line.n; i++) {
                                 let posshyp = this.deriv.lnmap[i.toString()];
                                 if (this.isAvailableLineTo(i, line, false)) {
@@ -382,7 +382,6 @@ export default class DerivationCheck {
                     'undischarged premise or assumption, and this is ' +
                     'not allowed');
                 return line;
-                //this.adderror(line.n, 'rule', 'high', 
             }
             if (fitresult.message) {
                 errMsg = fitresult.message;
@@ -1287,6 +1286,40 @@ export class equivRuleCheck {
         this.possible = true;
     }
 
+    // note: should return number of substitutions made
+    // or -1 if impossible
+    differsFromBy(getstr, fromstr) {
+        const getf = Formula.from(getstr);
+        const fromf = Formula.from(fromstr);
+        // check if name
+        if (getf.normal == fromf.normal) {
+            return 0;
+        }
+        // check if differ by rule
+        const [getline, fromline] = this.pseudolines(getstr, fromstr);
+        const aformfit = new formFit(this.rule, this.rulename,
+            { prems: [this.rule.a], conc: this.rule.b }, getline,
+            this.Formula);
+        const bformfit = new formFit(this.rule, this.rulename,
+            { prems: [this.rule.b], conc: this.rule.a }, getline,
+            this.Formula);
+        aformfit.checkConc();
+        aformfit.checkPrems();
+        bformfit.checkConc();
+        bformfit.checkPrems();
+        if (aformfit.possible || bformfit.possible) {
+            return 1;
+        }
+        // check if parts same/differ by rule
+        if ((getf.op && !fromf.op) || (!getf.op && fromf.op)) {
+            return -1;
+        }
+        // atomics could never match if different
+        if (!getf.op && !fromf.op) { return -1; }
+        // prop constants could never match if different
+        
+    }
+
     pseudolines(getstr, fromstr) {
         const fromline {
             s: fromstr,
@@ -1301,7 +1334,31 @@ export class equivRuleCheck {
     }
 
     result() {
-        
+        if (this.line.citedlines.length < 1) {
+            return {
+                success: false,
+                message: 'does not cite a line to be equivalent with'
+            }
+        }
+        // TODO: possibly allow more than one substitution?
+        if (differsFromBy(this.line.s, this.citedlines[0].s) == 1) {
+            return {
+                success: true,
+                message: this.message
+            }
+        }
+        // try other direction
+        if (differsFromBy(this.citedlines[0].s, this.line.s) == 1) {
+            return {
+                success: true,
+                message: this.message
+            }
+        }
+        return {
+            success: false,
+            message: 'line is not of the right form to result from ' +
+                'the cited line by ' + this.rulename
+        }
     }
 
 }
