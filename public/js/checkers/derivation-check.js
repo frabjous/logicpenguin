@@ -925,7 +925,6 @@ export class formFit {
         return true;
     }
 
-
     checkSubDerivs() {
         const Formula = this.Formula;
         if (!this.form.subderivs ||
@@ -939,63 +938,12 @@ export class formFit {
         let newnesstrigger = false;
         orderloop: for (const order of allOrders) {
             let ordergood = true;
-            const assignstry = { ...this.assigns };
+            let assignstry = { ...this.assigns };
             subderivloop: for (let i=0; i<this.form.subderivs.length; i++) {
                 const derivruleinfo = this.form.subderivs[i];
                 const subDeriv = subDerivs[order[i]];
-                let satisfaction = true;
-                needloop: for (let need of derivruleinfo.needs) {
-                    const schema = Formula.from(need);
-                    lineloop: for (const line of subDeriv.lines) {
-                        // ignores self
-                        if (line == this.line) { continue; }
-                        //look only in top layer
-                        if ((!line.isshowline) &&
-                            (line.mysubderiv != subDeriv)) {
-                            continue;
-                        }
-                        if ((line.isshowline) &&
-                            (line.mysubderiv.parentderiv != subDeriv)) {
-                            continue;
-                        }
-                        // if subshowrequired; it must be a showline
-                        if (derivruleinfo.subshowsrequired &&
-                            !line.isshowline) {
-                            continue;
-                        }
-                        const thislinestry = { ... assignstry };
-                        const linetry = this.extendAssign(schema,
-                            Formula.from(line.s), thislinestry );
-                        if (linetry) {
-                            let newnessOK = true;
-                            if (derivruleinfo.wantsasnew) {
-                                for (const n of derivruleinfo.wantsasnew) {
-                                    if (!(n in thislinestry) ||
-                                        (thislinestry[n].length < 1)) {
-                                        continue;
-                                    }
-                                    const newname = thislinestry[n][0];
-                                    if (!this.isNewAt(newname, line)) {
-                                        newnessOK = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            // need was met, check next one
-                            if (newnessOK) {
-                                continue needloop;
-                            } else {
-                                newnesstrigger = true;
-                            }
-                        }
-                    }
-                    // need not met; try next ordering
-                    continue orderloop;
-                }
-                // made it to end of need loop;
-                // so all needs for this subderiv met; now we need
-                // to check assumptions
-                //
+                const subderivtry = { ... assignstry };
+                // first check hypotheses
                 if (subDeriv?.assumptions?.length > 0) {
                     for (const hyp of subDeriv.assumptions) {
                         // if it allows nothing, we must continue orderloop
@@ -1004,14 +952,79 @@ export class formFit {
                         }
                         const schema = Formula.from(derivruleinfo.allows);
                         const attempt = this.extendAssign(schema,
-                            Formula.from(hyp), assignstry );
+                            Formula.from(hyp), subderivtry );
                         if (!attempt) {
+                            // didn't work out, try new order
                             continue orderloop;
                         }
                     }
                 }
+                // now check needs
+                // every combo of lines could be what counts
+                let linecombos = [[]];
+                for (let i=0; i<derivruleinfo.needs.length; i++) {
+                    const newlinecombos = [];
+                    for (const oldcombo of linecombos) {
+                        for (const line of subDeriv.lines) {
+                            newlinecombos.push([...oldcombo, line]);
+                        }
+                    }
+                    linecombos = newlinecombos;
+                }
+                comboloop: for (const linecombo of linecombos) {
+                    let combotry = { ...subderivtry };
+                    needloop: for (let n = 0; n < derivruleinfo.needs.length; n++) {
+                        const need = derivruleinfo.needs[n];
+                        const schema = Formula.from(need);
+                        const line = linecombo[n];
+                        // cannot be in line being checked
+                        if (line == this.line) { continue comboloop; }
+                        // line must be in top layer
+                        if ((!line.isshowline) && (line.mysubderiv != subDeriv)) {
+                            continue comboloop;
+                        }
+                        if (line.isshowline && (line.mysubderiv.parentderiv != subDeriv)) {
+                            continue comboloop;
+                        }
+                        // if required to be a show line, look for that
+                        if (derivruleinfo.subshowrequired && !line.isshowline) {
+                            continue comboloop;
+                        }
+                        const thislinetry = this.extendAssign(schema,
+                            Formula.from(line.s), combotry);
+                        if (!thislinetry) {
+                            continue comboloop;
+                        }
+                        let newnessOK = true;
+                        if (derivruleinfo.wantsasnew) {
+                            for (const n of derivruleinfo.wantsasnew) {
+                                if (!(n in thislinetry) ||
+                                    (thislinestry[n].length < 1)) {
+                                    continue;
+                                }
+                                const newname = thislinetry[n][0];
+                                if (!this.isNewAt(newname, line)) {
+                                    newnessOK = false;
+                                    break;
+                                }
+                            }
+                        }
+                        // need was met, check next one
+                        if (!newnessOK) {
+                            newnesstrigger = true;
+                            continue comboloop;
+                        }
+                    }
+                    // if made it here, we had a good combo
+                    // with all needs met
+                    assignstry = combotry;
+                    continue subderivloop;
+                }
+                // if we made it here, no combo worked
+                // try next order
+                continue orderloop;
             }
-            // all subderivs had their thinues met, so
+            // all subderivs had their thingies met, so
             // this is a good order
             foundgood = true;
             this.assigns = assignstry;
