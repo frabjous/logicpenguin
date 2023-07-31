@@ -40,18 +40,15 @@ allRules.common = {
     "Hyp" : { assumptionrule: true, hidden: true }
 }
 
-allRules.magnus = {
+allRules.adelaide = {
     "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
-    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
     "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
-    "DeM": { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
-    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"], conc: "C" } ], derived: true },
-    "HS" : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
-    "Comm" : { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" }, { a: "A ∨ B", b: "B ∨ A" }, { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
-    "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
-    "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
-    "↔ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
-    "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
+    "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
+    "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
+    "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
+    "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
+    "=E"  : { pred: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","b","a"] } ] },
+    "=ES"  : { pred: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","a","b"] } ] },
 }
 
 allRules.cambridge = {
@@ -97,19 +94,40 @@ allRules.loraincounty = {
     "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
+allRules.magnus = {
+    "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "DeM": { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
+    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"], conc: "C" } ], derived: true },
+    "HS" : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
+    "Comm" : { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" }, { a: "A ∨ B", b: "B ∨ A" }, { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
+    "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
+    "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
+    "↔ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
+    "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
+}
+
 allRules.pitt = {
+    "⊥I"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
+    "¬E"  : { forms: [ { conc: "A", subderivs: [ { needs: ["⊥"], allows: "¬A" } ] } ] },
+    "⊥E"  : { forms: [ { prems: ["⊥"], conc: "A" } ] },
+    "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
+    "LEM" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ], derived: true },
+    "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
+    "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
+    "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true }
 }
 
 allRules.slu = {
+    "⊥I"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "⊥E"  : { forms: [ { prems: ["⊥"], conc: "A" } ] },
-    "⊥I"  : { forms: [ { prems: ["A","¬A"], conc: "⊥" } ] },
     "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
     "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
     "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
     "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true }
 }
-
 
 allRules.ubc = {
     "↔I": { forms [ { conc: "A ↔ B", prems: [ "A → B", "B → A" ] } ] },
@@ -126,6 +144,8 @@ allRules.ubc = {
     "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
+allRules.uconn = allRules.calgary;
+
 function substituteSymbols(s, notationname) {
     const innotation = notations["cambridge"];
     const outnotation = notations[notationname];
@@ -135,26 +155,20 @@ function substituteSymbols(s, notationname) {
     return s;
 }
 
-export default function getFitchRules(rulesetname, notationname = null) {
+export default function getForallxRules(rulesetname, notationname = null) {
     // rulesetname same as notationname unless specified
     if (notationname === null) {
         notationname = rulesetname;
     }
     // start with common rules
-    const ruleset = commonForallxRules;
-    // add calgary rules if need be
-    if (rulesetname == 'cambridge') {
-        for (const rule in cambridgeRules) {
-            ruleset[rule] = cambridgeRules[rule];
+    const ruleset = allRules.common;
+    // add other rules if need be
+    if (rulesetname in allRules) {
+        for (const rule in allRules[rulesetname]) {
+            ruleset[rule] = allRules[rulesetname];
         }
-    }
-    if (rulesetname == 'calgary') {
-        for (const rule in calgaryRules) {
-            ruleset[rule] = calgaryRules[rule];
-        }
-    }
     // don't bother with notation change if we are just returning the same
-    if (notationname == 'cambridge' || notationname == 'calgary') {
+    if (['cambridge','calgary','slu','pitt','adelaide','uconn'].indexOf(notationname) >= 0) {
         return ruleset;
     }
     // bind change function to new notation

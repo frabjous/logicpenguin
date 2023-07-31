@@ -152,4 +152,8 @@ const notations = {
         variableRange: 'x-z'
     }
 }
+
+notations.pitt = notations.slu;
+notations.adelaide = notations.slu;
+
 export default notations;
