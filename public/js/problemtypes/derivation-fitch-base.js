@@ -422,6 +422,10 @@ export default class DerivationFitch extends DerivationExercise {
         }
         let scB = 'ℬ';
         let scC = '𝒞';
+        if (scA == 'Φ') }
+            scB = 'Ψ';
+            scC = 'Ω';
+        }
         if (scA == 'p') {
             scB = 'q';
             scC = 'r';

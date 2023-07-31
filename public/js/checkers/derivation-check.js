@@ -204,7 +204,7 @@ export default class DerivationCheck {
             let needednumnums;
             if (ruleinfo.forms) {
                 needednumnums = ruleinfo.forms.map((form) => {
-                    if (ruleinfo.equivrule) { return 1; }
+                    if (ruleinfo.replacementrule) { return 1; }
                     return (form?.prems?.length ?? 0);
                 });
             } else {
@@ -293,8 +293,8 @@ export default class DerivationCheck {
             return line;
         }
         // EQUIVALENCE RULE
-        if (rule?.equivrule) {
-            const equivcheck = (new equivRuleCheck(rule, rulename,
+        if (rule?.replacementrule) {
+            const equivcheck = (new replacementRuleCheck(rule, rulename,
                 line, Formula)).result();
             if (equivcheck.success) {
                 line.checkedOK = true;
@@ -1285,9 +1285,9 @@ export class formFit {
     }
 }
 
-/////////////////////////// equivRuleCheck
+/////////////////////////// replacementRuleCheck
 
-export class equivRuleCheck {
+export class replacementRuleCheck {
 
     constructor(rule, rulename, line, Formula) {
         this.rule = rule;
