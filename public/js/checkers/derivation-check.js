@@ -1283,12 +1283,12 @@ export class equivRuleCheck {
         this.line = line;
         this.Formula = Formula;
         this.message = '';
-        this.possible = true;
     }
 
     // note: should return number of substitutions made
     // or -1 if impossible
     differsFromBy(getstr, fromstr) {
+        const Formula = this.Formula;
         const getf = Formula.from(getstr);
         const fromf = Formula.from(fromstr);
         // check if name
@@ -1316,12 +1316,36 @@ export class equivRuleCheck {
         }
         // atomics could never match if different
         if (!getf.op && !fromf.op) { return -1; }
+        // those with different ops cannot match
+        if (getf.op != fromf.op) { return -1; }
+        // those with different bound variables cannot match
+        if ((getf.boundvar) && (getf.boundvar != fromf.boundvar)) {
+            return -1;
+        }
         // prop constants could never match if different
-        
+        if (Formula.syntax.ispropconst(getf.op)) { return -1; }
+        // must both have right sides
+        if (!getf.right || !fromf.right) { return -1; }
+        const getrightstr = getf.right.normal;
+        const fromrightstr = fromf.right.normal;
+        const rightdifference = this.differsFromBy(getrightstr, fromrightstr);
+        // if they cannot match, then return that
+        if (rightdifference == -1) { return -1; }
+        // if it is a monadic operator, we're done
+        if (Formula.syntax.ismonop(getf.op)) {
+            return rightdifference;
+        }
+        // must both have left sides
+        if (!getf.left || !fromf.left) { return -1; }
+        const getleftstr = getf.left.normal;
+        const fromleftstr = fromf.left.normal;
+        const leftdifference = this.differsFromBy(getleftstr, fromleftstr);
+        if (leftdifference == -1 ) { return -1; }
+        return (leftdifference + rightdifference);
     }
 
     pseudolines(getstr, fromstr) {
-        const fromline {
+        const fromline = {
             s: fromstr,
             isshowline: false
         }
@@ -1341,14 +1365,14 @@ export class equivRuleCheck {
             }
         }
         // TODO: possibly allow more than one substitution?
-        if (differsFromBy(this.line.s, this.citedlines[0].s) == 1) {
+        if (this.differsFromBy(this.line.s, this.line.citedlines[0].s) == 1) {
             return {
                 success: true,
                 message: this.message
             }
         }
         // try other direction
-        if (differsFromBy(this.citedlines[0].s, this.line.s) == 1) {
+        if (this.differsFromBy(this.line.citedlines[0].s, this.line.s) == 1) {
             return {
                 success: true,
                 message: this.message
@@ -1362,3 +1386,11 @@ export class equivRuleCheck {
     }
 
 }
+
+
+console.log((new equivRuleCheck(
+    { a: '∀x~Ax', b: '~∃xAx' },
+    'DN',
+    { s: 'Fa & ∀x~~Fx', isshowline: false, citedlines: [{s: 'Fa & ~∃xFx' }] },
+    getFormulaClass('hardegree')
+)).result());
