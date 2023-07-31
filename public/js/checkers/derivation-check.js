@@ -1274,3 +1274,34 @@ export class formFit {
     }
 }
 
+/////////////////////////// equivRuleCheck
+
+export class equivRuleCheck {
+
+    constructor(rule, rulename, line, Formula) {
+        this.rule = rule;
+        this.rulename = rulename;
+        this.line = line;
+        this.Formula = Formula;
+        this.message = '';
+        this.possible = true;
+    }
+
+    pseudolines(getstr, fromstr) {
+        const fromline {
+            s: fromstr,
+            isshowline: false
+        }
+        const getline = {
+            s: getstr,
+            isshowline: false,
+            citedlines: [fromline]
+        }
+        return [getline, fromline]
+    }
+
+    result() {
+        
+    }
+
+}
