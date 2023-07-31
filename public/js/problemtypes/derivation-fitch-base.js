@@ -405,7 +405,6 @@ export default class DerivationFitch extends DerivationExercise {
                         }
                     }
                 }
-                // TODO: restrictions
             }
         };
         return rp;

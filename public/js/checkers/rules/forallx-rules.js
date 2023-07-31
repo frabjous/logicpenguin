@@ -91,7 +91,7 @@ allRules.loraincounty = {
     "Assoc∧": { replacementrule: true, forms: [ { a: "(A ∧ B) ∧ C", b: "A ∧ (B ∧ C)" } ], derived: true },
     "Assoc∨": { replacementrule: true, forms: [ { a: "(A ∨ B) ∨ C", b: "A ∨ (B ∨ C)" } ], derived: true },
     "Assoc↔": { replacementrule: true, forms: [ { a: "(A ↔ B) ↔ C", b: "A ↔ (B ↔ C)" } ], derived: true },
-    "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
+    "QN": { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
 allRules.magnus = {
@@ -105,7 +105,7 @@ allRules.magnus = {
     "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
     "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
     "↔ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
-    "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
+    "QN": { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
 allRules.pitt = {
@@ -141,7 +141,7 @@ allRules.ubc = {
     "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
     "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
     "↔ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
-    "QN": { replacementrule: true, forms [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
+    "QN": { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
 allRules.uconn = allRules.calgary;
@@ -167,6 +167,7 @@ export default function getForallxRules(rulesetname, notationname = null) {
         for (const rule in allRules[rulesetname]) {
             ruleset[rule] = allRules[rulesetname];
         }
+    }
     // don't bother with notation change if we are just returning the same
     if (['cambridge','calgary','slu','pitt','adelaide','uconn'].indexOf(notationname) >= 0) {
         return ruleset;
