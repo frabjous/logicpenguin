@@ -41,14 +41,14 @@ allRules.common = {
 }
 
 allRules.adelaide = {
-    "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
-    "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "¬I"  : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "¬E"  : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
     "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
     "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
     "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
     "=E"  : { pred: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","b","a"] } ] },
-    "=ES"  : { pred: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","a","b"] } ] },
+    "=ES" : { pred: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","a","b"] } ] }
 }
 
 allRules.cambridge = {
@@ -71,41 +71,41 @@ allRules.calgary = {
 }
 
 allRules.loraincounty = {
-    "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
-    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
-    "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
-    "CD" : { forms: [ { prems: ["A ∨ B", "A → C", "B -> C"], conc: "C" } ], derived: true },
-    "DD" : { forms: [ { prems: ["A → B", "A → C", "¬B ∨ ¬C"], conc: "¬A" } ], derived: true },
-    "HS" : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
-    "DeM": { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
-    "Idem∨" : { forms: [ { prems: ["A ∨ A"], conc: "A" } ], derived: true },
-    "Idem∧" : { forms: [ { prems: ["A"], conc: "A ∧ A" } ], derived: true },
-    "WK" : { forms: [ { prems: ["A"], conc: "B → A" } ], derived: true },
-    "Comm∧": { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" } ], derived: true },
-    "Comm∨": { replacementrule: true, forms: [ { a: "A ∨ B", b: "B ∨ A" } ], derived: true },
-    "Comm↔": { replacementrule: true, forms: [ { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
-    "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
-    "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
-    "ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
-    "Trans": { replacementrule: true, forms: [ { a: "A → B", b: "¬B → ¬C" } ], derived: true },
-    "Assoc∧": { replacementrule: true, forms: [ { a: "(A ∧ B) ∧ C", b: "A ∧ (B ∧ C)" } ], derived: true },
-    "Assoc∨": { replacementrule: true, forms: [ { a: "(A ∨ B) ∨ C", b: "A ∨ (B ∨ C)" } ], derived: true },
-    "Assoc↔": { replacementrule: true, forms: [ { a: "(A ↔ B) ↔ C", b: "A ↔ (B ↔ C)" } ], derived: true },
-    "QN": { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
+    "¬I"     : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "∨E"     : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "¬E"     : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "CD"     : { forms: [ { prems: ["A ∨ B", "A → C", "B -> C"], conc: "C" } ], derived: true },
+    "DD"     : { forms: [ { prems: ["A → B", "A → C", "¬B ∨ ¬C"], conc: "¬A" } ], derived: true },
+    "HS"     : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
+    "DeM"    : { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
+    "Idem∨"  : { forms: [ { prems: ["A ∨ A"], conc: "A" } ], derived: true },
+    "Idem∧"  : { forms: [ { prems: ["A"], conc: "A ∧ A" } ], derived: true },
+    "WK"     : { forms: [ { prems: ["A"], conc: "B → A" } ], derived: true },
+    "Comm∧"  : { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" } ], derived: true },
+    "Comm∨"  : { replacementrule: true, forms: [ { a: "A ∨ B", b: "B ∨ A" } ], derived: true },
+    "Comm↔"  : { replacementrule: true, forms: [ { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
+    "DN"     : { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
+    "MC"     : { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
+    "ex"     : { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
+    "Trans"  : { replacementrule: true, forms: [ { a: "A → B", b: "¬B → ¬C" } ], derived: true },
+    "Assoc∧" : { replacementrule: true, forms: [ { a: "(A ∧ B) ∧ C", b: "A ∧ (B ∧ C)" } ], derived: true },
+    "Assoc∨" : { replacementrule: true, forms: [ { a: "(A ∨ B) ∨ C", b: "A ∨ (B ∨ C)" } ], derived: true },
+    "Assoc↔" : { replacementrule: true, forms: [ { a: "(A ↔ B) ↔ C", b: "A ↔ (B ↔ C)" } ], derived: true },
+    "QN"     : { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
 allRules.magnus = {
-    "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
-    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
-    "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
-    "DeM": { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
-    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"], conc: "C" } ], derived: true },
-    "HS" : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
+    "¬I"   : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "∨E"   : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "¬E"   : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "DeM"  : { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
+    "DIL"  : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"], conc: "C" } ], derived: true },
+    "HS"   : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
     "Comm" : { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" }, { a: "A ∨ B", b: "B ∨ A" }, { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
-    "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
-    "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
-    "↔ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
-    "QN": { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
+    "DN"   : { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
+    "MC"   : { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
+    "↔ex"  : { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
+    "QN"   : { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
 allRules.pitt = {
@@ -122,6 +122,7 @@ allRules.pitt = {
 allRules.slu = {
     "⊥I"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "⊥E"  : { forms: [ { prems: ["⊥"], conc: "A" } ] },
+    "¬E"  : { meinongian: true, hidden: true },
     "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
     "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
@@ -130,18 +131,18 @@ allRules.slu = {
 }
 
 allRules.ubc = {
-    "↔I": { forms [ { conc: "A ↔ B", prems: [ "A → B", "B → A" ] } ] },
-    "¬I" : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
-    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
-    "¬E" : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
-    "DeM": { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
-    "DIL" : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"], conc: "C" } ], derived: true },
-    "HS" : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
+    "↔I"   : { forms: [ { conc: "A ↔ B", prems: [ "A → B", "B → A" ] } ] },
+    "¬I"   : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "∨E"   : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "¬E"   : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "DeM"  : { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
+    "DIL"  : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"], conc: "C" } ], derived: true },
+    "HS"   : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
     "Comm" : { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" }, { a: "A ∨ B", b: "B ∨ A" }, { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
-    "DN": { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
-    "MC": { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
-    "↔ex": { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
-    "QN": { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
+    "DN"   : { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
+    "MC"   : { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
+    "↔ex"  : { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
+    "QN"   : { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
 allRules.uconn = allRules.calgary;

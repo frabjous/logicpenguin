@@ -153,7 +153,8 @@ const notations = {
     }
 }
 
-notations.pitt = notations.slu;
 notations.adelaide = notations.slu;
+notations.pitt = notations.slu;
+notations.uconn = notations.slu;
 
 export default notations;

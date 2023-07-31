@@ -6,7 +6,7 @@
 // cambridge-specific derivation checker, uses derivation-check.js    //
 ////////////////////////////////////////////////////////////////////////
 
-import getRules from './rules/fitch-rules.js';
+import getRules from './rules/forallx-rules.js';
 import DerivationCheck from './derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';
 

@@ -11,7 +11,7 @@ import DerivationExercise from './derivation-base.js';
 import { addelem, htmlEscape } from '../common.js';
 import tr from '../translate.js';
 
-import getRules from '../checkers/rules/fitch-rules.js';
+import getRules from '../checkers/rules/forallx-rules.js';
 import notations from '../symbolic/notations.js';
 
 export default class DerivationFitch extends DerivationExercise {
@@ -421,7 +421,7 @@ export default class DerivationFitch extends DerivationExercise {
         }
         let scB = 'ℬ';
         let scC = '𝒞';
-        if (scA == 'Φ') }
+        if (scA == 'Φ') {
             scB = 'Ψ';
             scC = 'Ω';
         }

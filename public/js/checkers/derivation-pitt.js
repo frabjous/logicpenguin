@@ -2,16 +2,16 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-///////////////// checkers/derivation-calgary.js /////////////////////
-// calgary-specific derivation checker, uses derivation-check.js    //
-//////////////////////////////////////////////////////////////////////
+///////////////// checkers/derivation-pitt.js /////////////////////
+// pitt-specific derivation checker, uses derivation-check.js    //
+////////////////////////////////////////////////////////////////////////
 
 import getRules from './rules/forallx-rules.js';
 import DerivationCheck from './derivation-check.js';
 import { justParse } from '../ui/justification-parse.js';
 
-// default notation from settings, but calgary otherwise
-let defaultnotation = 'calgary';
+// default notation from settings, but pitt otherwise
+let defaultnotation = 'pitt';
 if ((typeof process != "undefined") && (process?.appsettings?.defaultnotation)) {
     defaultnotation = process.appsettings.defaultnotation;
 }
@@ -65,7 +65,7 @@ export default async function(
     // clone the answer to avoid messing it up when checking it
     const ansclone = JSON.parse(JSON.stringify(givenans));
     const notationname = (options?.notation ?? defaultnotation);
-    const rules = getRules('calgary', notationname);
+    const rules = getRules('pitt', notationname);
     const checkResult = new DerivationCheck(
         notationname, rules, ansclone, question.prems,
         question.conc, partialcredit, false
