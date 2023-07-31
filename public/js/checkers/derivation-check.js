@@ -206,7 +206,11 @@ export default class DerivationCheck {
                 needednumnums = ruleinfo.forms.map((form) =>
                     (form?.prems?.length ?? 0));
             } else {
-                needednumnums = [0];
+                if (ruleinfo.equivrule) {
+                    needednumnums = [1];
+                } else {
+                    needednumnums = [0];
+                }
             }
             if (needednumnums.indexOf(nums.length) == -1) {
                 this.adderror(line.n, "justification", "low", "cites the wrong " +
@@ -223,7 +227,6 @@ export default class DerivationCheck {
             } else {
                 needednumranges = [0];
             }
-
             if (needednumranges.indexOf(ranges.length) == -1) {
                 this.adderror(line.n, "justification", "low", "cites the wrong " +
                     "number of subderivation line ranges for the rule specified");
@@ -232,7 +235,6 @@ export default class DerivationCheck {
                     return line;
                 }
             }
-
         } else {
             if (nums.length > 0 || ranges.length > 0) {
                 this.adderror(line.n, 'justification', 'low', 'cites line ' +
@@ -266,7 +268,7 @@ export default class DerivationCheck {
             return line;
         }
         // PREMISE
-        if (rule.premiserule) {
+        if (rule?.premiserule) {
             const norm = Formula.from(line.s).normal;
             let found = false;
             for (let prem of this.prems) {
@@ -287,11 +289,23 @@ export default class DerivationCheck {
         // if the derivation uses show lines assumptions are checked like
         // normal rules, if it doesn't, then they're OK, but will be
         // checked when regular rule citing them is
-        if (rule.assumptionrule && !this.numberedShowLines) {
+        if (rule?.assumptionrule && !this.numberedShowLines) {
             line.mysubderiv.assumptions.push(Formula.from(line.s).normal);
             line.checkedOK = true;
             return line;
         }
+        // EQUIVALENCE RULE
+        if (rule?.equivrule) {
+            const equivcheck = (new equivRuleCheck(rule, rulename,
+                line, Formula)).result();
+            if (equivcheck.success) {
+                line.checkedOK = true;
+            } else {
+                this.adderror(line.n, 'rule', 'high', equivcheck.message);
+            }
+            return line;
+        }
+        // RULE WITH FORMS
         // forms either come from rule of what show lines allow for assumption
         const forms = rule?.forms ?? [];
         // if we're here the assumption rule could only be with show lines
@@ -1387,10 +1401,3 @@ export class equivRuleCheck {
 
 }
 
-
-console.log((new equivRuleCheck(
-    { a: '∀x~Ax', b: '~∃xAx' },
-    'DN',
-    { s: 'Fa & ∀x~~Fx', isshowline: false, citedlines: [{s: 'Fa & ~∃xFx' }] },
-    getFormulaClass('hardegree')
-)).result());
