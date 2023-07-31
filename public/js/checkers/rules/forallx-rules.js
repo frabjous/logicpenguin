@@ -166,7 +166,7 @@ export default function getForallxRules(rulesetname, notationname = null) {
     // add other rules if need be
     if (rulesetname in allRules) {
         for (const rule in allRules[rulesetname]) {
-            ruleset[rule] = allRules[rulesetname];
+            ruleset[rule] = allRules[rulesetname][rule];
         }
     }
     // don't bother with notation change if we are just returning the same
