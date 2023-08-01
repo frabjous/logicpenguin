@@ -495,7 +495,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         if (ind.successstatus == "correct") {
             setTimeout( () => {
                 for (const sd of this.getElementsByTagName("sub-derivation")) {
-                    sd.classList.add("closed")
+                    sd.classList.add("closed");
                 }
                 for (const ii of this.getElementsByTagName("input")) {
                     ii.noregblur = true;

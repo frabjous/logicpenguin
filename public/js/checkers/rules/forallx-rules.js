@@ -161,8 +161,9 @@ export default function getForallxRules(rulesetname, notationname = null) {
     if (notationname === null) {
         notationname = rulesetname;
     }
-    // start with common rules
-    const ruleset = allRules.common;
+    // start with common rules; but copy them to allow multiple of
+    // same base
+    const ruleset = JSON.parse(JSON.stringify(allRules.common));
     // add other rules if need be
     if (rulesetname in allRules) {
         for (const rule in allRules[rulesetname]) {
