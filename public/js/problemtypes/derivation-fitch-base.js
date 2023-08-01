@@ -269,6 +269,13 @@ export default class DerivationFitch extends DerivationExercise {
                 const formblock = addelem('div', this.innerformcell, {
                     classes: ['ruledisplayform']
                 });
+                if (ruleinfo?.replacementrule && ("a" in thisform) && ("b" in thisform)) {
+                    const equivdiv = addelem('div', formblock, {
+                        classes: ['symbolic'],
+                        innerHTML: this.schematic(thisform.a, ruleinfo, damb) + ' ⫤⊨  ' + this.schematic(thisform.b, ruleinfo, damb)
+                    });
+                    continue;
+                }
                 const argtbl = addelem('table', formblock);
                 const argtbb = addelem('tbody', argtbl);
                 // premise rows
