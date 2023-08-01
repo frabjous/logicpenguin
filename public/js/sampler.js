@@ -54,14 +54,26 @@ LP.sampler = function(opts) {
         opts.system = opts.notation;
     }
     if (!("tflname" in opts)) {
-        opts.tflname = 'Truth-functional logic';
+        opts.tflname = (
+            (opts.system == 'adelaide' || opts.system == 'hardegree') 
+            ? 'Sentential logic' : 'Truth-functional logic');
     }
     if (!("folname" in opts)) {
-        opts.folname = 'First-order logic';
+        opts.folname =
+        ((opts.system == 'adelaide') ? 'Quantified logic' :
+            ((opts.system == 'hardegree') ? 'Predicate logic' :
+                'First-order logic'
+            )
+        );
     }
     if (!("derivname" in opts)) {
         opts.derivname = 'deduction';
     }
+
+    if (['adelaide','loraincounty','magnus','ubc'].indexOf(opts.system) >= 0) {
+        opts.nofalsum = true;
+    }
+
     const wrapper = addelem('div', parentnode,
         { classes: ['logicpenguin', 'sampler'] });
     const toppart = addelem('div', wrapper);
@@ -80,6 +92,7 @@ LP.sampler = function(opts) {
     });
     const tflarginp = SymbolicArgumentInput.getnew({
         notation: opts.notation,
+        nofalsum: (!!opts?.nofalsum),
         lazy: true,
         pred: false
     });
@@ -87,6 +100,7 @@ LP.sampler = function(opts) {
     tflarginp.lazy = true;
     const folarginp = SymbolicArgumentInput.getnew({
         notation: opts.notation,
+        nofalsum: (!!opts?.nofalsum),
         pred: true,
         lazy: false
     });
