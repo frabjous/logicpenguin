@@ -15,6 +15,8 @@ import notations from '../../symbolic/notations.js';
 
 const opnames = ['NOT','OR','AND','IFF','IFTHEN','FORALL','EXISTS','FALSUM'];
 
+const rulesrepository = {};
+
 const allRules = {};
 
 allRules.common = {
@@ -161,17 +163,25 @@ export default function getForallxRules(rulesetname, notationname = null) {
     if (notationname === null) {
         notationname = rulesetname;
     }
+    const comboname = rulesetname + '--' + notationname;
+    if (comboname in rulesrepository) {
+        return rulesrepository[comboname];
+    }
+
     // start with common rules; but copy them to allow multiple of
     // same base
     const ruleset = JSON.parse(JSON.stringify(allRules.common));
     // add other rules if need be
     if (rulesetname in allRules) {
-        for (const rule in allRules[rulesetname]) {
-            ruleset[rule] = allRules[rulesetname][rule];
+        // make a copy to avoid messing up if multiple on same page
+        const rulestoadd = JSON.parse(JSON.stringify(allRules[rulesetname]));
+        for (const rule in rulestoadd) {
+            ruleset[rule] = rulestoadd[rule];
         }
     }
     // don't bother with notation change if we are just returning the same
     if (['cambridge','calgary','slu','pitt','adelaide','uconn'].indexOf(notationname) >= 0) {
+        rulesrepository[comboname] = ruleset;
         return ruleset;
     }
     // bind change function to new notation
@@ -213,5 +223,6 @@ export default function getForallxRules(rulesetname, notationname = null) {
         }
         newruleset[newrulename] = rule;
     }
+    rulesrepository[comboname] = newruleset;
     return newruleset;
 }
