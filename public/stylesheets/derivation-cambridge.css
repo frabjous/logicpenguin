@@ -139,7 +139,7 @@
 }
 
 .logicpenguin.rulepanel .ruleclicktable > thead > tr > th.omnicell {
-    padding-bottom: 0;
+    padding-bottom: 1ex;
 }
 
 .logicpenguin.rulepanel table.ruledisplayinnertable.fitchstyle .ruledisplay > div {

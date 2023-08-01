@@ -272,7 +272,10 @@ export default class DerivationFitch extends DerivationExercise {
                 if (ruleinfo?.replacementrule && ("a" in thisform) && ("b" in thisform)) {
                     const equivdiv = addelem('div', formblock, {
                         classes: ['symbolic'],
-                        innerHTML: this.schematic(thisform.a, ruleinfo, damb) + ' ⫤⊨  ' + this.schematic(thisform.b, ruleinfo, damb)
+                        innerHTML: htmlEscape(
+                            this.schematic(thisform.a, ruleinfo, damb) +
+                            ' ⫤⊨  ' + this.schematic(thisform.b, ruleinfo, damb)
+                        )
                     });
                     continue;
                 }
@@ -405,9 +408,9 @@ export default class DerivationFitch extends DerivationExercise {
                             }
                             addelem('div',formblock, {
                                 classes:['rulerestriction'],
-                                innerHTML: this.schematic('c', ruleinfo, damb) +
+                                innerHTML: htmlEscape(this.schematic('c', ruleinfo, damb) +
                                     ' ' + tr('must not occur in') + ' ' +
-                                    schematics
+                                    schematics)
                             });
                         }
                     }
@@ -418,10 +421,10 @@ export default class DerivationFitch extends DerivationExercise {
                     (thisform.conc.indexOf(this.notation.NOT) == -1)) {
                         addelem('div', formblock, {
                             classes: ['rulerestriction'],
-                            innerHTML: this.schematic('c', ruleinfo, damb) + ' ' +
+                            innerHTML: htmlEscape(this.schematic('c', ruleinfo, damb) + ' ' +
                                 tr('must not occur within the scope of a quantifier using the variable') +
                                 ' ' + this.schematic('x', ruleinfo, damb) + ' ' + tr('already in') + ' ' +
-                                this.schematic('Aa', ruleinfo, damb)
+                                this.schematic('Aa', ruleinfo, damb))
                         });
                 }
             }
@@ -459,7 +462,7 @@ export default class DerivationFitch extends DerivationExercise {
         if (!ruleinfo?.pred) {
             return s.replace(/A/g, scA)
                 .replace(/B/g, scB)
-                .replace(/C/g, scB);
+                .replace(/C/g, scC);
         }
         const scx = lta[2];
         let scc = lta[3]; let sca; let scb; let scn;
@@ -515,6 +518,7 @@ export default class DerivationFitch extends DerivationExercise {
                 return scA + spacer + '(…' + subfor + '…' + subfor + '…)';
             }
         }
+        if (/C/.test(s)) { console.log('scC',scC); }
         return s.replace(/Ax?/g, scA)
             .replace(/B/g, scB)
             .replace(/C/g, scC)

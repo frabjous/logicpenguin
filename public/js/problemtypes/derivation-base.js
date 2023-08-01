@@ -509,10 +509,10 @@ export default class DerivationExercise extends LogicPenguinProblem {
     showRulePanelFor(inp) {
         if (!this.options.rulepanel || !this.ruleset) { return; }
         if (!window.rulepanel ||
-            window.rulepanel.ruleset != this.ruleset) {
+            window.rulepanel.problemtype != this.tagName) {
             if (!this.makeRulePanel) { return; }
             window.rulepanel = this.makeRulePanel();
-            window.rulepanel.ruleset = this.ruleset;
+            window.rulepanel.problemtype = this.tagName;
         }
         document.body.appendChild(window.rulepanel);
         // note: this should also unhide them all
