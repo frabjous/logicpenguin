@@ -40,7 +40,7 @@ const hardegreeRules = {
     "&D"  : { showrule: true, isnew: true, forms: [ { conc: "A & B", subderivs: [ { "needs": ["A", "B"] } ] } ] },
     "↔D"  : { showrule: true, isnew: true, forms: [ { conc: "A ↔ B", subderivs: [ { "needs": ["A → B", "B → A"] } ] } ] },
     "DD"  : { showrule: true, forms: [ { conc: "A", subderivs: [ { "needs": ["A"], mustbedirect: true } ] } ] },
-    "UD"  : { pred: true, showrule: true, forms: [ { conc: "∀xAx", subst: {"x":"n"}, subderivs: [ { "needs": ["An"], wantsasnew: ["n"], subshowsrequired: true } ] } ] },
+    "UD"  : { pred: true, showrule: true, forms: [ { conc: "∀xAx", subst: {"x":"n"}, subderivs: [ { "needs": ["An"], wantsasnew: ["n"], subshowrequired: true } ] } ] },
     "∃D"  : { pred: true, showrule: true, isnew: true, forms: [ { conc: "∃xAx", subderivs: [ { "needs": ["✖"], "allows": "~∃xAx" } ] } ] },
     "~D"  : { showrule: true, forms: [ { conc: "~A", subderivs: [ { "needs": ["✖"], "allows": "A" } ] } ], isnew: true, hidden: true },
     "∨D"  : { showrule: true, forms: [ { conc: "A ∨ B", subderivs: [ { "needs": ["✖"], "allows": "~(A ∨ B)" } ] } ], isnew: true, hidden: true },

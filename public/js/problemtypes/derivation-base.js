@@ -485,7 +485,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
             if (ch != '') { ch += '</tbody></table>' };
             // don't report errors if they're only natural errors for an
             // incomplete problem
-            if (onlygooderrors) {
+            if (onlygooderrors && !this.mainDeriv.classList.contains('closed')) {
                 this.setComment('');
             } else {
                 this.setComment(ch);
