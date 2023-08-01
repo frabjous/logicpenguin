@@ -405,6 +405,18 @@ export default class DerivationFitch extends DerivationExercise {
                         }
                     }
                 }
+                // a bit of a kludge, but I don't know what's better
+                if (("conc" in thisform) &&
+                    (thisform.conc.at(0) == this.notation.FORALL || thisform.conc.at(0) == this.notation.EXISTS) &&
+                    (thisform.conc.indexOf(this.notation.NOT) == -1)) {
+                        addelem('div', formblock, {
+                            classes: ['rulerestriction'],
+                            innerHTML: this.schematic('c', ruleinfo, damb) + ' ' +
+                                tr('must not occur within the scope of a quantifier using the variable') +
+                                ' ' + this.schematic('x', ruleinfo, damb) + ' ' + tr('already in') + ' ' +
+                                this.schematic('Aa', ruleinfo, damb)
+                        });
+                }
             }
         };
         return rp;
