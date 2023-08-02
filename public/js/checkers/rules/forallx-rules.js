@@ -124,7 +124,7 @@ allRules.pitt = {
 allRules.slu = {
     "⊥I"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "⊥E"  : { forms: [ { prems: ["⊥"], conc: "A" } ] },
-    "¬E"  : { meinongian: true, hidden: true },
+    "¬E"  : { meinongian: true, hint: "An elimination rule for negation does not exist in this system." },
     "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
     "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
     "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },

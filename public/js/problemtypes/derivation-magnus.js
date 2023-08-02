@@ -39,7 +39,7 @@ export default class DerivationMagnus extends DerivationFitch {
                     (charBefore == ' ') || // nonbreaking space
                     (charBefore == ' ') || // narrow nonbreaking space
                     (/[0-9]/.test(charBefore)));
-                if (charBefore != 'D' && charBefore != '↔') {
+                if (charBefore != 'D' && charBefore != this.symbols.IFF) {
                     e.preventDefault();
                     elem.insertHere('E');
                 }
@@ -56,7 +56,7 @@ export default class DerivationMagnus extends DerivationFitch {
             if (!atStart) {
                 charBefore = elem.value[ (elem.selectionStart - 1) ];
             }
-            if (charBefore != 'D' && charBefore != '↔') {
+            if (charBefore != 'D' && charBefore != this.symbols.IFF) {
                 e.preventDefault();
                 elem.insertHere('E');
             }
@@ -68,7 +68,7 @@ export default class DerivationMagnus extends DerivationFitch {
             elem.insertHere(this.symbols.FORALL);
         }
         // letters used in names of rules should be uppercase
-        if (/^[cdilnpqrst]$/.test(e.key)) {
+        if (/^[cdilhnpqrst]$/.test(e.key)) {
             e.preventDefault();
             elem.insertHere(e.key.toUpperCase());
         }
