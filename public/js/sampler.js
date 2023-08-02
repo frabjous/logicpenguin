@@ -57,14 +57,16 @@ LP.sampler = function(opts) {
         opts.tflname = (
             (opts.system == 'adelaide' || opts.system == 'hardegree' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc')
             ? 'Sentential logic' : 
-            ((opts.system == 'pitt') ? 'Sentence logic' : 'Truth-functional logic')
+            ((opts.system == 'pitt') ? 'Sentence logic' : 
+                ((opts.system == 'leeds') ? 'Propositional logic' : 'Truth-functional logic')
+            )
         );
     }
     if (!("folname" in opts)) {
         opts.folname =
         ((opts.system == 'adelaide' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc') ? 'Quantified logic' :
             ((opts.system == 'hardegree' || opts.system == 'pitt') ? 'Predicate logic' :
-                'First-order logic'
+                ((opts.system == 'leeds') ? 'Quantificational logic' : 'First-order logic')
             )
         );
     }
