@@ -122,6 +122,18 @@ allRules.magnus = {
     "QN"   : { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
+allRules.msu = {
+    "↔I"  : { forms: [ { prems: ["A → B", "B → A"], conc: "A ↔ B" } ] },
+    "¬I"   : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "∨E"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "¬E"   : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "DN"  : { forms: [ { prems: ["A"], conc: "¬¬A" } ] },
+    "MT"  : { meinongian: true, hidden: true },
+    "Pr"  : { premiserule: true, hidden: true },
+    "PR"  : { premiserule: true, hidden: true },
+    "AS"  : { assumptionrule: true, hidden: true }
+}
+
 allRules.pitt = {
     "⊥I"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "¬E"  : { forms: [ { conc: "A", subderivs: [ { needs: ["⊥"], allows: "¬A" } ] } ] },

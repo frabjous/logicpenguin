@@ -165,7 +165,7 @@ const notations = {
         predicatesRange: '=A-Z',
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: true,
-        variableRange: 'x-z'
+        variableRange: 'x-zs-w'
     },
     "slu": {
         OR      : '∨',
