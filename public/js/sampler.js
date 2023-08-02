@@ -55,13 +55,15 @@ LP.sampler = function(opts) {
     }
     if (!("tflname" in opts)) {
         opts.tflname = (
-            (opts.system == 'adelaide' || opts.system == 'hardegree') 
-            ? 'Sentential logic' : 'Truth-functional logic');
+            (opts.system == 'adelaide' || opts.system == 'hardegree' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc')
+            ? 'Sentential logic' : 
+            ((opts.system == 'pitt') ? 'Sentence logic' : 'Truth-functional logic')
+        );
     }
     if (!("folname" in opts)) {
         opts.folname =
-        ((opts.system == 'adelaide') ? 'Quantified logic' :
-            ((opts.system == 'hardegree') ? 'Predicate logic' :
+        ((opts.system == 'adelaide' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc') ? 'Quantified logic' :
+            ((opts.system == 'hardegree' || opts.system == 'pitt') ? 'Predicate logic' :
                 'First-order logic'
             )
         );
@@ -195,7 +197,7 @@ LP.samplerProblem = async function(opts) {
     opts.parentid = 'logicpenguinsampleproblem-' + opts.system;
     byid(opts.parentid).innerHTML = '';
     await LP.embed(opts);
-    byid(opts.parentid).scrollIntoView();
+    byid(opts.parentid).scrollIntoView({ block: 'nearest' });
 }
 
 LP.loadCSS('sampler');

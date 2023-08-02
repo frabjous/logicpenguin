@@ -319,7 +319,7 @@ export default class LogicPenguinProblem extends HTMLElement {
         if ((this.myanswer) && (this.myproblemtype)) {
             LP.superCharge(this.myproblemtype, this);
         }
-        this.scrollIntoView();
+        this.scrollIntoView({ block: 'nearest' });
     }
 
     static sampleProblemOpts(opts) {

@@ -371,7 +371,7 @@ export default class TruthTable extends LogicPenguinProblem {
             this.tableDiv.classList.add("hidden");
         }
         this.redoAllBorders();
-        this.scrollIntoView();
+        this.scrollIntoView({ block: 'nearest' });
     }
 
     removeTableRows(table, n) {

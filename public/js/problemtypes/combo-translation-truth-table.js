@@ -64,7 +64,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         this.concProb.myindex = n;
         this.makeChanged();
         // make visible
-        inse.scrollIntoView();
+        inse.scrollIntoView({ block: 'nearest' });
     }
 
     chooseAsPremise(n) {
@@ -93,7 +93,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
         thisPP.myprob = this;
         this.makeChanged();
         // make visible
-        inse.scrollIntoView();
+        inse.scrollIntoView({ block: 'nearest' });
     }
 
     chooseNextPremise() {
@@ -124,7 +124,7 @@ export default class ComboTransTruthTable extends LogicPenguinProblem {
             }
         }
         // scroll argument into view
-        this.scrollIntoView();
+        this.scrollIntoView({ block: 'nearest' });
     }
 
     getAnswer() {

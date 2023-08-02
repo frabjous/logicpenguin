@@ -85,7 +85,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 message: ''
             }
         });
-        this.scrollIntoView();
+        this.scrollIntoView({ block: 'nearest' });
     }
 
     hideRulePanel() {

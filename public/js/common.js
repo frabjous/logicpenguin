@@ -47,7 +47,7 @@ export function makeInfobox() {
             '<tr><td>' + icontag + '</td><td>' + tr(message) + '</td></tr>' +
             '</tbody></table>';
         if (msgicon == 'error') {
-            this.scrollIntoView();
+            this.scrollIntoView({ block: 'nearest' });
         }
     }
     return ibox;
