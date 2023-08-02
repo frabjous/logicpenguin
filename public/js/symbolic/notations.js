@@ -118,7 +118,7 @@ const notations = {
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
-    },
+    }
     "hardegree": {
         OR      : '∨',
         AND     : '&',
@@ -149,6 +149,22 @@ const notations = {
         predicatesRange: '=A-Z',
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
+        variableRange: 'x-z'
+    },
+    "msu": {
+        OR      : '∨',
+        AND     : '&',
+        IFTHEN  : '→',
+        IFF     : '↔',
+        NOT     : '¬',
+        FORALL  : '∀',
+        EXISTS  : '∃',
+        FALSUM  : '※',
+        constantsRange: 'a-r',
+        quantifierForm: 'Qx',
+        predicatesRange: '=A-Z',
+        schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
+        useTermParensCommas: true,
         variableRange: 'x-z'
     },
     "slu": {

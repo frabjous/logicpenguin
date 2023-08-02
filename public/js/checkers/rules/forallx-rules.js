@@ -160,7 +160,6 @@ allRules.ubc = {
 }
 
 allRules.leeds = allRules.magnus;
-allRules.lurch = allRules.magnus;
 allRules.uconn = allRules.calgary;
 
 function substituteSymbols(s, notationname) {
