@@ -23,6 +23,22 @@
 // and need not appear in the formula when parsed.
 
 const notations = {
+    "bristol": {
+        OR      : '∨',
+        AND     : '&',
+        IFTHEN  : '→',
+        IFF     : '↔',
+        NOT     : '¬',
+        FORALL  : '∀',
+        EXISTS  : '∃',
+        FALSUM  : '⊥',
+        constantsRange: 'a-t',
+        quantifierForm: 'Qx',
+        predicatesRange: '=A-W',
+        schematicLetters: 'XX𝓍𝒸𝒸',
+        useTermParensCommas: false,
+        variableRange: 'x-zu-w'
+    },
     "calgary": {
         OR      : '∨',
         AND     : '∧',

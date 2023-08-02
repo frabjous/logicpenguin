@@ -53,6 +53,18 @@ allRules.adelaide = {
     "=ES" : { pred: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","a","b"] } ] }
 }
 
+allRules.bristol = {
+    "¬E"  : { meinongian: true, hint: "An elimination rule for negation does not exist in this system." },
+    "⊥I"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
+    "⊥E"  : { forms: [ { prems: ["⊥"], conc: "A" } ] },
+    "PbC"  : { forms: [ { conc: "A", subderivs: [ { needs: ["⊥"], allows: "¬A" } ] } ] },
+    "DS"  : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ], derived: true },
+    "LEM" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ], derived: true },
+    "DNE" : { forms: [ { prems: ["¬¬A"], conc: "A" } ], derived: true },
+    "DeM" : { forms: [ { prems: ["¬(A ∧ B)"], conc: "¬A ∨ ¬B" }, { prems: ["¬A ∨ ¬B"], conc: "¬(A ∧ B)" }, { prems: ["¬(A ∨ B)"], conc: "¬A ∧ ¬B" }, { prems: ["¬A ∧ ¬B"], conc: "¬(A ∨ B)" } ], derived: true },
+    "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true }
+}
+
 allRules.cambridge = {
     "X"   : { forms: [ { prems: ["⊥"], conc: "A" } ] },
     "TND" : { forms: [ { conc: "B", subderivs: [ { needs: ["B"], allows: "A" }, { needs: ["B"], allows: "¬A" } ] } ] },
