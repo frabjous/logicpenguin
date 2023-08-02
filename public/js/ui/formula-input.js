@@ -174,9 +174,12 @@ export default class FormulaInput {
 
     // function for inserting an operator, fixing the spacing around it
     static insOp(op) {
+        const isjust = (this.classList.contains("justification"));
         const symb = this.symbols[op];
         if (this.syntax.symbolcat[op] >= 2) {
-            this.autoChange(/\s+$/,'',' ' + symb + ' ',/^\s+/,'');
+            this.autoChange(/\s+$/,
+                '',
+                ((isjust) ? '' : ' ') + symb + ' ',/^\s+/,'');
         } else {
             this.insertHere(symb);
         }

@@ -22,6 +22,53 @@ export default class DerivationLorainCounty extends DerivationFitch {
         return super.getSolution();
     }
 
+    // in justifications, certain letters auto-uppercase
+    justKeydownExtra(e, elem) {
+        if (e.ctrlKey || e.altKey) { return; }
+        // e for ∃, simetimes
+        if ((e.key == 'E') && (this.options.pred)) {
+            const atStart = (elem.selectionStart == 0);
+            let spaceBefore = false;
+            if (!atStart) {
+                const charBefore = elem.value[ (elem.selectionStart - 1) ];
+                // poorly named because we also want numbers before
+                spaceBefore = (
+                    (charBefore == ',') ||
+                    (charBefore == ' ') ||
+                    (charBefore == ' ') || // thin space
+                    (charBefore == ' ') || // nonbreaking space
+                    (charBefore == ' ') || // narrow nonbreaking space
+                    (/[0-9]/.test(charBefore)));
+            }
+            if (atStart || spaceBefore) {
+                e.preventDefault();
+                elem.insertHere(this.symbols.EXISTS);
+            }
+            // otherwise uppercase E unless part of DeM, obnoxious
+        } else if (e.key == 'e') {
+            const atStart = (elem.selectionStart == 0);
+            let charBefore = '';
+            if (!atStart) {
+                charBefore = elem.value[ (elem.selectionStart - 1) ];
+            }
+            if (charBefore != 'D') {
+                e.preventDefault();
+                elem.insertHere('E');
+            }
+        }
+        // a for ∀, if notation uses quantifier
+        if ((e.key == 'a') && (this.options.pred) &&
+            (this.notation.quantifierForm.search('Q\\?') == -1)) {
+            e.preventDefault();
+            elem.insertHere(this.symbols.FORALL);
+        }
+        // letters used in names of rules should be uppercase
+        if (/^[iwkhqt]$/.test(e.key)) {
+            e.preventDefault();
+            elem.insertHere(e.key.toUpperCase());
+        }
+    }
+
     makeProblem(problem, options, checksave) {
         // always use LorainCounty ruleset
         options.ruleset = 'loraincounty';
