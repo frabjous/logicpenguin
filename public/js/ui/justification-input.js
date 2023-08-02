@@ -61,11 +61,11 @@ export default class JustificationInput extends FormulaInput {
     static insOp(op) {
         const symbols = this.symbols;
         const symb = symbols[op];
-        this.autoChange(/\s+$/,'',' ' + symb, /^\s+/, '');
+        this.autoChange(/\s+$/,'', symb, /^\s+/, '');
         // if there was a negation before it, it's ok to eliminate that space
-        this.autoChange(
+/*        this.autoChange(
             new RegExp(symbols.NOT + '\\s+','g'),symbols.NOT,'', /^\s+/, '');
-        // autoChange will trigger makeChanged
+        // autoChange will trigger makeChanged */
     }
 
     // parse the justification, and make it appear pretty

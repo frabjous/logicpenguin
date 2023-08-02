@@ -57,6 +57,10 @@ export default class DerivationFitch extends DerivationExercise {
                     (charBefore == ' ') || // nonbreaking space
                     (charBefore == ' ') || // narrow nonbreaking space
                     (/[0-9]/.test(charBefore)));
+                if (charBefore != 'D') {
+                    e.preventDefault();
+                    elem.insertHere('E');
+                }
             }
             if (atStart || spaceBefore) {
                 e.preventDefault();
@@ -64,6 +68,7 @@ export default class DerivationFitch extends DerivationExercise {
             }
             // otherwise uppercase E unless part of DeM, obnoxious
         } else if (e.key == 'e') {
+            console.log("here", (new Date()).getTime());
             const atStart = (elem.selectionStart == 0);
             let charBefore = '';
             if (!atStart) {
