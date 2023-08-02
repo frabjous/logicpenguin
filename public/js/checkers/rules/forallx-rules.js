@@ -159,6 +159,8 @@ allRules.ubc = {
     "QN"   : { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xAx", b: "∀x¬Ax" } ], derived: true, pred: true }
 }
 
+allRules.leeds = allRules.magnus;
+allRules.lurch = allRules.magnus;
 allRules.uconn = allRules.calgary;
 
 function substituteSymbols(s, notationname) {

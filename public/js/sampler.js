@@ -55,7 +55,7 @@ LP.sampler = function(opts) {
     }
     if (!("tflname" in opts)) {
         opts.tflname = (
-            (opts.system == 'adelaide' || opts.system == 'hardegree' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc')
+            (opts.system == 'adelaide' || opts.system == 'hardegree' || opts.system == 'lurch' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc')
             ? 'Sentential logic' : 
             ((opts.system == 'pitt') ? 'Sentence logic' : 
                 ((opts.system == 'leeds') ? 'Propositional logic' : 'Truth-functional logic')
@@ -64,7 +64,7 @@ LP.sampler = function(opts) {
     }
     if (!("folname" in opts)) {
         opts.folname =
-        ((opts.system == 'adelaide' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc') ? 'Quantified logic' :
+        ((opts.system == 'adelaide' || opts.system == 'loraincounty' || opts.system == 'lurch' || opts.system == 'magnus' || opts.system == 'ubc') ? 'Quantified logic' :
             ((opts.system == 'hardegree' || opts.system == 'pitt') ? 'Predicate logic' :
                 ((opts.system == 'leeds') ? 'Quantificational logic' : 'First-order logic')
             )
@@ -74,7 +74,7 @@ LP.sampler = function(opts) {
         opts.derivname = 'deduction';
     }
 
-    if (['adelaide','loraincounty','magnus','ubc'].indexOf(opts.system) >= 0) {
+    if (['adelaide','leeds','loraincounty','lurch','magnus','ubc'].indexOf(opts.system) >= 0) {
         opts.nofalsum = true;
     }
 

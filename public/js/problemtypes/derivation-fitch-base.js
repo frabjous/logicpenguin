@@ -449,6 +449,10 @@ export default class DerivationFitch extends DerivationExercise {
         }
         let scB = 'ℬ';
         let scC = '𝒞';
+        if (scA == '𝒳') {
+            scB = '𝒴';
+            scC = '𝒵';
+        }
         if (scA == 'X') {
             scB = 'Y';
             scC = 'Z';

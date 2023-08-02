@@ -87,6 +87,22 @@ const notations = {
         useTermParensCommas: false,
         variableRange: 'x-z'
     },
+    "leeds": {
+        OR      : '∨',
+        AND     : '∧',
+        IFTHEN  : '→',
+        IFF     : '↔',
+        NOT     : '¬',
+        FORALL  : '∀',
+        EXISTS  : '∃',
+        FALSUM  : '⊥',
+        constantsRange: 'a-w',
+        quantifierForm: 'Qx',
+        predicatesRange: '=A-Z',
+        schematicLetters: '𝒳ℱ𝓍𝒸𝒸',
+        useTermParensCommas: false,
+        variableRange: 'x-z'
+    },
     "loraincounty": {
         OR      : '∨',
         AND     : '&',
