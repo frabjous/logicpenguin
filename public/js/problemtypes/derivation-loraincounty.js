@@ -46,6 +46,15 @@ export default class DerivationLorainCounty extends DerivationFitch {
             }
             // otherwise uppercase E unless part of DeM, obnoxious
         }
+        if (e.key == 'e' && elem.selectionStart != 0) {
+            const charBefore = elem.value[ (elem.selectionStart - 1) ];
+            if ([ this.symbols.OR, this.symbols.AND, this.symbols.IFF,
+                this.symbols.FORALL, this.symbols.EXISTS, this.symbols.NOT,
+                this.symbols.IFTHEN, '='].indexOf(charBefore) > 0) {
+                e.preventDefault();
+                elem.insertHere('E');
+            }
+        }
         // a for ∀, if notation uses quantifier
         if ((e.key == 'a') && (this.options.pred) &&
             (this.notation.quantifierForm.search('Q\\?') == -1)) {
