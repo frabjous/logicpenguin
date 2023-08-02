@@ -49,7 +49,7 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [x] Provide flexible mechanisms for determining if and when students are given feedback about the correctness of their answers and see correct answers
 - [x] Provide working LTI 1.1 integration with LMS systems using OAuth1
 - [x] Allow arbitrary specification for how often the server “grades” exercises and submits scores to the LMS
-- [ ] Adapt derivation UI for Fitch-style natural deduction proofs and the various [forall x](https://www.fecundity.com/logic/) type systems (partly done)
+- [x] Adapt derivation UI for Fitch-style natural deduction proofs and the various [forall x](https://www.fecundity.com/logic/) type systems (partly done)
 - [ ] Provide an instructor panel for certain things so they don’t have to be done server-side
     - [ ] granting extensions
     - [ ] seeing student progress
