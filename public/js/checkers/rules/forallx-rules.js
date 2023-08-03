@@ -145,6 +145,21 @@ allRules.pitt = {
     "CQ"  : { pred: true, forms: [ { prems: ["∀x¬Ax"], conc: "¬∃xAx" }, { prems: ["∃x¬Ax"], conc: "¬∀xAx" }, { prems: ["¬∀xAx"], conc: "∃x¬Ax" }, { prems: ["¬∃xAx"], conc: "∀x¬Ax" } ], derived: true }
 }
 
+allRules.r3 = {
+    "¬I"   : { forms : [ { conc: "¬A", subderivs: [ { needs: ["B", "¬B"], allows: "A" } ] } ] },
+    "∨E"   : { forms: [ { prems: ["A ∨ B", "¬A"], conc: "B" }, { prems: ["A ∨ B", "¬B"], conc: "A" } ] },
+    "¬E"   : { forms : [ { conc: "A", subderivs: [ { needs: ["B", "¬B"], allows: "¬A" } ] } ] },
+    "DeM"  : { replacementrule: true, forms: [ { a: "¬(A ∨ B)", b: "¬A ∧ ¬ B" }, { a: "¬(A ∧ B)", b: "¬A ∨ ¬B" } ], derived: true },
+    "DIL"  : { forms: [ { prems: ["A ∨ B", "A → C", "B → C"], conc: "C" } ], derived: true },
+    "HS"   : { forms: [ { prems: ["A → B", "B → C"], conc: "A → C" } ], derived: true },
+    "Comm" : { replacementrule: true, forms: [ { a: "A ∧ B", b: "B ∧ A" }, { a: "A ∨ B", b: "B ∨ A" }, { a: "A ↔ B", b: "B ↔ A" } ], derived: true },
+    "DN"   : { replacementrule: true, forms: [ { a: "A", b: "¬¬A" } ], derived: true },
+    "MC"   : { replacementrule: true, forms: [ { a: "A → B", b: "¬A ∨ B" }, { a: "A ∨ B", b: "¬A → B" } ], derived: true },
+    "TAUT" : { replacementrule: true, forms: [ { a: "P ∨ P", b: "P" }, { a: "P ∧ P", b: "P" } ], derived: true },
+    "↔ex"  : { replacementrule: true, forms: [ { a: "(A → B) ∧ (B → A)", b: "A ↔ B" } ], derived: true },
+    "QN"   : { replacementrule: true, forms: [ { a: "¬∀xAx", b: "∃x¬Ax" }, { a: "¬∃xFx", b: "∀x¬Ax" } ], derived: true, pred: true }
+}
+
 allRules.slu = {
     "⊥I"  : { forms: [ { prems: ["A", "¬A"], conc: "⊥" } ] },
     "⊥E"  : { forms: [ { prems: ["⊥"], conc: "A" } ] },
