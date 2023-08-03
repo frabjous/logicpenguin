@@ -27,7 +27,6 @@ function makeDerivation() {
     LP.samplerProblem(this.myopts);
 }
 
-
 LP.sampler = function(opts) {
     // try to determine where to put widget
     let parentnode = false;
