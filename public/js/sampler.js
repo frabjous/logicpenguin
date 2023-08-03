@@ -58,13 +58,13 @@ LP.sampler = function(opts) {
             (opts.system == 'adelaide' || opts.system == 'hardegree' || opts.system == 'lurch' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc')
             ? 'Sentential logic' : 
             ((opts.system == 'pitt') ? 'Sentence logic' : 
-                ((opts.system == 'leeds') ? 'Propositional logic' : 'Truth-functional logic')
+                ((opts.system == 'leeds' || opts.system == "r3") ? 'Propositional logic' : 'Truth-functional logic')
             )
         );
     }
     if (!("folname" in opts)) {
         opts.folname =
-        ((opts.system == 'adelaide' || opts.system == 'loraincounty' || opts.system == 'lurch' || opts.system == 'magnus' || opts.system == 'ubc') ? 'Quantified logic' :
+        ((opts.system == 'adelaide' || opts.system == 'loraincounty' || opts.system == 'lurch' || opts.system == 'magnus' || opts.system == "r3" || opts.system == 'ubc') ? 'Quantified logic' :
             ((opts.system == 'hardegree' || opts.system == 'pitt') ? 'Predicate logic' :
                 ((opts.system == 'leeds') ? 'Quantificational logic' : 'First-order logic')
             )
