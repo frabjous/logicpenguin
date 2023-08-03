@@ -50,6 +50,7 @@
 
 .logicpenguin {
     all: revert-layer;
+    isolation: isolate;
     font-size: 20px;
     font-family:
         'Fira Sans', 'Fira Sans',
