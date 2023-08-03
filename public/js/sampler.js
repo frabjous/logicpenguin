@@ -74,7 +74,7 @@ LP.sampler = function(opts) {
         opts.derivname = 'deduction';
     }
 
-    if (['adelaide','leeds','loraincounty','magnus','ubc'].indexOf(opts.system) >= 0) {
+    if (['adelaide','leeds','loraincounty','magnus','msu','ubc'].indexOf(opts.system) >= 0) {
         opts.nofalsum = true;
     }
 
