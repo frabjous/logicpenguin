@@ -61,14 +61,15 @@ export default class DerivationR3 extends DerivationFitch {
                 elem.insertHere('E');
             }
         }
-        // a for ∀, if notation uses quantifier
+        // a for ∀, if notation uses quantifier; but also not after T
+        // for badly named "TAUT"
         if ((e.key == 'a') && (this.options.pred) &&
             (this.notation.quantifierForm.search('Q\\?') == -1)) {
             e.preventDefault();
             elem.insertHere(this.symbols.FORALL);
         }
         // letters used in names of rules should be uppercase
-        if (/^[cdilhnpqrst]$/.test(e.key)) {
+        if (/^[cdilhnpqrs]$/.test(e.key)) {
             e.preventDefault();
             elem.insertHere(e.key.toUpperCase());
         }

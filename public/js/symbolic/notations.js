@@ -118,7 +118,7 @@ const notations = {
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
-    }
+    },
     "hardegree": {
         OR      : '∨',
         AND     : '&',

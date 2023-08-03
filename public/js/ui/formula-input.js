@@ -400,8 +400,10 @@ export default class FormulaInput {
         if (this.pred) {
             // only do universal quantifier if quantiferForm in notation
             // doesn't include '?'
-            if (e.key == 'A' && 
-                (this.syntax.notation.quantifierForm.search('\\?') == -1)) {
+            // also don't do it after T because r3 stupid TAUT role
+            if (e.key == 'A' &&
+                (this.syntax.notation.quantifierForm.search('\\?') == -1) &&
+                (this.value.at(this.selectionStart -1 ) != 'T')) {
                 e.preventDefault();
                 this.insOp('FORALL');
             }
