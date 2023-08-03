@@ -56,8 +56,8 @@ LP.sampler = function(opts) {
     if (!("tflname" in opts)) {
         opts.tflname = (
             (opts.system == 'adelaide' || opts.system == 'hardegree' || opts.system == 'lurch' || opts.system == 'loraincounty' || opts.system == 'magnus' || opts.system == 'ubc')
-            ? 'Sentential logic' : 
-            ((opts.system == 'pitt') ? 'Sentence logic' : 
+            ? 'Sentential logic' :
+            ((opts.system == 'pitt') ? 'Sentence logic' :
                 ((opts.system == 'leeds' || opts.system == "r3") ? 'Propositional logic' : 'Truth-functional logic')
             )
         );
@@ -192,7 +192,6 @@ LP.sampler = function(opts) {
             LP.samplerProblem(this.myopts);
         }
     });
-
 }
 
 LP.samplerProblem = async function(opts) {
