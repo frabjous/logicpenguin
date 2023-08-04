@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "develop": "NODE_ENV=development DEBUG='logic-penguin*' nodemon app.js",
-    "production": "NODE_ENV=production nodemon -x 'node app.js || true'"
+    "production": "NODE_ENV=production node app.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
