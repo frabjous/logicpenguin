@@ -81,6 +81,7 @@ export default class DerivationHardegree extends DerivationExercise {
         // create panel
         const rp = document.createElement("div");
         rp.classList.add("rulepanel","logicpenguin","minimized");
+        rp.ruleset = this.rules;
         rp.rulemap = {};
         // create title div
         const d = addelem('div', rp, {
