@@ -57,7 +57,7 @@ export default class DerivationFitch extends DerivationExercise {
                     (charBefore == ' ') || // nonbreaking space
                     (charBefore == ' ') || // narrow nonbreaking space
                     (/[0-9]/.test(charBefore)));
-                if (charBefore != 'D') {
+                if (charBefore != 'D' && !spaceBefore) {
                     e.preventDefault();
                     elem.insertHere('E');
                 }
