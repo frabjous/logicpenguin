@@ -5,9 +5,11 @@ certs/cert.pem
 node_modules/
 data/
 dist/
+package-lock.json
+# fallback for adding custom content
 fallback
 fallback/
+# certbot folder
 public/.well-known/
-public/js/ui/uitest.html
-package-lock.json
+# site settings file
 settings.json
