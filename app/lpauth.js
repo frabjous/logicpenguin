@@ -60,11 +60,20 @@ lpauth.verifylaunch = function (consumerkey, contextid, userid, exnum,
         return true;
     }
     // access/create user directory
-    let userdir = lpdata.userdir(consumerkey, contextid, userid, false);
+    const userdir = lpdata.userdir(consumerkey, contextid, userid, false);
     if (!userdir) { return false; };
     // ensure the launch file exists
-    return lpfs.isfile(path.join(userdir, 'launches',
-        exnum + '-' + launchid + '.json'));
+    const launchfile = path.join(userdir, 'launches', exnum + '-' +
+        launchid + '.json');
+    if (!lpfs.isfile(launchfile)) { return false; }
+    // to access instructor page must be instructor
+    if (exnum == 'instructorpage') {
+        const launchinfo = lpfs.loadjson(launchfile);
+        if (!launchinfo) { return false; }
+        if (!("roles" in launchinfo)) { return false; }
+        if (launchinfo.roles.indexOf('Instructor') == -1) { return false; }
+    }
+    return true;
 }
 
 // return library object with the functions

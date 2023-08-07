@@ -34,7 +34,7 @@ import lpfs from './app/lpfs.js'; // also creates process.lpfs
 import lpgrading from './app/lpgrading.js';
 import lplti from './app/lplti.js';
 import lprequesthandler from './app/lprequesthandler.js';
-import { getpagetext, getexercise, getlecture } from './app/lppages.js';
+import { getpagetext, getexercise, getinstructorpage, getlecture } from './app/lppages.js';
 
 // create debugger context
 const debug = debugM('logic-penguin');
@@ -50,8 +50,8 @@ debug('HTTP port: '      + appsettings.httpport.toString());
 debug('HTTPS port: '     + appsettings.httpsport.toString());
 
 // determine whether to use http, https
-let httpenabled = (appsettings.httpport != 0);
-let httpsenabled = (appsettings.httpsport != 0 &&
+const httpenabled = (appsettings.httpport != 0);
+const httpsenabled = (appsettings.httpsport != 0 &&
     lpfs.isfile(path.join('certs', 'key.pem')) &&
     lpfs.isfile(path.join('certs', 'cert.pem')));
 
@@ -137,14 +137,27 @@ app.post('/launch/:exnum', async function(req, res) {
             }));
         }
         // save launch information in user's data folder
-        let launchid = lpauth.newlaunch(req.body, req.params.exnum);
+        const launchid = lpauth.newlaunch(req.body, req.params.exnum);
         if (launchid === false) {
             return res.status(500).send(getpagetext('500.html', {
                 message: 'Server unable to make record of launch'
             }));
         }
+        // instructorpage is special
+        if (req.params.exnum == 'instructorpage') {
+            console.log(req.body.roles);
+            if (req.body.roles.indexOf('Instructor') == -1) {
+                return res.status(403).send(getpagetext('403.html', {
+                    message: 'Non-instructor attempt to access instructor-only page.'
+                }));
+            }
+            const redirectloc = 'https://' + req.headers.host +
+                '/instructor/' + consumerkey + '/' + contextid + '/' +
+                userid + '/' + launchid;
+            return res.redirect(redirectloc);
+        }
         // redirect to actual exercise
-        let redirectloc = 'https://' + req.headers.host +
+        const redirectloc = 'https://' + req.headers.host +
             '/exercises/' + consumerkey + '/' + contextid + '/' +
             userid + '/' + req.params.exnum + '/'  + launchid;
         return res.redirect(redirectloc);
@@ -170,7 +183,7 @@ app.get('/developmenttest/:exnum',
                 message: 'Invalid launch id for user and exercise'
             }));
         }
-        let exercisepage = await getexercise( consumerkey, contextid,
+        const exercisepage = await getexercise( consumerkey, contextid,
             userid, exnum, launchid);
         if (!exercisepage) {
             return res.status(404).send(getpagetext('404.html',{}));
@@ -193,12 +206,34 @@ app.get('/exercises/:consumerkey/:contextid/:userid/:exnum/:launchid',
                 message: 'Invalid launch id for user and exercise'
             }));
         }
-        let exercisepage = await getexercise(consumerkey, contextid,
+        const exercisepage = await getexercise(consumerkey, contextid,
             userid, exnum, launchid);
         if (!exercisepage) {
             return res.status(404).send(getpagetext('404.html',{}));
         }
         return res.send(exercisepage);
+    }
+);
+
+// instructor page, typically redirected from lti launch
+app.get('/instructor/:consumerkey/:contextid/:userid/:launchid',
+    async function(req, res) {
+        const consumerkey = req.params.consumerkey;
+        const contextid = req.params.contextid;
+        const userid = req.params.userid;
+        const launchid = req.params.launchid;
+        if (!lpauth.verifylaunch(consumerkey, contextid, userid,
+            'instructorpage', launchid)) {
+            return res.status(403).send(getpagetext('403.html', {
+                message: 'Invalid attempt to access instructor page.'
+            }));
+        }
+        const instructorpage = await getinstructorpage(consumerkey,
+            contextid, userid, launchid);
+        if (!instructorpage) {
+            return res.status(404).send(getpagetext('404.html',{}));
+        }
+        return res.send(instructorpage);
     }
 );
 
@@ -208,7 +243,7 @@ app.get('/lectures/:consumerkey/:contextid/:unit',
         const consumerkey = req.params.consumerkey;
         const contextid = req.params.contextid;
         const unit = req.params.unit;
-        let lecturepage = await getlecture(consumerkey, contextid, unit);
+        const lecturepage = await getlecture(consumerkey, contextid, unit);
         if (!lecturepage) {
             return res.status(404).send(getpagetext('404.html',{}));
         }
@@ -218,7 +253,7 @@ app.get('/lectures/:consumerkey/:contextid/:unit',
 
 // process json request
 app.post('/json', async function(req, res) {
-    let resp = await lprequesthandler.respond(req.body);
+    const resp = await lprequesthandler.respond(req.body);
     res.json(resp);
 });
 
@@ -270,7 +305,7 @@ if (httpsenabled) {
     httpsserver.on('error', onError);
     // report listening to stdout
     httpsserver.on('listening', () => {
-        let addr = httpsserver.address();
+        const addr = httpsserver.address();
         debug('HTTPS server listening on ' + addr.port.toString());
     });
 }
@@ -283,7 +318,7 @@ if (httpenabled) {
     httpserver.on('error', onError);
     // report listening to stderr
     httpserver.on('listening', () => {
-        let addr = httpserver.address();
+        const addr = httpserver.address();
         debug('HTTP server listening on ' + addr.port.toString());
     });
 }
@@ -332,16 +367,16 @@ function onError(error) {
 let isgrading = false;
 if (appsettings.gradeinterval) {
     // get current time, year, month, date
-    let currentDateObj = new Date();
-    let currentTime = currentDateObj.getTime();
-    let year = currentDateObj.getFullYear();
-    let monthIndex = currentDateObj.getMonth();
-    let date = currentDateObj.getDate();
+    const currentDateObj = new Date();
+    const currentTime = currentDateObj.getTime();
+    const year = currentDateObj.getFullYear();
+    const monthIndex = currentDateObj.getMonth();
+    const date = currentDateObj.getDate();
     // read time to start grading from settings; or make midnight
-    let hours = (appsettings.starthour ?? 0);
-    let minutes = (appsettings.startmin ?? 0);
+    const hours = (appsettings.starthour ?? 0);
+    const minutes = (appsettings.startmin ?? 0);
     // determine when that would be today
-    let startDateObj = new Date(
+    const startDateObj = new Date(
         year, monthIndex, date, hours, minutes);
     let startTime = startDateObj.getTime();
     // if we missed that time, add a day to start tomorrow

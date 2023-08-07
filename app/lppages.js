@@ -176,6 +176,31 @@ export async function getexercise(consumerkey, contextid, userid, exnum,
     return getpagetext('exercise.html', fillins);
 }
 
+// gets the instructor page for a given course/context
+export async function getinstructorpage(
+    consumerkey, contextid, userid, launchid) {
+    const fillins = {
+        consumerkey: consumerkey,
+        contextid: contextid,
+        launchid: launchid,
+        userid: userid
+    }
+    const ctxtsettingsfile = path.join(datadir, consumerkey, contextid,
+        'context-settings.json');
+    let settingsjson = '{}';
+    if (lpfs.isfile(ctxtsettingsfile)) {
+        try {
+            settingsjson = await fs.promises.readFile(
+                restorefile, { encoding: 'utf8' }
+            );
+        } catch(err) {
+            return false;
+        }
+    }
+    fillins.contextsettings = settingsjson;
+    return getpagetext('instructor.html', fillins);
+}
+
 // gets a lecture html file for a given unit
 export async function getlecture(consumerkey, contextid, unit) {
     // initialize what should be filled in in temmplate
