@@ -136,8 +136,14 @@ mainloadfns.settingsmain = async function() {
         type: 'text',
         placeholder: tr('course name'),
         mybtn: btn,
-        oninput: function() { this.mybtn.disabled = false; }
+        oninput: function() {
+            clearmessage();
+            this.mybtn.disabled = false;
+        }
     });
+    if (window?.contextSettings?.coursename) {
+        titinput.value = window.contextSettings.coursename;
+    }
     const insrow = addelem('tr',tbdy);
     const inslbl = addelem('td', insrow, {
         innerHTML: tr('Instructor(s)')
@@ -147,8 +153,14 @@ mainloadfns.settingsmain = async function() {
         type: 'text',
         placeholder: tr('instructor name(s)'),
         mybtn: btn,
-        oninput: function() { this.mybtn.disabled = false; }
+        oninput: function() {
+            clearmessage();
+            this.mybtn.disabled = false;
+        }
     });
+    if (window?.contextSettings?.instructor) {
+        insinput.value = window.contextSettings.instructor;
+    }
     const notrow = addelem('tr', tbdy);
     const notlbl = addelem('td', notrow, {
         innerHTML: tr('Notation')
@@ -159,6 +171,7 @@ mainloadfns.settingsmain = async function() {
         mybtn: btn,
         onchange: function() {
             this.mybtn.disabled = false;
+            clearmessage();
             this.classList.remove('invalid');
             if (this?.mysysinput) {
                 if (((this.mysysinput.value == '') ||
@@ -195,6 +208,9 @@ mainloadfns.settingsmain = async function() {
             innerHTML: notationname + ': ' + notationdisplay
         });
     }
+    if (window?.contextSettings?.notation) {
+        notinput.value = window.contextSettings.notation;
+    }
     const sysrow = addelem('tr', tbdy);
     const syslbl = addelem('td', sysrow, {
         innerHTML: 'Deductive system'
@@ -205,6 +221,7 @@ mainloadfns.settingsmain = async function() {
         mybtn: btn,
         onchange: function() {
             this.mybtn.disabled = false;
+            clearmessage();
             if ((this.value != '') &&
                 (this.myninput.value == '' || this.myninput.value == 'none')) {
                 this.myninput.value = this.value;
@@ -221,6 +238,9 @@ mainloadfns.settingsmain = async function() {
             innerHTML: system,
             value: system
         });
+    }
+    if (window?.contextSettings?.system) {
+        sysinput.value = window.contextSettings.system;
     }
     m.titinput = titinput;
     m.insinput = insinput;
@@ -244,6 +264,13 @@ mainloadfns.settingsmain = async function() {
             'sync</span> saving …';
         const resp = editorquery({ query: 'savecontextsettings', contextSettings });
         btn.innerHTML = 'save';
+        if (!resp) {
+            btn.disabled = false;
+            return;
+        }
+        window.contextSettings = contextSettings;
+        updateTitle();
+        infomessage('Course settings saved.');
     }
     return true;
 }
@@ -303,6 +330,24 @@ function showmain(area) {
     if ((!(area.substr(1) in mainAreasLoaded)) ||
         (!mainAreasLoaded[area.substr(1)])) {
         loadmain(area.substr(1));
+    } else {
+        clearmessage();
+    }
+}
+
+function updateTitle() {
+    const pagetitle = byid('pagetitle');
+    if (("coursename" in window?.contextSettings)
+        && (window.contextSettings.coursename != '')) {
+        pagetitle.innerHTML = tr('Instructor Page') + ': ' +
+            htmlEscape(window.contextSettings.coursename);
+        document.title = window.contextSettings.coursename + ' ' +
+            tr('Instructor Page') + ' | ' + tr('Logic Penguin');
+    } else {
+        pagetitle.innerHTML = tr('Instructor Page') + ': ' +
+            tr('Course') + ' ' + window.contextid;
+        document.title = tr('Instructor Page') + ' | ' +
+            tr('Logic Penguin');
     }
 }
 
@@ -314,6 +359,8 @@ window.onhashchange = function() {
 }
 
 // start stuff
+
+updateTitle();
 
 let starthash = window.location.hash ?? '';
 if (starthash == '' &&
