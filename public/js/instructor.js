@@ -7,6 +7,8 @@
 /////////////////////////////////////////////////////////////////////////
 
 import LP from '../load.js';
+import { htmlEscape } from './misc.js';
+import tr from './translate.js';
 
 // initialize stuff
 const LPinstr = {};
@@ -24,12 +26,13 @@ function clearmessage() {
     msgArea.innerHTML = '';
 }
 
-function errormessage() {
-    makemessage('error', '<span class="material-symbols-outlined">emergency_home</span> ' + msg);
+function errormessage(msg) {
+    makemessage('error', '<span class="material-symbols-outlined">emergency_home</span> <span class="errortitle">' +
+        tr('ERROR') + '</span>: ' + tr(msg));
 }
 
-function infoMessage(msg) {
-    makemessage('info', '<span class="material-symbols-outlined">info</span> ' + msg);
+function infomessage(msg) {
+    makemessage('info', '<span class="material-symbols-outlined">info</span> ' + tr(msg));
 }
 
 function loadhash(h) {
@@ -44,7 +47,7 @@ function loadhash(h) {
 function loadingmessage(msg = 'loading …') {
     makemessage('loading',
         '<span class="material-symbols-outlined spinning">sync</span>' +
-        msg);
+        tr(msg));
 }
 
 async function loadmain(main) {
@@ -64,13 +67,14 @@ mainloadfns.settingsmain = async function() {
     m.innerHTML = '';
     let notations = {};
     try {
-        
+        const imported = await import('/js/symbolic/notations.js');
+        notations = imported.default;
     } catch(err) {
-        
+        errormessage('Could not load notations options.');
         return false;
     }
     const hdr = addelem('h2', m, {
-        innerHTML: 'Course Settings'
+        innerHTML: tr('Course Settings')
     });
     const tbl = addelem('table', m);
     const btndiv = addelem('div', m, {
@@ -84,26 +88,44 @@ mainloadfns.settingsmain = async function() {
     const tbdy = addelem('tbody', tbl);
     const titrow = addelem('tr',tbdy);
     const titlab = addelem('td', titrow, {
-        innerHTML: 'Course name'
+        innerHTML: tr('Course name')
     });
     const titcell = addelem('td', titrow);
     const titinput = addelem('input', titcell, {
         type: 'text',
-        placeholder: 'course name',
+        placeholder: tr('course name'),
         mybtn: btn,
         oninput: function() { this.mybtn.disabled = false; }
     });
     const insrow = addelem('tr',tbdy);
     const inslbl = addelem('td', insrow, {
-        innerHTML: 'Instructor(s)'
+        innerHTML: tr('Instructor(s)')
     });
     const inscell = addelem('td', insrow);
     const insinput = addelem('input', inscell, {
         type: 'text',
-        placeholder: 'instructor name(s)',
+        placeholder: tr('instructor name(s)'),
         mybtn: btn,
         oninput: function() { this.mybtn.disabled = false; }
     });
+    const notrow = addelem('tr', tbdy);
+    const notlbl = addelem('td', notrow, {
+        innerHTML: tr('Notation')
+    });
+    const notcell = addelem('td', notrow);
+    const notinput = addelem('select', notcell);
+    const noneopt = addelem('option', notinput, {
+        value: 'none',
+        innerHTML: 'none'
+    });
+    for (const notationname in notations) {
+        const notation = notations[notationname];
+        const notationdisplay =
+            ({notation.NOT}
+        const notopt = addelem('option', notinput, {
+            value: notationname
+        });
+    }
     return true;
 }
 

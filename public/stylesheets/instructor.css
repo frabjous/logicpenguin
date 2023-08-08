@@ -42,6 +42,11 @@
     color: var(--lpred);
 }
 
+.logicpenguin #messagearea.error .errortitle {
+    color: var(--lpred);
+    font-weight: bold;
+}
+
 .logicpenguin footer {
     margin: 1rem 0 0 0;
     border-top: 1px solid var(--lpgray5);
