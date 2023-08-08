@@ -24,12 +24,13 @@
     color: var(--lpblue);
 }
 
-.logicpenguin footer > p {
-    margin: 0.2rem 0 0 0;
+.logicpenguin footer {
+    margin: 1rem 0 0 0;
+    border-top: 1px solid var(--lpgray5);
 }
 
-.logicpenguin footer {
-    border-top: 1px solid var(--lpgray5);
+.logicpenguin footer > p {
+    margin: 0.2rem 0 0 0;
 }
 
 .logicpenguin nav {
@@ -78,4 +79,6 @@
     cursor: default;
 }
 
-
+.logicpenguin main div.mainarea {
+    display: none;
+}

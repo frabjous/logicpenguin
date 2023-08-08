@@ -29,9 +29,18 @@ function infoMessage(msg) {
 
 function loadhash(h) {
     if (h == '') {
-
+        h = '#studentsmain';
     }
-    console.log('got here',h);
+    if (h.substr(-4) == 'main') {
+        showmain(h);
+    }
+}
+
+async function loadmain(main) {
+    document.body.scrollIntoView();
+    const m = byid(main);
+    m.innerHTML = 'Hello there ' + main + (new Date()).getTime().toString();
+    mainAreasLoaded[main] = true;
 }
 
 function makeMessage(msgtype, msg) {
@@ -41,6 +50,33 @@ function makeMessage(msgtype, msg) {
     msgArea.innerHTML = msg;
 }
 
+
+function showmain(area) {
+    const navlist = byid("mainnavlist");
+    // fix nav bar
+    const aa = navlist.getElementsByTagName("a");
+    for (const a of aa) {
+        const hrefhash = a.href.split('#').reverse()[0];
+        if (('#' + hrefhash) == area) {
+            a.classList.add('current');
+        } else {
+            a.classList.remove('current');
+        }
+    }
+    // show only this area
+    const mm = document.getElementsByClassName("mainarea");
+    for (const m of mm) {
+        if (('#' + m.id) == area) {
+            m.style.display = 'block';
+        } else {
+            m.style.display = 'none'
+        }
+    }
+    if ((!(area.substr(1) in mainAreasLoaded)) ||
+        (!mainAreasLoaded[area.substr(1)])) {
+        loadmain(area.substr(1));
+    }
+}
 
 // attach stuff to window
 
@@ -54,7 +90,7 @@ window.onhashchange = function() {
 let starthash = window.location.hash ?? '';
 if (starthash == '' &&
     Object.keys(window.loadedContextSettings).length == 0) {
-    starthash = 'settingsmain';
+    starthash = '#settingsmain';
 }
 loadhash(starthash);
 
