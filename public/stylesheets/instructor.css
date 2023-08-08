@@ -25,7 +25,6 @@
     color: var(--lpblue);
 }
 
-
 .logicpenguin #messagearea.loading {
     border: 3px solid transparent;
 }
@@ -118,6 +117,21 @@
     border: 2px solid var(--lpblue);
     outline: 1px solid var(--lpblue);
     background-color: var(--lpbgblue);
+}
+
+.logicpenguin main select {
+    font-size: inherit;
+    padding: 4px;
+    width: 22em;
+    border: 2px solid var(--lpgray4);
+    outline: 1px solid transparent;
+    background-color: var(--lpwhite);
+    box-sizing: content-box;
+}
+
+.logicpenguin main select,
+.logicpenguin main select.symbolic {
+    color: inherit;
 }
 
 .logicpenguin main #settingsmain table {

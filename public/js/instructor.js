@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////
 
 import LP from '../load.js';
-import { htmlEscape } from './misc.js';
+import { htmlEscape } from './common.js';
 import tr from './translate.js';
 
 // initialize stuff
@@ -113,19 +113,45 @@ mainloadfns.settingsmain = async function() {
         innerHTML: tr('Notation')
     });
     const notcell = addelem('td', notrow);
-    const notinput = addelem('select', notcell);
+    const notinput = addelem('select', notcell, {
+        classes: ['symbolic']
+    });
     const noneopt = addelem('option', notinput, {
         value: 'none',
         innerHTML: 'none'
     });
     for (const notationname in notations) {
         const notation = notations[notationname];
-        const notationdisplay =
-            ({notation.NOT}
+        let notationdisplay = htmlEscape(
+            (notation?.NOT ?? '') +
+            (notation?.OR ?? '') +
+            (notation?.AND ?? '') +
+            (notation?.IFTHEN ?? '') +
+            (notation?.IFF ?? '') +
+            (notation?.FALSUM ?? '') + ' '
+        );
+        if (notation?.quantifierForm.indexOf('?') != -1) {
+            notationdisplay += notation.quantifierForm.replace(/Q\?/g,'') +
+                ' ' + notation.quantifierForm.replace(/Q\?/g, notation?.EXISTS ?? '');
+        } else {
+            notationdisplay += notation.quantifierForm.replace(/Q/g, notation.FORALL) +
+                ' ' + notation.quantifierForm.replace(/Q/g, notation.EXISTS)
+        }
         const notopt = addelem('option', notinput, {
-            value: notationname
+            value: notationname,
+            innerHTML: notationname + ': ' + notationdisplay
         });
     }
+    const sysrow = addelem('tr', tbdy);
+    const syslbl = addelem('td', sysrow, {
+        innerHTML: 'Deductive system'
+    });
+    const syscell = addelem('td', sysrow);
+    const sysinput = addelem('select', syscell);
+    const sysnoneopt = addelem('option', sysinput, {
+        innerHTML: 'none',
+        value: 'none'
+    });
     return true;
 }
 
