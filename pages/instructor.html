@@ -26,6 +26,9 @@
             window.userid = '⟨logicpenguin:userid⟩';
             window.launchid = '⟨logicpenguin:launchid⟩';
             window.loadedContextSettings = ⟨logicpenguin:contextsettings⟩;
+            window.contextSettings = JSON.parse(
+                JSON.stringify(window.loadedContextSettings)
+            );
         </script>
         <script type="module">
             import LPinstr from '/js/instructor.js';

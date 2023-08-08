@@ -18,14 +18,14 @@ const byid = LP.byid;
 const msgArea = byid('messagearea');
 const mainloadfns = {};
 
-function clearMessage() {
+function clearmessage() {
     msgArea.style.display = 'none';
     msgArea.classList.remove('info', 'loading', 'warning', 'error');
     msgArea.innerHTML = '';
 }
 
 function infoMessage(msg) {
-    makeMessage('info', '<span class="material-symbols-outlined">info</span> ' + msg);
+    makemessage('info', '<span class="material-symbols-outlined">info</span> ' + msg);
 }
 
 function loadhash(h) {
@@ -38,7 +38,7 @@ function loadhash(h) {
 }
 
 function loadingmessage(msg = 'loading …') {
-    makeMessage('loading',
+    makemessage('loading',
         '<span class="material-symbols-outlined spinning">sync</span>' +
         msg);
 }
@@ -48,9 +48,11 @@ async function loadmain(main) {
     if (main in mainloadfns) {
         loadingmessage();
         const loadresult = await mainloadfns[main]();
-        if (loadresult) { clearmessage(); }
+        if (loadresult) {
+            clearmessage();
+            mainAreasLoaded[main] = true;
+        }
     }
-    mainAreasLoaded[main] = true;
 }
 
 mainloadfns.settingsmain = async function() {
@@ -60,31 +62,54 @@ mainloadfns.settingsmain = async function() {
         innerHTML: 'Course Settings'
     });
     const tbl = addelem('table', m);
-    // TODO: change this
-    return false;
+    const btndiv = addelem('div', m, {
+        classes: ['buttondiv']
+    });
+    const btn = addelem('button', btndiv, {
+        innerHTML: 'save',
+        type: 'button',
+        disabled: true
+    });
+    const tbdy = addelem('tbody', tbl);
+    const titrow = addelem('tr',tbdy);
+    const titlab = addelem('td', titrow, {
+        innerHTML: 'Course name'
+    });
+    const titcell = addelem('td', titrow);
+    const titinput = addelem('input', titcell, {
+        type: 'text',
+        placeholder: 'course name',
+        mybtn: btn,
+        oninput: function() { this.mybtn.disabled = false; }
+    });
+    return true;
 }
 
 mainloadfns.studentsmain = async function() {
     const m = byid('studentsmain');
     m.innerHTML = 'Instructor student coming soon.';
+    return true;
 }
 
 mainloadfns.exercisesmain = async function() {
     const m = byid('exercisesmain');
     m.innerHTML = 'Instructor exercise control coming soon.';
+    return true;
 }
 
 mainloadfns.gradingmain = async function() {
     const m = byid('gradingmain');
     m.innerHTML = 'Instructor grading coming soon.';
+    return true;
 }
 
 mainloadfns.lecturesmain = async function() {
     const m = byid('lecturesmain');
     m.innerHTML = 'Instructor lecture notes control coming soon.';
+    return true;
 }
 
-function makeMessage(msgtype, msg) {
+function makemessage(msgtype, msg) {
     msgArea.style.display = 'block';
     msgArea.classList.remove('info','loading','warning','error');
     msgArea.classList.add(msgtype);
