@@ -24,6 +24,16 @@
     color: var(--lpblue);
 }
 
+
+.logicpenguin #messagearea.loading {
+    border: 3px solid var(--lpyellow);
+}
+
+.logicpenguin #messagearea.loading .material-symbols-outlined {
+    color: var(--lpmagenta);
+    margin-right: 1rem;
+}
+
 .logicpenguin footer {
     margin: 1rem 0 0 0;
     border-top: 1px solid var(--lpgray5);

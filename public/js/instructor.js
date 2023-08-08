@@ -13,9 +13,10 @@ const LPinstr = {};
 const mainAreasLoaded = {};
 
 // convenience constants
+const addelem = LP.addelem;
 const byid = LP.byid;
 const msgArea = byid('messagearea');
-
+const mainloadfns = {};
 
 function clearMessage() {
     msgArea.style.display = 'none';
@@ -36,11 +37,51 @@ function loadhash(h) {
     }
 }
 
+function loadingmessage(msg = 'loading …') {
+    makeMessage('loading',
+        '<span class="material-symbols-outlined spinning">sync</span>' +
+        msg);
+}
+
 async function loadmain(main) {
-    document.body.scrollIntoView();
     const m = byid(main);
-    m.innerHTML = 'Hello there ' + main + (new Date()).getTime().toString();
+    if (main in mainloadfns) {
+        loadingmessage();
+        const loadresult = await mainloadfns[main]();
+        if (loadresult) { clearmessage(); }
+    }
     mainAreasLoaded[main] = true;
+}
+
+mainloadfns.settingsmain = async function() {
+    const m = byid('settingsmain');
+    m.innerHTML = '';
+    const hdr = addelem('h2', m, {
+        innerHTML: 'Course Settings'
+    });
+    const tbl = addelem('table', m);
+    // TODO: change this
+    return false;
+}
+
+mainloadfns.studentsmain = async function() {
+    const m = byid('studentsmain');
+    m.innerHTML = 'Instructor student coming soon.';
+}
+
+mainloadfns.exercisesmain = async function() {
+    const m = byid('exercisesmain');
+    m.innerHTML = 'Instructor exercise control coming soon.';
+}
+
+mainloadfns.gradingmain = async function() {
+    const m = byid('gradingmain');
+    m.innerHTML = 'Instructor grading coming soon.';
+}
+
+mainloadfns.lecturesmain = async function() {
+    const m = byid('lecturesmain');
+    m.innerHTML = 'Instructor lecture notes control coming soon.';
 }
 
 function makeMessage(msgtype, msg) {
@@ -49,7 +90,6 @@ function makeMessage(msgtype, msg) {
     msgArea.classList.add(msgtype);
     msgArea.innerHTML = msg;
 }
-
 
 function showmain(area) {
     const navlist = byid("mainnavlist");
