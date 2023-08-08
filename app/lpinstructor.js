@@ -7,14 +7,24 @@
 ////////////////////////////////////////////////////////////////////////
 
 import lpauth from './lpauth.js';
+import lpfs from './lpfs.js';
 
 const qr = {};
 
-qr.getsystemnames = function(req) {
-    return { systems: [] }
+qr.getsystemnames = async function(req) {
+    const files = await lpfs.filesin('public/js/problemtypes');
+    const systemspt = files.filter((f) => {
+        if (f.substring(0,11) != 'derivation-') { return false; }
+        if (f.indexOf('-base') != -1) { return false; }
+        return true;
+    });
+    const systems = systemspt.map((n) => (
+        n.replace('derivation-','').replace('.js','')
+    ));
+    return { systems }
 }
 
-const lpinstructor = function(reqobj) {
+const lpinstructor = async function(reqobj) {
         // ensure we have all needed data
     const { userid, contextid, consumerkey, launchid, query } = reqobj;
     if (!launchid || !userid || !contextid || !consumerkey || !query) {
@@ -36,7 +46,7 @@ const lpinstructor = function(reqobj) {
             errMsg: 'Instructor query with unverified launch id.'
         };
     }
-    return qr[query](reqobj);
+    return await qr[query](reqobj);
 }
 
 export default lpinstructor;

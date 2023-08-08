@@ -108,7 +108,7 @@ mainloadfns.settingsmain = async function() {
     }
     let systemsresponse = await editorquery({ query: 'getsystemnames' });
     if (!systemsresponse) { return false; }
-    console.log(systemsresponse);
+    const systems = systemsresponse?.systems ?? [];
     const hdr = addelem('h2', m, {
         innerHTML: tr('Course Settings')
     });
@@ -188,6 +188,12 @@ mainloadfns.settingsmain = async function() {
         innerHTML: 'none',
         value: 'none'
     });
+    for (const system of systems) {
+        const sysop = addelem('option', sysinput, {
+            innerHTML: system,
+            value: system
+        });
+    }
     return true;
 }
 
