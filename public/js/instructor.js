@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////
 
 import LP from '../load.js';
-import { htmlEscape } from './common.js';
+import { htmlEscape, jsonRequest } from './common.js';
 import tr from './translate.js';
 
 // initialize stuff
@@ -24,6 +24,17 @@ function clearmessage() {
     msgArea.style.display = 'none';
     msgArea.classList.remove('info', 'loading', 'warning', 'error');
     msgArea.innerHTML = '';
+}
+
+async function editorquery(req) {
+    req.reqtype = 'instructorrequest';
+    req.consumerkey = window.consumerkey;
+    req.contextid = window.contextid;
+    req.userid = window.userid;
+    req.launchid = window.launchid;
+    let resp = {};
+    try {
+        const response = await fetch('/json
 }
 
 function errormessage(msg) {

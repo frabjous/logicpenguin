@@ -11,6 +11,7 @@
 import lpdata from './lpdata.js';
 import lpfs from './lpfs.js';
 import lpauth from './lpauth.js';
+import lpinstructor from './lpinstructor.js';
 import libgrade from '../public/js/libgrade.js';
 import path from 'node:path';
 
@@ -32,6 +33,9 @@ lprequesthandler.respond = function(reqobj) {
     switch(reqobj.reqtype) {
         case 'saveans':
             return lprequesthandler.saveAnswer(reqobj);
+            break;
+        case 'instructorrequest':
+            return lpinstructor(reqobj);
             break;
         default:
             return errResponse('Unsupported request type.');
