@@ -4,6 +4,26 @@
     display: none;
 }
 
+.logicpenguin #messagearea {
+    display: none;
+    margin-bottom: 1rem;
+    border: 3px solid transparent;
+    padding: 0.5rem;
+}
+
+.logicpenguin #messagearea .material-symbols-outlined {
+    position: relative;
+    top: 0.3rem;
+}
+
+.logicpenguin #messagearea.info {
+    border: 3px solid var(--lpcyan);
+}
+
+.logicpenguin #messagearea.info .material-symbols-outlined {
+    color: var(--lpblue);
+}
+
 .logicpenguin footer > p {
     margin: 0.2rem 0 0 0;
 }
@@ -12,8 +32,13 @@
     border-top: 1px solid var(--lpgray5);
 }
 
+.logicpenguin nav {
+    margin-bottom: 1rem;
+}
+
 .logicpenguin nav ul {
     list-style: none;
+    margin: 0;
     padding: 0;
 }
 

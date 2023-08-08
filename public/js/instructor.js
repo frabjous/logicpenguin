@@ -18,28 +18,45 @@ const msgArea = byid('messagearea');
 
 
 function clearMessage() {
-    msgArea.display.style = 'none';
+    msgArea.style.display = 'none';
     msgArea.classList.remove('info', 'loading', 'warning', 'error');
     msgArea.innerHTML = '';
 }
 
 function infoMessage(msg) {
-    this.makeMessage('info', msg);
+    makeMessage('info', '<span class="material-symbols-outlined">info</span> ' + msg);
 }
 
 function loadhash(h) {
-    LP.infoMessage('Well, hello there.');
+    if (h == '') {
+
+    }
+    console.log('got here',h);
 }
 
 function makeMessage(msgtype, msg) {
-    msgArea.display.style = 'block';
+    msgArea.style.display = 'block';
     msgArea.classList.remove('info','loading','warning','error');
     msgArea.classList.add(msgtype);
     msgArea.innerHTML = msg;
 }
 
+
+// attach stuff to window
+
+window.onhashchange = function() {
+    const h = window.location.hash;
+    loadhash(h);
+}
+
 // start stuff
 
+let starthash = window.location.hash ?? '';
+if (starthash == '' &&
+    Object.keys(window.loadedContextSettings).length == 0) {
+    starthash = 'settingsmain';
+}
+loadhash(starthash);
 
 export default LPinstr;
 
