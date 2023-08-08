@@ -43,7 +43,7 @@ lpauth.newlaunch = function(reqbody, exnum) {
     const launchid = randomString(40);
     const launchfile = path.join(launchdir, exnum + '-' +
         launchid + '.json');
-    if (!lpfs.savejson(launchfile, { exnum, roles, source_did,
+    if (!lpfs.savejson(launchfile, { exnum, fullname, roles, source_did,
         service_url, email, returnurl, activities })) {
         return false;
     }
