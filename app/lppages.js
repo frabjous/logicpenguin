@@ -191,7 +191,7 @@ export async function getinstructorpage(
     if (lpfs.isfile(ctxtsettingsfile)) {
         try {
             settingsjson = await fs.promises.readFile(
-                restorefile, { encoding: 'utf8' }
+                ctxtsettingsfile, { encoding: 'utf8' }
             );
         } catch(err) {
             return false;

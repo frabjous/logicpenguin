@@ -130,6 +130,12 @@
     box-sizing: content-box;
 }
 
+.logicpenguin main select.invalid {
+    border: 2px solid var(--lpred);
+    outline: 1px solid var(--lpred);
+    background-color: var(--lpbgred);
+}
+
 .logicpenguin main select,
 .logicpenguin main select.symbolic {
     color: inherit;

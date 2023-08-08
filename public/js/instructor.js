@@ -159,6 +159,7 @@ mainloadfns.settingsmain = async function() {
         mybtn: btn,
         onchange: function() {
             this.mybtn.disabled = false;
+            this.classList.remove('invalid');
             if (this?.mysysinput) {
                 if (((this.mysysinput.value == '') ||
                     this.mysysinput.value == 'none') &&
@@ -228,11 +229,21 @@ mainloadfns.settingsmain = async function() {
     m.btn = btn;
     m.save = async function() {
         const btn = this.btn;
+        const contextSettings = {};
+        contextSettings.coursename = this.titinput.value;
+        contextSettings.instructor = this.insinput.value;
+        contextSettings.notation = this.notinput.value;
+        contextSettings.system = this.sysinput.value;
+        if ((contextSettings.system != 'none' && contextSettings.system != '') &&
+            (contextSettings.notation == 'none' || contextSettings.notation == '')) {
+            this.notinput.classList.add('invalid');
+            return;
+        }
         btn.disabled = true;
         btn.innerHTML = '<span class="material-symbols-outlined spinning">' +
             'sync</span> saving …';
-        
-        //btn.innerHMTL = 'save';
+        const resp = editorquery({ query: 'savecontextsettings', contextSettings });
+        btn.innerHTML = 'save';
     }
     return true;
 }

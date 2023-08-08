@@ -8,6 +8,10 @@
 
 import lpauth from './lpauth.js';
 import lpfs from './lpfs.js';
+import path from 'node:path';
+
+// set datadir
+const datadir = process.appsettings.datadir;
 
 const qr = {};
 
@@ -22,6 +26,30 @@ qr.getsystemnames = async function(req) {
         n.replace('derivation-','').replace('.js','')
     ));
     return { systems }
+}
+
+qr.savecontextsettings = async function(req) {
+    if (!("contextSettings" in req)) {
+        return {
+            error: true,
+            errMsg: 'No context settings to save were sent.'
+        }
+    }
+    const dirname = path.join(datadir, req.consumerkey, req.contextid);
+    if (!lpfs.ensuredir(dirname)) {
+        return {
+            error: true,
+            errMsg: 'Could not find or create directory for course.'
+        }
+    }
+    const settingsfile = path.join(dirname, 'context-settings.json');
+    if (!lpfs.savejson(settingsfile, req.contextSettings)) {
+        return {
+            error: true,
+            errMsg: 'Could not save course settings file.'
+        }
+    }
+    return { success: true }
 }
 
 const lpinstructor = async function(reqobj) {
