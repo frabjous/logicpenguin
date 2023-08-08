@@ -23,7 +23,9 @@ lpauth.newlaunch = function(reqbody, exnum) {
     const consumerkey =  reqbody?.oauth_consumer_key ??  '';
     const contextid = reqbody?.context_id ?? '';
     const userid = (reqbody?.user_id ?? reqbody?.ext_user_username) ?? '';
-    const fullname = reqbody?.lis_person_name_full ?? 'Anonymous user';
+    const fullname = reqbody?.lis_person_name_full ?? 'Anonymous ZZZZ';
+    const family = reqbody?.lis_person_name_family ?? '';
+    const given = reqbody?.lis_person_name_given ?? '';
     const roles = reqbody?.roles ?? '';
     const source_did = reqbody?.lis_result_sourcedid ?? false;
     const service_url = reqbody?.lis_outcome_service_url ?? false;
@@ -44,7 +46,7 @@ lpauth.newlaunch = function(reqbody, exnum) {
     const launchfile = path.join(launchdir, exnum + '-' +
         launchid + '.json');
     if (!lpfs.savejson(launchfile, { exnum, fullname, roles, source_did,
-        service_url, email, returnurl, activities })) {
+        service_url, email, returnurl, activities, family, given })) {
         return false;
     }
     // return the random string
