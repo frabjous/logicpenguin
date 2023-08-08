@@ -113,15 +113,20 @@ mainloadfns.settingsmain = async function() {
         innerHTML: tr('Course Settings')
     });
     const tbl = addelem('table', m);
-    const btndiv = addelem('div', m, {
+    const tbdy = addelem('tbody', tbl);
+    const tfoot = addelem('tfoot', tbl);
+    const btnrow = addelem('tr', tfoot);
+    const btncell = addelem('td', btnrow, {
+        colSpan: 2,
         classes: ['buttondiv']
     });
-    const btn = addelem('button', btndiv, {
+    const btn = addelem('button', btncell, {
         innerHTML: 'save',
         type: 'button',
-        disabled: true
+        disabled: true,
+        mym: m,
+        onclick: function() { this.mym.save(); }
     });
-    const tbdy = addelem('tbody', tbl);
     const titrow = addelem('tr',tbdy);
     const titlab = addelem('td', titrow, {
         innerHTML: tr('Course name')
@@ -150,7 +155,18 @@ mainloadfns.settingsmain = async function() {
     });
     const notcell = addelem('td', notrow);
     const notinput = addelem('select', notcell, {
-        classes: ['symbolic']
+        classes: ['symbolic'],
+        mybtn: btn,
+        onchange: function() {
+            this.mybtn.disabled = false;
+            if (this?.mysysinput) {
+                if (((this.mysysinput.value == '') ||
+                    this.mysysinput.value == 'none') &&
+                    this.value != 'none') {
+                    this.mysysinput.value = this.value;
+                }
+            }
+        }
     });
     const noneopt = addelem('option', notinput, {
         value: 'none',
@@ -183,7 +199,18 @@ mainloadfns.settingsmain = async function() {
         innerHTML: 'Deductive system'
     });
     const syscell = addelem('td', sysrow);
-    const sysinput = addelem('select', syscell);
+    const sysinput = addelem('select', syscell, {
+        myninput: notinput,
+        mybtn: btn,
+        onchange: function() {
+            this.mybtn.disabled = false;
+            if ((this.value != '') &&
+                (this.myninput.value == '' || this.myninput.value == 'none')) {
+                this.myninput.value = this.value;
+            }
+        }
+    });
+    notinput.mysysinput = sysinput;
     const sysnoneopt = addelem('option', sysinput, {
         innerHTML: 'none',
         value: 'none'
@@ -193,6 +220,19 @@ mainloadfns.settingsmain = async function() {
             innerHTML: system,
             value: system
         });
+    }
+    m.titinput = titinput;
+    m.insinput = insinput;
+    m.notinput = notinput;
+    m.sysinput = sysinput;
+    m.btn = btn;
+    m.save = async function() {
+        const btn = this.btn;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined spinning">' +
+            'sync</span> saving …';
+        
+        //btn.innerHMTL = 'save';
     }
     return true;
 }

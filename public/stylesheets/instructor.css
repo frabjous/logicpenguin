@@ -79,6 +79,7 @@
     color: var(--lpgray6);
     border-radius: 6px;
     margin-right: 1rem;
+    margin-bottom: 0.5rem;
     border: 2px solid transparent;
 }
 
@@ -147,4 +148,17 @@
 .logicpenguin main #settingsmain table td:first-child {
     text-align: right;
     padding-right: 0.5rem;
+}
+
+.logicpenguin main #settingsmain table tfoot td:first-child {
+    padding-right: 0;
+}
+
+.logicpenguin main #settingsmain table tfoot td:first-child button {
+    margin-right: 0;
+}
+
+.logicpenguin main #settingsmain table tfoot td:first-child button .material-symbols-outlined {
+    position: relative;
+    top: 0.3rem;
 }
