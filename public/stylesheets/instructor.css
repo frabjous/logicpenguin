@@ -34,6 +34,14 @@
     color: var(--lpmagenta);
 }
 
+.logicpenguin #messagearea.error {
+    border: 3px solid var(--lpred);
+}
+
+.logicpenguin #messagearea.error .material-symbols-outlined {
+    color: var(--lpred);
+}
+
 .logicpenguin footer {
     margin: 1rem 0 0 0;
     border-top: 1px solid var(--lpgray5);
@@ -91,4 +99,33 @@
 
 .logicpenguin main div.mainarea {
     display: none;
+}
+
+.logicpenguin main input {
+    font-size: inherit;
+    padding: 4px;
+    width: 22em;
+    border: 2px solid var(--lpgray4);
+    outline: 1px solid transparent;
+}
+
+.logicpenguin main input:focus {
+    border: 2px solid var(--lpblue);
+    outline: 1px solid var(--lpblue);
+    background-color: var(--lpbgblue);
+}
+
+.logicpenguin main #settingsmain table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.logicpenguin main #settingsmain table td {
+    vertical-align: text-bottom;
+    padding-bottom: 0.5rem;
+}
+
+.logicpenguin main #settingsmain table td:first-child {
+    text-align: right;
+    padding-right: 0.5rem;
 }

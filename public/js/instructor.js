@@ -24,6 +24,10 @@ function clearmessage() {
     msgArea.innerHTML = '';
 }
 
+function errormessage() {
+    makemessage('error', '<span class="material-symbols-outlined">emergency_home</span> ' + msg);
+}
+
 function infoMessage(msg) {
     makemessage('info', '<span class="material-symbols-outlined">info</span> ' + msg);
 }
@@ -58,6 +62,13 @@ async function loadmain(main) {
 mainloadfns.settingsmain = async function() {
     const m = byid('settingsmain');
     m.innerHTML = '';
+    let notations = {};
+    try {
+        
+    } catch(err) {
+        
+        return false;
+    }
     const hdr = addelem('h2', m, {
         innerHTML: 'Course Settings'
     });
@@ -79,6 +90,17 @@ mainloadfns.settingsmain = async function() {
     const titinput = addelem('input', titcell, {
         type: 'text',
         placeholder: 'course name',
+        mybtn: btn,
+        oninput: function() { this.mybtn.disabled = false; }
+    });
+    const insrow = addelem('tr',tbdy);
+    const inslbl = addelem('td', insrow, {
+        innerHTML: 'Instructor(s)'
+    });
+    const inscell = addelem('td', insrow);
+    const insinput = addelem('input', inscell, {
+        type: 'text',
+        placeholder: 'instructor name(s)',
         mybtn: btn,
         oninput: function() { this.mybtn.disabled = false; }
     });
