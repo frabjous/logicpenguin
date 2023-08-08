@@ -19,6 +19,7 @@
         <title>Instructor Page | Logic Penguin</title>
         <!-- LP stylesheet in case no exercises -->
         <link rel="stylesheet" type="text/css" href="/stylesheets/common.css">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/instructor.css">
         <script>
             window.consumerkey = '⟨logicpenguin:consumerkey⟩';
             window.contextid = '⟨logicpenguin:contextid⟩';
@@ -26,18 +27,53 @@
             window.launchid = '⟨logicpenguin:launchid⟩';
             window.contextSettings = ⟨logicpenguin:contextsettings⟩;
         </script>
-        <style>
-        </style>
+        <script>
+            import LPinstr from 'js/instructor.js';
+        </script>
     </head>
     <body class="logicpenguin">
-        <a id="lplogo" href="https://logicpenguin.com"
-            title="Visit the logic penguin homepage"
-            target="_blank">
-            <span>Powered by Logic Penguin</span>
-            <img src="/images/logicpenguin.png" id="lplogo"
-                alt="LogicPenguin">
-        </a>
-        <h1 id="pagetitle">Instructor Page: Course ⟨logicpenguin:contextid⟩</h1>
-        <p>Hello there.</p>
+
+<header>
+    <a id="lplogo" href="https://logicpenguin.com"
+        title="Visit the logic penguin homepage"
+        target="_blank">
+        <span>Powered by Logic Penguin</span>
+        <img src="/images/logicpenguin.png" id="lplogo"
+            alt="LogicPenguin">
+    </a>
+<h1 id="pagetitle">Instructor Page: Course ⟨logicpenguin:contextid⟩</h1>
+</header>
+<nav>
+    <ul>
+        <li><a href="#settingsmain">Settings</a></li>
+        <li><a href="#studentsmain">Students</a></li>
+        <li><a href="#exercisesmain">Exercises</a></li>
+        <li><a href="#gradingmain">Grading</a></li>
+        <li><a href="#lecturesmain">Lectures</a></li>
+    </ul>
+</nav>
+<div id="messagearea">
+</div>
+<main>
+    <div id="settingsmain">
+    </div>
+    <div id="studentsmain">
+    </div>
+    <div id="exercisesmain">
+    </div>
+    <div id="gradingmain">
+    </div>
+    <div id="lecturesmain">
+    </div>
+</main>
+<footer>
+<p><small>
+Logic Penguin is Copyright 2023 © <a href="https://people.umass.edu/klement" target_blank>Kevin C. Klement</a>.
+This is free software, which can be redistributed and/or modified under the terms of the <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License (GPL), version 3</a>.
+See the <a href="https://github.com/frabjous/logicpenguin" target="_blank">project github page</a> for more information.
+</small></p>
+</footer>
+
+
     </body>
 </html>

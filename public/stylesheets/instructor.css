@@ -1,0 +1,9 @@
+@charset 'utf-8';
+
+body > footer > p {
+    margin: 0.2rem 0 0 0;
+}
+
+body > footer {
+    border-top: 1px solid var(--lpgray5);
+}
