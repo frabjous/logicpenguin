@@ -26,7 +26,7 @@ function clearmessage() {
     msgArea.innerHTML = '';
 }
 
-async function editorquery(req) {
+async function editorquery(req= {}) {
     req.reqtype = 'instructorrequest';
     req.consumerkey = window.consumerkey;
     req.contextid = window.contextid;
@@ -34,7 +34,29 @@ async function editorquery(req) {
     req.launchid = window.launchid;
     let resp = {};
     try {
-        const response = await fetch('/json
+        const response = await fetch('/json', {
+            method: 'POST',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(req)
+        });
+        resp = await response.json();
+    } catch(err) {
+        errormessage('Problem interacting with server: ' +
+            err.toString());
+        return false;
+    }
+    if (resp?.error) {
+        errormessage('Problem reported by server: ' +
+            (resp?.errMsg ?? 'unknown error'));
+        return false;
+    }
+    return resp;
 }
 
 function errormessage(msg) {
@@ -84,6 +106,9 @@ mainloadfns.settingsmain = async function() {
         errormessage('Could not load notations options.');
         return false;
     }
+    let systemsresponse = await editorquery({ query: 'getsystemnames' });
+    if (!systemsresponse) { return false; }
+    console.log(systemsresponse);
     const hdr = addelem('h2', m, {
         innerHTML: tr('Course Settings')
     });

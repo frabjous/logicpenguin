@@ -24,7 +24,7 @@ function errResponse(msg) {
 }
 
 // core function for responding to kinds of requests
-lprequesthandler.respond = function(reqobj) {
+lprequesthandler.respond = async function(reqobj) {
     // sanity check
     if (!reqobj.reqtype) {
         return errResponse('Request type not specified.');
@@ -32,10 +32,10 @@ lprequesthandler.respond = function(reqobj) {
     // react appropriately depending on request type
     switch(reqobj.reqtype) {
         case 'saveans':
-            return lprequesthandler.saveAnswer(reqobj);
+            return await lprequesthandler.saveAnswer(reqobj);
             break;
         case 'instructorrequest':
-            return lpinstructor(reqobj);
+            return await lpinstructor(reqobj);
             break;
         default:
             return errResponse('Unsupported request type.');
