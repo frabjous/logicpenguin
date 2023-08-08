@@ -1,9 +1,56 @@
 @charset 'utf-8';
 
-body > footer > p {
+.logicpenguin #contexttitle {
+    display: none;
+}
+
+.logicpenguin footer > p {
     margin: 0.2rem 0 0 0;
 }
 
-body > footer {
+.logicpenguin footer {
     border-top: 1px solid var(--lpgray5);
 }
+
+.logicpenguin nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.logicpenguin nav ul li {
+    display: inline-block;
+}
+
+.logicpenguin nav ul li a,
+.logicpenguin nav ul li a:link,
+.logicpenguin nav ul li a:visited {
+    padding: 0.7rem 0.9rem 0.7rem 0.9rem;
+    display: inline-block;
+    text-decoration: none;
+    background-color: var(--lpblue);
+    color: var(--lpgray6);
+    border-radius: 6px;
+    margin-right: 1rem;
+    border: 2px solid transparent;
+}
+
+.logicpenguin nav ul li a:hover,
+.logicpenguin nav ul li a:link:hover,
+.logicpenguin nav ul li a:visited:hover {
+    background-color: var(--lpcyan);
+    color: var(--lpwhite);
+}
+
+.logicpenguin nav ul li a.current,
+.logicpenguin nav ul li a.current:link,
+.logicpenguin nav ul li a.current:visited,
+.logicpenguin nav ul li a.current:hover,
+.logicpenguin nav ul li a.current:link:hover,
+.logicpenguin nav ul li a.current:visited:hover {
+    background-color: var(--lpwhite);
+    color: var(--lpblue);
+    border: 2px solid var(--lpblue);
+    cursor: default;
+}
+
+
