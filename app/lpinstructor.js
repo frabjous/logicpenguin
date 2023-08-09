@@ -57,6 +57,16 @@ qr.allstudentinfo = async function(req) {
         if (!launches) {
             launches = [];
         }
+        // read personal data from first launch
+        if (launches.length > 0) {
+            const launchfile = path.join(launchesdir, launches[0]);
+            const launchinfo = lpfs.loadjson(launchfile);
+            for (const personalinfo of ['email','family','given','fullname','roles']) {
+                if (personalinfo in launchinfo) {
+                    userinfo[personalinfo] = launchinfo[personalinfo];
+                }
+            }
+        }
         const saveddir = path.join(userdir, 'saved');
         const scoresdir = path.join(userdir, 'scores');
         for (const exnum in info.exercises) {
