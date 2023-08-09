@@ -313,6 +313,26 @@ mainloadfns.studentsmain = async function() {
     let resp = await editorquery({ query: 'allstudentinfo' });
     if (!resp) { return false; }
     const hdr = addelem('h2', m, { innerHTML: tr('Students') });
+    const tbl = addelem('table', m, { classes: ['studentstable'] });
+    const thead = addelem('thead', tbl);
+    const tbody = addelem('tbody', tbl);
+    const tfoot = addelem('tfoot', tbl);
+    const thr = addelem('tr', thead);
+    const tfr = addelem('tr', tfoot);
+    const thrnamecell = addelem('th', thr);
+    const tfrnamecell = addelem('th', tfr);
+    let exnums = Object.keys(resp.exercises);
+    exnums = exnums.sort(function(a,b) {
+        const anum = parseInt(a.replace(/[^0-9]/g, ''));
+        const bnum = parseInt(b.replace(/[^0-9]/g, ''));
+        if (anum != bnum) { return anum - bnum; }
+        return a.localeCompare(b);
+    });
+    for (const exnum of exnums) {
+        const thcell = addelem('th', thr, { innerHTML: exnum });
+        const tfcell = addelem('th', tfr, { innerHTML: exnum });
+    }
+
     // TODO: change this
     const code = addelem('pre', m);
     code.innerHTML = JSON.stringify(resp, null, 4);
