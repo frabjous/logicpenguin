@@ -314,7 +314,7 @@ mainloadfns.studentsmain = async function() {
     if (!resp) { return false; }
     const hdr = addelem('h2', m, { innerHTML: tr('Students') });
     // TODO: change this
-    const code = addelem('code', m);
+    const code = addelem('pre', m);
     code.innerHTML = JSON.stringify(resp, null, 4);
     return true;
 }

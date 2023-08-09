@@ -42,6 +42,41 @@ qr.allstudentinfo = async function(req) {
             info.exercises[exnum] = exinfo.duetime;
         }
     }
+    // read list of students
+    const usersdir = path.join(datadir, req.consumerkey, req.contextid, 'users');
+    const users = await lpfs.subdirs(usersdir);
+    info.users = {};
+    for (const userid of users) {
+        const userinfo = {};
+        userinfo.exercises = {};
+        const userdir = path.join(usersdir, userid);
+        const extensionsdir = path.join(userdir, 'extensions');
+        const launchesdir = path.join(userdir, 'launches');
+        const saveddir = path.join(userdir, 'saved');
+        const scoresdir = path.join(userdir, 'scores');
+        for (const exnum in info.exercises) {
+            const thisex = {};
+            const extfile = path.join(extensionsdir, exnum + '.json');
+            const savedfile = path.join(saveddir, exnum + '.json');
+            const scorefile = path.join(scoresdir, exnum + '.json');
+            if (lpfs.isfile(extfile)) {
+                const exttime = lpfs.loadjson(extfile);
+                if (exttime !== false) {
+                    thisex.extension = exttime;
+                }
+            }
+            if (lpfs.isfile(scorefile)) {
+                const score = lpfs.loadjson(scorefile);
+                if (score !== false) {
+                    thisex.score = score;
+                }
+            }
+            thisex.saved = lpfs.isfile(savedfile);
+            // TODO: launch
+            userinfo.exercises[exnum] = thisex;
+        }
+        info.users[userid] = userinfo;
+    }
     return info;
 }
 
