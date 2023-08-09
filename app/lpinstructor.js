@@ -8,6 +8,7 @@
 
 import lpauth from './lpauth.js';
 import lpfs from './lpfs.js';
+import lplti from './lplti.js';
 import path from 'node:path';
 
 // set datadir
@@ -52,6 +53,10 @@ qr.allstudentinfo = async function(req) {
         const userdir = path.join(usersdir, userid);
         const extensionsdir = path.join(userdir, 'extensions');
         const launchesdir = path.join(userdir, 'launches');
+        let launches = await lpfs.filesin(launchesdir);
+        if (!launches) {
+            launches = [];
+        }
         const saveddir = path.join(userdir, 'saved');
         const scoresdir = path.join(userdir, 'scores');
         for (const exnum in info.exercises) {
@@ -71,8 +76,16 @@ qr.allstudentinfo = async function(req) {
                     thisex.score = score;
                 }
             }
+            thisex.launch = false;
+            for (const l of launches) {
+                if (l.substring(0, exnum.length + 1) == exnum + '-') {
+                    let lstr = l.substr(-45);
+                    lstr = lstr.substring(0,40);
+                    thisex.launch = lstr;
+                    break;
+                }
+            }
             thisex.saved = lpfs.isfile(savedfile);
-            // TODO: launch
             userinfo.exercises[exnum] = thisex;
         }
         info.users[userid] = userinfo;

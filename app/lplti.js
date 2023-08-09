@@ -77,6 +77,7 @@ lti.getLatestLaunch = async function(
         newest = newest.substr(0,40);
     }
     // returns either the filename, or just the key depending on keyonly
+    console.log("got here");
     return newest;
 }
 
