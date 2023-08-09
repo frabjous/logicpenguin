@@ -20,12 +20,15 @@ const byid = LP.byid;
 const msgArea = byid('messagearea');
 const mainloadfns = {};
 
+// get rid of current message near top
 function clearmessage() {
     msgArea.style.display = 'none';
     msgArea.classList.remove('info', 'loading', 'warning', 'error');
     msgArea.innerHTML = '';
 }
 
+// function for interacting with server; better and more modern
+// than current student-server interaction
 async function editorquery(req= {}) {
     req.reqtype = 'instructorrequest';
     req.consumerkey = window.consumerkey;
@@ -59,30 +62,36 @@ async function editorquery(req= {}) {
     return resp;
 }
 
+// setting the message area at the top to an error message
 function errormessage(msg) {
     makemessage('error', '<span class="material-symbols-outlined">emergency_home</span> <span class="errortitle">' +
         tr('ERROR') + '</span>: ' + tr(msg));
 }
 
+// setting the message area at the top to a informational message
 function infomessage(msg) {
     makemessage('info', '<span class="material-symbols-outlined">info</span> ' + tr(msg));
 }
 
+// load something based on changes in hash
 function loadhash(h) {
     if (h == '') {
         h = '#studentsmain';
     }
     if (h.substr(-4) == 'main') {
         showmain(h);
+        return;
     }
 }
 
+// set message area at the top to a loading message
 function loadingmessage(msg = 'loading …') {
     makemessage('loading',
         '<span class="material-symbols-outlined spinning">sync</span>' +
         tr(msg));
 }
 
+// load (for the first time) one of the five main sections
 async function loadmain(main) {
     const m = byid(main);
     if (main in mainloadfns) {
@@ -95,9 +104,15 @@ async function loadmain(main) {
     }
 }
 
+// below are several functions used by laodmain to load each
+// individual main section
+
+// should return true on success
 mainloadfns.settingsmain = async function() {
     const m = byid('settingsmain');
+    // clear it out
     m.innerHTML = '';
+    // get notations from servers
     let notations = {};
     try {
         const imported = await import('/js/symbolic/notations.js');
@@ -106,15 +121,19 @@ mainloadfns.settingsmain = async function() {
         errormessage('Could not load notations options.');
         return false;
     }
+    // get systems from server
     let systemsresponse = await editorquery({ query: 'getsystemnames' });
     if (!systemsresponse) { return false; }
     const systems = systemsresponse?.systems ?? [];
+    // section header
     const hdr = addelem('h2', m, {
         innerHTML: tr('Course Settings')
     });
+    // form of options, which is a table
     const tbl = addelem('table', m);
     const tbdy = addelem('tbody', tbl);
     const tfoot = addelem('tfoot', tbl);
+    // save button
     const btnrow = addelem('tr', tfoot);
     const btncell = addelem('td', btnrow, {
         colSpan: 2,
@@ -127,6 +146,7 @@ mainloadfns.settingsmain = async function() {
         mym: m,
         onclick: function() { this.mym.save(); }
     });
+    // course name (tit="title")
     const titrow = addelem('tr',tbdy);
     const titlab = addelem('td', titrow, {
         innerHTML: tr('Course name')
@@ -141,9 +161,11 @@ mainloadfns.settingsmain = async function() {
             this.mybtn.disabled = false;
         }
     });
+    // restore previous value
     if (window?.contextSettings?.coursename) {
         titinput.value = window.contextSettings.coursename;
     }
+    // instructor
     const insrow = addelem('tr',tbdy);
     const inslbl = addelem('td', insrow, {
         innerHTML: tr('Instructor(s)')
@@ -158,9 +180,11 @@ mainloadfns.settingsmain = async function() {
             this.mybtn.disabled = false;
         }
     });
+    // restore previous value
     if (window?.contextSettings?.instructor) {
         insinput.value = window.contextSettings.instructor;
     }
+    // notation choice
     const notrow = addelem('tr', tbdy);
     const notlbl = addelem('td', notrow, {
         innerHTML: tr('Notation')
@@ -208,9 +232,11 @@ mainloadfns.settingsmain = async function() {
             innerHTML: notationname + ': ' + notationdisplay
         });
     }
+    // restore previous
     if (window?.contextSettings?.notation) {
         notinput.value = window.contextSettings.notation;
     }
+    // deductive system choice
     const sysrow = addelem('tr', tbdy);
     const syslbl = addelem('td', sysrow, {
         innerHTML: 'Deductive system'
@@ -239,14 +265,17 @@ mainloadfns.settingsmain = async function() {
             value: system
         });
     }
+    // restore previous
     if (window?.contextSettings?.system) {
         sysinput.value = window.contextSettings.system;
     }
+    // attach inputs to area
     m.titinput = titinput;
     m.insinput = insinput;
     m.notinput = notinput;
     m.sysinput = sysinput;
     m.btn = btn;
+    // function to save course settings
     m.save = async function() {
         const btn = this.btn;
         const contextSettings = {};
@@ -272,12 +301,21 @@ mainloadfns.settingsmain = async function() {
         updateTitle();
         infomessage('Course settings saved.');
     }
+    // loaded successfully
     return true;
 }
 
 mainloadfns.studentsmain = async function() {
     const m = byid('studentsmain');
-    m.innerHTML = 'Instructor student coming soon.';
+    // clear out
+    m.innerHTML = '';
+    // get data on students
+    let resp = await editorquery({ query: 'allstudentinfo' });
+    if (!resp) { return false; }
+    const hdr = addelem('h2', m, { innerHTML: tr('Students') });
+    // TODO: change this
+    const code = addelem('code', m);
+    code.innerHTML = JSON.stringify(resp, null, 4);
     return true;
 }
 
