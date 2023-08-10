@@ -264,7 +264,7 @@
 .logicpenguin dialog {
     border-radius: 1rem;
     border: 2px solid var(--lpmagenta);
-    padding: 0.5rem 2rem 0.5rem 2rem;
+    padding: 0.5rem 2rem 1rem 2rem;
 }
 
 .logicpenguin dialog .closebutton {
@@ -274,8 +274,17 @@
     float: right;
 }
 
+.logicpenguin dialog .closebutton .material-symbols-outlined {
+    cursor: pointer;
+}
+
 .logicpenguin dialog .closebutton:hover {
     color: var(--lpred);
+}
+
+.logicpenguin dialog div.header {
+    color: var(--lpmagenta);
+    margin-bottom: 1rem;
 }
 
 .logicpenguin dialog div.header,
@@ -284,7 +293,7 @@
 }
 
 .logicpenguin dialog div.footer {
-    margin: 0;
+    margin: 1rem 0 0 0;
     border-top: none;
     text-align: right;
 }

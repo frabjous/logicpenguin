@@ -453,17 +453,30 @@ mainloadfns.studentsmain = async function() {
                     'timer</span>',
                 classes: ['extensionbutton'],
                 title: 'grant extension',
+                duetime: resp.exercises[exnum],
+                myexnum: exnum,
+                myuserid: userid,
+                myfamily: userinfo?.family ?? false,
                 onclick: function() {
                     showdialog(function() {
-                        console.log('hi');
+                        console.log(this.duetime);
+                        console.log(this.extensiontime);
                     }, 'Grant extension', 'confirm', 'granting');
+                    addelem('div', theDialog.maindiv, {
+                        innerHTML: 'Extend ' + this.myexnum + ' for ' +
+                            ((this.myfamily) ? this.myfamily : this.myuserid) +
+                            'until …'
+                    });
+                    theDialog.extensiontime = (this.extensiontime ?? -1);
+                    theDialog.duetime = this.duetime;
                 }
             });
             if (exinfo?.extension) {
                 deadlinebtn.classList.add('activeextension');
                 deadlinebtn.title = 'extended till ' +
                     (new Date(exinfo.extension)).toLocaleString() +
-                    ' (click to change)'
+                    ' (click to change)',
+                deadlinebtn.extensiontime = exinfo.extension;
             }
         }
     }
@@ -507,6 +520,7 @@ function showdialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
     theDialog.closebtn = addelem('div', theDialog.hdr, {
         innerHTML: '<span class="material-symbols-outlined">close</span>',
         classes: ['closebutton'],
+        title: 'close dialog',
         onclick: function() { theDialog.close(); }
     });
     if (htext != '') {
