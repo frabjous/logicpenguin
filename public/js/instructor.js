@@ -452,7 +452,12 @@ mainloadfns.studentsmain = async function() {
                 innerHTML: '<span class="material-symbols-outlined">' +
                     'timer</span>',
                 classes: ['extensionbutton'],
-                title: 'grant extension'
+                title: 'grant extension',
+                onclick: function() {
+                    showdialog(function() {
+                        console.log('hi');
+                    }, 'Grant extension', 'confirm', 'granting');
+                }
             });
             if (exinfo?.extension) {
                 deadlinebtn.classList.add('activeextension');
@@ -494,23 +499,23 @@ function makemessage(msgtype, msg) {
     msgArea.innerHTML = msg;
 }
 
-functin showDialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
+function showdialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
     theDialog.innerHTML = '';
-    theDialog.hdr = addelem('header', theDialog);
+    theDialog.hdr = addelem('div', theDialog, { classes: ['header'] });
     theDialog.maindiv = addelem('div', theDialog);
-    theDialog.ftr = addelem('footer', theDialog);
-    if (htext != '') {
-        theDialog.hdrspan = addelem('span', theDialog.hdr, {
-            innerHTML: htext
-        });
-    }
+    theDialog.ftr = addelem('div', theDialog, { classes: ['footer'] });
     theDialog.closebtn = addelem('div', theDialog.hdr, {
         innerHTML: '<span class="material-symbols-outlined">close</span>',
         classes: ['closebutton'],
         onclick: function() { theDialog.close(); }
     });
+    if (htext != '') {
+        theDialog.hdrspan = addelem('span', theDialog.hdr, {
+            innerHTML: htext
+        });
+    }
     theDialog.fn = fn;
-    theDialog.cancelbtn = addelem('button', theDialog.ftr {
+    theDialog.cancelbtn = addelem('button', theDialog.ftr, {
         type: 'button',
         innerHTML: 'cancel',
         onclick: function() { theDialog.close(); }
@@ -528,6 +533,7 @@ functin showDialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
             theDialog.close();
         }
     });
+    theDialog.showModal();
 }
 
 function showmain(area) {

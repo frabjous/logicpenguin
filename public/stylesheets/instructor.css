@@ -261,22 +261,34 @@
     color: var(--lpyellow);
 }
 
+.logicpenguin dialog {
+    border-radius: 1rem;
+    border: 2px solid var(--lpmagenta);
+    padding: 0.5rem 2rem 0.5rem 2rem;
+}
+
 .logicpenguin dialog .closebutton {
     display: inline-block;
     color: var(--lpblack);
     cursor: pointer;
+    float: right;
 }
 
 .logicpenguin dialog .closebutton:hover {
     color: var(--lpred);
 }
 
-.logicpengion dialog footer {
+.logicpenguin dialog div.header,
+.logicpenguin dialog div.footer {
+    white-space: nowrap;
+}
+
+.logicpenguin dialog div.footer {
     margin: 0;
     border-top: none;
     text-align: right;
 }
 
-.logicpenguin dialog footer button {
+.logicpenguin dialog div.footer button {
     margin: 0 0 0 1rem;
 }
