@@ -18,6 +18,7 @@ const mainAreasLoaded = {};
 const addelem = LP.addelem;
 const byid = LP.byid;
 const msgArea = byid('messagearea');
+const theDialog = document.getElementsByTagName("dialog")[0];
 const mainloadfns = {};
 
 // get rid of current message near top
