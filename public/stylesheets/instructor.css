@@ -221,6 +221,8 @@
     background-color: inherit;
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent td:first-child,
+.logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent td,
 .logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent:nth-child(2n) td:first-child,
 .logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent:nth-child(2n) td {
     background-color: var(--lpbgmagenta);

@@ -375,7 +375,7 @@ mainloadfns.studentsmain = async function() {
     for (const userid of users) {
         const userinfo = resp.users[userid];
         const utr = addelem('tr', tbody);
-        if (!("roles" in userinfo) || (userinfo.roles != 'Leaner')) {
+        if (!("roles" in userinfo) || (userinfo.roles != 'Learner')) {
             utr.classList.add('nonstudent');
         }
         // cell for name/userid
