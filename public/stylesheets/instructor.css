@@ -311,6 +311,7 @@
     top: 0.3rem;
 }
 
+.logicpenguin dialog div.overridescoreholder,
 .logicpenguin dialog div.datetimeinputholder {
     margin: 0.5rem 0 0.5rem 0;
 }

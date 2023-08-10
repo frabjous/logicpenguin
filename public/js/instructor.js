@@ -408,15 +408,39 @@ mainloadfns.studentsmain = async function() {
                 classes: ['studenttablescore'],
                 title: 'override ' + exnum + ((
                     ("family" in userinfo) && userinfo.family != ''
-                ) ? (' for ' + userinfo.family) : '')
+                ) ? (' for ' + userinfo.family) : ''),
+                myexnum: exnum,
+                myuserid: userid,
+                myfamily: userinfo?.family ?? false,
+                onclick: function() {
+                    showdialog(async function() {
+                    }, 'Override score', 'override', 'overriding …');
+                    addelem('div', theDialog.maindiv, {
+                        innerHTML: 'Override ' + this.myexnum + ' for ' +
+                            ((this.myfamily) ? this.myfamily : this.myuserid)
+                    });
+                    const scoreholder = addelem('div', theDialog.maindiv, {
+                        classes: ['overridescoreholder']
+                    });
+                    theDialog.overridescoreinput = addelem('input', scoreholder, {
+                        type: 'number',
+                        value: ((this?.myscore.toString()) ?? '0')
+                    });
+                    addelem('span', scoreholder, { innerHTML: '%' });
+                    theDialog.userid = this.myuserid;
+                    theDialog.exnum = this.myexnum;
+                    theDialog.scorediv = this;
+                }
             });
             if ("score" in exinfo) {
+                scorediv.myscore = exinfo.score;
                 scorediv.innerHTML = (exinfo.score * 100)
                     .toFixed(1).toString() + '%';
                 if (scorediv.innerHTML == '100.0%') {
                     scorediv.innerHTML = '100%';
                 }
             } else {
+                scorediv.myscore = 0;
                 scorediv.innerHTML = '—';
             }
             const btndiv = addelem('div', extd, {
