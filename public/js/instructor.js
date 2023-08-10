@@ -332,7 +332,24 @@ mainloadfns.studentsmain = async function() {
         const thcell = addelem('th', thr, { innerHTML: exnum });
         const tfcell = addelem('th', tfr, { innerHTML: exnum });
     }
-
+    // fill in users
+    for (const user in resp.users) {
+        const userinfo = resp.users[user];
+        if ((!("family" in userinfo) || userinfo.family == '')
+            && ("fullname" in userinfo)) {
+            const nameparts = userinfo.fullname.split(' ');
+            if (nameparts.length == 1) {
+                userinfo.family = nameparts[0];
+            } else {
+                if (!("given" in userinfo) || userinfo.given == '') {
+                    userinfo.given = nameparts[0];
+                }
+                userinfo.family = nameparts.slice(1).join(' ');
+            }
+        }
+    }
+    let users = Object.keys(resp.users);
+    users = users.sort
     // TODO: change this
     const code = addelem('pre', m);
     code.innerHTML = JSON.stringify(resp, null, 4);
