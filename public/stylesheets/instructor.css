@@ -260,3 +260,23 @@
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton.activeextension {
     color: var(--lpyellow);
 }
+
+.logicpenguin dialog .closebutton {
+    display: inline-block;
+    color: var(--lpblack);
+    cursor: pointer;
+}
+
+.logicpenguin dialog .closebutton:hover {
+    color: var(--lpred);
+}
+
+.logicpengion dialog footer {
+    margin: 0;
+    border-top: none;
+    text-align: right;
+}
+
+.logicpenguin dialog footer button {
+    margin: 0 0 0 1rem;
+}

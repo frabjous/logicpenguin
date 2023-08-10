@@ -494,6 +494,42 @@ function makemessage(msgtype, msg) {
     msgArea.innerHTML = msg;
 }
 
+functin showDialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
+    theDialog.innerHTML = '';
+    theDialog.hdr = addelem('header', theDialog);
+    theDialog.maindiv = addelem('div', theDialog);
+    theDialog.ftr = addelem('footer', theDialog);
+    if (htext != '') {
+        theDialog.hdrspan = addelem('span', theDialog.hdr, {
+            innerHTML: htext
+        });
+    }
+    theDialog.closebtn = addelem('div', theDialog.hdr, {
+        innerHTML: '<span class="material-symbols-outlined">close</span>',
+        classes: ['closebutton'],
+        onclick: function() { theDialog.close(); }
+    });
+    theDialog.fn = fn;
+    theDialog.cancelbtn = addelem('button', theDialog.ftr {
+        type: 'button',
+        innerHTML: 'cancel',
+        onclick: function() { theDialog.close(); }
+    });
+    theDialog.confirmbutton = addelem('button', theDialog.ftr, {
+        type: 'button',
+        innerHTML: blabel,
+        loadtext: bwait,
+        origtext: blabel,
+        onclick: async function() {
+            this.innerHTML = '<span class="material-symbols-outlined ' +
+                'spinning">sync</span> ' + this.loadtext + ' …';
+            await theDialog.fn();
+            this.innerHTML = this.origtext;
+            theDialog.close();
+        }
+    });
+}
+
 function showmain(area) {
     const navlist = byid("mainnavlist");
     // fix nav bar
