@@ -189,8 +189,12 @@
     border-top: 1px solid var(--lpmagenta);
 }
 
-.logicpenguin main #studentsmain table.studentstable tfoot th {
-    border-top: 1px solid var(--lpmagenta);
+.logicpenguin main #studentsmain table.studentstable thead th:first-child {
+    border-bottom: none;
+}
+
+.logicpenguin main #studentsmain table.studentstable tfoot th:first-child {
+    border-top: none;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td {

@@ -55,7 +55,7 @@ Obviously, the examples do not allow for saving answers since they do not use th
     - [x] seeing student progress
     - [ ] overriding grades
     - [ ] editing and creating new exercise sets
-    - [ ] choosing preferred notation
+    - [x] choosing preferred notation
     - [ ] importing from other courses
     - [ ] translate exercises between notations
 - [ ] Implement and convert existing other kinds of exercises, as used, e.g., in [UMass Phil 105 (Practical Reasoning)](https://logic.umasscreate.net/reasoning/), including non-automatically-graded varieties
