@@ -401,11 +401,17 @@ mainloadfns.studentsmain = async function() {
             const exinfo = userinfo?.exercises?.[exnum] ?? {};
             const extd = addelem('td', utr);
             const scorespan = addelem('div', extd, {
-                classes: ['studenttablescore']
+                classes: ['studenttablescore'],
+                title: 'override ' + exnum + ((
+                    ("family" in userinfo) && userinfo.family != ''
+                ) ? (' for ' + userinfo.family) : '')
             });
             if ("score" in exinfo) {
                 scorespan.innerHTML = (exinfo.score * 100)
-                    .toFixed(2).toString() + '%';
+                    .toFixed(1).toString() + '%';
+                if (scorespan.innerHTML == '100.0%') {
+                    scorespan.innerHTML = '100%';
+                }
             } else {
                 scorespan.innerHTML = '—';
             }

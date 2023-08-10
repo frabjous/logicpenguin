@@ -197,6 +197,11 @@
     padding: 0.2rem 0.4rem 0.2rem 0;
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore {
+    user-select: none;
+    cursor: pointer;
+}
+
 .logicpenguin main #studentsmain table.studentstable tbody td:first-child {
     padding-left: 0;
 }
