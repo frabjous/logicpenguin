@@ -103,6 +103,10 @@ qr.allstudentinfo = async function(req) {
     return info;
 }
 
+qr.grantextension = async function(req) {
+    return req;
+}
+
 qr.getsystemnames = async function(req) {
     const files = await lpfs.filesin('public/js/problemtypes');
     const systemspt = files.filter((f) => {

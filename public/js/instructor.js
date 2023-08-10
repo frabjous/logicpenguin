@@ -454,13 +454,21 @@ mainloadfns.studentsmain = async function() {
                 classes: ['extensionbutton'],
                 title: 'grant extension',
                 duetime: resp.exercises[exnum],
+                extensiontime: -1,
                 myexnum: exnum,
                 myuserid: userid,
                 myfamily: userinfo?.family ?? false,
                 onclick: function() {
-                    showdialog(function() {
-                        console.log(this.duetime);
-                        console.log(this.extensiontime);
+                    showdialog(async function() {
+                        const req = {
+                            query: 'grantextension',
+                            extuserid: this.userid,
+                            extexnum: this.exnum,
+                            ts: (new Date(this.extensiontimeinput.value)).getTime()
+                        }
+                        const resp = await editorquery(req);
+                        if (!resp) { return; }
+                        console.log(resp);
                     }, 'Grant extension', 'confirm', 'granting');
                     addelem('div', theDialog.maindiv, {
                         innerHTML: 'Extend ' + this.myexnum + ' for ' +
@@ -475,8 +483,8 @@ mainloadfns.studentsmain = async function() {
                         value: ((this.extensiontime != -1) ? tsToInp(this.extensiontime) :
                             tsToInp(this.duetime))
                     });
-                    theDialog.extensiontime = (this.extensiontime ?? -1);
-                    theDialog.duetime = this.duetime;
+                    theDialog.userid = this.userid;
+                    theDialog.exnum = this.exnum;
                 }
             });
             if (exinfo?.extension) {

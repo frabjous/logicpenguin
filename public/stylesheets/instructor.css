@@ -301,3 +301,18 @@
 .logicpenguin dialog div.footer button {
     margin: 0 0 0 1rem;
 }
+
+.logicpenguin dialog div.footer button .material-symbols-outlined {
+    position: relative;
+    top: 0.3rem;
+}
+
+.logicpenguin dialog div.datetimeinputholder {
+    margin: 0.5rem 0 0.5rem 0;
+}
+
+.logicpenguin dialog input[type="datetime-local"] {
+    font-size: 125%;
+    padding: 0.3rem;
+    font-family: inherit;
+}
