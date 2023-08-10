@@ -468,7 +468,13 @@ mainloadfns.studentsmain = async function() {
                         }
                         const resp = await editorquery(req);
                         if (!resp) { return; }
-                        console.log(resp);
+                        const btn = this.extensionbutton;
+                        btn.classList.add('activeextension');
+                        btn.title = 'extended till ' +
+                            (new Date(req.ts)).toLocaleString() +
+                            ' (click to change)';
+                        btn.extensiontime = req.ts;
+
                     }, 'Grant extension', 'confirm', 'granting');
                     addelem('div', theDialog.maindiv, {
                         innerHTML: 'Extend ' + this.myexnum + ' for ' +
@@ -483,15 +489,16 @@ mainloadfns.studentsmain = async function() {
                         value: ((this.extensiontime != -1) ? tsToInp(this.extensiontime) :
                             tsToInp(this.duetime))
                     });
-                    theDialog.userid = this.userid;
-                    theDialog.exnum = this.exnum;
+                    theDialog.userid = this.myuserid;
+                    theDialog.exnum = this.myexnum;
+                    theDialog.extensionbutton = this;
                 }
             });
             if (exinfo?.extension) {
                 deadlinebtn.classList.add('activeextension');
                 deadlinebtn.title = 'extended till ' +
                     (new Date(exinfo.extension)).toLocaleString() +
-                    ' (click to change)',
+                    ' (click to change)';
                 deadlinebtn.extensiontime = exinfo.extension;
             }
         }

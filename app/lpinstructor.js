@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 import lpauth from './lpauth.js';
+import lpdata from './lpdata.js';
 import lpfs from './lpfs.js';
 import lplti from './lplti.js';
 import path from 'node:path';
@@ -104,7 +105,21 @@ qr.allstudentinfo = async function(req) {
 }
 
 qr.grantextension = async function(req) {
-    return req;
+    for (const reqqy of ["consumerkey", "contextid", "extuserid", "extexnum",
+        "ts"]) {
+        if (!(reqqy in req)) {
+            return { error: true, errMsg: 'Insufficient information ' +
+                'provided to grant extension.' }
+        }
+    }
+    const success = lpdata.grantExtension(req.consumerkey, req.contextid,
+        req.extuserid, req.extexnum, req.ts);
+    if (!success) {
+        return { error: true,
+            errMsg: 'Unable to grant extension.'
+        }
+    }
+    return { success: true };
 }
 
 qr.getsystemnames = async function(req) {
