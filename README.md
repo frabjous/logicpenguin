@@ -51,8 +51,8 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [x] Allow arbitrary specification for how often the server “grades” exercises and submits scores to the LMS
 - [x] Adapt derivation UI for Fitch-style natural deduction proofs and the various [forall x](https://www.fecundity.com/logic/) type systems (partly done)
 - [ ] Provide an instructor panel for certain things so they don’t have to be done server-side
-    - [ ] granting extensions
-    - [ ] seeing student progress
+    - [x] granting extensions
+    - [x] seeing student progress
     - [ ] overriding grades
     - [ ] editing and creating new exercise sets
     - [ ] choosing preferred notation

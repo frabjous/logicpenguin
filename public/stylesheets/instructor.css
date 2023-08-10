@@ -203,6 +203,10 @@
     cursor: pointer;
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore.disabled {
+    cursor: default;
+}
+
 .logicpenguin main #studentsmain table.studentstable tbody td:first-child {
     padding-left: 0;
 }

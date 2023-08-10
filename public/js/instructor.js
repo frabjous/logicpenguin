@@ -447,12 +447,17 @@ mainloadfns.studentsmain = async function() {
                     '/' + userid + '/' + exnum + '/' +
                     exinfo.launch;
                 launchlink.target='_blank';
+            } else {
+                // disable override if no launch
+                scorediv.classList.add('disabled');
+                scorediv.title = '';
+                scorediv.onclick = function(){}
             }
             const deadlinebtn = addelem('span', btndiv, {
                 innerHTML: '<span class="material-symbols-outlined">' +
                     'timer</span>',
                 classes: ['extensionbutton'],
-                title: 'grant extension',
+                title: 'due ' + (new Date(resp.exercises[exnum])).toLocaleString() + '; click to grant extension',
                 duetime: resp.exercises[exnum],
                 extensiontime: -1,
                 myexnum: exnum,
