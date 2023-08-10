@@ -194,9 +194,23 @@
 
 .logicpenguin main #studentsmain table.studentstable tbody td {
     text-align: right;
-    padding-left: 0.4rem;
+    padding: 0.2rem 0.4rem 0.2rem 0;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td:first-child {
-    padding-left: 0.;
+    padding-left: 0;
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td:first-child a,
+.logicpenguin main #studentsmain table.studentstable tbody td:first-child a:link,
+.logicpenguin main #studentsmain table.studentstable tbody td:first-child a:visited {
+    text-decoration: none;
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody tr:nth-child(2n) td {
+    background-color: var(--lpbggreen);
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody tr:nth-child(2n) td:first-child {
+    background-color: inherit;
 }
