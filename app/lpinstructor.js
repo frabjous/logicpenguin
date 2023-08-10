@@ -75,6 +75,8 @@ qr.allstudentinfo = async function(req) {
             const extfile = path.join(extensionsdir, exnum + '.json');
             const savedfile = path.join(saveddir, exnum + '.json');
             const scorefile = path.join(scoresdir, exnum + '.json');
+            const overridefile = path.join(scoresdir,
+                'override-' + exnum + '.json');
             if (lpfs.isfile(extfile)) {
                 const exttime = lpfs.loadjson(extfile);
                 if (exttime !== false) {
@@ -86,6 +88,9 @@ qr.allstudentinfo = async function(req) {
                 if (score !== false) {
                     thisex.score = score;
                 }
+            }
+            if (lpfs.isfile(overridefile)) {
+                thisex.overridden = true;
             }
             thisex.launch = false;
             for (const l of launches) {
@@ -143,7 +148,39 @@ qr.overridescore = async function(req) {
                 'provided to override score.' }
         }
     }
-    return req;
+    const userdir = lpdata.userdir(req.consumerkey, req.contextid,
+        req.scoreuserid, false);
+    if (!userdir) {
+        return { error: true, errMsg: 'Cannot find directory for user.' }
+    }
+    const scoredir = path.join(userdir, 'scores');
+    const scorefile = path.join(scoredir, req.scoreexnum + '.json');
+    const overridefile = path.join(scoredir, 'override-' + req.scoreexnum + '.json');
+    let overrides = [];
+    if (lpfs.isfile(overridefile)) {
+        const readoverrides = lpfs.loadjson(overridefile);
+        if (readoverrides) { overrides = readoverrides; }
+    }
+    let oldscore = false
+    if (lpfs.isfile(scorefile)) {
+        const readoldscore = lpfs.loadjson(scorefile);
+        if (readoldscore) { oldscore = readoldscore; }
+    }
+    if (oldscore !== false) { overrides.push(oldscore); }
+    const osavesucc = lpfs.savejson(overridefile, overrides);
+    if (!osavesucc) {
+        return { error: true, errMsg: 'Could not write file ' +
+            'with override information.' };
+    }
+    const ssavesucc = lpfs.savejson(scorefile, req.newscore);
+    if (!ssavesucc) {
+        return { error: true, errMsg: 'Could not save new score.' };
+    }
+    // send to server
+    // TODO: fix this
+    //lplti.sendScore(req.consumerkey, req.contextid, req.scoreuserid,
+        //req.scoreexnum, req.newscore);
+    return { success: true };
 }
 
 qr.savecontextsettings = async function(req) {
