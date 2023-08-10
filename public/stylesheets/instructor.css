@@ -177,6 +177,7 @@
 .logicpenguin main #studentsmain table.studentstable th {
     font-weight: normal;
     color: var(--lpgreen);
+    text-align: center;
 }
 
 .logicpenguin main #studentsmain table.studentstable thead th {
@@ -185,4 +186,17 @@
 
 .logicpenguin main #studentsmain table.studentstable tfoot th {
     border-top: 1px solid var(--lpmagenta);
+}
+
+.logicpenguin main #studentsmain table.studentstable tfoot th {
+    border-top: 1px solid var(--lpmagenta);
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td {
+    text-align: right;
+    padding-left: 0.4rem;
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td:first-child {
+    padding-left: 0.;
 }

@@ -349,6 +349,7 @@ mainloadfns.studentsmain = async function() {
         }
     }
     let users = Object.keys(resp.users);
+    // sort users by name, etc.
     users = users.sort(function(a,b) {
         const ainfo = resp.users[a];
         const binfo = resp.users[b];
@@ -370,6 +371,46 @@ mainloadfns.studentsmain = async function() {
         }
         return (a.localeCompare(b));
     });
+    // row for each user
+    for (const userid of users) {
+        const userinfo = resp.users[userid];
+        const utr = addelem('tr', tbody);
+        // cell for name/userid
+        const namecell = addelem('td', utr);
+        let nch = '<div>';
+        if (("email" in userinfo) && userinfo.email != '') {
+            nch += '<a href="mailto:' + userinfo.email + '">';
+        }
+        if ("family" in userinfo && userinfo.family != '') {
+            nch += userinfo.family;
+            if (("given" in userinfo) && userinfo.given != '') {
+                nch += ', ' + userinfo.given;
+            }
+        } else {
+            if (("email" in userinfo) && userinfo.email != '') {
+                nch += userinfo.email;
+            }
+        }
+        if (("email" in userinfo) && userinfo.email != '') {
+            nch += '</a>';
+        }
+        nch += '</div><div><strong>(' + userid + ')</strong></div>';
+        namecell.innerHTML = nch;
+        // cell for each exericse
+        for (const exnum of exnums) {
+            const exinfo = userinfo?.exercises?.[exnum] ?? {};
+            const extd = addelem('td', utr);
+            const scorespan = addelem('div', extd, {
+                classes: ['studenttablescore']
+            });
+            if ("score" in exinfo) {
+                scorespan.innerHTML = (exinfo.score * 100)
+                    .toFixed(2).toString() + '%';
+            } else {
+                scorespan.innerHTML = '—';
+            }
+        }
+    }
     // TODO: change this
     const code = addelem('pre', m);
     code.innerHTML = JSON.stringify(users.map((u) => (resp.users[u])), null, 4);
