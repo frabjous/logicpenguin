@@ -375,6 +375,9 @@ mainloadfns.studentsmain = async function() {
     for (const userid of users) {
         const userinfo = resp.users[userid];
         const utr = addelem('tr', tbody);
+        if (!("roles" in userinfo) || (userinfo.roles != 'Leaner')) {
+            utr.classList.add('nonstudent');
+        }
         // cell for name/userid
         const namecell = addelem('td', utr);
         let nch = '<div>';
@@ -425,8 +428,10 @@ mainloadfns.studentsmain = async function() {
                 launchicon = 'link';
             }
             const launchlink = addelem(launchtag, btndiv, {
-                title: ((launchtag == 'a') ? 'view exercise as student' :
-                    'student has not launched exercise')
+                title: ((launchtag == 'a') ?
+                    'view ' + exnum + ' as ' +
+                    ((userinfo?.family) ? userinfo.family : 'student')
+                    : 'student has not launched exercise')
             });
             let llh = '<span class="material-symbols-outlined">' +
                 launchicon + '</span>';
@@ -435,16 +440,25 @@ mainloadfns.studentsmain = async function() {
             }
             launchlink.innerHTML = llh;
             if (launchtag == 'a') {
-                launchtag.innerHTML = window.location.protocol + '//' +
+                launchlink.href = window.location.protocol + '//' +
                     window.location.host + '/exercises/' +
                     window.consumerkey + '/' + window.contextid +
                     '/' + userid + '/' + exnum + '/' +
                     exinfo.launch;
+                launchlink.target='_blank';
             }
             const deadlinebtn = addelem('span', btndiv, {
                 innerHTML: '<span class="material-symbols-outlined">' +
-                    'timer</span>'
+                    'timer</span>',
+                classes: ['extensionbutton'],
+                title: 'grant extension'
             });
+            if (exinfo?.extension) {
+                deadlinebtn.classList.add('activeextension');
+                deadlinebtn.title = 'extended till ' +
+                    (new Date(exinfo.extension)).toLocaleString() +
+                    ' (click to change)'
+            }
         }
     }
     // TODO: change this

@@ -221,6 +221,35 @@
     background-color: inherit;
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent:nth-child(2n) td:first-child,
+.logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent:nth-child(2n) td {
+    background-color: var(--lpbgmagenta);
+}
+
 .logicpenguin main #studentsmain table.studentstable tbody td span.material-symbols-outlined {
     font-size: 80%;
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons {
+    color: var(--lpgray3);
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a span.material-symbols-outlined,
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a {
+    color: var(--lpblue);
+    cursor: pointer;
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton span.material-symbols-outlined,
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton {
+    cursor: pointer;
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton.activeextension:hover,
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton:hover {
+    color: var(--lpcyan);
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton.activeextension {
+    color: var(--lpyellow);
 }
