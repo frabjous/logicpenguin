@@ -178,6 +178,7 @@
     font-weight: normal;
     color: var(--lpgreen);
     text-align: center;
+    padding: 0.2rem 0.4rem 0.2rem 0;
 }
 
 .logicpenguin main #studentsmain table.studentstable thead th {
@@ -218,4 +219,8 @@
 
 .logicpenguin main #studentsmain table.studentstable tbody tr:nth-child(2n) td:first-child {
     background-color: inherit;
+}
+
+.logicpenguin main #studentsmain table.studentstable tbody td span.material-symbols-outlined {
+    font-size: 80%;
 }

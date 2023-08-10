@@ -400,21 +400,51 @@ mainloadfns.studentsmain = async function() {
         for (const exnum of exnums) {
             const exinfo = userinfo?.exercises?.[exnum] ?? {};
             const extd = addelem('td', utr);
-            const scorespan = addelem('div', extd, {
+            const scorediv = addelem('div', extd, {
                 classes: ['studenttablescore'],
                 title: 'override ' + exnum + ((
                     ("family" in userinfo) && userinfo.family != ''
                 ) ? (' for ' + userinfo.family) : '')
             });
             if ("score" in exinfo) {
-                scorespan.innerHTML = (exinfo.score * 100)
+                scorediv.innerHTML = (exinfo.score * 100)
                     .toFixed(1).toString() + '%';
-                if (scorespan.innerHTML == '100.0%') {
-                    scorespan.innerHTML = '100%';
+                if (scorediv.innerHTML == '100.0%') {
+                    scorediv.innerHTML = '100%';
                 }
             } else {
-                scorespan.innerHTML = '—';
+                scorediv.innerHTML = '—';
             }
+            const btndiv = addelem('div', extd, {
+                classes: ['cellbuttons']
+            });
+            let launchtag = 'span';
+            let launchicon = 'link_off';
+            if ("launch" in exinfo && exinfo.launch) {
+                launchtag = 'a';
+                launchicon = 'link';
+            }
+            const launchlink = addelem(launchtag, btndiv, {
+                title: ((launchtag == 'a') ? 'view exercise as student' :
+                    'student has not launched exercise')
+            });
+            let llh = '<span class="material-symbols-outlined">' +
+                launchicon + '</span>';
+            if (exinfo?.saved) {
+                llh += '<span class="material-symbols-outlined">save</span>'
+            }
+            launchlink.innerHTML = llh;
+            if (launchtag == 'a') {
+                launchtag.innerHTML = window.location.protocol + '//' +
+                    window.location.host + '/exercises/' +
+                    window.consumerkey + '/' + window.contextid +
+                    '/' + userid + '/' + exnum + '/' +
+                    exinfo.launch;
+            }
+            const deadlinebtn = addelem('span', btndiv, {
+                innerHTML: '<span class="material-symbols-outlined">' +
+                    'timer</span>'
+            });
         }
     }
     // TODO: change this
