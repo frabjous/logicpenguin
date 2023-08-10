@@ -242,6 +242,11 @@
     cursor: pointer;
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a:hover span.material-symbols-outlined,
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a:hover {
+    color: var(--lpcyan);
+}
+
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton {
     cursor: pointer;
