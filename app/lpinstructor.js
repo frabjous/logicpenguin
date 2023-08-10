@@ -177,9 +177,8 @@ qr.overridescore = async function(req) {
         return { error: true, errMsg: 'Could not save new score.' };
     }
     // send to server
-    // TODO: fix this
-    //lplti.sendScore(req.consumerkey, req.contextid, req.scoreuserid,
-        //req.scoreexnum, req.newscore);
+    lplti.sendScore(req.consumerkey, req.contextid, req.scoreuserid,
+        req.scoreexnum, req.newscore);
     return { success: true };
 }
 

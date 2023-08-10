@@ -207,6 +207,10 @@
     cursor: pointer;
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore.overridden {
+    color: var(--lpred);
+}
+
 .logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore.disabled {
     cursor: default;
 }

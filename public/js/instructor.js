@@ -414,18 +414,28 @@ mainloadfns.studentsmain = async function() {
                 myfamily: userinfo?.family ?? false,
                 onclick: function() {
                     showdialog(async function() {
+                        const newscore = (parseFloat(this.overridescoreinput.value) / 100);
                         const req = {
                             query: 'overridescore',
                             scoreuserid: this.userid,
                             scoreexnum: this.exnum,
-                            newscore: (parseFloat(this.overridescoreinput.value) / 100)
+                            newscore: newscore
                         }
                         const orresp = await editorquery(req);
                         if (!orresp) { return; }
-                        console.log(orresp);
-                        // TODO: change scorediv
+                        const scorediv = this.scorediv;
+                        scorediv.myscore = newscore;
+                        scorediv.innerHTML = (newscore * 100)
+                            .toFixed(1).toString() + '%';
+                        if (scorediv.innerHTML == '100.0%') {
+                            scorediv.innerHTML = '100%';
+                        }
+                        scorediv.classList.add('overridden');
+                        if (scorediv.title.indexOf('(overridden) ') == -1) {
+                            scorediv.title = '(overridden) ' + scorediv.title;
+                        }
 
-                    }, 'Override score', 'override', 'overriding …');
+                    }, 'Override score', 'override', 'overriding');
                     addelem('div', theDialog.maindiv, {
                         innerHTML: 'Override ' + this.myexnum + ' for ' +
                             ((this.myfamily) ? this.myfamily : this.myuserid)
@@ -454,6 +464,10 @@ mainloadfns.studentsmain = async function() {
             } else {
                 scorediv.myscore = 0;
                 scorediv.innerHTML = '—';
+            }
+            if (("overridden" in exinfo) && (exinfo.overridden)) {
+                scorediv.classList.add("overridden");
+                scorediv.title = '(overridden) ' + scorediv.title;
             }
             const btndiv = addelem('div', extd, {
                 classes: ['cellbuttons']
@@ -544,10 +558,6 @@ mainloadfns.studentsmain = async function() {
             }
         }
     }
-    // TODO: change this
-    const code = addelem('pre', m);
-    code.innerHTML = JSON.stringify(users.map((u) => (resp.users[u])), null, 4);
-    //code.innerHTML = JSON.stringify(resp, null, 4);
     return true;
 }
 
