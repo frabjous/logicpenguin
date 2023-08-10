@@ -168,3 +168,21 @@
     position: relative;
     top: 0.3rem;
 }
+
+.logicpenguin main #studentsmain table.studentstable {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.logicpenguin main #studentsmain table.studentstable th {
+    font-weight: normal;
+    color: var(--lpgreen);
+}
+
+.logicpenguin main #studentsmain table.studentstable thead th {
+    border-bottom: 1px solid var(--lpmagenta);
+}
+
+.logicpenguin main #studentsmain table.studentstable tfoot th {
+    border-top: 1px solid var(--lpmagenta);
+}
