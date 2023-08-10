@@ -321,3 +321,11 @@
     padding: 0.3rem;
     font-family: inherit;
 }
+
+.logicpenguin dialog input[type="number"] {
+    font-size: 125%;
+    padding: 0.3rem;
+    font-family: inherit;
+    width: 5rem;
+    margin-right: 0.2rem;
+}

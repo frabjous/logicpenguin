@@ -414,6 +414,17 @@ mainloadfns.studentsmain = async function() {
                 myfamily: userinfo?.family ?? false,
                 onclick: function() {
                     showdialog(async function() {
+                        const req = {
+                            query: 'overridescore',
+                            scoreuserid: this.userid,
+                            scoreexnum: this.exnum,
+                            newscore: (parseFloat(this.overridescoreinput.value) / 100)
+                        }
+                        const orresp = await editorquery(req);
+                        if (!orresp) { return; }
+                        console.log(orresp);
+                        // TODO: change scorediv
+
                     }, 'Override score', 'override', 'overriding …');
                     addelem('div', theDialog.maindiv, {
                         innerHTML: 'Override ' + this.myexnum + ' for ' +
@@ -424,7 +435,8 @@ mainloadfns.studentsmain = async function() {
                     });
                     theDialog.overridescoreinput = addelem('input', scoreholder, {
                         type: 'number',
-                        value: ((this?.myscore.toString()) ?? '0')
+                        step: '0.1',
+                        value: (((this?.myscore * 100).toFixed(1).toString()) ?? '0')
                     });
                     addelem('span', scoreholder, { innerHTML: '%' });
                     theDialog.userid = this.myuserid;
@@ -495,8 +507,8 @@ mainloadfns.studentsmain = async function() {
                             extexnum: this.exnum,
                             ts: (new Date(this.extensiontimeinput.value)).getTime()
                         }
-                        const resp = await editorquery(req);
-                        if (!resp) { return; }
+                        const extresp = await editorquery(req);
+                        if (!extresp) { return; }
                         const btn = this.extensionbutton;
                         btn.classList.add('activeextension');
                         btn.title = 'extended till ' +

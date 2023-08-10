@@ -135,6 +135,17 @@ qr.getsystemnames = async function(req) {
     return { systems }
 }
 
+qr.overridescore = async function(req) {
+    for (const reqqy of ["consumerkey", "contextid", "scoreuserid",
+        "scoreexnum", "newscore"]) {
+        if (!(reqqy in req)) {
+            return { error: true, errMsg: 'Insufficient information ' +
+                'provided to override score.' }
+        }
+    }
+    return req;
+}
+
 qr.savecontextsettings = async function(req) {
     if (!("contextSettings" in req)) {
         return {
