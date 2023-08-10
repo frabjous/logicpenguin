@@ -332,7 +332,7 @@ mainloadfns.studentsmain = async function() {
         const thcell = addelem('th', thr, { innerHTML: exnum });
         const tfcell = addelem('th', tfr, { innerHTML: exnum });
     }
-    // fill in users
+    // fill in users' family and given names from fullname if need be
     for (const user in resp.users) {
         const userinfo = resp.users[user];
         if ((!("family" in userinfo) || userinfo.family == '')
@@ -349,10 +349,31 @@ mainloadfns.studentsmain = async function() {
         }
     }
     let users = Object.keys(resp.users);
-    users = users.sort
+    users = users.sort(function(a,b) {
+        const ainfo = resp.users[a];
+        const binfo = resp.users[b];
+        if (ainfo?.roles == "Learner" && binfo?.roles != "Learner") { return -1; }
+        if (binfo?.roles == "Learner" && binfo?.roles != "Learner") { return 1; }
+        if (("family" in ainfo) && ("family" in binfo)) {
+            let fcompare = ainfo.family.localeCompare(binfo.family);
+            if (fcompare != 0) { return fcompare; }
+        }
+        if (("family" in ainfo) && !("family" in binfo)) {
+            return -1;
+        }
+        if (("family" in binfo) && !("family" in ainfo)) {
+            return 1
+        }
+        if (("given" in ainfo) && ("given" in binfo)) {
+            let gcompare = ainfo.given.localeCompare(binfo.given);
+            if (gcompare != 0) { return gcompare; }
+        }
+        return (a.localeCompare(b));
+    });
     // TODO: change this
     const code = addelem('pre', m);
-    code.innerHTML = JSON.stringify(resp, null, 4);
+    code.innerHTML = JSON.stringify(users.map((u) => (resp.users[u])), null, 4);
+    //code.innerHTML = JSON.stringify(resp, null, 4);
     return true;
 }
 
