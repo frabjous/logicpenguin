@@ -465,7 +465,15 @@ mainloadfns.studentsmain = async function() {
                     addelem('div', theDialog.maindiv, {
                         innerHTML: 'Extend ' + this.myexnum + ' for ' +
                             ((this.myfamily) ? this.myfamily : this.myuserid) +
-                            'until …'
+                            ' until …'
+                    });
+                    const dtholder = addelem('div', theDialog.maindiv, {
+                        classes: ['datetimeinputholder']
+                    });
+                    theDialog.extensiontimeinput = addelem('input', dtholder, {
+                        type: 'datetime-local',
+                        value: ((this.extensiontime != -1) ? tsToInp(this.extensiontime) :
+                            tsToInp(this.duetime))
                     });
                     theDialog.extensiontime = (this.extensiontime ?? -1);
                     theDialog.duetime = this.duetime;
@@ -577,6 +585,32 @@ function showmain(area) {
     } else {
         clearmessage();
     }
+}
+
+function tsToInp(ts) {
+    const d = new Date(ts);
+    let rv = d.getFullYear().toString();
+    let mon = (d.getMonth() + 1);
+    let monstr = mon.toString();
+    if (mon < 10) { monstr = '0' + monstr; }
+    rv += '-' + monstr;
+    let dt = d.getDate();
+    let dtstr = dt.toString();
+    if (dt < 10) { dtstr = '0' + dtstr; }
+    rv += '-' + dtstr + 'T';
+    let hour = d.getHours();
+    let hourstr = hour.toString();
+    if (hour < 10) { hourstr = '0' + hourstr; }
+    rv += hourstr + ':';
+    let min = d.getMinutes();
+    let minstr = min.toString();
+    if (min < 10) { minstr = '0' + minstr; }
+    rv += minstr + ':';
+    let sec = d.getSeconds();
+    let secstr = sec.toString();
+    if (sec < 10) { secstr = '0' + secstr; }
+    rv += secstr;
+    return rv;
 }
 
 function updateTitle() {
