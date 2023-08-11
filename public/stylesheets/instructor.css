@@ -375,4 +375,28 @@
     color: var(--lpmagenta);
 }
 
+.logicpenguin ul.allexerciselist li div.exlistbuttons {
+    padding: 0.5rem 2rem 0.5rem 2rem;
+}
 
+.logicpenguin ul.allexerciselist li div.exlistbuttons button {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise {
+    float: right;
+    display: inline-block;
+    color: var(--lpred);
+    cursor: pointer;
+}
+
+.logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise .material-symbols-outlined {
+    cursor: pointer;
+}
+
+.logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise:hover {
+    color: var(--lpblue);
+}

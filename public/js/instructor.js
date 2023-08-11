@@ -87,10 +87,11 @@ function addExerciseItem(exnum, exinfo) {
     const bdiv = addelem('div', div, { classes: ['exlistbuttons'] });
     const editbutton = addelem('button', bdiv, {
         type: 'button',
-        innerHTML: 'edit'
+        innerHTML: 'edit exercise ' + exnum
     });
     const deletebutton = addelem('div', bdiv, {
         classes: ['deleteexercise'],
+        title: tr('delete this exercise'),
         innerHTML: '<span class="material-symbols-outlined">delete_forever</span>'
     });
 }
@@ -795,9 +796,6 @@ async function updateExerciseList() {
     for (const exnum of exnums) {
         this.addExerciseItem(exnum, resp[exnum]);
     }
-    // TODO: get rid of this
-    this.pre.innerHTML = JSON.stringify(resp, null, 4);
-    return true;
 }
 
 function updateTitle() {
