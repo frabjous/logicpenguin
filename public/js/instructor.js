@@ -165,7 +165,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
     const miscrow = addelem('tr', tbody);
     // short name row
     const snlabeld = addelem('td', snrow);
-    const snlabel = addlem('label', snlabeld, {
+    const snlabel = addelem('label', snlabeld, {
         innerHTML: 'Short name',
         title: 'The short name occurs as part of the URL and should only consist of letters and digits.',
         htmlFor: idbase + '-exinfoform-shortname'
@@ -183,7 +183,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
     // long name row
     const ltlabeld = addelem('td', ltrow);
     const ltlabel = addelem('label', ltlabeld, {
-        innerHTML: 'Full title",
+        innerHTML: 'Full title',
         title: 'The full title appears at the top of the exercise page',
         htmlFor: idbase + '-exinfoform-fulltitle'
     });
@@ -243,7 +243,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         type: 'checkbox',
         id: idbase + '-exinfoform-servergraded',
         name: idbase + '-exinfoform-servergraded',
-        checked (("servergraded" in exinfo) ? exinfo.servergraded : true),
+        checked: (("servergraded" in exinfo) ? exinfo.servergraded : true),
         mydiv: div
     });
     const inpinp = div.getElementsByTagName("input");
@@ -266,13 +266,25 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
             }
         }
         // check short name has no garbage
-        if (!/^[A-Za-z0-9]*$/.text(snval)) {
+        if (!/^[A-Za-z0-9]*$/.test(snval)) {
             if (this.sninput) { this.sninput.classList.add('invalid'); }
             if (this.savebutton) { this.savebutton.disabled = true; }
             return;
         }
         // if made it here, OK
         if (this.savebutton) { this.savebutton.disabled = false; }
+    }
+    div.gatherinfo = function() {
+        const rv = {};
+        rv.exinfo = {};
+        rv.exnum = this?.sninput?.value;
+        rv.origexnum = this?.origexnum ?? false;
+        rv.exinfo.longtitle = this?.ltinput?.value;
+        rv.exinfo.duetime = (new Date(this?.dueinput?.value)).getTime();
+        rv.exinfo.startnum = parseInt(this?.startnuminput?.value) ?? 1;
+        rv.exinfo.savable = this?.savablecheckbox?.checked;
+        rv.exinfo.servergraded = this?.servergradedcheckbox?.checked;
+        return rv;
     }
     return div;
 }
@@ -783,7 +795,12 @@ mainloadfns.exercisesmain = async function() {
     const btndiv = addelem('div', toparea, { classes: ['newexbtndiv'] });
     const newexbtn = addelem('button', btndiv, {
         type: 'button',
-        innerHTML: 'add new exercise'
+        innerHTML: 'add new exercise',
+        onclick: function() {
+            showdialog(async function() {
+            }, 'Create new exercise', 'create', 'creating');
+            theDialog.exinfoform = exinfoform(theDialog.maindiv, 'new', {});
+        }
     });
     // update it
     const updateRes = await exlist.update();
