@@ -325,12 +325,15 @@
 }
 
 
+.logicpenguin div.exinfoform input[type="datetime-local"],
 .logicpenguin dialog input[type="datetime-local"] {
     font-size: 125%;
     padding: 0.3rem;
     font-family: inherit;
 }
 
+
+.logicpenguin div.exinfoform input[type="number"],
 .logicpenguin dialog input[type="number"] {
     font-size: 125%;
     padding: 0.3rem;
@@ -340,27 +343,42 @@
 }
 
 .logicpenguin dialog div.exinfoform input[type="text"],
-.logicpenguin dialog div.exinfoform input[type="datetime-local"] {
-    width: 20rem;
+.logicpenguin div.exinfoform input[type="text"],
+.logicpenguin dialog div.exinfoform input[type="datetime-local"],
+.logicpenguin div.exinfoform input[type="datetime-local"] {
+    width: 26rem;
 }
 
+.logicpenguin div.exinfoform input[type="text"],
 .logicpenguin dialog div.exinfoform input[type="text"] {
     font-family: inherit;
     font-size: 125%;
     padding: 0.3rem;
 }
 
+.logicpenguin div.exinfoform input[type="text"].invalid {
+    background-color: var(--lpbgred);
+    border: 2px solid var(--lpred);
+    outline: 1px solid var(--lpred);
+}
+
+.logicpenguin div.exinfoform input[type="checkbox"],
 .logicpenguin dialog div.exinfoform input[type="checkbox"] {
     font-size: 115%;
     margin-right: 1rem;
     position: relative;
-    top: 1rem;
+    top: 0.5rem;
 }
 
+.logicpenguin div.exinfoform input[type="number"],
 .logicpenguin dialog div.exinfoform input[type="number"] {
     margin-right: 1rem;
 }
 
+.logicpenguin div.exinfoform table td:first-child {
+    text-align: right;
+    padding-right: 0.5rem;
+}
 
 .logicpenguin ul.allexerciselist {
     list-style-type: none;
@@ -423,7 +441,7 @@
 }
 
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise:hover {
-    color: var(--lpblue);
+    color: var(--lpmagenta);
 }
 
 .logicpenguin div.newexbtndiv button {
