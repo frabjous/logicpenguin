@@ -17,6 +17,12 @@ const datadir = process.appsettings.datadir;
 
 const qr = {};
 
+qr.allexerciseinfo = async function(req) {
+    const info = {};
+
+
+}
+
 qr.allstudentinfo = async function(req) {
     const info = {};
     // read info about exercises

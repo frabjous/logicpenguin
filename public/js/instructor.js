@@ -311,7 +311,7 @@ mainloadfns.studentsmain = async function() {
     // clear out
     m.innerHTML = '';
     // get data on students
-    let resp = await editorquery({ query: 'allstudentinfo' });
+    const resp = await editorquery({ query: 'allstudentinfo' });
     if (!resp) { return false; }
     const hdr = addelem('h2', m, { innerHTML: tr('Students') });
     const tbl = addelem('table', m, { classes: ['studentstable'] });
@@ -563,7 +563,11 @@ mainloadfns.studentsmain = async function() {
 
 mainloadfns.exercisesmain = async function() {
     const m = byid('exercisesmain');
-    m.innerHTML = 'Instructor exercise control coming soon.';
+    m.innerHTML = '';
+    const resp = await editorquery({ query: 'allexerciseinfo' });
+    // TODO: get rid of this
+    const pre = addelem('pre', m);
+    pre.innerTHML = JSON.stringify(resp, null, 4);
     return true;
 }
 
