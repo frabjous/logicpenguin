@@ -27,7 +27,21 @@ function addExerciseItem(exnum, exinfo) {
     const div = addelem('div', li);
     const exnumdiv = addelem('div', div, {
         classes: ['exnumtitle'],
-        innerHTML: '(' + exnum + ')'
+        innerHTML: '(' + exnum + ')' + (("longtitle" in exinfo) ?
+            (' ' + htmlEscape(exinfo.longtitle)) : '')
+    });
+    const exinfodiv = addelem('div', div);
+    const duetimepart = addelem('div', exinfodiv, {
+        classes: ['exinfopart']
+    });
+    const timerinfo = ((exinfo?.duetime > 0) ?
+        (new Date(exinfo.duetime)).toLocaleString() : 'none');
+    const duetimelabel = addelem('span', duetimepart, {
+        innerHTML: '<span class="material-symbols-outlined">timer</span> ' +
+            tr('Due') + ': '
+    });
+    const duetimeinfo = addelem('span', duetimepart, {
+        innerHTML: timerinfo
     });
 }
 
