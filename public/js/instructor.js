@@ -35,7 +35,7 @@ function addExerciseItem(exnum, exinfo) {
         classes: ['exinfopart']
     });
     const timerinfo = ((exinfo?.duetime > 0) ?
-        (new Date(exinfo.duetime)).toLocaleString() : 'none');
+        (new Date(exinfo.duetime)).toLocaleString() : 'never');
     const duetimelabel = addelem('span', duetimepart, {
         innerHTML: '<span class="material-symbols-outlined">timer</span>' +
             tr('Due') + ': '
@@ -59,7 +59,13 @@ function addExerciseItem(exnum, exinfo) {
     });
     const servergradedinfo = addelem('span', servergradedpart, {
         innerHTML: ((("servergraded" in exinfo) && (exinfo.servergraded)) ? 'yes' : 'no')
-    });}
+    });
+    const probsetpart = addelem('div', exinfodiv, { classes: ['exinfopart'] });
+    const probesetlabel = addelem('span', probsetpart, {
+        innerHTML: '<span class="material-symbols-outlined"></span> ' +
+            tr('Problem sets') + ': '
+    });
+}
 
 // get rid of current message near top
 function clearmessage() {
@@ -70,7 +76,7 @@ function clearmessage() {
 
 // function for interacting with server; better and more modern
 // than current student-server interaction
-async function editorquery(req= {}) {
+async function editorquery(req = {}) {
     req.reqtype = 'instructorrequest';
     req.consumerkey = window.consumerkey;
     req.contextid = window.contextid;
