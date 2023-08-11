@@ -19,8 +19,29 @@ const qr = {};
 
 qr.allexerciseinfo = async function(req) {
     const info = {};
-
-
+    // read info about exercises
+    const exdir = path.join(datadir, req.consumerkey, req.contextid, 'exercises');
+    if (!lpfs.ensuredir(exdir)) {
+        return {
+            error: true,
+            errMsg: 'Could not find or create exercise directory.'
+        }
+    }
+    let exfiles = await lpfs.filesin(exdir);
+    if (exfiles === false) { exfiles = []; }
+    // only look at -info files
+    exfiles = exfiles.filter((f) => (f.substr(-10) == '-info.json'));
+    info.exercises = {};
+    // read exercises for the duetime
+    for (const fn of exfiles) {
+        const ffn = path.join(exdir, fn);
+        const exinfo = lpfs.loadjson(ffn);
+        // the exnum cuts off 10 characters '-info.json'
+        const exnum = fn.substr(0, fn.length - 10);
+        if (!exinfo) { continue; }
+        info[exnum] = exinfo;
+    }
+    return info;
 }
 
 qr.allstudentinfo = async function(req) {

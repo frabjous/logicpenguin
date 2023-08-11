@@ -564,10 +564,12 @@ mainloadfns.studentsmain = async function() {
 mainloadfns.exercisesmain = async function() {
     const m = byid('exercisesmain');
     m.innerHTML = '';
+    console.log("here");
     const resp = await editorquery({ query: 'allexerciseinfo' });
+    console.log("there");
     // TODO: get rid of this
     const pre = addelem('pre', m);
-    pre.innerTHML = JSON.stringify(resp, null, 4);
+    pre.innerHTML = JSON.stringify(resp, null, 4);
     return true;
 }
 
