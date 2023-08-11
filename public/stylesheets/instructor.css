@@ -337,3 +337,8 @@
     width: 5rem;
     margin-right: 0.2rem;
 }
+
+.logicpenguin ul.allexerciselist {
+    list-style-type: none;
+    padding: 0;
+}

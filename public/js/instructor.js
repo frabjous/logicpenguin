@@ -718,10 +718,10 @@ async function updateExerciseList() {
     // sort exercises
     let exnums = Object.keys(resp);
     exnums = exnums.sort(function(a, b) {
-        atext = a.replace(/[^a-z]/g, '');
-        btext = b.replace(/[^a-z]/g, '');
-        anum = parseInt(a.replace(/[^0-9]/g, ''));
-        bnum = parseInt(b.replace(/[^0-9]/g, ''));
+        const atext = a.replace(/[^a-z].*/g, '');
+        const btext = b.replace(/[^a-z].*/g, '');
+        const anum = parseInt(a.replace(/[^0-9]/g, ''));
+        const bnum = parseInt(b.replace(/[^0-9]/g, ''));
         const textComp = atext.localeCompare(btext);
         if (textComp != 0) { return textComp; }
         const numComp = anum - bnum;
