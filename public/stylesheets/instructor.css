@@ -342,3 +342,37 @@
     list-style-type: none;
     padding: 0;
 }
+
+.logicpenguin ul.allexerciselist li > div {
+    border: 2px solid var(--lpgray4);
+    margin-bottom: 2.5rem;
+    box-shadow: 5px 5px 5px var(--lpgray5);
+}
+
+.logicpenguin ul.allexerciselist li .material-symbols-outlined {
+    position: relative;
+    top: 0.3rem;
+}
+
+.logicpenguin ul.allexerciselist li div.exnumtitle {
+    background-color: var(--lpbgcyan);
+    color: var(--lpblue);
+    font-weight: bold;
+    padding: 1rem 2rem 0.5rem 2rem;
+}
+
+.logicpenguin ul.allexerciselist li div.exinfo {
+    padding: 0.5rem 2rem 0.5rem 2rem;
+}
+
+.logicpenguin ul.allexerciselist li div.exinfo div.exinfopart {
+    display: inline-block;
+    color: var(--lpgreen);
+    margin-right: 1rem;
+}
+
+.logicpenguin ul.allexerciselist li div.exinfo div.exinfopart span:first-child {
+    color: var(--lpmagenta);
+}
+
+

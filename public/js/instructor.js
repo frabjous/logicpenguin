@@ -30,20 +30,36 @@ function addExerciseItem(exnum, exinfo) {
         innerHTML: '(' + exnum + ')' + (("longtitle" in exinfo) ?
             (' ' + htmlEscape(exinfo.longtitle)) : '')
     });
-    const exinfodiv = addelem('div', div);
+    const exinfodiv = addelem('div', div, { classes: ['exinfo'] });
     const duetimepart = addelem('div', exinfodiv, {
         classes: ['exinfopart']
     });
     const timerinfo = ((exinfo?.duetime > 0) ?
         (new Date(exinfo.duetime)).toLocaleString() : 'none');
     const duetimelabel = addelem('span', duetimepart, {
-        innerHTML: '<span class="material-symbols-outlined">timer</span> ' +
+        innerHTML: '<span class="material-symbols-outlined">timer</span>' +
             tr('Due') + ': '
     });
     const duetimeinfo = addelem('span', duetimepart, {
         innerHTML: timerinfo
     });
-}
+    const savablepart = addelem('div', exinfodiv, { classes: ['exinfopart'] });
+    const savablelabel = addelem('span', savablepart, {
+        innerHTML: '<span class="material-symbols-outlined">save</span>' +
+            tr('Savable') + ': '
+    });
+    const savableinfo = addelem('span', savablepart, {
+        innerHTML: ((("savable" in exinfo) && (exinfo.savable)) ? 'yes' : 'no')
+    });
+
+    const servergradedpart = addelem('div', exinfodiv, { classes: ['exinfopart'] });
+    const servergradedlabel = addelem('span', servergradedpart, {
+        innerHTML: '<span class="material-symbols-outlined">dns</span>' +
+            tr('Server graded') + ': '
+    });
+    const servergradedinfo = addelem('span', servergradedpart, {
+        innerHTML: ((("servergraded" in exinfo) && (exinfo.servergraded)) ? 'yes' : 'no')
+    });}
 
 // get rid of current message near top
 function clearmessage() {
