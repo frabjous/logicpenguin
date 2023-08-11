@@ -177,7 +177,8 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         name: idbase + '-exinfoform-shortname',
         type: 'text',
         placeholder: 'short name for url',
-        value: ((exnum == 'new') ? '' : exnum)
+        value: ((exnum == 'new') ? '' : exnum),
+        mydiv: div
     });
     // long name row
     const ltlabeld = addelem('td', ltrow);
@@ -192,7 +193,8 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         name: idbase + '-exinfoform-fulltitle',
         type: 'text',
         placeholder: 'full exercise title',
-        value: (exinfo?.longtitle ?? '')
+        value: (exinfo?.longtitle ?? ''),
+        mydiv: div
     });
     // due time row
     const duelabeld = addelem('td', duerow);
@@ -205,21 +207,73 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         type: 'datetime-local',
         id: idbase + '-exinfoform-duetime',
         name: idbase + '-exinfoform-duetime',
-        value: ((exinfo?.duetime) ? tsToInp(exinfo.duetime) : '')
+        value: ((exinfo?.duetime) ? tsToInp(exinfo.duetime) : ''),
+        mydiv: div,
     });
     // misc row
     const misclabeld = addelem('td', miscrow);
     const misclabel = addelem('label', misclabeld, {
         innerHTML: 'Start #',
-        htmlFor = idbase + '-exinfoform-startnum'
+        htmlFor: idbase + '-exinfoform-startnum'
     });
     const misccell = addelem('td', miscrow);
     div.startnuminput = addelem('input', misccell, {
         type: 'number',
         id: idbase + '-exinfoform-startnum',
         name: idbase + '-exinfoform-startnum',
-        value: ((exinfo?.startnum?.toString()) ?? 1)
+        value: ((exinfo?.startnum?.toString()) ?? 1),
+        mydiv: div
     });
+    const savablelabel = addelem('label', misccell, {
+        innerHTML: 'Savable',
+        htmlFor: idbase + '-exinfoform-savable'
+    });
+    div.savablecheckbox = addelem('input', misccell, {
+        type: 'checkbox',
+        id: idbase + '-exinfoform-savable',
+        name: idbase + '-exinfoform-savable',
+        checked: (("savable" in exinfo) ? exinfo.savable : true),
+        mydiv: div
+    });
+    const servergradedlabel = addelem('label', misccell, {
+        innerHTML: 'Graded on server',
+        htmlFor: idbase + '-exinfoform-servergraded'
+    });
+    div.servergradedcheckbox = addelem('input', misccell, {
+        type: 'checkbox',
+        id: idbase + '-exinfoform-servergraded',
+        name: idbase + '-exinfoform-servergraded',
+        checked (("servergraded" in exinfo) ? exinfo.servergraded : true),
+        mydiv: div
+    });
+    const inpinp = div.getElementsByTagName("input");
+    for (const inp of inpinp) {
+        inp.onchange = function() { if (this.mydiv.verify) {
+            this.mydiv.verify();
+        }}
+        inp.oninput = function() { if (this.mydiv.verify) {
+            this.mydiv.verify();
+        }}
+    }
+    div.verify = function() {
+        if (this.sninput) { this.sninput.classList.remove('invalid'); }
+        // check short name is not empty
+        const snval = this?.sninput?.value ?? '';
+        if (snval == '') {
+            if (this.savebutton) {
+                this.savebutton.disabled = true;
+                return;
+            }
+        }
+        // check short name has no garbage
+        if (!/^[A-Za-z0-9]*$/.text(snval)) {
+            if (this.sninput) { this.sninput.classList.add('invalid'); }
+            if (this.savebutton) { this.savebutton.disabled = true; }
+            return;
+        }
+        // if made it here, OK
+        if (this.savebutton) { this.savebutton.disabled = false; }
+    }
     return div;
 }
 
