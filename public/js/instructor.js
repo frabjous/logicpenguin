@@ -67,7 +67,7 @@ function addExerciseItem(exnum, exinfo) {
     if (numsets > 9) { pseticon = 'filter_9_plus'; }
     const probsetlabel = addelem('span', probsetpart, {
         innerHTML: '<span class="material-symbols-outlined">' + pseticon +
-            '</span>' + ((numsets > 0) ? tr('Problem sets') : tr('Problem set')) +
+            '</span>' + ((numsets > 1) ? tr('Problem sets') : tr('Problem set')) +
             ' (' + numsets.toString()  + '): '
     });
     const ptypes = {};
@@ -646,8 +646,12 @@ mainloadfns.exercisesmain = async function() {
     // create the exercise list
     const exlist = addelem('ul', toparea, { classes: ['allexerciselist'] });
     exlist.update = updateExerciseList;
-    // TODO: get rid of thise
-    exlist.pre = addelem('pre', toparea);
+    // new ex button
+    const btndiv = addelem('div', toparea, { classes: ['newexbtndiv'] });
+    const newexbtn = addelem('button', btndiv, {
+        type: 'button',
+        innerHTML: 'add new exercise'
+    });
     // update it
     const updateRes = await exlist.update();
     if (!updateRes) { return false; }
@@ -796,6 +800,7 @@ async function updateExerciseList() {
     for (const exnum of exnums) {
         this.addExerciseItem(exnum, resp[exnum]);
     }
+    return true;
 }
 
 function updateTitle() {

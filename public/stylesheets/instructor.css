@@ -379,6 +379,7 @@
     padding: 0.5rem 2rem 0.5rem 2rem;
 }
 
+.logicpenguin div.newexbtndiv button,
 .logicpenguin ul.allexerciselist li div.exlistbuttons button {
     margin-left: 0;
     margin-right: 0;
@@ -399,4 +400,8 @@
 
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise:hover {
     color: var(--lpblue);
+}
+
+.logicpenguin div.newexbtndiv button {
+    padding: 1rem 2rem 1rem 2rem;
 }
