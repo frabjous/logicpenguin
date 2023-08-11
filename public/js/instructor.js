@@ -74,8 +74,8 @@ function addExerciseItem(exnum, exinfo) {
     for (const pset of exinfo?.problemsets) {
         if ("problemtype" in pset) {
             let ptype = pset.problemtype;
-            if (ptype.substring(0,11) == 'derivation') {
-                ptype = ptype.substring(11);
+            if (ptype.substring(0,11) == 'derivation-') {
+                ptype = 'derivation';
             }
             ptypes[ptype] = true;
         }
@@ -83,6 +83,15 @@ function addExerciseItem(exnum, exinfo) {
     let ptypestr = Object.keys(ptypes).sort().join(', ');
     const probsetinfo = addelem('span', probsetpart, {
         innerHTML: ptypestr
+    });
+    const bdiv = addelem('div', div, { classes: ['exlistbuttons'] });
+    const editbutton = addelem('button', bdiv, {
+        type: 'button',
+        innerHTML: 'edit'
+    });
+    const deletebutton = addelem('div', bdiv, {
+        classes: ['deleteexercise'],
+        innerHTML: '<span class="material-symbols-outlined">delete_forever</span>'
     });
 }
 
