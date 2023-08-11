@@ -8,6 +8,7 @@
 
 import LP from '../load.js';
 import { htmlEscape, jsonRequest } from './common.js';
+import { randomString } from './misc.js';
 import tr from './translate.js';
 
 // initialize stuff
@@ -142,6 +143,58 @@ async function editorquery(req = {}) {
 function errormessage(msg) {
     makemessage('error', '<span class="material-symbols-outlined">emergency_home</span> <span class="errortitle">' +
         tr('ERROR') + '</span>: ' + tr(msg));
+}
+
+function exinfoform(parnode, exnum = 'new', exinfo = {}) {
+    const div = addelem('div', parnode, { classes: ['exinfoform'] });
+    let idbase = exnum;
+    if (idbase == 'new') {
+        idbase = randomString(12);
+        while (document.getElementById(idbase + '-exinfoform')) {
+            idbase = randomString(12);
+        }
+    }
+    div.id = idbase + '-exinfoform';
+    // form table
+    const tbl = addelem('table', div);
+    const tbody = addelem('tbody', tbl);
+    // form rows
+    const snrow = addelem('tr', tbody);
+    const ltrow = addelem('tr', tbody);
+    const duerow = addelem('tr', tbody);
+    const miscrow = addelem('tr', tbody);
+    // short name row
+    const snlabeld = addelem('td', snrow);
+    const snlabel = addlem('label', snlabeld, {
+        innerHTML: 'Short name',
+        title: 'The short name occurs as part of the URL and should only consist of letters and digits.',
+        htmlFor = idbase + '-exinfoform-shortname'
+    });
+    const sncell = addelem('td', snrow);
+    div.origexnum = ((exnum == 'new') ? false : exnum);
+    div.sninput = addelem('input', sncell, {
+        id: idbase + '-exinfoform-shortname',
+        name: idbase + '-exinfoform-shortname',
+        type: 'text',
+        placeholder: 'short name for url',
+        value: ((exnum == 'new') ? '' : exnum)
+    });
+    // long name row
+    const ltlabeld = addelem('td', ltrow);
+    const ltlabel = addelem('label', ltlabeld, {
+        innerHTML: 'Full title",
+        title: 'The full title appears at the top of the exercise page',
+        htmlFor = idbase + 'exinfoform-fulltitle'
+    });
+    const ltcell = addelem('td', ltrow);
+    div.ltinput = addelem('input', ltcell, {
+        id: idbase + 'exinfoform-fulltitle',
+        name: idbase + 'exinfoform-fulltitle',
+        type: 'text',
+        placeholder: 'full exercise title',
+        value (exinfo?.longtitle ?? '')
+    });
+    return div;
 }
 
 // setting the message area at the top to a informational message
