@@ -21,6 +21,16 @@ const msgArea = byid('messagearea');
 const theDialog = document.getElementsByTagName("dialog")[0];
 const mainloadfns = {};
 
+
+// add exercise to Exercise list, attached to ul element as "this"
+function addExerciseItem(exnum, exinfo) {
+    const li = addelem('li', this);
+    const div = addelem('div', li);
+    const exnumdiv = addelem('div', div, {
+        innerHTML: '(' + exnum + ')'
+    });
+}
+
 // get rid of current message near top
 function clearmessage() {
     msgArea.style.display = 'none';
@@ -564,9 +574,31 @@ mainloadfns.studentsmain = async function() {
 mainloadfns.exercisesmain = async function() {
     const m = byid('exercisesmain');
     m.innerHTML = '';
-    console.log("here");
     const resp = await editorquery({ query: 'allexerciseinfo' });
-    console.log("there");
+    if (!resp) { return false; }
+    const toparea = addelem('div', m, {
+        id: 'exercisestop'
+    });
+    const hdr = addelem('h2', toparea, { innerHTML: tr('Exercises') });
+    const exlist = addelem('ul', toparea, { classes: ['allexerciselist'] });
+    exlist.addExerciseItem = addExerciseItem;
+    // sort exercises
+    let exnums = Object.keys(resp);
+    exnums = exnums.sort(function(a, b) {
+        atext = a.replace(/[^a-z]/g, '');
+        btext = b.replace(/[^a-z]/g, '');
+        anum = parseInt(a.replace(/[^0-9]/g, ''));
+        bnum = parseInt(b.replace(/[^0-9]/g, ''));
+        const textComp = atext.localeCompare(btext);
+        if (textComp != 0) { return textComp; }
+        const numComp = anum - bnum;
+        if (numComp != 0) { return numComp; }
+        return a.localeCompare(b);
+    });
+    for (const exnum of exnums) {
+        exlist.addExerciseItem(exnum, resp[exnum]);
+    }
+
     // TODO: get rid of this
     const pre = addelem('pre', m);
     pre.innerHTML = JSON.stringify(resp, null, 4);
