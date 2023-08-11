@@ -168,7 +168,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
     const snlabel = addlem('label', snlabeld, {
         innerHTML: 'Short name',
         title: 'The short name occurs as part of the URL and should only consist of letters and digits.',
-        htmlFor = idbase + '-exinfoform-shortname'
+        htmlFor: idbase + '-exinfoform-shortname'
     });
     const sncell = addelem('td', snrow);
     div.origexnum = ((exnum == 'new') ? false : exnum);
@@ -184,15 +184,41 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
     const ltlabel = addelem('label', ltlabeld, {
         innerHTML: 'Full title",
         title: 'The full title appears at the top of the exercise page',
-        htmlFor = idbase + 'exinfoform-fulltitle'
+        htmlFor: idbase + '-exinfoform-fulltitle'
     });
     const ltcell = addelem('td', ltrow);
     div.ltinput = addelem('input', ltcell, {
-        id: idbase + 'exinfoform-fulltitle',
-        name: idbase + 'exinfoform-fulltitle',
+        id: idbase + '-exinfoform-fulltitle',
+        name: idbase + '-exinfoform-fulltitle',
         type: 'text',
         placeholder: 'full exercise title',
-        value (exinfo?.longtitle ?? '')
+        value: (exinfo?.longtitle ?? '')
+    });
+    // due time row
+    const duelabeld = addelem('td', duerow);
+    const duelabel = addelem('label', duelabeld, {
+        innerHTML: 'When due',
+        htmlFor: idbase + '-exinfoform-duetime'
+    });
+    const duecell = addelem('td', duerow);
+    div.dueinput = addelem('input', duecell, {
+        type: 'datetime-local',
+        id: idbase + '-exinfoform-duetime',
+        name: idbase + '-exinfoform-duetime',
+        value: ((exinfo?.duetime) ? tsToInp(exinfo.duetime) : '')
+    });
+    // misc row
+    const misclabeld = addelem('td', miscrow);
+    const misclabel = addelem('label', misclabeld, {
+        innerHTML: 'Start #',
+        htmlFor = idbase + '-exinfoform-startnum'
+    });
+    const misccell = addelem('td', miscrow);
+    div.startnuminput = addelem('input', misccell, {
+        type: 'number',
+        id: idbase + '-exinfoform-startnum',
+        name: idbase + '-exinfoform-startnum',
+        value: ((exinfo?.startnum?.toString()) ?? 1)
     });
     return div;
 }
