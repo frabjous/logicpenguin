@@ -61,9 +61,28 @@ function addExerciseItem(exnum, exinfo) {
         innerHTML: ((("servergraded" in exinfo) && (exinfo.servergraded)) ? 'yes' : 'no')
     });
     const probsetpart = addelem('div', exinfodiv, { classes: ['exinfopart'] });
-    const probesetlabel = addelem('span', probsetpart, {
-        innerHTML: '<span class="material-symbols-outlined"></span> ' +
-            tr('Problem sets') + ': '
+    const numsets = (exinfo?.problemsets?.length ?? 0);
+    let pseticon = 'filter_' + numsets.toString();
+    if (numsets == 0) { pseticon = 'filter_none'; }
+    if (numsets > 9) { pseticon = 'filter_9_plus'; }
+    const probsetlabel = addelem('span', probsetpart, {
+        innerHTML: '<span class="material-symbols-outlined">' + pseticon +
+            '</span>' + ((numsets > 0) ? tr('Problem sets') : tr('Problem set')) +
+            ' (' + numsets.toString()  + '): '
+    });
+    const ptypes = {};
+    for (const pset of exinfo?.problemsets) {
+        if ("problemtype" in pset) {
+            let ptype = pset.problemtype;
+            if (ptype.substring(0,11) == 'derivation') {
+                ptype = ptype.substring(11);
+            }
+            ptypes[ptype] = true;
+        }
+    }
+    let ptypestr = Object.keys(ptypes).sort().join(', ');
+    const probsetinfo = addelem('span', probsetpart, {
+        innerHTML: ptypestr
     });
 }
 

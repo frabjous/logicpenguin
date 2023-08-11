@@ -31,7 +31,6 @@ qr.allexerciseinfo = async function(req) {
     if (exfiles === false) { exfiles = []; }
     // only look at -info files
     exfiles = exfiles.filter((f) => (f.substr(-10) == '-info.json'));
-    info.exercises = {};
     // read exercises for the duetime
     for (const fn of exfiles) {
         const ffn = path.join(exdir, fn);
