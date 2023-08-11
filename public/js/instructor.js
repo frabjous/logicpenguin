@@ -21,12 +21,12 @@ const msgArea = byid('messagearea');
 const theDialog = document.getElementsByTagName("dialog")[0];
 const mainloadfns = {};
 
-
 // add exercise to Exercise list, attached to ul element as "this"
 function addExerciseItem(exnum, exinfo) {
     const li = addelem('li', this);
     const div = addelem('div', li);
     const exnumdiv = addelem('div', div, {
+        classes: ['exnumtitle'],
         innerHTML: '(' + exnum + ')'
     });
 }
@@ -574,34 +574,19 @@ mainloadfns.studentsmain = async function() {
 mainloadfns.exercisesmain = async function() {
     const m = byid('exercisesmain');
     m.innerHTML = '';
-    const resp = await editorquery({ query: 'allexerciseinfo' });
-    if (!resp) { return false; }
     const toparea = addelem('div', m, {
         id: 'exercisestop'
     });
     const hdr = addelem('h2', toparea, { innerHTML: tr('Exercises') });
+    // create the exercise list
     const exlist = addelem('ul', toparea, { classes: ['allexerciselist'] });
-    exlist.addExerciseItem = addExerciseItem;
-    // sort exercises
-    let exnums = Object.keys(resp);
-    exnums = exnums.sort(function(a, b) {
-        atext = a.replace(/[^a-z]/g, '');
-        btext = b.replace(/[^a-z]/g, '');
-        anum = parseInt(a.replace(/[^0-9]/g, ''));
-        bnum = parseInt(b.replace(/[^0-9]/g, ''));
-        const textComp = atext.localeCompare(btext);
-        if (textComp != 0) { return textComp; }
-        const numComp = anum - bnum;
-        if (numComp != 0) { return numComp; }
-        return a.localeCompare(b);
-    });
-    for (const exnum of exnums) {
-        exlist.addExerciseItem(exnum, resp[exnum]);
-    }
-
-    // TODO: get rid of this
-    const pre = addelem('pre', m);
-    pre.innerHTML = JSON.stringify(resp, null, 4);
+    exlist.update = updateExerciseList;
+    // TODO: get rid of thise
+    exlist.pre = addelem('pre', toparea);
+    // update it
+    const updateRes = await exlist.update();
+    if (!updateRes) { return false; }
+    // TODO: add individual exercise area
     return true;
 }
 
@@ -715,6 +700,40 @@ function tsToInp(ts) {
     if (sec < 10) { secstr = '0' + secstr; }
     rv += secstr;
     return rv;
+}
+
+// attached to 'ul' as 'this'
+async function updateExerciseList() {
+    // clear out old items
+    const lili = this.getElementsByTagName('li');
+    while (lili.length > 0) {
+        const li = lili[lili.length - 1];
+        li.parentNode.removeChild(li);
+    }
+    // fetch info
+    const resp = await editorquery({ query: 'allexerciseinfo' });
+    if (!resp) { return false; }
+    // function to add exercises
+    this.addExerciseItem = addExerciseItem;
+    // sort exercises
+    let exnums = Object.keys(resp);
+    exnums = exnums.sort(function(a, b) {
+        atext = a.replace(/[^a-z]/g, '');
+        btext = b.replace(/[^a-z]/g, '');
+        anum = parseInt(a.replace(/[^0-9]/g, ''));
+        bnum = parseInt(b.replace(/[^0-9]/g, ''));
+        const textComp = atext.localeCompare(btext);
+        if (textComp != 0) { return textComp; }
+        const numComp = anum - bnum;
+        if (numComp != 0) { return numComp; }
+        return a.localeCompare(b);
+    });
+    for (const exnum of exnums) {
+        this.addExerciseItem(exnum, resp[exnum]);
+    }
+    // TODO: get rid of this
+    this.pre.innerHTML = JSON.stringify(resp, null, 4);
+    return true;
 }
 
 function updateTitle() {
