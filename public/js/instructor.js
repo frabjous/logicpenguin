@@ -332,6 +332,17 @@ function loadhash(h) {
     }
     if (h.substr(-4) == 'main') {
         showmain(h);
+        if (h == '#exercisesmain') {
+            const m = byid('exercisesmain');
+            if ("toparea" in m) {
+                m.toparea.style.display = 'block';
+                m.indivexarea.style.display = 'none';
+            }
+        }
+        return;
+    }
+    if (h.substr(0,10) == '#exercise-') {
+        showexercise(h);
         return;
     }
 }
@@ -822,7 +833,8 @@ mainloadfns.exercisesmain = async function() {
     const indivexarea = addelem('div', m, {
         id: 'individualexercise'
     });
-    m.indivexarea = indixexarea;
+    m.indivexarea = indivexarea;
+    m.indivexarea.style.display = 'none';
     const hdr = addelem('h2', toparea, { innerHTML: tr('Exercises') });
     // create the exercise list
     const exlist = addelem('ul', toparea, { classes: ['allexerciselist'] });
@@ -916,6 +928,20 @@ function showdialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
         }
     });
     theDialog.showModal();
+}
+
+function showexercise(exhash) {
+    showmain('#exercisesmain');
+    const m = byid('exercisesmain');
+    if (!("indivexarea" in m)) {
+        setTimeout(
+            function() { showexercise(window.location.hash); }, 10
+        );
+        return;
+    }
+    m.toparea.style.display = 'none';
+    m.indivexarea.style.display = 'block';
+    m.indivexarea.innerHTML ='individual exercise area';
 }
 
 function showmain(area) {
