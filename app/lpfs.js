@@ -115,6 +115,16 @@ lpfs.mtime = async function(filename) {
     return rv;
 }
 
+// rename a file
+lpfs.rename = async function(oldpath, newpath) {
+    try {
+        await fs.promises.rename(oldpath, newpath);
+    } catch(err) {
+        return false;
+    }
+    return true;
+}
+
 // serializes an object as json and saves it as a file
 lpfs.savejson = function(filename, obj) {
     try {

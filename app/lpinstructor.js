@@ -157,7 +157,15 @@ qr.exerciseinfo = async function(req) {
     if (!("exdata" in req)) {
         return { error: true, errMsg: 'No exercise info included.' }
     }
-    
+    const exdata = req.exdata;
+    // rename if need be
+    if (exdata.origexnum && (exdata.origexnum != exdata.exnum)) {
+        const renameRes = await renameExerciseFiles(req.consumerkey,
+            req.contextid, exdata.origexnum, exdata.exnum);
+        if (!renameRes) {
+            return { error: true, errMsg: 'Unable to rename exercise.' }
+        }
+    }
 }
 
 qr.getsystemnames = async function(req) {
@@ -262,6 +270,34 @@ const lpinstructor = async function(reqobj) {
         };
     }
     return await qr[query](reqobj);
+}
+
+async function renameExerciseFiles(consumerkey, contextid, oldexnum, newexnum) {
+    const exdir = path.join(datadir, consumerkey, contextid, 'exercises');
+    if (!lpfs.ensuredir(exdir)) {
+        return false;
+    }
+    const oldinfofile = path.join(exdir, oldexnum + '-info.json');
+    const oldprobfile = path.join(exdir, oldexnum + '-allproblems.json');
+    const oldansfile = path.join(exdir, oldexnum + '-answers.json');
+    const newinfofile = path.join(exdir, newexnum + '-info.json');
+    const newprobfile = path.join(exdir, newexnum + '-allproblems.json');
+    const newansfile = path.join(exdir, newexnum + '-answers.json');
+    // do not overwrite
+    if (lpfs.isfile(newinfofile)) { return false; }
+    if (lpfs.isfile(oldinfofile)) {
+        const renresult = await lpfs.rename(oldinfofile, newinfofile);
+        if (!renresult) { return false; }
+    }
+    if (lpfs.isfile(oldprobfile)) {
+        const probrenresult = await lpfs.rename(oldprobfile, newprobfile);
+        if (!probrenresult) { return false; }
+    }
+    if (lpfs.isfile(oldansfile)) {
+        const ansrenresult = await lpfs.rename(oldansfile, newansfile);
+        if (!ansrenresult) { return false; }
+    }
+    return true;
 }
 
 export default lpinstructor;
