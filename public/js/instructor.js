@@ -791,6 +791,7 @@ mainloadfns.exercisesmain = async function() {
     // create the exercise list
     const exlist = addelem('ul', toparea, { classes: ['allexerciselist'] });
     exlist.update = updateExerciseList;
+    m.myexlist = exlist;
     // new ex button
     const btndiv = addelem('div', toparea, { classes: ['newexbtndiv'] });
     const newexbtn = addelem('button', btndiv, {
@@ -798,9 +799,22 @@ mainloadfns.exercisesmain = async function() {
         innerHTML: 'add new exercise',
         onclick: function() {
             showdialog(async function() {
+                const exdata = theDialog.exinfoform.gatherinfo();
+                if (!("problemsets" in exinfo)) {
+                    exinfo.problemsets = [];
+                }
+                const req = {
+                    query: 'exerciseinfo',
+                    exdata: exdata
+                }
+                const resp = await editorquery(req);
+                if (!resp) { return; }
+                byid('exercisesmain').myexlist.update();
             }, 'Create new exercise', 'create', 'creating');
+
             theDialog.exinfoform = exinfoform(theDialog.maindiv, 'new', {});
             theDialog.exinfoform.savebutton = theDialog.confirmbutton;
+            theDialog.exinfoform.savebutton.disabled = true;
         }
     });
     // update it
@@ -827,6 +841,7 @@ function makemessage(msgtype, msg) {
     msgArea.classList.remove('info','loading','warning','error');
     msgArea.classList.add(msgtype);
     msgArea.innerHTML = msg;
+    msgArea.scrollIntoView({ block: 'nearest' });
 }
 
 function showdialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {

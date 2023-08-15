@@ -153,6 +153,13 @@ qr.grantextension = async function(req) {
     return { success: true };
 }
 
+qr.exerciseinfo = async function(req) {
+    if (!("exdata" in req)) {
+        return { error: true, errMsg: 'No exercise info included.' }
+    }
+    
+}
+
 qr.getsystemnames = async function(req) {
     const files = await lpfs.filesin('public/js/problemtypes');
     const systemspt = files.filter((f) => {
