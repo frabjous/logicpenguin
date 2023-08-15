@@ -448,3 +448,12 @@
 .logicpenguin div.newexbtndiv button {
     padding: 1rem 2rem 1rem 2rem;
 }
+
+.logicpenguin ul.allexerciselist li div.exlaunchlinkdiv {
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    color: var(--lpmagenta);
+}
+
+.logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.launchlink {
+    color: var(--lpgreen);
+}

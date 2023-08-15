@@ -85,6 +85,14 @@ function addExerciseItem(exnum, exinfo) {
     const probsetinfo = addelem('span', probsetpart, {
         innerHTML: ptypestr
     });
+    const launchlinkurl = window.location.protocol + '//' +
+        window.location.host + '/launch/' + exnum;
+    const launchlinkdiv = addelem('div',div, {
+        classes: ['exlaunchlinkdiv'],
+        innerHTML: '<span class="material-symbols-outlined">link</span>' +
+            'LMS LTI Tool Launch URL: <span class="launchlink">' +
+            launchlinkurl + '</span>'
+    });
     const bdiv = addelem('div', div, { classes: ['exlistbuttons'] });
     const editbutton = addelem('button', bdiv, {
         type: 'button',
