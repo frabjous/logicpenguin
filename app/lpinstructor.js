@@ -166,6 +166,67 @@ qr.exerciseinfo = async function(req) {
             return { error: true, errMsg: 'Unable to rename exercise.' }
         }
     }
+    const exdir = path.join(datadir, req.consumerkey, req.contextid, 'exercises');
+    if (!lpfs.ensuredir(exdir)) {
+        return { error: true, errMsg: 'Cannot find or create exercise directory.' }
+    }
+    const exinfofile = path.join(exdir, exdata.exnum + '-info.json');
+    // do not overwrite existing exercise
+    if ((!exdata.origexnum) && (lpfs.isfile(exinfofile))) {
+        return { error: true, errMsg: 'Unable to create exercise; an ' +
+            'exercise with that short name already exists!' }
+    }
+    const exinfo = exdata.exinfo;
+    const exnum = exdata.exnum;
+    if (exinfo.duetime === null) { delete exinfo.duetime; }
+    let answers = [];
+    let problems = [];
+    if ("answers" in req) {
+        answers = req.answers;
+    }
+    if ("problems" in req) {
+        problems = req.problems;
+    }
+    // make sure all the numbers match
+    const probsets = exinfo.problemsets;
+    if (probsets.length != answers.length || probsets.length != problems.length) {
+        return {
+            error: true,
+            errMsg: 'Info for an inconsistent number of problem sets received.'
+        }
+    }
+    for (let i=0; i<problems.length; i++) {
+        const probsetprobs = problems[i];
+        const probsetans = answers[i];
+        if (probsetprobs.length != probsetans.length) {
+            return {
+                error: true,
+                errMsg: 'Numbers of problems and answers do not match.'
+            }
+        }
+    }
+    // save files
+    const exprobfile = path.join(exdir, exnum + '-allproblems.json');
+    const exansfile = path.join(exdir, exnum + '-answers.json');
+    if (!lpfs.savejson(exinfofile, exinfo)) {
+        return {
+            error: true,
+            errMsg: 'Unable to save exercise information file.'
+        }
+    }
+    if (!lpfs.savejson(exprobfile, problems)) {
+        return {
+            error: true,
+            errMsg: 'Unable to save exercise problems file.'
+        }
+    }
+    if (!lpfs.savejson(exansfile, answers)) {
+        return {
+            error: true,
+            errMsg: 'Unable to save exercise answers file.'
+        }
+    }
+    return { success: true }
 }
 
 qr.getsystemnames = async function(req) {

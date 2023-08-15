@@ -68,7 +68,7 @@ function addExerciseItem(exnum, exinfo) {
     if (numsets > 9) { pseticon = 'filter_9_plus'; }
     const probsetlabel = addelem('span', probsetpart, {
         innerHTML: '<span class="material-symbols-outlined">' + pseticon +
-            '</span>' + ((numsets > 1) ? tr('Problem sets') : tr('Problem set')) +
+            '</span>' + ((numsets != 1) ? tr('Problem sets') : tr('Problem set')) +
             ' (' + numsets.toString()  + '): '
     });
     const ptypes = {};
@@ -811,8 +811,8 @@ mainloadfns.exercisesmain = async function() {
         onclick: function() {
             showdialog(async function() {
                 const exdata = theDialog.exinfoform.gatherinfo();
-                if (!("problemsets" in exinfo)) {
-                    exinfo.problemsets = [];
+                if (!("problemsets" in exdata.exinfo)) {
+                    exdata.exinfo.problemsets = [];
                 }
                 const req = {
                     query: 'exerciseinfo',
