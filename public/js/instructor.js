@@ -91,7 +91,10 @@ function addExerciseItem(exnum, exinfo) {
         classes: ['exlaunchlinkdiv'],
         innerHTML: '<span class="material-symbols-outlined">link</span>' +
             'LMS LTI Tool Launch URL: <span class="launchlink">' +
-            launchlinkurl + '</span>'
+            launchlinkurl + '</span> ' + '<span class="material-symbols' +
+            '-outlined copylink" title="copy url" ' +
+            'onclick="navigator.clipboard.writeText(\'' +
+            launchlinkurl + '\')">content_copy</span>'
     });
     const bdiv = addelem('div', div, { classes: ['exlistbuttons'] });
     const editbutton = addelem('button', bdiv, {

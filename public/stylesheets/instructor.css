@@ -457,3 +457,12 @@
 .logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.launchlink {
     color: var(--lpgreen);
 }
+
+.logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.copylink {
+    cursor: pointer;
+    color: var(--lpblue);
+}
+
+.logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.copylink:hover {
+    color: var(--lpcyan);
+}
