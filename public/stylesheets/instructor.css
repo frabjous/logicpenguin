@@ -295,6 +295,7 @@
 }
 
 .logicpenguin dialog div.header {
+    padding-top: 1rem;
     color: var(--lpmagenta);
     margin-bottom: 1rem;
 }

@@ -800,6 +800,7 @@ mainloadfns.exercisesmain = async function() {
             showdialog(async function() {
             }, 'Create new exercise', 'create', 'creating');
             theDialog.exinfoform = exinfoform(theDialog.maindiv, 'new', {});
+            theDialog.exinfoform.savebutton = theDialog.confirmbutton;
         }
     });
     // update it
