@@ -99,7 +99,11 @@ function addExerciseItem(exnum, exinfo) {
     const bdiv = addelem('div', div, { classes: ['exlistbuttons'] });
     const editbutton = addelem('button', bdiv, {
         type: 'button',
-        innerHTML: 'edit exercise ' + exnum
+        innerHTML: 'edit exercise ' + exnum,
+        myexnum: exnum,
+        onclick: function() {
+            window.location.hash = '#exercise-' + this.myexnum;
+        }
     });
     const deletebutton = addelem('div', bdiv, {
         classes: ['deleteexercise'],
@@ -814,6 +818,11 @@ mainloadfns.exercisesmain = async function() {
     const toparea = addelem('div', m, {
         id: 'exercisestop'
     });
+    m.toparea = toparea;
+    const indivexarea = addelem('div', m, {
+        id: 'individualexercise'
+    });
+    m.indivexarea = indixexarea;
     const hdr = addelem('h2', toparea, { innerHTML: tr('Exercises') });
     // create the exercise list
     const exlist = addelem('ul', toparea, { classes: ['allexerciselist'] });
