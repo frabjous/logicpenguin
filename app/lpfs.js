@@ -18,6 +18,15 @@ import path from 'node:path';
 // initiate return value
 const lpfs = {};
 
+lpfs.deletefile = async function(filename) {
+    try {
+        await fs.promises.unlink(filename);
+    } catch(err) {
+        return false;
+    }
+    return true;
+}
+
 // returns true if the directory already exists, otherwise creates it
 lpfs.ensuredir = function(dir) {
     if (lpfs.isdir(dir)) { return true; }

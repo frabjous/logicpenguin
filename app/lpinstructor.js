@@ -135,22 +135,38 @@ qr.allstudentinfo = async function(req) {
     return info;
 }
 
-qr.grantextension = async function(req) {
-    for (const reqqy of ["consumerkey", "contextid", "extuserid", "extexnum",
-        "ts"]) {
-        if (!(reqqy in req)) {
-            return { error: true, errMsg: 'Insufficient information ' +
-                'provided to grant extension.' }
-        }
+qr.deleteexercise = async function(req) {
+    if (!("exnum" in req)) {
+        return { error: true, errMsg: 'Exercise to delete not specified.' }
     }
-    const success = lpdata.grantExtension(req.consumerkey, req.contextid,
-        req.extuserid, req.extexnum, req.ts);
-    if (!success) {
-        return { error: true,
-            errMsg: 'Unable to grant extension.'
-        }
+    const exnum = req.exnum;
+    const exdir = path.join(datadir, req.consumerkey, req.contextid,
+        'exercises');
+    const exinfofile = path.join(exdir, exnum + '-info.json');
+    const exprobfile = path.join(exdir, exnum + '-allproblems.json');
+    const exansfile = path.join(exdir, exnum + '-answers.json');
+    if (lpfs.isfile(exinfofile)) {
+        const delres = await lpfs.deletefile(exinfofile);
+        if (!delres) { return {
+            error: true,
+            errMsg: 'Unable to delete exericse info file.'
+        }}
     }
-    return { success: true };
+    if (lpfs.isfile(exprobfile)) {
+        const pdelres = await lpfs.deletefile(exprobfile);
+        if (!pdelres) { return {
+            error: true,
+            errMsg: 'Unable to delete exericse problems file.'
+        }}
+    }
+    if (lpfs.isfile(exansfile)) {
+        const adelres = await lpfs.deletefile(exansfile);
+        if (!adelres) { return {
+            error: true,
+            errMsg: 'Unable to delete exericse answers file.'
+        }}
+    }
+    return { success: true }
 }
 
 qr.exerciseinfo = async function(req) {
@@ -240,6 +256,24 @@ qr.getsystemnames = async function(req) {
         n.replace('derivation-','').replace('.js','')
     ));
     return { systems }
+}
+
+qr.grantextension = async function(req) {
+    for (const reqqy of ["consumerkey", "contextid", "extuserid", "extexnum",
+        "ts"]) {
+        if (!(reqqy in req)) {
+            return { error: true, errMsg: 'Insufficient information ' +
+                'provided to grant extension.' }
+        }
+    }
+    const success = lpdata.grantExtension(req.consumerkey, req.contextid,
+        req.extuserid, req.extexnum, req.ts);
+    if (!success) {
+        return { error: true,
+            errMsg: 'Unable to grant extension.'
+        }
+    }
+    return { success: true };
 }
 
 qr.overridescore = async function(req) {

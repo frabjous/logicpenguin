@@ -104,7 +104,23 @@ function addExerciseItem(exnum, exinfo) {
     const deletebutton = addelem('div', bdiv, {
         classes: ['deleteexercise'],
         title: tr('delete this exercise'),
-        innerHTML: '<span class="material-symbols-outlined">delete_forever</span>'
+        myexnum: exnum,
+        innerHTML: '<span class="material-symbols-outlined">delete_forever</span>',
+        onclick: function() {
+            showdialog(async function() {
+                const req = {
+                    query: 'deleteexercise',
+                    exnum: this.exnum
+                }
+                const resp = editorquery(req);
+                if (!resp) { return; }
+                byid('exercisesmain').myexlist.update();
+            }, 'Delete exercise', 'delete', 'deleting');
+            theDialog.maindiv.innerHTML = 'Are you sure you want to ' +
+                'delete exercise ' + this.myexnum + '? This cannot be ' +
+                'undone!';
+            theDialog.exnum = exnum;
+        }
     });
 }
 
