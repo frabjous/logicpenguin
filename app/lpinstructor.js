@@ -245,6 +245,37 @@ qr.exerciseinfo = async function(req) {
     return { success: true }
 }
 
+qr.getexinfo = async function(req) {
+    if (!("exnum" in req)) {
+        return { error: true, errMsg: 'No exercise number provided.' }
+    }
+    const exnum = req.exnum;
+    const exdir = path.join(datadir, req.consumerkey, req.contextid,
+        'exercises');
+    const infofile = path.join(exdir, exnum + '-info.json');
+    const probfile = path.join(exdir, exnum + '-allproblems-json');
+    const ansfile = path.join(exdir, exnum + '-answers.json');
+    if (!lpfs.isfile(infofile)) {
+        return { error: true, errMsg: 'Exercise data not found.' }
+    }
+    const rv = {};
+    rv.exinfo = lpfs.loadjson(infofile);
+    if (!rv.exinfo) {
+        return { error: true, errMsg: 'Could not read exercise data.' }
+    }
+    if (lpfs.isfile(probfile)) {
+        rv.problems = loadjson(probfile);
+    } else {
+        rv.problems = [];
+    }
+    if (lpfs.isfile(ansfile)) {
+        rv.answers = loadjson(ansfile);
+    } else {
+        rv.answers = [];
+    }
+    return rv;
+}
+
 qr.getsystemnames = async function(req) {
     const files = await lpfs.filesin('public/js/problemtypes');
     const systemspt = files.filter((f) => {

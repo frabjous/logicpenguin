@@ -354,6 +354,30 @@ function loadingmessage(msg = 'loading …') {
         tr(msg));
 }
 
+async function loadexercise(exhash) {
+    const exnum = exhash.substr(10);
+    const exarea = byid("exercisesmain")?.indivexarea;
+    if (!exarea) { return; }
+    const exblock = addelem('div', exarea, {
+        id: exhash.substr(1),
+        classes: ["exerciseblock"]
+    });
+    const hdr = addelem('h3', exblock, {
+        innerHTML: tr('Exercise') + ': ' + exnum
+    });
+    const exdiv = addelem('div', exblock);
+    const req = {
+        query: 'getexinfo',
+        exnum: exnum
+    }
+    exdiv.innerHTML = '<span class="material-symbols-outlined ' +
+        'spinning">sync</span> loading …';
+    const resp = await editorquery(req);
+    exdiv.innerHTML = '';
+    if (!resp) { return; }
+    console.log(resp);
+}
+
 // load (for the first time) one of the five main sections
 async function loadmain(main) {
     const m = byid(main);
@@ -858,6 +882,8 @@ mainloadfns.exercisesmain = async function() {
                 const resp = await editorquery(req);
                 if (!resp) { return; }
                 byid('exercisesmain').myexlist.update();
+                //switch to viewing new exercise
+                window.location.hash = '#exercise-' + exdata.exnum;
             }, 'Create new exercise', 'create', 'creating');
 
             theDialog.exinfoform = exinfoform(theDialog.maindiv, 'new', {});
@@ -941,7 +967,19 @@ function showexercise(exhash) {
     }
     m.toparea.style.display = 'none';
     m.indivexarea.style.display = 'block';
-    m.indivexarea.innerHTML ='individual exercise area';
+    let found = false;
+    const dd = m.indivexarea.getElementsByClassName("exerciseblock");
+    for (const eb of dd) {
+        if (eb.id == exhash) {
+            eb.style.display = "block";
+            found = true;
+        } else {
+            eb.style.display = "none";
+        }
+    }
+    if (!found) {
+        loadexercise(exhash);
+    }
 }
 
 function showmain(area) {
