@@ -325,35 +325,6 @@ function infomessage(msg) {
     makemessage('info', '<span class="material-symbols-outlined">info</span> ' + tr(msg));
 }
 
-// load something based on changes in hash
-function loadhash(h) {
-    if (h == '') {
-        h = '#studentsmain';
-    }
-    if (h.substr(-4) == 'main') {
-        showmain(h);
-        if (h == '#exercisesmain') {
-            const m = byid('exercisesmain');
-            if ("toparea" in m) {
-                m.toparea.style.display = 'block';
-                m.indivexarea.style.display = 'none';
-            }
-        }
-        return;
-    }
-    if (h.substr(0,10) == '#exercise-') {
-        showexercise(h);
-        return;
-    }
-}
-
-// set message area at the top to a loading message
-function loadingmessage(msg = 'loading …') {
-    makemessage('loading',
-        '<span class="material-symbols-outlined spinning">sync</span>' +
-        tr(msg));
-}
-
 async function loadexercise(exhash) {
     const exnum = exhash.substr(10);
     const exarea = byid("exercisesmain")?.indivexarea;
@@ -383,7 +354,52 @@ async function loadexercise(exhash) {
         classes: ['exinfoholder']
     });
     exblock.exinfoform = exinfoform(exinfoholder, exnum, resp.exinfo);
+    const pshdr = addelem('h2', exdiv, { innerHTML: tr('Problem sets') });
+    // TODO: more here
+    const btndiv = addelem('div', exdiv, {
+        classes: ['exbuttondiv']
+    });
+    const newprobsetbutton = addelem('button', btndiv, {
+        type: 'button',
+        innerHTML: tr('add new problem set')
+    });
+    const savebutton = addelem('button', exdiv, {
+        type: 'button',
+        innerHTML: tr('save exercise'),
+        classes: ['fixedbutton'],
+        disabled: true
+    });
+    exblock.exinfoform.savebutton = savebutton;
     console.log(resp);
+}
+
+// load something based on changes in hash
+function loadhash(h) {
+    if (h == '') {
+        h = '#studentsmain';
+    }
+    if (h.substr(-4) == 'main') {
+        showmain(h);
+        if (h == '#exercisesmain') {
+            const m = byid('exercisesmain');
+            if ("toparea" in m) {
+                m.toparea.style.display = 'block';
+                m.indivexarea.style.display = 'none';
+            }
+        }
+        return;
+    }
+    if (h.substr(0,10) == '#exercise-') {
+        showexercise(h);
+        return;
+    }
+}
+
+// set message area at the top to a loading message
+function loadingmessage(msg = 'loading …') {
+    makemessage('loading',
+        '<span class="material-symbols-outlined spinning">sync</span>' +
+        tr(msg));
 }
 
 // load (for the first time) one of the five main sections

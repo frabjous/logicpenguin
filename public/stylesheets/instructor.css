@@ -467,3 +467,9 @@
 .logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.copylink:hover {
     color: var(--lpcyan);
 }
+
+.logicpenguin .exerciseblock button.fixedbutton {
+    position: sticky;
+    padding: 1rem 2rem 1rem 2rem;
+    bottom: 0.5rem;
+}
