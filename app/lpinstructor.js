@@ -253,7 +253,7 @@ qr.getexinfo = async function(req) {
     const exdir = path.join(datadir, req.consumerkey, req.contextid,
         'exercises');
     const infofile = path.join(exdir, exnum + '-info.json');
-    const probfile = path.join(exdir, exnum + '-allproblems-json');
+    const probfile = path.join(exdir, exnum + '-allproblems.json');
     const ansfile = path.join(exdir, exnum + '-answers.json');
     if (!lpfs.isfile(infofile)) {
         return { error: true, errMsg: 'Exercise data not found.' }
@@ -264,12 +264,12 @@ qr.getexinfo = async function(req) {
         return { error: true, errMsg: 'Could not read exercise data.' }
     }
     if (lpfs.isfile(probfile)) {
-        rv.problems = loadjson(probfile);
+        rv.problems = lpfs.loadjson(probfile);
     } else {
         rv.problems = [];
     }
     if (lpfs.isfile(ansfile)) {
-        rv.answers = loadjson(ansfile);
+        rv.answers = lpfs.loadjson(ansfile);
     } else {
         rv.answers = [];
     }

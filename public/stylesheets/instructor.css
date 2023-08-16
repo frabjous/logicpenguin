@@ -341,6 +341,7 @@
     font-family: inherit;
     width: 5rem;
     margin-right: 0.2rem;
+    text-align: center;
 }
 
 .logicpenguin dialog div.exinfoform input[type="text"],

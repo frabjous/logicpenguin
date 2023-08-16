@@ -362,7 +362,7 @@ async function loadexercise(exhash) {
         id: exhash.substr(1),
         classes: ["exerciseblock"]
     });
-    const hdr = addelem('h3', exblock, {
+    const hdr = addelem('h2', exblock, {
         innerHTML: tr('Exercise') + ': ' + exnum
     });
     const exdiv = addelem('div', exblock);
@@ -375,6 +375,14 @@ async function loadexercise(exhash) {
     const resp = await editorquery(req);
     exdiv.innerHTML = '';
     if (!resp) { return; }
+    if (!("exinfo" in resp) || !("answers" in resp) || !("problems" in resp)) {
+        errormessage(tr('Invalid response from server when requesting information about exericse.'));
+        return;
+    }
+    const exinfoholder = addelem('div', exdiv, {
+        classes: ['exinfoholder']
+    });
+    exblock.exinfoform = exinfoform(exinfoholder, exnum, resp.exinfo);
     console.log(resp);
 }
 
@@ -970,7 +978,7 @@ function showexercise(exhash) {
     let found = false;
     const dd = m.indivexarea.getElementsByClassName("exerciseblock");
     for (const eb of dd) {
-        if (eb.id == exhash) {
+        if (eb.id == exhash.substr(1)) {
             eb.style.display = "block";
             found = true;
         } else {
