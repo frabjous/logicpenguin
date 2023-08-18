@@ -14,6 +14,7 @@ import tr from './translate.js';
 // initialize stuff
 const LPinstr = {};
 const mainAreasLoaded = {};
+const problemSetCreators = {};
 
 // convenience constants
 const addelem = LP.addelem;
@@ -361,7 +362,26 @@ async function loadexercise(exhash) {
     });
     exblock.exinfoform = exinfoform(exinfoholder, exnum, resp.exinfo);
     const pshdr = addelem('h2', exdiv, { innerHTML: tr('Problem sets') });
+    const psetdiv = addelem('div', exdiv);
     // TODO: more here
+    for (let i=0; i<resp.exinfo.problemsets.length; i++) {
+        const probsetinfo = resp.exinfo.problemsets[i];
+        const setproblems = resp.problems[i];
+        const setanswers = resp.answers[i];
+        const problemtype = probsetinfo.problemtype;
+        if (!(problemtype in problemSetCreators)) {
+            try {
+                const imported = await import('/js/creators/' + problemtype + '.js');
+                problemSetCreators[problemtype] = imported.default;
+            } catch(err) {
+                errormessage(tr('ERROR loading script for creating problem type') +
+                    ' ' + problemtype + ': ' + err.toString());
+                return;
+            }
+        }
+        const problemsetcreator = addelem(problemtype + '-creator', psetdiv);
+    }
+
     const btndiv = addelem('div', exdiv, {
         classes: ['exbuttondiv']
     });
@@ -376,12 +396,7 @@ async function loadexercise(exhash) {
         disabled: true
     });
     exblock.exinfoform.savebutton = savebutton;
-    for (let i=0; i<resp.exinfo.problemsets.length; i++) {
-        const probsetinfo = resp.exinfo.problemsets[i];
-        const setproblems = resp.problems[i];
-        const setanswers = resp.answers[i];
-        const problemsetcreator = 
-    }
+    
 }
 
 // load something based on changes in hash

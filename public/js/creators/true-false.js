@@ -6,4 +6,12 @@
 // class for creating true/false questions                          //
 //////////////////////////////////////////////////////////////////////
 
+import LogicPenguinProblemSetCreator from '../create-class.js';
 
+export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
+    constructor() {
+        super();
+    }
+}
+
+customElements.define("true-false-creator", TrueFalseCreator);
