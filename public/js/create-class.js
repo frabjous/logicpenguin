@@ -55,7 +55,6 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         this.divider = addelem('div', header, {
             classes: ['problemsetdivider']
         });
-        this.pslabel = addelem('h3', this.divider);
         const topbuttons = addelem('div',  this.divider, {
             classes: ['problemsetdividerbuttons']
         });
@@ -69,6 +68,8 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             classes: ['material-symbols-outlined',  'problemsetdeletebtn'],
             innerHTML: 'delete_forever'
         });
+        this.pslabel = addelem('h3', this.divider);
+        const clearer = addelem('br', this.divider);
         const settingsform = addelem('div', header, {
             classes: ['problemsetsettings']
         });

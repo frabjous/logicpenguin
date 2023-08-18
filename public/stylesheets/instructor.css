@@ -497,6 +497,32 @@
 
 .logicpenguin .problemsetcreator > article > header {
     margin: 0;
-    padding: -0.5rem 1rem 0.5rem 1rem;
+    padding: 0 0 0.5rem 0;
     background-color: var(--lpgray6);
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetdivider {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    background-color: var(--lpbgblue);
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetdivider br {
+    clear: both;
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetdivider h3 {
+    margin: 0;
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdividerbuttons {
+    display: inline-block;
+    float: right;
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetsettings {
+    margin: 1rem;
+    border: 2px solid var(--lpmagenta);
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--lpwhite);
 }
