@@ -16,6 +16,34 @@ export default class LogicPenguinProblem extends HTMLElement {
         this.classList.add('problemset-creator');
     }
 
+    gatherInfo() {
+        const info = {};
+        const problems = [];
+        const answers = [];
+        const description = this?.descinput?.value.trim();
+        info.problemtype = this.problemtype;
+        if (description && description != '') {
+            info.description = description;
+        }
+        const instructions = this?.instructionsinput?.value.trim();
+        if (instructions && instructions != '') {
+            info.instructions = instructions;
+        }
+        const number = this?.numberinput?.value;
+        if (number && parseInt(number)) {
+            info.number = parseInt(number);
+        }
+        const points = this?.pointsinput?.value;
+        if (points && parseInt(points)) {
+            info.points = parseInt(points);
+        }
+        info.partialcredit = this?.partialcreditcb?.checked ?? true;
+        info.immediateresult = this?.immediatecb?.checked ?? false;
+        info.cheat = this?.cheatcb?.checked ?? false;
+        info.manuallygraded = this?.manualcb?.checked ?? false;
+        return [info, problems, answers];
+    }
+
     makeProblemSetCreator(probsetinfo, problems, answers) {
         this.insAboveBtn = addelem('button', this, {
             type: 'button',
@@ -40,23 +68,109 @@ export default class LogicPenguinProblem extends HTMLElement {
             classes: ['material-symbols-outlined',  'problemsetdeletebtn'],
             innerHTML: 'delete_forever'
         });
-        const settingsform = addelem('div', header);
-        const desclabel = addelem('div', settingsform, {
+        const settingsform = addelem('div', header, {
+            classes: ['problemsetsettings']
+        });
+        const problemtypediv = addelem('div', settingsform);
+        const problemtypelabel = addelem('span', problemtypediv, {
+            innerHTML: tr('Problem type: ')
+            classes: ['problemsetproblemtypelabel']
+        });
+        const problemtypeindicator = addelem('span', problemtypediv, {
+            innerHTML: probsetinfo.problemtype,
+            classes: ['problemsetproblemtype']
+        });
+        this.problemtype = probsetinfo.problemtype;
+        const descdiv = addelem('div', settingsform);
+        const desclabel = addelem('div', descdiv, {
             innerHTML: tr('Heading (may be left blank to blend with set above)')
         });
+        this.descinput = addelem('input', descdiv, {
+            type: 'text'
+        });
+        if (probsetinfo?.description) {
+            this.descinput.value = probsetinfo.description;
+        }
+        const instructionsdiv = addelem('div', settingsform);
+        const instructionslabel = addelem('div', instructionsdiv, {
+            innerHTML: tr('Instructions (may be left blank to blend with set above)')
+        });
+        this.instructionsinput = addelem('textarea', instructionsdiv);
+        if (probsetinfo?.description) {
+            this.instructionsinput.value = probsetinfo.description;
+        }
+        const numberdiv = addelem('div', settingsform);
+        const numberlabel = addelem('span', numberdiv, {
+            innerHTML: tr('Number of problems') + ': '
+        });
+        this.numberinput = addelem('input', numberdiv, {
+            type: 'number',
+            min: '1'
+        });
+        if ("number" in probsetinfo) {
+            this.numberinput.value = problemsetinfo.number.toString()
+        }
+        const numbermoreinfo = addelem('div', numberdiv, {
+            innerHTML: '(' + tr('If number is smaller than the number of ' + 
+                'problems below, students will be given a random ' +
+                'selection.') + ')'
+        });
+        const pointsdiv = addelem('div', settingsform);
+        const pointslabel = addelem('span', pointsdiv, {
+            innerHTML: tr('Points per problem') + ': '
+        });
+        const pointsinput = addelem('input', pointsdiv, {
+            type: 'number',
+            min: '1',
+            max: '100'
+        });
+        if ("points" in probsetinfo) {
+            this.pointsinput.value = problemsetinfo.points.toString()
+        } else {
+            this.pointsinput.value = '1';
+        }
+        const partialCreditLabel = addelem('label', pointsdiv, {
+            innerHTML: tr('Allow partial credit') + ' '
+        });
+        this.partialcreditcb = addelem('input', partialCreditLabel, {
+            type: 'checkbox'
+        });
+        this.partialcreditcb.checked =
+            (!("partialcredit" in probsetinfo)
+                || probsetinfo.partialcredit);
+        const immediatediv = addlem('div', settingsform);
+        const immediatelabel = addelem('label', immediatediv, {
+            innerHTML: tr('Show result immediately') + ' '
+        });
+        this.immediatecb = addlem('input', immediatelabel, {
+            type: 'checkbox'
+        });
+        this.immediatedb.checked = (("immediateresult" in probsetinfo) &&
+            probsetinfo.immediateresult);
+        const cheatdiv = addelem('div', settingsform);
+        const cheatlabel = addelem('label', cheatdiv, {
+            innerHTML: tr('Allow cheating/viewing answer') + ' '
+        });
+        this.cheatcb = addelem('input', cheatlabel, {
+            type: 'checkbox'
+        });
+        this.cheatcb.checked = (("cheat" in probsetinfo) && probsetinfo.cheat);
+        const manualdiv = addelem('div', settingsform);
+        const manuallabel = addelem('label', manualdiv, {
+            innerHTML: tr('Require manual grading') + ' '
+        });
+        this.manualcb = addelem('input', manuallabel, {
+            type: 'checkbox'
+        });
+        this.manualcb.checked = (("manuallygraded" in probsetinfo) &&
+            probsetinfo.manuallygraded);
+        if (this.makeOptions) {
+            this.makeOptions(probsetinfo?.options ?? {});
+        }
     }
 
 }
 
-//            "cheat"
-//            "description"
-//            "immediateresult"
-//            "instructions"
-//            "manuallygraded"
-//            "number"
 //            "options"
-//            "partialcredit"
-//            "points"
-//            "problemtype"
 
 
