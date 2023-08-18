@@ -484,3 +484,19 @@
     position: relative;
     top: 0.3rem;
 }
+
+.logicpenguin .problemsetcreator > button {
+    margin: 0 0 0.5rem 0;
+}
+
+.logicpenguin .problemsetcreator > article {
+    border: 2px solid var(--lpgray4);
+    box-shadow: 5px 5px 5px var(--lpgray5);
+    padding: 0;
+}
+
+.logicpenguin .problemsetcreator > article > header {
+    margin: 0;
+    padding: -0.5rem 1rem 0.5rem 1rem;
+    background-color: var(--lpgray6);
+}

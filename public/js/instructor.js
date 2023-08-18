@@ -380,6 +380,7 @@ async function loadexercise(exhash) {
             }
         }
         const problemsetcreator = addelem(problemtype + '-creator', psetdiv);
+        problemsetcreator.makeProblemSetCreator(probsetinfo, setproblems, setanswers);
     }
 
     const btndiv = addelem('div', exdiv, {
@@ -387,7 +388,7 @@ async function loadexercise(exhash) {
     });
     const newprobsetbutton = addelem('button', btndiv, {
         type: 'button',
-        innerHTML: tr('add new problem set')
+        innerHTML: tr('insert new problem set (at end)')
     });
     const savebutton = addelem('button', exdiv, {
         type: 'button',

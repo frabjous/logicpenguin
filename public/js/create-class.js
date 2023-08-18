@@ -13,7 +13,6 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
 
     constructor() {
         super();
-        this.classList.add('problemset-creator');
     }
 
     gatherInfo() {
@@ -45,8 +44,10 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
     }
 
     makeProblemSetCreator(probsetinfo, problems, answers) {
+        this.classList.add('problemsetcreator');
         this.insAboveBtn = addelem('button', this, {
             type: 'button',
+            innerHTML: tr('insert new problem set here'),
             mypset: this
         });
         const article = addelem('article', this);
@@ -108,7 +109,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             min: '1'
         });
         if ("number" in probsetinfo) {
-            this.numberinput.value = problemsetinfo.number.toString()
+            this.numberinput.value = probsetinfo.number.toString()
         }
         const numbermoreinfo = addelem('div', numberdiv, {
             innerHTML: '(' + tr('If number is smaller than the number of ' + 
@@ -119,13 +120,13 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         const pointslabel = addelem('span', pointsdiv, {
             innerHTML: tr('Points per problem') + ': '
         });
-        const pointsinput = addelem('input', pointsdiv, {
+        this.pointsinput = addelem('input', pointsdiv, {
             type: 'number',
             min: '1',
             max: '100'
         });
         if ("points" in probsetinfo) {
-            this.pointsinput.value = problemsetinfo.points.toString()
+            this.pointsinput.value = probsetinfo.points.toString()
         } else {
             this.pointsinput.value = '1';
         }
@@ -138,14 +139,14 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         this.partialcreditcb.checked =
             (!("partialcredit" in probsetinfo)
                 || probsetinfo.partialcredit);
-        const immediatediv = addlem('div', settingsform);
+        const immediatediv = addelem('div', settingsform);
         const immediatelabel = addelem('label', immediatediv, {
             innerHTML: tr('Show result immediately') + ' '
         });
-        this.immediatecb = addlem('input', immediatelabel, {
+        this.immediatecb = addelem('input', immediatelabel, {
             type: 'checkbox'
         });
-        this.immediatedb.checked = (("immediateresult" in probsetinfo) &&
+        this.immediatecb.checked = (("immediateresult" in probsetinfo) &&
             probsetinfo.immediateresult);
         const cheatdiv = addelem('div', settingsform);
         const cheatlabel = addelem('label', cheatdiv, {
