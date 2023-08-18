@@ -9,7 +9,7 @@
 import { addelem } from './common.js';
 import tr from './translate.js';
 
-export default class LogicPenguinProblem extends HTMLElement {
+export default class LogicPenguinProblemSetCreator extends HTMLElement {
 
     constructor() {
         super();
@@ -73,7 +73,7 @@ export default class LogicPenguinProblem extends HTMLElement {
         });
         const problemtypediv = addelem('div', settingsform);
         const problemtypelabel = addelem('span', problemtypediv, {
-            innerHTML: tr('Problem type: ')
+            innerHTML: tr('Problem type: '),
             classes: ['problemsetproblemtypelabel']
         });
         const problemtypeindicator = addelem('span', problemtypediv, {

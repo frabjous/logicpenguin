@@ -333,6 +333,12 @@ async function loadexercise(exhash) {
         id: exhash.substr(1),
         classes: ["exerciseblock"]
     });
+    const breadcrumb = addelem('div', exblock, {
+        innerHTML: '<a href="#exercisesmain"><span class="' +
+            'material-symbols-outlined">arrow_back_ios</span>' +
+            'Return to Exercise List</a>',
+        classes: ['breadcrumb']
+    });
     const hdr = addelem('h2', exblock, {
         innerHTML: tr('Exercise') + ': ' + exnum
     });
@@ -370,7 +376,12 @@ async function loadexercise(exhash) {
         disabled: true
     });
     exblock.exinfoform.savebutton = savebutton;
-    console.log(resp);
+    for (let i=0; i<resp.exinfo.problemsets.length; i++) {
+        const probsetinfo = resp.exinfo.problemsets[i];
+        const setproblems = resp.problems[i];
+        const setanswers = resp.answers[i];
+        const problemsetcreator = 
+    }
 }
 
 // load something based on changes in hash

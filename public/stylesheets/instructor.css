@@ -473,3 +473,14 @@
     padding: 1rem 2rem 1rem 2rem;
     bottom: 0.5rem;
 }
+
+.logicpenguin .exerciseblock .breadcrumb a
+.logicpenguin .exerciseblock .breadcrumb a:link,
+.logicpenguin .exerciseblock .breadcrumb a:visited {
+    text-decoration: none;
+}
+
+.logicpenguin .exerciseblock .breadcrumb .material-symbols-outlined {
+    position: relative;
+    top: 0.3rem;
+}
