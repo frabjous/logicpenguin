@@ -62,7 +62,9 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
             return -1;
         }
         if (!isnew) {
-            pc.probleminput.value = problem.prompt,
+            if ("prompt" in problem) {
+                pc.probleminput.value = problem.prompt;
+            }
             pc.whenchanged();
             if (pc.answerer) {
                 pc.answerer.restoreAnswer(answer);

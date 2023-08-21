@@ -641,3 +641,7 @@
     color: inherit;
     height: 5rem;
 }
+
+.logicpenguin .problemsetcreator > article .problemsetcreatorbuttondiv {
+    margin: 0 2rem;
+}

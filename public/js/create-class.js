@@ -98,7 +98,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             innerHTML: tr('Provide answer below'),
             classes: ['provideanswerbelow']
         });
-        if (isnew) { ansbelowlabel.style.display = 'none'; }
+        if (isnew) { pc.ansbelowlabel.style.display = 'none'; }
         pc.ansinfoarea = addelem('div', pc);
         return pc;
     }
@@ -239,6 +239,19 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             this.makeProblemCreator(problem, answer, false);
         }
         this.renumberProblems();
+        const btndiv = addelem('div', article, {
+            classes: ['problemsetcreatorbuttondiv']
+        });
+        const addbtn = addelem('button', btndiv, {
+            mypsc: this,
+            type: 'button',
+            innerHTML: 'add problem',
+            onclick: function() {
+                this.mypsc.makeProblemCreator({}, {}, true);
+                this.mypsc.renumberProblems();
+            }
+        });
+
         const ii = this.getElementsByTagName("input");
         const tata = this.getElementsByTagName("textarea");
         const ss = this.getElementsByTagName("select");
