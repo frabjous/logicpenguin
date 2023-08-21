@@ -354,7 +354,7 @@ async function loadexercise(exhash) {
     exdiv.innerHTML = '';
     if (!resp) { return; }
     if (!("exinfo" in resp) || !("answers" in resp) || !("problems" in resp)) {
-        errormessage(tr('Invalid response from server when requesting information about exericse.'));
+        errormessage(tr('Invalid response from server when requesting information about exercise.'));
         return;
     }
     const exinfoholder = addelem('div', exdiv, {
@@ -362,12 +362,9 @@ async function loadexercise(exhash) {
     });
     exblock.exinfoform = exinfoform(exinfoholder, exnum, resp.exinfo);
     const pshdr = addelem('h2', exdiv, { innerHTML: tr('Problem sets') });
-    const psetdiv = addelem('div', exdiv);
+    exblock.psetdiv = addelem('div', exdiv);
     // TODO: more here
-    for (let i=0; i<resp.exinfo.problemsets.length; i++) {
-        const probsetinfo = resp.exinfo.problemsets[i];
-        const setproblems = resp.problems[i];
-        const setanswers = resp.answers[i];
+    exblock.addProbSetCreator = function(probsetinfo, problems, answers, putbefore = false) {
         const problemtype = probsetinfo.problemtype;
         if (!(problemtype in problemSetCreators)) {
             try {
@@ -380,8 +377,18 @@ async function loadexercise(exhash) {
                 return;
             }
         }
-        const problemsetcreator = addelem(problemtype + '-creator', psetdiv);
-        problemsetcreator.makeProblemSetCreator(probsetinfo, setproblems, setanswers);
+        const problemsetcreator = addelem(problemtype + '-creator', this.psetdiv);
+        problemsetcreator.makeProblemSetCreator(probsetinfo, problems, answers);
+        problemsetcreator.myexblock = this;
+        if (putbefore) {
+            this.insertBefore(problemsetcreator, putbefore);
+        }
+    }
+    for (let i=0; i<resp.exinfo.problemsets.length; i++) {
+        const probsetinfo = resp.exinfo.problemsets[i];
+        const setproblems = resp.problems[i];
+        const setanswers = resp.answers[i];
+        exblock.addProbSetCreator(probsetinfo, setproblems, setanswers, false);
     }
     renumberProblemSets(exhash);
     const btndiv = addelem('div', exdiv, {
@@ -389,7 +396,11 @@ async function loadexercise(exhash) {
     });
     const newprobsetbutton = addelem('button', btndiv, {
         type: 'button',
-        innerHTML: tr('insert new problem set (at end)')
+        innerHTML: tr('insert new problem set (at end)'),
+        myexblock: exblock,
+        onclick: function() {
+            this.myexblock.addPSCDialog(false);
+        }
     });
     const savebutton = addelem('button', exdiv, {
         type: 'button',
