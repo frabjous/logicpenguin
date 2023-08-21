@@ -109,7 +109,13 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         this.insAboveBtn = addelem('button', this, {
             type: 'button',
             innerHTML: tr('insert new problem set here'),
-            mypset: this
+            mypsc: this,
+            onclick: function() {
+                if (!this.mypsc.myexblock) {
+                    return;
+                }
+                this.mypsc.myexblock.addPSCDialog(this.mypsc);
+            }
         });
         const article = addelem('article', this);
         const header = addelem('header', article);

@@ -381,7 +381,7 @@ async function loadexercise(exhash) {
         problemsetcreator.makeProblemSetCreator(probsetinfo, problems, answers);
         problemsetcreator.myexblock = this;
         if (putbefore) {
-            this.insertBefore(problemsetcreator, putbefore);
+            putbefore.parentNode.insertBefore(problemsetcreator, putbefore);
         }
         return problemsetcreator;
     }
@@ -397,13 +397,16 @@ async function loadexercise(exhash) {
                 { problemtype: this.problemtypeinput.value }, [], [], this.putbefore
             );
             psc.makeChanged();
+            renumberProblemSets('#' + this.exblock.id);
         }, 'Add problem set', 'add', 'adding');
         theDialog.putbefore = putbefore;
         theDialog.exblock = this;
         const ptypelabel = addelem('div', theDialog.maindiv, {
             innerHTML: 'Choose problem type:'
         });
-        theDialog.problemtypeinput = addelem('select', theDialog.maindiv);
+        theDialog.problemtypeinput = addelem('select', theDialog.maindiv, {
+            classes: ['problemtypeselect']
+        });
         for (const ptype of window.problemtypes) {
             const opt = addelem('option', theDialog.problemtypeinput, {
                 innerHTML: ptype,
@@ -1025,7 +1028,7 @@ function renumberProblemSets(exhash) {
             let numdone = 0;
             for (let j = 0; j<pscpsc.length; j++) {
                 if (j==i) { continue; }
-                if (h==(i+1)) { continue; }
+                if (j==(i+1)) { continue; }
                 numdone++;
                 const opt = addelem('option', psc.moveAboveBtn, {
                     innerHTML: tr('above set') + ' ' + (j+1).toString(),
