@@ -198,6 +198,10 @@ export async function getinstructorpage(
         }
     }
     fillins.contextsettings = settingsjson;
+    const creatordir = path.join('.', 'public', 'js', 'creators');
+    const creatorfiles = await lpfs.filesin(creatordir);
+    const probtypes = creatorfiles.map((f) => (f.replace(/\.js$/,'')));
+    fillins.problemtypes = JSON.stringify(probtypes);
     return getpagetext('instructor.html', fillins);
 }
 

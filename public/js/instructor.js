@@ -364,7 +364,7 @@ async function loadexercise(exhash) {
     const pshdr = addelem('h2', exdiv, { innerHTML: tr('Problem sets') });
     exblock.psetdiv = addelem('div', exdiv);
     // TODO: more here
-    exblock.addProbSetCreator = function(probsetinfo, problems, answers, putbefore = false) {
+    exblock.addProbSetCreator = async function(probsetinfo, problems, answers, putbefore = false) {
         const problemtype = probsetinfo.problemtype;
         if (!(problemtype in problemSetCreators)) {
             try {
@@ -383,12 +383,33 @@ async function loadexercise(exhash) {
         if (putbefore) {
             this.insertBefore(problemsetcreator, putbefore);
         }
+        return problemsetcreator;
     }
     for (let i=0; i<resp.exinfo.problemsets.length; i++) {
         const probsetinfo = resp.exinfo.problemsets[i];
         const setproblems = resp.problems[i];
         const setanswers = resp.answers[i];
-        exblock.addProbSetCreator(probsetinfo, setproblems, setanswers, false);
+        await exblock.addProbSetCreator(probsetinfo, setproblems, setanswers, false);
+    }
+    exblock.addPSCDialog = function(putbefore) {
+        showdialog(async function() {
+            const psc = await this.exblock.addProbSetCreator(
+                { problemtype: this.problemtypeinput.value }, [], [], this.putbefore
+            );
+            psc.makeChanged();
+        }, 'Add problem set', 'add', 'adding');
+        theDialog.putbefore = putbefore;
+        theDialog.exblock = this;
+        const ptypelabel = addelem('div', theDialog.maindiv, {
+            innerHTML: 'Choose problem type:'
+        });
+        theDialog.problemtypeinput = addelem('select', theDialog.maindiv);
+        for (const ptype of window.problemtypes) {
+            const opt = addelem('option', theDialog.problemtypeinput, {
+                innerHTML: ptype,
+                value: ptype
+            });
+        }
     }
     renumberProblemSets(exhash);
     const btndiv = addelem('div', exdiv, {
