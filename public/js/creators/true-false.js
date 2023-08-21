@@ -16,7 +16,7 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
     }
 
     makeProblemCreator(problem, answer, isnew) {
-        const pc = super(problem, answer, isnew);
+        const pc = super.makeProblemCreator(problem, answer, isnew);
         const promptlabel = addelem('div', pc.probinfoarea, {
             innerHTML: 'Prompt'
         });
@@ -49,7 +49,7 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
         pc.probleminput = addelem('textarea', pc.probinfoarea, {
             value: (problem?.prompt ?? ''),
             mypc: pc,
-            oninput: function() { this.mypc.whenchanged(); }
+            oninput: function() { this.mypc.whenchanged(); },
             onchange: function() { this.mypc.whenchanged(); }
         });
         pc.getProblem = function() {
@@ -62,10 +62,10 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
             return -1;
         }
         if (!isnew) {
-            pc.probleminput = answer.prompt,
+            pc.probleminput.value = problem.prompt,
             pc.whenchanged();
-            if (this.answerer) {
-                this.answerer.restoreAnswer(answer);
+            if (pc.answerer) {
+                pc.answerer.restoreAnswer(answer);
             }
         }
         return pc;

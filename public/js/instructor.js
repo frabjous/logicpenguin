@@ -371,6 +371,7 @@ async function loadexercise(exhash) {
         const problemtype = probsetinfo.problemtype;
         if (!(problemtype in problemSetCreators)) {
             try {
+                LP.loadCSS(problemtype);
                 const imported = await import('/js/creators/' + problemtype + '.js');
                 problemSetCreators[problemtype] = imported.default;
             } catch(err) {

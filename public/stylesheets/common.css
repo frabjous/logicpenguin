@@ -482,8 +482,8 @@ a#lplogo:hover span {
 
 .logicpenguin input[type="checkbox"],
 .logicpenguin input[type="radio"] {
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.5rem;
+    height: 1.5rem;
     accent-color: var(--lpblue);
     cursor: pointer;
 }
@@ -491,7 +491,7 @@ a#lplogo:hover span {
 .logicpenguin input[type="radio"] {
     position: relative;
     top: 0.25ex;
-    margin-right: 0.8em;
+    margin-right: 0.8rem;
 }
 
 .logicpenguin input[type="radio"] + label {

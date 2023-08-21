@@ -630,3 +630,14 @@
     color: var(--lpgreen);
     margin: 1rem 0;
 }
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator textarea {
+    font-size: inherit;
+    font-family: inherit;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    color: inherit;
+    height: 5rem;
+}
