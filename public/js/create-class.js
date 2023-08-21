@@ -70,7 +70,8 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
     // and pc.ansinfoarea and add pc.getProblem and pc.getAnswer functions
     makeProblemCreator(problem, answer, isnew) {
         const pc = addelem('div', this.problemCreatorArea, {
-            classes: ['problemcreator']
+            classes: ['problemcreator'],
+            mypsc: this
         });
         const strip = addelem('div', pc);
         const deletefloat = addelem('div', strip, {
@@ -249,6 +250,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             onclick: function() {
                 this.mypsc.makeProblemCreator({}, {}, true);
                 this.mypsc.renumberProblems();
+                this.mypsc.makeChanged();
             }
         });
 

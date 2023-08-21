@@ -33,6 +33,11 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
                     this.answerer.makeProblem({
                         prompt: this.probleminput.value
                     }, {}, 'save');
+                    this.answerer.processAnswer = function() {};
+                    this.answerer.mypc = this;
+                    this.answerer.makeChanged = function() {
+                        this.mypc.mypsc.makeChanged();
+                    };
                     if (ans !== -1) {
                         this.answerer.restoreAnswer(ans);
                     }
