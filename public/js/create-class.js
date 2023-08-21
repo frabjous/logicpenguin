@@ -40,9 +40,34 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         info.immediateresult = this?.immediatecb?.checked ?? false;
         info.cheat = this?.cheatcb?.checked ?? false;
         info.manuallygraded = this?.manualcb?.checked ?? false;
+        if (this.gatherOptions) {
+            info.options = this.gatherOptions();
+        } else {
+            info.options = {};
+        }
+        const pcpc = this.getElementsByClassName("problemcreator");
+        for (const pc of pcpc) {
+            problems.push(pc.getProblem());
+            answers.push(pc.getAnswer());
+        }
         return [info, problems, answers];
     }
 
+    makeChanged() {
+        let checknode = this;
+        while ((checknode.tagName != 'body')
+            && !(checknode.classList.contains('exerciseblock'))) {
+            checknode = checknode.parentNode;
+        }
+        if (checknode.classList.contains('exerciseblock')) {
+            if (checknode?.exinfoform?.savebutton) {
+                checknode.exinfoform.savebutton.disabled = false;
+            }
+        }
+    }
+
+    // specific problem types should do things with pc.probinfoarea
+    // and pc.ansinfoarea and add pc.getProblem and pc.getAnswer functions
     makeProblemCreator(problem, answer, isnew) {
         const pc = addelem('div', this.problemCreatorArea, {
             classes: ['problemcreator']
@@ -210,6 +235,18 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             const problem = problems[pn];
             const answer = answers[pn];
             this.makeProblemCreator(problem, answer, false);
+        }
+        const ii = this.getElementsByTagName("input");
+        const tata = this.getElementsByTagName("textarea");
+        const ss = this.getElementsByTagName("select");
+        for (const e of [...ii, ...tata, ...ss]) {
+            e.myProbSetCreator = this;
+            e.addEventListener('change', function() {
+                this.myProbSetCreator.makeChanged();
+            });
+            e.addEventListener('input', function() {
+                this.myProbSetCreator.makeChanged();
+            });
         }
     }
 
