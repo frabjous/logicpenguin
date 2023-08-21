@@ -508,10 +508,12 @@
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider br {
     clear: both;
+    margin: 0;
+    padding: 0;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider h3 {
-    margin: 0;
+    margin: 0.5rem 0;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdividerbuttons {
@@ -570,17 +572,9 @@
     font-style: italic;
 }
 
-.logicpenguin .problemsetcreator > article > header .problemsetdivider {
-    padding: 0;
-}
-
 .logicpenguin .problemsetcreator > article > header .problemsetdivider select {
     width: 12rem;
     text-align: center;
-}
-
-.logicpenguin .problemsetcreator > article > header .problemsetdivider h3 {
-    margin: 0;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdeletebtn {

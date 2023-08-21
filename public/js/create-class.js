@@ -70,7 +70,6 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             innerHTML: 'delete_forever'
         });
         this.pslabel = addelem('h3', this.divider);
-        const clearer = addelem('br', this.divider);
         const settingsform = addelem('div', header, {
             classes: ['problemsetsettings']
         });
@@ -171,10 +170,19 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         if (this.makeOptions) {
             this.makeOptions(probsetinfo?.options ?? {});
         }
+        this.problemCreatorArea = addelem('div', article, {
+            classes: ['problemcreatorarea']
+        });
+        for (let pn = 0; pn < problems.length; pn++) {
+            const problem = problems[pn];
+            const answer = answers[pn];
+            if (this.makeProblemCreator) {
+                
+            }
+        }
     }
 
 }
 
-//            "options"
 
 
