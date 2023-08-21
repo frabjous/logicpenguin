@@ -587,3 +587,42 @@
 .logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdeletebtn:hover {
     color: var(--lpmagenta);
 }
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea {
+    padding: 2rem;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--lpgray5);
+}
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator > div:first-child span {
+    color: var(--lpgray3);
+}
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletefloat {
+    display: inline-block;
+    float: right;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn .material-symbols-outlined {
+    position: relative;
+    top: 0.3rem;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn .material-symbols-outlined,
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn {
+    color: var(--lpred);
+    cursor: pointer;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn .material-symbols-outlined:hover,
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn:hover {
+    color: var(--lpmagenta);
+}
+
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .provideanswerbelow {
+    color: var(--lpgreen);
+    margin: 1rem 0;
+}

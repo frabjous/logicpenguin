@@ -80,12 +80,14 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             classes: ['problemcreatordeletebtn'],
             mypc: pc,
             mypsc: this,
+            title: 'delete this problem',
             innerHTML: '<span class="material-symbols-outlined">' +
                 'delete_forever</span>',
             onclick: function() {
                 const pc = this.mypc;
                 pc.parentNode.removeChild(pc);
-                this.mypsc.renumberproblems();
+                this.mypsc.renumberProblems();
+                this.mypsc.makeChanged();
             }
         });
         pc.numfield = addelem('span', strip);
@@ -94,7 +96,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         pc.probinfoarea = addelem('div', pc);
         pc.ansbelowlabel = addelem('div', pc, {
             innerHTML: tr('Provide answer below'),
-            classes: ['provideaswerbelow']
+            classes: ['provideanswerbelow']
         });
         if (isnew) { ansbelowlabel.style.display = 'none'; }
         pc.ansinfoarea = addelem('div', pc);
@@ -236,6 +238,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             const answer = answers[pn];
             this.makeProblemCreator(problem, answer, false);
         }
+        this.renumberProblems();
         const ii = this.getElementsByTagName("input");
         const tata = this.getElementsByTagName("textarea");
         const ss = this.getElementsByTagName("select");
@@ -254,7 +257,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         const pcpc = this.getElementsByClassName("problemcreator");
         for (let i=0; i<pcpc.length; i++) {
             const pc = pcpc[i];
-            if (pc.?numfield) {
+            if (pc?.numfield) {
                 pc.numfield.innerHTML = (i+1).toString();
             }
             if (pc?.numoffield) {
