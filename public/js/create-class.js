@@ -66,6 +66,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         });
         this.deleteButton = addelem('span', topbuttons, {
             classes: ['material-symbols-outlined',  'problemsetdeletebtn'],
+            title: 'delete this problem set',
             innerHTML: 'delete_forever'
         });
         this.pslabel = addelem('h3', this.divider);
@@ -98,8 +99,8 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             innerHTML: tr('Instructions (may be left blank to blend with set above)')
         });
         this.instructionsinput = addelem('textarea', instructionsdiv);
-        if (probsetinfo?.description) {
-            this.instructionsinput.value = probsetinfo.description;
+        if (probsetinfo?.instructions) {
+            this.instructionsinput.value = probsetinfo.instructions;
         }
         const numberdiv = addelem('div', settingsform);
         const numberlabel = addelem('span', numberdiv, {
@@ -115,7 +116,8 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         const numbermoreinfo = addelem('div', numberdiv, {
             innerHTML: '(' + tr('If number is smaller than the number of ' + 
                 'problems below, students will be given a random ' +
-                'selection.') + ')'
+                'selection.') + ')',
+            classes: ['settingsnote']
         });
         const pointsdiv = addelem('div', settingsform);
         const pointslabel = addelem('span', pointsdiv, {

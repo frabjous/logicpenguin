@@ -523,12 +523,12 @@
     margin: 2rem 1rem 1rem 1rem;
     border: 2px solid var(--lpmagenta);
     border-radius: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 1rem 2rem;
     background-color: var(--lpwhite);
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetsettings > div {
-    margin: 0.5rem 0;
+    margin: 0.5rem 0rem 0.5rem 0rem;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetsettings .problemsetproblemtypelabel {
@@ -542,4 +542,45 @@
 .logicpenguin .problemsetcreator > article > header input[type="text"],
 .logicpenguin .problemsetcreator > article > header textarea {
     width: 100%;
+    box-sizing: border-box;
+}
+
+.logicpenguin .problemsetcreator > article > header textarea {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    height: 7rem;
+    resize: none;
+    padding: 4px;
+}
+
+.logicpenguin .problemsetcreator > article > header input[type="number"] {
+    width: 5rem;
+    text-align: center;
+    margin-right: 1rem;
+}
+
+.logicpenguin .problemsetcreator > article > header input[type="checkbox"] {
+    position: relative;
+    top: 0.3rem;
+}
+
+.logicpenguin .problemsetcreator > article > header .settingsnote {
+    font-size: 90%;
+    font-style: italic;
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetdivider select {
+    width: 12rem;
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdeletebtn {
+    color: var(--lpred);
+    cursor: pointer;
+    position: relative;
+    top: 0.3rem;
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdeletebtn:hover {
+    color: var(--lpmagenta);
 }
