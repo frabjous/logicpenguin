@@ -91,7 +91,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             }
         });
         pc.numfield = addelem('span', strip);
-        const slashspan = addelem('span', strip, { innerHTML: ' / ' });
+        const slashspan = addelem('span', strip, { innerHTML: '/' });
         pc.numoffield = addelem('span', strip);
         pc.probinfoarea = addelem('div', pc);
         pc.ansbelowlabel = addelem('div', pc, {
@@ -258,7 +258,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         for (let i=0; i<pcpc.length; i++) {
             const pc = pcpc[i];
             if (pc?.numfield) {
-                pc.numfield.innerHTML = (i+1).toString();
+                pc.numfield.innerHTML = '#' + (i+1).toString();
             }
             if (pc?.numoffield) {
                 pc.numoffield.innerHTML = (pcpc.length.toString());

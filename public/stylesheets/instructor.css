@@ -597,6 +597,10 @@
     border-bottom: 1px solid var(--lpgray5);
 }
 
+.logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator > div:first-child {
+    margin-bottom: 1rem;
+}
+
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator > div:first-child span {
     color: var(--lpgray3);
 }

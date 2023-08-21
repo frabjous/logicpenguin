@@ -12,6 +12,11 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
     }
+
+    makeProblemCreator(problem, answer, isnew) {
+        
+    }
+
 }
 
 customElements.define("true-false-creator", TrueFalseCreator);
