@@ -43,6 +43,39 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         return [info, problems, answers];
     }
 
+    makeProblemCreator(problem, answer, isnew) {
+        const pc = addelem('div', this.problemCreatorArea, {
+            classes: ['problemcreator']
+        });
+        const strip = addelem('div', pc);
+        const deletefloat = addelem('div', strip, {
+            classes: ['problemcreatordeletefloat']
+        });
+        pc.deletebtn = addelem('span', deletefloat, {
+            classes: ['problemcreatordeletebtn'],
+            mypc: pc,
+            mypsc: this,
+            innerHTML: '<span class="material-symbols-outlined">' +
+                'delete_forever</span>',
+            onclick: function() {
+                const pc = this.mypc;
+                pc.parentNode.removeChild(pc);
+                this.mypsc.renumberproblems();
+            }
+        });
+        pc.numfield = addelem('span', strip);
+        const slashspan = addelem('span', strip, { innerHTML: ' / ' });
+        pc.numoffield = addelem('span', strip);
+        pc.probinfoarea = addelem('div', pc);
+        pc.ansbelowlabel = addelem('div', pc, {
+            innerHTML: tr('Provide answer below'),
+            classes: ['provideaswerbelow']
+        });
+        if (isnew) { ansbelowlabel.style.display = 'none'; }
+        pc.ansinfoarea = addelem('div', pc);
+        return pc;
+    }
+
     makeProblemSetCreator(probsetinfo, problems, answers) {
         this.classList.add('problemsetcreator');
         this.insAboveBtn = addelem('button', this, {
@@ -176,12 +209,22 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         for (let pn = 0; pn < problems.length; pn++) {
             const problem = problems[pn];
             const answer = answers[pn];
-            if (this.makeProblemCreator) {
-                
-            }
+            this.makeProblemCreator(problem, answer, false);
         }
     }
 
+    renumberProblems() {
+        const pcpc = this.getElementsByClassName("problemcreator");
+        for (let i=0; i<pcpc.length; i++) {
+            const pc = pcpc[i];
+            if (pc.?numfield) {
+                pc.numfield.innerHTML = (i+1).toString();
+            }
+            if (pc?.numoffield) {
+                pc.numoffield.innerHTML = (pcpc.length.toString());
+            }
+        }
+    }
 }
 
 
