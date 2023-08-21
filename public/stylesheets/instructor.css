@@ -520,9 +520,26 @@
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetsettings {
-    margin: 1rem;
+    margin: 2rem 1rem 1rem 1rem;
     border: 2px solid var(--lpmagenta);
     border-radius: 1rem;
     padding: 0.5rem 1rem;
     background-color: var(--lpwhite);
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetsettings > div {
+    margin: 0.5rem 0;
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetsettings .problemsetproblemtypelabel {
+    color: var(--lpmagenta);
+}
+
+.logicpenguin .problemsetcreator > article > header .problemsetsettings .problemsetproblemtype {
+    color: var(--lpgreen);
+}
+
+.logicpenguin .problemsetcreator > article > header input[type="text"],
+.logicpenguin .problemsetcreator > article > header textarea {
+    width: 100%;
 }
