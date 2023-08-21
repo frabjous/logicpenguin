@@ -382,7 +382,7 @@ async function loadexercise(exhash) {
         const problemsetcreator = addelem(problemtype + '-creator', psetdiv);
         problemsetcreator.makeProblemSetCreator(probsetinfo, setproblems, setanswers);
     }
-
+    renumberProblemSets(exhash);
     const btndiv = addelem('div', exdiv, {
         classes: ['exbuttondiv']
     });
@@ -397,7 +397,6 @@ async function loadexercise(exhash) {
         disabled: true
     });
     exblock.exinfoform.savebutton = savebutton;
-    
 }
 
 // load something based on changes in hash
@@ -967,6 +966,55 @@ function makemessage(msgtype, msg) {
     msgArea.classList.add(msgtype);
     msgArea.innerHTML = msg;
     msgArea.scrollIntoView({ block: 'nearest' });
+}
+
+function renumberProblemSets(exhash) {
+    const exblock = byid(exhash.substr(1));
+    if (!exblock) { return; }
+    const pscpsc = exblock.getElementsByClassName("problemsetcreator");
+    for (let i=0; i<pscpsc.length; i++) {
+        const psc = pscpsc[i];
+        if (psc?.pslabel) {
+            psc.pslabel.innerHTML = tr('Problem set') + ' ' + (i+1).toString();
+        }
+        if (psc?.moveAboveBtn) {
+            // remove old options
+            const optopt = psc.moveAboveBtn.getElementsByTagName("option");
+            while (optopt.length > 0) {
+                const o = optopt[optopt.length - 1 ];
+                o.parentNode.removeChild(o);
+            }
+            const blankopt = addelem('option', psc.moveAboveBtn, {
+                innerHTML: '—',
+                value: '--',
+                selected: true
+            });
+            let numdone = 0;
+            for (let j = 0; j<pscpsc.length; j++) {
+                if (j==i) { continue; }
+                if (h==(i+1)) { continue; }
+                numdone++;
+                const opt = addelem('option', psc.moveAboveBtn, {
+                    innerHTML: tr('above set') + ' ' + (j+1).toString(),
+                    selected: false,
+                    value: j.toString()
+                });
+            }
+            if (i != (pscpsc.length - 1)) {
+                numdone++;
+                const eopt = addelem('option', psc.moveAboveBtn, {
+                    innerHTML: 'to end',
+                    selected: false,
+                    value: 'end'
+                });
+            }
+            if (numdone > 0) {
+                psc.moveAboveBtn.disabled = false;
+            } else {
+                psc.moveAboveBtn.disabled = true;
+            }
+        }
+    }
 }
 
 function showdialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
