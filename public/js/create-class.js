@@ -142,10 +142,11 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
                             psc.myexblock.renumberProblemSets();
                         }
                     }
+                    this.scrollIntoView({block: 'nearest'});
                     return;
                 }
                 const numAbove = parseInt(this.value);
-                if (!numAbove) { return; }
+                if (numAbove !== 0 && !numAbove) { return; }
                 const allpscs = psc.parentNode
                     .getElementsByClassName("problemsetcreator");
                 psc.parentNode.insertBefore(psc, allpscs[numAbove]);
@@ -154,12 +155,18 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
                         psc.myexblock.renumberProblemSets();
                     }
                 }
+                this.scrollIntoView({block: 'nearest'});
             }
         });
         this.deleteButton = addelem('span', topbuttons, {
             classes: ['material-symbols-outlined',  'problemsetdeletebtn'],
             title: 'delete this problem set',
-            innerHTML: 'delete_forever'
+            innerHTML: 'delete_forever',
+            mypsc: this,
+            onclick: function() {
+                if (!this?.mypsc?.myexblock) { return; }
+                this.mypsc.myexblock.dialogToRemove(this.mypsc);
+            }
         });
         this.pslabel = addelem('h3', this.divider);
         const settingsform = addelem('div', header, {

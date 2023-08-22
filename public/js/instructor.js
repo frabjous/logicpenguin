@@ -397,7 +397,7 @@ async function loadexercise(exhash) {
                 { problemtype: this.problemtypeinput.value }, [], [], this.putbefore
             );
             psc.makeChanged();
-            renumberProblemSets('#' + this.exblock.id);
+            renumberProblemSets('#' + psc.myexblock.id);
         }, 'Add problem set', 'add', 'adding');
         theDialog.putbefore = putbefore;
         theDialog.exblock = this;
@@ -416,8 +416,17 @@ async function loadexercise(exhash) {
     }
     renumberProblemSets(exhash);
     exblock.renumberProblemSets = function() {
-        const h = '#' + this.myid;
+        const h = '#' + this.id;
         renumberProblemSets(h);
+    }
+    exblock.dialogToRemove = function(psc) {
+        showdialog(async function() {
+            const psc = this.psc;
+            psc.parentNode.removeChild(psc);
+        }, 'Remove problem set', 'remove', 'removing');
+        theDialog.psc = psc;
+        theDialog.maindiv.innerHTML = 'Do you really wish to remove ' +
+            'this problem set? This cannot be undone.';
     }
     const btndiv = addelem('div', exdiv, {
         classes: ['exbuttondiv']
