@@ -84,6 +84,11 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
         return pc;
     }
 
+     postCreate() {
+         this.partialcreditcb.checked = false;
+         this.partialcreditcb.disabled = true;
+     }
+
 }
 
 customElements.define("true-false-creator", TrueFalseCreator);

@@ -489,6 +489,7 @@
     text-decoration: none;
 }
 
+.logicpenguin .exerciseblock button.fixedbutton .material-symbols-outlined,
 .logicpenguin .exerciseblock .breadcrumb .material-symbols-outlined {
     position: relative;
     top: 0.3rem;

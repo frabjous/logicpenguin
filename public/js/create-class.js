@@ -295,7 +295,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
                 this.mypsc.makeChanged();
             }
         });
-
+        if (this?.postCreate) { this.postCreate(); }
         const ii = this.getElementsByTagName("input");
         const tata = this.getElementsByTagName("textarea");
         const ss = this.getElementsByTagName("select");

@@ -463,9 +463,21 @@ async function loadexercise(exhash) {
                 allproblems.push(problems);
                 allanswers.push(answers);
             }
-            console.log('exdata',exdata);
-            console.log('problems',allproblems);
-            console.log('answers',allanswers);
+            const req = {
+                query: 'exerciseinfo',
+                exdata: exdata
+            }
+            if (allproblems.length > 0) {
+                req.problems = allproblems;
+                req.answers = allanswers;
+            }
+            this.innerHTML = '<span class="material-symbols-outlined ' +
+                'spining">sync</span> saving …';
+            const resp = await editorquery(req);
+            this.innerHTML = tr('save exercise');
+            if (!resp) { return; }
+            infomessage('Exercise saved.');
+            this.disabled = true;
         }
     });
     exblock.exinfoform.savebutton = savebutton;
