@@ -24,6 +24,12 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
             if (this?.probleminput && this.probleminput.value != '') {
                 if (this?.ansbelowlabel) {
                     this.ansbelowlabel.style.display = 'block';
+                    // avoid problem of regenerating problem just
+                    // when moving between
+                    if ("lastmade" in this && this.probleminput.value == this.lastmade) {
+                        return;
+                    }
+                    this.lastmade = this.probleminput.value;
                     let ans = -1;
                     if (this.getAnswer) {
                         ans = this.getAnswer();

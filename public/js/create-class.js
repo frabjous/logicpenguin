@@ -277,6 +277,10 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             const answer = answers[pn];
             this.makeProblemCreator(problem, answer, false);
         }
+        // start a blank ps creator with a blank problem
+        if (problems.length == 0) {
+            this.makeProblemCreator({}, {}, true);
+        }
         this.renumberProblems();
         const btndiv = addelem('div', article, {
             classes: ['problemsetcreatorbuttondiv']

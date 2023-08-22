@@ -422,11 +422,14 @@ async function loadexercise(exhash) {
     exblock.dialogToRemove = function(psc) {
         showdialog(async function() {
             const psc = this.psc;
+            psc.makeChanged();
             psc.parentNode.removeChild(psc);
+            this.exblock.renumberProblemSets();
         }, 'Remove problem set', 'remove', 'removing');
         theDialog.psc = psc;
         theDialog.maindiv.innerHTML = 'Do you really wish to remove ' +
             'this problem set? This cannot be undone.';
+        theDialog.exblock = this;
     }
     const btndiv = addelem('div', exdiv, {
         classes: ['exbuttondiv']
