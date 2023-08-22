@@ -446,7 +446,27 @@ async function loadexercise(exhash) {
         type: 'button',
         innerHTML: tr('save exercise'),
         classes: ['fixedbutton'],
-        disabled: true
+        disabled: true,
+        myexblock: exblock,
+        onclick: async function() {
+            const exblock = this.myexblock;
+            const allproblems = [];
+            const allanswers = [];
+            const exdata = exblock.exinfoform.gatherinfo();
+            const pscpsc = exblock.getElementsByClassName("problemsetcreator");
+            for (const psc of pscpsc) {
+                const [info, problems, answers] = psc.gatherInfo();
+                if (!("problemsets" in exdata.exinfo)) {
+                    exdata.exinfo.problemsets = [];
+                }
+                exdata.exinfo.problemsets.push(info);
+                allproblems.push(problems);
+                allanswers.push(answers);
+            }
+            console.log('exdata',exdata);
+            console.log('problems',allproblems);
+            console.log('answers',allanswers);
+        }
     });
     exblock.exinfoform.savebutton = savebutton;
 }
