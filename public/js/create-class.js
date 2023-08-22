@@ -129,7 +129,32 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             innerHTML: 'move '
         });
         this.moveAboveBtn = addelem('select', topbuttons, {
-            classes: ['problemsetmoveselect']
+            classes: ['problemsetmoveselect'],
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                if (!psc?.myexblock) { return; }
+                if (this.value == '--') { return; }
+                if (this.value == 'end') {
+                    psc.parentNode.appendChild(psc);
+                    if (psc?.myexblock) {
+                        if (psc.myexblock.renumberProblemSets) {
+                            psc.myexblock.renumberProblemSets();
+                        }
+                    }
+                    return;
+                }
+                const numAbove = parseInt(this.value);
+                if (!numAbove) { return; }
+                const allpscs = psc.parentNode
+                    .getElementsByClassName("problemsetcreator");
+                psc.parentNode.insertBefore(psc, allpscs[numAbove]);
+                if (psc?.myexblock) {
+                    if (psc.myexblock.renumberProblemSets) {
+                        psc.myexblock.renumberProblemSets();
+                    }
+                }
+            }
         });
         this.deleteButton = addelem('span', topbuttons, {
             classes: ['material-symbols-outlined',  'problemsetdeletebtn'],

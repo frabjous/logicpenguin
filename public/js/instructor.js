@@ -415,6 +415,10 @@ async function loadexercise(exhash) {
         }
     }
     renumberProblemSets(exhash);
+    exblock.renumberProblemSets = function() {
+        const h = '#' + this.myid;
+        renumberProblemSets(h);
+    }
     const btndiv = addelem('div', exdiv, {
         classes: ['exbuttondiv']
     });
