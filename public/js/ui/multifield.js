@@ -9,18 +9,29 @@
 
 import { addelem } from '../common.js';
 
-export default function multiInputField(parnode, lbl, options = []) {
+function getvalues() {
+    const ii = this.getElementsByTagName("input");
+    const rv = [];
+    for (const inp of ii) {
+        if (inp.value != '') {
+            rv.push(inp.value);
+        }
+    }
+    return rv;
+}
+
+export default function multiInputField(parnode, lbl, vals = []) {
     const div = addelem('div', parnode, {
         classes: ['multifieldinput']
     });
     div.mylbl = lbl;
     div.inputdiv = addelem('div', div);
-    div.btndiv = addelem('div', div, classes: ['buttondiv']);
+    div.btndiv = addelem('div', div, { classes: ['buttondiv'] });
     div.addinput = function(v) {
         const cdiv = addelem('div', this,inputdiv, { classes: ['choicediv'] });
         const n = this.getElementsByClassName('choicediv').length;
         const clbl = addelem('div', cdiv, {
-            innerHTML: this.mylbl + ' ' + n.toString();
+            innerHTML: this.mylbl + ' ' + n.toString()
         });
         const inp = addelem('input', cdiv, {
             type: 'text',
@@ -66,4 +77,14 @@ export default function multiInputField(parnode, lbl, options = []) {
             if (div.onchange) { div.onchange(); }
         }
     });
+    for (const val of vals) {
+        div.addinput(vals);
+    }
+    if (vals.length == 0) {
+        div.addinput('');
+    }
+    div.getvalues = getvalues;
+    return div;
 }
+
+
