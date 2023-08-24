@@ -44,6 +44,31 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
         super();
     }
 
+    gatherOptions(opts) {
+        return {
+            allowcanttell: (this?.canttellcb?.checked)
+        }
+    }
+
+    makeOptions(opts) {
+        const canttelldiv = addelem('div', this.settingsdiv);
+        const canttelllabel = addelem('label', canttelldiv, {
+            innerHTML: 'Allow “can’t tell”
+        });
+        this.canttellcb = addelem('input', canttelllabel, {
+            checked: ("allowcanttell" in opts && opts.allowcanttell),
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                const pcpc = psc.getElementsByCLassName("problemcreator");
+                for (const pc of pcpc) {
+                    pc.makeAnswerer();
+                }
+                psc.makeChanged();
+            }
+        });
+    }
+
     makeProblemCreator(problem, answer, isnew) {
         const pc = super.makeProblemCreator(problem, answer, isnew);
         pc.mip = multiInputField(pc.probinfoarea, 'Premise', problem?.prems ?? [], 2);
@@ -62,7 +87,29 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
             oninput: function() { this.mypc.whenchanged(); },
             onchange: function() { this.mypc.whenchanged(); }
         });
-
+        pc.origanswer = answer;
+        pc.origproblem = problem;
+        pc.mypsc = this;
+        pc.makeAnswerer = function() {
+            let ans = this.origanswer;
+            let prob = this.origproblem;
+            if (this?.answerer) {
+                ans = this.getAnswer();
+                prob = this.getProblem();
+                const a = this.answerer;
+                a.parentNode.removeChild(a);
+            }
+            if (!sufficesForProblem(prob)) { return; }
+            this.answerer = makeProblem('valid-correct-sound', this.ansinfoarea);
+            this.answerer.makeProblem(prob, this.mypsc.gatherOptions() , 'save');
+            this.answerer.processAnswer = function() {};
+            this.answerer.makeChanged = function() {
+                const newans = this.getAnswer();
+                this.restoreAnswer(serverAnswerToUserAnswer(newans));
+                this.mypc.mypsc.makeChanged();
+            };
+            this.answerer.restoreAnswer(ans);
+        }
         pc.whenchanged = function() {
             const nowprob = this.getProblem();
             if (sufficesForProblem(nowprob)) {
@@ -72,17 +119,7 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
                 }
                 this.lastmade = nowprob;
                 this.ansinfoarea.innerHTML = '';
-                const nowans = this.getAnswer();
-                this.answerer = addelem('multiple-choice', this.ansinfoarea);
-                this.answerer.makeProblem( nowprob, {}, 'save');
-                this.answerer.processAnswer = function() {};
-                this.answerer.mypc = this;
-                this.answerer.makeChanged = function() {
-                    this.mypc.mypsc.makeChanged();
-                };
-                if (nowans !== -1 && nowans < nowprob.choices.length) {
-                    this.answerer.restoreAnswer(nowans);
-                }
+                this.makeAnswerer();
             } else {
                 if (this?.ansbelowlabel) {
                     this.ansbelowlabel.style.display = 'none';
