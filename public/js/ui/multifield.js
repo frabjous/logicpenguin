@@ -20,7 +20,7 @@ function getvalues() {
     return rv;
 }
 
-export default function multiInputField(parnode, lbl, vals = []) {
+export default function multiInputField(parnode, lbl, vals = [], numblank = 1) {
     const div = addelem('div', parnode, {
         classes: ['multifieldinput']
     });
@@ -81,7 +81,9 @@ export default function multiInputField(parnode, lbl, vals = []) {
         div.addinput(vals);
     }
     if (vals.length == 0) {
-        div.addinput('');
+        for (let i=0; i<numblank; i++) {
+            div.addinput('');
+        }
     }
     div.getvalues = getvalues;
     return div;
