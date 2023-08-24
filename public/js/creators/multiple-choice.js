@@ -57,9 +57,7 @@ export default class MultipleChoiceCreator extends LogicPenguinProblemSetCreator
                 this.ansinfoarea.innerHTML = '';
                 const nowans = this.getAnswer();
                 this.answerer = addelem('multiple-choice', this.ansinfoarea);
-                this.answerer.makeProblem({
-                    nowprob, {}, 'save'
-                });
+                this.answerer.makeProblem( nowprob, {}, 'save');
                 this.answerer.processAnswer = function() {};
                 this.answerer.mypc = this;
                 this.answerer.makeChanged = function() {

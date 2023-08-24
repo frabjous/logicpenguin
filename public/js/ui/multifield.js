@@ -28,8 +28,8 @@ export default function multiInputField(parnode, lbl, vals = [], numblank = 1) {
     div.inputdiv = addelem('div', div);
     div.btndiv = addelem('div', div, { classes: ['buttondiv'] });
     div.addinput = function(v) {
-        const cdiv = addelem('div', this,inputdiv, { classes: ['choicediv'] });
-        const n = this.getElementsByClassName('choicediv').length;
+        const cdiv = addelem('div', this.inputdiv, { classes: ['fielddiv'] });
+        const n = this.getElementsByClassName('fielddiv').length;
         const clbl = addelem('div', cdiv, {
             innerHTML: this.mylbl + ' ' + n.toString()
         });
@@ -50,7 +50,7 @@ export default function multiInputField(parnode, lbl, vals = [], numblank = 1) {
         });
     }
     div.removeinput = function() {
-        const ii = this.getElementsByClassName("choicediv");
+        const ii = this.getElementsByClassName("fielddiv");
         if (ii.length == 0) { return; }
         const remme = ii[ii.length - 1];
         remme.parentNode.removeChild(remme);

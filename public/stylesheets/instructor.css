@@ -382,7 +382,7 @@
     font-size: inherit;
     padding: 4px;
     background-color: inherit;
-    width: 8rem;
+    width: 14rem;
     margin-top: 0.5rem;
 }
 
@@ -654,4 +654,22 @@
 
 .logicpenguin .problemsetcreator > article .problemsetcreatorbuttondiv {
     margin: 0 2rem;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreator .multifieldinput .fielddiv {
+    margin: 0.5rem 0;
+}
+
+.logicpenguin main .problemsetcreator > article .problemcreator .multifieldinput input {
+    width: 100%;
+}
+
+.logipenguin .problemsetcreator > article .problemcreator .multifieldinput button {
+    cursor: pointer;
+}
+
+.logipenguin .problemsetcreator > article .problemcreator .multifieldinput button span.material-symbols-outlined {
+    cursor: pointer;
+    position: relative:
+    top: 0.2rem;
 }

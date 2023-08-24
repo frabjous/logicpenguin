@@ -402,7 +402,7 @@ async function loadexercise(exhash) {
         theDialog.putbefore = putbefore;
         theDialog.exblock = this;
         const ptypelabel = addelem('div', theDialog.maindiv, {
-            innerHTML: 'Choose problem type:'
+            innerHTML: tr('Choose problem type:')
         });
         theDialog.problemtypeinput = addelem('select', theDialog.maindiv, {
             classes: ['problemtypeselect']
