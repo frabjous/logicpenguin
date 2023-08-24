@@ -78,7 +78,7 @@ export default function multiInputField(parnode, lbl, vals = [], numblank = 1) {
         }
     });
     for (const val of vals) {
-        div.addinput(vals);
+        div.addinput(val);
     }
     if (vals.length == 0) {
         for (let i=0; i<numblank; i++) {

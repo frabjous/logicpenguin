@@ -135,6 +135,7 @@ function clearmessage() {
     msgArea.classList.remove('info', 'loading', 'warning', 'error');
     msgArea.innerHTML = '';
 }
+window.clearmessage = clearmessage;
 
 // function for interacting with server; better and more modern
 // than current student-server interaction
@@ -477,6 +478,7 @@ async function loadexercise(exhash) {
             this.innerHTML = tr('save exercise');
             if (!resp) { return; }
             infomessage('Exercise saved.');
+            byid('exercisesmain').myexlist.update();
             this.disabled = true;
         }
     });

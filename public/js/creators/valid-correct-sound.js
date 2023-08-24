@@ -2,12 +2,13 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////// creators/multiple-choice.js //////////////////////
-// class for creating multiple choice questions                     //
-//////////////////////////////////////////////////////////////////////
+/////////////////// creators/valid-correct-sound.js /////////////////////
+// class for creating problems checking validity, factual correctness  //
+// and soundness                                                       //
+/////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import MultipleChoiceExercise from '../problemtypes/multiple-choice.js';
+import ValidCorrectSound from '../problemtypes/valid-correct-sound.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
 import multiInputField from '../ui/multifield.js';
@@ -106,5 +107,6 @@ export default class MultipleChoiceCreator extends LogicPenguinProblemSetCreator
 
 }
 
-customElements.define("multiple-choice-creator", MultipleChoiceCreator);
+customElements.define("valid-correct-sound-creator", ValidCorrectSoundCreator);
+
 

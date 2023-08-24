@@ -656,10 +656,12 @@
     margin: 0 2rem;
 }
 
+.logicpenguin .problemsetcreator > article .problemcreator .fielddiv,
 .logicpenguin .problemsetcreator > article .problemcreator .multifieldinput .fielddiv {
     margin: 0.5rem 0;
 }
 
+.logicpenguin main .problemsetcreator > article .problemcreator .fielddiv input,
 .logicpenguin main .problemsetcreator > article .problemcreator .multifieldinput input {
     width: 100%;
 }
@@ -673,4 +675,8 @@
     cursor: pointer;
     position: relative;
     top: 0.2rem;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreator .multifieldinput .buttondiv {
+    text-align: right;
 }

@@ -64,6 +64,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
                 checknode.exinfoform.savebutton.disabled = false;
             }
         }
+        if (window.clearmessage) { window.clearmessage(); }
     }
 
     // specific problem types should do things with pc.probinfoarea
