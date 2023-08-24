@@ -10,6 +10,20 @@ import LogicPenguinProblemSetCreator from '../create-class.js';
 import MultipleChoiceExercise from '../problemtypes/true-false.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
+import multiInputField from '../ui/multifield.js';
+
+function sameProblem(p, q) {
+    if (p?.prompt != q?.prompt) { return false; }
+    if (p?.choices?.length != q?.choices?.length) { return false; }
+    for (let i=0; i<p?.choices?.length; i++) {
+        if (p?.choices?.[i] != q?.choices?.[i]) { return false; }
+    }
+    return true;
+}
+
+function sufficesForProblem(prob) {
+    return (prob.prompt != '' && prob.choices.length > 0)
+}
 
 export default class MultipleChoiceCreator extends LogicPenguinProblemSetCreator {
     constructor() {
@@ -21,33 +35,38 @@ export default class MultipleChoiceCreator extends LogicPenguinProblemSetCreator
         const promptlabel = addelem('div', pc.probinfoarea, {
             innerHTML: tr('Prompt')
         });
+        pc.promptinput = addelem('textarea', pc.probinfoarea, {
+            value: (problem?.prompt ?? ''),
+            mypc: pc,
+            oninput: function() { this.mypc.whenchanged(); },
+            onchange: function() { this.mypc.whenchanged(); }
+        });
+        pc.mip = multiInputField(pc.probinfoarea, 'Choice', problem?.choices ?? [], 2);
+        pc.mip.mypc = pc;
+        pc.mip.onchange = function() { this.mypc.whenchanged(); }
+        pc.mip.oninput = function() { this.mypc.whenchanged(); }
+
         pc.whenchanged = function() {
-            if (this?.probleminput && this.probleminput.value != '') {
-                if (this?.ansbelowlabel) {
-                    this.ansbelowlabel.style.display = 'block';
-                    // avoid problem of regenerating problem just
-                    // when moving between
-                    if ("lastmade" in this && this.probleminput.value == this.lastmade) {
-                        return;
-                    }
-                    this.lastmade = this.probleminput.value;
-                    let ans = -1;
-                    if (this.getAnswer) {
-                        ans = this.getAnswer();
-                    }
-                    this.ansinfoarea.innerHTML = '';
-                    this.answerer = addelem('true-false', this.ansinfoarea);
-                    this.answerer.makeProblem({
-                        prompt: this.probleminput.value
-                    }, {}, 'save');
-                    this.answerer.processAnswer = function() {};
-                    this.answerer.mypc = this;
-                    this.answerer.makeChanged = function() {
-                        this.mypc.mypsc.makeChanged();
-                    };
-                    if (ans !== -1) {
-                        this.answerer.restoreAnswer(ans);
-                    }
+            const nowprob = this.getProblem();
+            if (sufficesForProblem(nowprob)) {
+                this.ansbelowlabel.style.display = 'block';
+                if ("lastmade" in this && sameProblem(this.lastmade, nowprob)) {
+                    return;
+                }
+                this.lastmade = nowprob;
+                this.ansinfoarea.innerHTML = '';
+                const nowans = this.getAnswer();
+                this.answerer = addelem('multiple-choice', this.ansinfoarea);
+                this.answerer.makeProblem({
+                    nowprob, {}, 'save'
+                });
+                this.answerer.processAnswer = function() {};
+                this.answerer.mypc = this;
+                this.answerer.makeChanged = function() {
+                    this.mypc.mypsc.makeChanged();
+                };
+                if (nowans !== -1 && nowans < nowprob.choices.length) {
+                    this.answerer.restoreAnswer(nowans);
                 }
             } else {
                 if (this?.ansbelowlabel) {
@@ -58,14 +77,11 @@ export default class MultipleChoiceCreator extends LogicPenguinProblemSetCreator
                 }
             }
         }
-        pc.probleminput = addelem('textarea', pc.probinfoarea, {
-            value: (problem?.prompt ?? ''),
-            mypc: pc,
-            oninput: function() { this.mypc.whenchanged(); },
-            onchange: function() { this.mypc.whenchanged(); }
-        });
         pc.getProblem = function() {
-            return { prompt: this.probleminput.value }
+            return {
+                prompt: this.promptinput.value,
+                choices: this.mip.getvalues()
+            }
         }
         pc.getAnswer = function() {
             if (this.answerer) {
@@ -75,7 +91,7 @@ export default class MultipleChoiceCreator extends LogicPenguinProblemSetCreator
         }
         if (!isnew) {
             if ("prompt" in problem) {
-                pc.probleminput.value = problem.prompt;
+                pc.promptput.value = problem.prompt;
             }
             pc.whenchanged();
             if (pc.answerer) {

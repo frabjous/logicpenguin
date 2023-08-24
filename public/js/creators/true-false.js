@@ -9,6 +9,7 @@
 import LogicPenguinProblemSetCreator from '../create-class.js';
 import TrueFalseExercise from '../problemtypes/true-false.js';
 import { addelem } from '../common.js';
+import tr from '../translate.js';
 
 export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
     constructor() {
@@ -18,7 +19,7 @@ export default class TrueFalseCreator extends LogicPenguinProblemSetCreator {
     makeProblemCreator(problem, answer, isnew) {
         const pc = super.makeProblemCreator(problem, answer, isnew);
         const promptlabel = addelem('div', pc.probinfoarea, {
-            innerHTML: 'Prompt'
+            innerHTML: tr('Prompt')
         });
         pc.whenchanged = function() {
             if (this?.probleminput && this.probleminput.value != '') {
