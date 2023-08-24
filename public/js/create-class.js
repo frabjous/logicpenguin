@@ -173,6 +173,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         const settingsform = addelem('div', header, {
             classes: ['problemsetsettings']
         });
+        this.settingsform = settingsform;
         const problemtypediv = addelem('div', settingsform);
         const problemtypelabel = addelem('span', problemtypediv, {
             innerHTML: tr('Problem type: '),
