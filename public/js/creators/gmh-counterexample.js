@@ -112,7 +112,6 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
                     return;
                 }
                 this.lastmade = nowprob;
-                this.ansinfoarea.innerHTML = '';
                 this.makeAnswerer();
                 if (this?.answerer?.getAnswer() === false) {
                     this.ctxarea.style.display = 'block';
@@ -158,7 +157,7 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
             }
             pc.whenchanged();
             if (pc.answerer) {
-                pc.answerer.restoreAnswer(answer?.valid);
+                pc.answerer.restoreAnswer(answer?.valid ?? -1);
             }
         }
         return pc;
@@ -167,6 +166,4 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
 }
 
 customElements.define("gmh-counterexample-creator", OldCounterexampleCreator);
-
-
 
