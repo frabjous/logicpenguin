@@ -8,7 +8,7 @@
 /////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import ValidCorrectSound from '../problemtypes/valid-correct-sound.js';
+import OldCounterexample from '../problemtypes/gmh-counterexample.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
 import multiInputField from '../ui/multifield.js';
@@ -22,52 +22,13 @@ function sameProblem(p, q) {
     return true;
 }
 
-function serverAnswerToUserAnswer(servans) {
-    if (servans.correct === true && servans.valid === true) {
-        servans.sound = true;
-        return servans;
-    }
-    if (servans.correct === false || servans.valid === false) {
-        servans.sound = false;
-        return servans;
-    }
-    servans.sound = -1;
-    return servans;
-}
-
 function sufficesForProblem(prob) {
     return (prob.conc != '' && prob.prems.length > 0)
 }
 
-export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCreator {
+export default class OldCounterexampleCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
-    }
-
-    gatherOptions(opts) {
-        return {
-            allowcanttell: (this?.canttellcb?.checked)
-        }
-    }
-
-    makeOptions(opts) {
-        const canttelldiv = addelem('div', this.settingsform);
-        const canttelllabel = addelem('label', canttelldiv, {
-            innerHTML: 'Allow “can’t tell” '
-        });
-        this.canttellcb = addelem('input', canttelllabel, {
-            checked: ("allowcanttell" in opts && opts.allowcanttell),
-            type: 'checkbox',
-            mypsc: this,
-            onchange: function() {
-                const psc = this.mypsc;
-                const pcpc = psc.getElementsByClassName("problemcreator");
-                for (const pc of pcpc) {
-                    pc.makeAnswerer();
-                }
-                psc.makeChanged();
-            }
-        });
     }
 
     makeProblemCreator(problem, answer, isnew) {
@@ -90,6 +51,27 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
             oninput: function() { this.mypc.whenchanged(); },
             onchange: function() { this.mypc.whenchanged(); }
         });
+        pc.ctxarea = addelem('div', pc.ansinfoarea);
+        pc.ctxmip = multiInputField(px.ctxarea, 'Counterexample premise', ans?.counterexample?.premises ?? [], 2);
+        pc.ctxmap.mypc = pc;
+        pc.ctxmip.onchange = function() { this.mypc.whenchanged(); }
+        pc.ctxmip.oninput = function() { this.mypc.whenchanged(); }
+        pc.ctxconcdiv = addelem('div', pc.ctxarea, {
+            classes: ['fielddiv']
+        });
+        const ctxconclabel = addelem('div', pc.ctxconcdiv, {
+            innerHTML: tr('Counterexample conclusion')
+        });
+        pc.ctxconcinput = addelem('input', pc.ctxconcdiv, {
+            value: ans?.counterexample?.conc ?? '',
+            mypc: pc,
+            oninput: function() { this.mypc.whenchanged(); }
+            oninput: function() { this.mypc.whenchanged(); }
+        });
+        if (("counterexample" in ans) && ("conc" in ans.counterexample)) {
+            pc.ctxconcinput.value = ans.counterexample.conc;
+        }
+        pc.ctxarea.style.display = 'none';
         pc.origanswer = answer;
         pc.origproblem = problem;
         pc.mypsc = this;
@@ -102,33 +84,48 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
                 a.parentNode.removeChild(a);
             }
             if (!sufficesForProblem(prob)) { return; }
-            this.answerer = addelem('valid-correct-sound', this.ansinfoarea);
-            this.answerer.makeProblem(prob, this.mypsc.gatherOptions() , 'save');
+            this.answerer = addelem('gmh-counterexample', this.ansinfoarea);
+            this.answerer.makeProblem(prob, {} , 'save');
             this.answerer.processAnswer = function() {};
             this.answerer.mypc = this;
             this.answerer.makeChanged = function() {
                 const newans = this.getAnswer();
+                if (newans.valid) {
+                    this.ctxarea.style.display = 'none';
+                } else {
+                    this.ctxarea.style.display = 'block';
+                }
                 this.restoreAnswer(serverAnswerToUserAnswer(newans));
                 this.mypc.mypsc.makeChanged();
             };
-            this.answerer.restoreAnswer(ans);
+            this.answerer.restoreAnswer(ans.valid);
+            if (this.ctxarea) {
+                this.ctxarea.parentNode.appendChild(this.ctxarea);
+            }
         }
         pc.whenchanged = function() {
             const nowprob = this.getProblem();
             if (sufficesForProblem(nowprob)) {
                 this.ansbelowlabel.style.display = 'block';
+                this.ansinfoarea.style.display = 'block';
                 if ("lastmade" in this && sameProblem(this.lastmade, nowprob)) {
                     return;
                 }
                 this.lastmade = nowprob;
                 this.ansinfoarea.innerHTML = '';
                 this.makeAnswerer();
+                if (this?.answerer?.getAnswer() === false) {
+                    this.ctxarea.style.display = 'block';
+                } else {
+                    this.ctxarea.style.display = 'none';
+                }
             } else {
+                this.ctxarea.style.display = 'none';
                 if (this?.ansbelowlabel) {
                     this.ansbelowlabel.style.display = 'none';
                 }
                 if (this?.ansinfoarea) {
-                    this.ansinfoarea.innerHTML = '';
+                    this.ansinfoarea.style.display = 'none';
                 }
             }
         }
@@ -140,13 +137,19 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
         }
         pc.getAnswer = function() {
             if (this.answerer) {
-                const userans = this.answerer.getAnswer();
-                delete(userans.sound);
-                return userans;
+                const rv = {};
+                const v = this.answerer.getAnswer();
+                rv.valid = v;
+                if (v===false) {
+                    rv.counterexample = {
+                        prems: this.ctxmip.getvalues(),
+                        conc: this.ctxconcinput.value
+                    }
+                }
+                return rv;
             }
             return {
-                valid: -2,
-                correct: -2
+                valid: -1
             };
         }
         if (!isnew) {
@@ -155,7 +158,7 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
             }
             pc.whenchanged();
             if (pc.answerer) {
-                pc.answerer.restoreAnswer(serverAnswerToUserAnswer(answer));
+                pc.answerer.restoreAnswer(answer?.valid);
             }
         }
         return pc;
