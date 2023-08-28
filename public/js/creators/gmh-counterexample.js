@@ -52,7 +52,7 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
             onchange: function() { this.mypc.whenchanged(); }
         });
         pc.ctxarea = addelem('div', pc.ansinfoarea);
-        pc.ctxmip = multiInputField(pc.ctxarea, 'Counterexample premise', answer?.counterexample?.premises ?? [], 2);
+        pc.ctxmip = multiInputField(pc.ctxarea, 'Counterexample premise', answer?.counterexample?.prems ?? [], 2);
         pc.ctxmip.mypc = pc;
         pc.ctxmip.onchange = function() { this.mypc.whenchanged(); }
         pc.ctxmip.oninput = function() { this.mypc.whenchanged(); }
@@ -69,7 +69,7 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
             onchange: function() { this.mypc.whenchanged(); }
         });
         if (("counterexample" in answer) && ("conc" in answer.counterexample)) {
-            pc.ctxconcinput.value = ans.counterexample.conc;
+            pc.ctxconcinput.value = answer.counterexample.conc;
         }
         pc.ctxarea.style.display = 'none';
         pc.origanswer = answer;
