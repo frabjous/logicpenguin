@@ -52,8 +52,8 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
             onchange: function() { this.mypc.whenchanged(); }
         });
         pc.ctxarea = addelem('div', pc.ansinfoarea);
-        pc.ctxmip = multiInputField(px.ctxarea, 'Counterexample premise', ans?.counterexample?.premises ?? [], 2);
-        pc.ctxmap.mypc = pc;
+        pc.ctxmip = multiInputField(pc.ctxarea, 'Counterexample premise', answer?.counterexample?.premises ?? [], 2);
+        pc.ctxmip.mypc = pc;
         pc.ctxmip.onchange = function() { this.mypc.whenchanged(); }
         pc.ctxmip.oninput = function() { this.mypc.whenchanged(); }
         pc.ctxconcdiv = addelem('div', pc.ctxarea, {
@@ -63,12 +63,12 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
             innerHTML: tr('Counterexample conclusion')
         });
         pc.ctxconcinput = addelem('input', pc.ctxconcdiv, {
-            value: ans?.counterexample?.conc ?? '',
+            value: answer?.counterexample?.conc ?? '',
             mypc: pc,
-            oninput: function() { this.mypc.whenchanged(); }
-            oninput: function() { this.mypc.whenchanged(); }
+            oninput: function() { this.mypc.whenchanged(); },
+            onchange: function() { this.mypc.whenchanged(); }
         });
-        if (("counterexample" in ans) && ("conc" in ans.counterexample)) {
+        if (("counterexample" in answer) && ("conc" in answer.counterexample)) {
             pc.ctxconcinput.value = ans.counterexample.conc;
         }
         pc.ctxarea.style.display = 'none';
@@ -89,13 +89,13 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
             this.answerer.processAnswer = function() {};
             this.answerer.mypc = this;
             this.answerer.makeChanged = function() {
-                const newans = this.getAnswer();
+                const newans = this.mypc.getAnswer();
                 if (newans.valid) {
-                    this.ctxarea.style.display = 'none';
+                    this.mypc.ctxarea.style.display = 'none';
                 } else {
-                    this.ctxarea.style.display = 'block';
+                    this.mypc.ctxarea.style.display = 'block';
                 }
-                this.restoreAnswer(serverAnswerToUserAnswer(newans));
+                this.restoreAnswer(newans?.valid);
                 this.mypc.mypsc.makeChanged();
             };
             this.answerer.restoreAnswer(ans.valid);
