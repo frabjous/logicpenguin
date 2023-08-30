@@ -12,7 +12,7 @@ import { addelem } from '../common.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
 import FormulaInput from '../ui/formula-input.js';
-import libtf from '../symbolic/libsemantics.js';
+import { libtf } from '../symbolic/libsemantics.js';
 
 const defaultInterp = {
     A: true,
@@ -48,7 +48,7 @@ export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSet
         });
         pc.notationname = getNotationName();
         pc.Formula = getFormulaClass(pc.notationname);
-        pc.fmlInput = FormulaInput({
+        pc.fmlInput = FormulaInput.getnew({
             notation: pc.notationname,
             lazy: true,
             pred: false
@@ -59,8 +59,8 @@ export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSet
         pc.fmlInput.onchange = function() { this.mypc.whenchanged(); }
         pc.getProblem = function() { return this.fmlInput.value; }
         pc.getAnswer = function() {
-            const f = this.Formula.from(getProblem());
-            return libtf.evaluate(f, defaultInterp, this.notationname);
+            const f = this.Formula.from(this.getProblem());
+            return libtf.evaluate(f, defaultInterp, this.notationname).tv;
         }
         pc.whenchanged = function() {
             this.ansbelowlabel.style.display = 'none';
@@ -72,6 +72,7 @@ export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSet
                 this.ansinfoarea.innerHTML = tr('Answer') + ': ' +
                     ((ans) ? tr('true') : tr('false'))
             } else {
+                console.log("here")
                 this.ansinfoarea.style.display = 'none';
             }
         }
@@ -89,3 +90,5 @@ export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSet
     }
 
 }
+
+customElements.define("evaluate-truth-creator", EvaluateTruthExerciseCreator);
