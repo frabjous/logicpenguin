@@ -10,6 +10,8 @@ import LogicPenguinProblemSetCreator from '../create-class.js';
 import EvaluateTruthExercise from '../problemtypes/evaluate-truth.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
+import getFormulaClass from '../symbolic/formula.js';
+import FormulaInput from 
 
 export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSetCreator {
     constructor() {
@@ -21,8 +23,9 @@ export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSet
         const fmlLabel = addelem('div', pc.probinfoarea, {
             innerHTML: 'Formula'
         });
-        this.notationname = 
-        
+        pc.notationname = window.contextSettings.notation;
+        pc.Formula = getFormulaClass(this.notationname);
+        pc.fmlInput = 
     }
 
 }

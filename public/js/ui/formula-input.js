@@ -151,7 +151,6 @@ export default class FormulaInput {
             }
         });
 
-
         // add the static functions
         elem.insOp = FormulaInput.insOp;
         elem.insertHere = FormulaInput.insertHere;
