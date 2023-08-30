@@ -117,9 +117,19 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
             this.mypsc.makeChanged();
         }
         if (!isnew) {
-            if (problem?.l && problem?.r) {
-                pc.fmlInputA.value = problem.l;
-                pc.fmlInputB.value = problem.r;
+            if ("prems" in answer && answer.prems.length > 0) {
+                const pr = pc.sai.getElementsByClassName("symbargpremise")[0]
+                    .getElementsByTagName("input")?.[0];
+                if (pr) { pr.value = answer.prems[0]; }
+                for (let i=1; i<answer.prems.length; i++) {
+                    const npr = pc.sai.addPremise();
+                    npr.myinput.value = answer.prems[i];
+                }
+            }
+            if ("conc" in answer && answer.conc != '') {
+                const c = pc.sai.getElementsByClassName("symbargconc")[0]
+                    .getElementsByTagName("input")?.[0];
+                if (c) { c.value = answer.conc; }
             }
             pc.whenchanged();
         }
