@@ -680,3 +680,7 @@
 .logicpenguin .problemsetcreator > article .problemcreator .multifieldinput .buttondiv {
     text-align: right;
 }
+
+.logicpenguin .problemsetcreator > article .problemcreator .padabove {
+    margin-top: 1rem;
+}

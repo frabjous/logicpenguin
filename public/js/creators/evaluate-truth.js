@@ -24,7 +24,7 @@ const defaultInterp = {
 }
 
 function getNotationName() {
-    let n = window?.contextSettings?.notationname ?? 'cambridge';
+    let n = window?.contextSettings?.notation ?? 'cambridge';
     if (n == '' || n == 'none') { n = 'cambridge'; }
     return n;
 }
@@ -57,6 +57,8 @@ export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSet
         pc.fmlInput.mypc = pc;
         pc.fmlInput.oninput = function() { this.mypc.whenchanged(); }
         pc.fmlInput.onchange = function() { this.mypc.whenchanged(); }
+        pc.fmlInput.onkeydown = function() { this.mypc.whenchanged(); }
+        pc.ansinfoarea.classList.add('padabove');
         pc.getProblem = function() { return this.fmlInput.value; }
         pc.getAnswer = function() {
             const f = this.Formula.from(this.getProblem());
@@ -72,7 +74,6 @@ export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSet
                 this.ansinfoarea.innerHTML = tr('Answer') + ': ' +
                     ((ans) ? tr('true') : tr('false'))
             } else {
-                console.log("here")
                 this.ansinfoarea.style.display = 'none';
             }
         }
