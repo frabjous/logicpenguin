@@ -75,7 +75,7 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
         pc.getAnswer = function() {
             const arg = this.getProblem();
             const cf = this.Formula.from(arg.conc);
-            const pfs = arg.prems.map((f) => (this.Formula.from(f)))l
+            const pfs = arg.prems.map((f) => (this.Formula.from(f)));
             return argumentTables(pfs, cf, this.notationname);
         }
         pc.makeAnswerer = function() {
@@ -117,19 +117,19 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
             this.mypsc.makeChanged();
         }
         if (!isnew) {
-            if ("prems" in answer && answer.prems.length > 0) {
+            if ("prems" in problem && problem.prems.length > 0) {
                 const pr = pc.sai.getElementsByClassName("symbargpremise")[0]
                     .getElementsByTagName("input")?.[0];
-                if (pr) { pr.value = answer.prems[0]; }
-                for (let i=1; i<answer.prems.length; i++) {
+                if (pr) { pr.value = problem.prems[0]; }
+                for (let i=1; i<problem.prems.length; i++) {
                     const npr = pc.sai.addPremise();
-                    npr.myinput.value = answer.prems[i];
+                    npr.myinput.value = problem.prems[i];
                 }
             }
-            if ("conc" in answer && answer.conc != '') {
+            if ("conc" in problem && problem.conc != '') {
                 const c = pc.sai.getElementsByClassName("symbargconc")[0]
                     .getElementsByTagName("input")?.[0];
-                if (c) { c.value = answer.conc; }
+                if (c) { c.value = problem.conc; }
             }
             pc.whenchanged();
         }

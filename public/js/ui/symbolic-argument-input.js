@@ -121,7 +121,9 @@ export default class SymbolicArgumentInput {
             innerHTML: tr('premises')
         });
         elem.premisecell = addelem('td', premrow);
-        const buttonrow = addelem('tr', tbody);
+        const buttonrow = addelem('tr', tbody, {
+            classes: ['symbolicarginputbuttonrow']
+        });
         const buttonlabel = addelem('td', buttonrow);
         const buttoncell = addelem('td', buttonrow);
 

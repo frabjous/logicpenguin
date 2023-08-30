@@ -684,3 +684,24 @@
 .logicpenguin .problemsetcreator > article .problemcreator .padabove {
     margin-top: 1rem;
 }
+
+.logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput td:first-child {
+    padding-right: 0.5rem;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput input {
+    margin-bottom: 0.5rem;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput button {
+    padding-top: 0.1rem;
+    margin-top: 0;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput button:last-child {
+    margin-right: 0;
+}
+
+.logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput .symbolicarginputbuttonrow td {
+    text-align: right;
+}
