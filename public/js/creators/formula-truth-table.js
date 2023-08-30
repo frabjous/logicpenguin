@@ -37,17 +37,17 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
     gatherOptions() {
         return {
             notation: getNotationName(),
-            interp: defaultInterp
+            question: this.questioncb.checked
         }
     }
 
-    makeOptions() {
+    makeOptions(opts) {
         const questiondiv = addelem('div', this.settingsform);
-        const questionlabel = addelem('label', canttelldiv, {
+        const questionlabel = addelem('label', questiondiv, {
             innerHTML: tr('Taut/Self-Contr/Contingent question') + ' '
         });
-        this.questioncb = addelem('input', canttelllabel, {
-            checked: ("allowquestion" in opts && opts.allowcanttell),
+        this.questioncb = addelem('input', questionlabel, {
+            checked: ("question" in opts && opts.question),
             type: 'checkbox',
             mypsc: this,
             onchange: function() {
@@ -83,21 +83,39 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
             const f = this.Formula.from(this.getProblem());
             return formulaTable(f, this.notationname);
         }
-        pc.whenchanged = function() {
+        pc.makeAnswerer = function() {
+            if (this.answerer) {
+                const a = this.answerer;
+                if (a.parentNode) {
+                    a.parentNode.removeChild(a);
+                }
+            }
             const prob = this.getProblem();
             const f = this.Formula.from(prob);
             if (f.wellformed) {
                 this.ansbelowlabel.style.display = 'block';
+                this.ansbelowlabel.innerHTML = tr('Answer is shown below');
                 this.ansinfoarea.style.display = 'block';
                 this.answerer = addelem('formula-truth-table', this.ansinfoarea);
+                this.answerer.makeProblem(prob, this.mypsc.gatherOptions(), 'save');
+                this.answerer.setIndicator = function() {};
+                this.answerer.processAnswer = function() {};
+                this.answerer.mypc = this;
+                this.answerer.makeChanged = function() {
+                    this.mypc.mypsc.makeChanged();
+                };
                 const ans = this.getAnswer();
+                this.answerer.myanswer = ans;
+                this.answerer.getSolution();
 
-                this.ansinfoarea.innerHTML = tr('Answer') + ': ' +
-                    ((ans) ? tr('true') : tr('false'))
             } else {
                 this.ansbelowlabel.style.display = 'none';
                 this.ansinfoarea.style.display = 'none';
             }
+
+        }
+        pc.whenchanged = function() {
+            this.makeAnswerer();
         }
         if (!isnew) {
             if (problem && problem != '') {
@@ -106,7 +124,6 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
             pc.whenchanged();
         }
     }
-
 }
 
 customElements.define("formula-truth-table-creator", FormulaTruthTableCreator);
