@@ -2,17 +2,17 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////// creators/equivalence-truth-table.js //////////////////
-// class for creating truth table problems for pairs of formulas        //
+/////////////////// creators/argument-truth-table.js /////////////////////
+// class for creating truth table problems for arguments                //
 //////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import EquivalenceTruthTable from '../problemtypes/equivalence-truth-table.js';
+import ArgumentTruthTable from '../problemtypes/argument-truth-table.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
-import FormulaInput from '../ui/formula-input.js';
-import { equivTables } from '../symbolic/libsemantics.js';
+import  SymbolicArgumentInput from '../ui/symbolic-argument-input.js';
+import { argumentTables } from '../symbolic/libsemantics.js';
 
 function getNotationName() {
     let n = window?.contextSettings?.notation ?? 'cambridge';
@@ -20,7 +20,7 @@ function getNotationName() {
     return n;
 }
 
-export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSetCreator {
+export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
     }
@@ -55,16 +55,20 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
     makeProblemCreator(problem, answer, isnew) {
         const pc = super.makeProblemCreator(problem, answer, isnew);
         pc.notationname = getNotationName();
-        const fmlLabelA = addelem('div', pc.probinfoarea, {
-            innerHTML: tr('Formula A')
-        });
-        pc.Formula = getFormulaClass(pc.notationname);
-        pc.fmlInputA = FormulaInput.getnew({
+        pc.sai = SymbolicArgumentInput.getnew({
             notation: pc.notationname,
             lazy: true,
             pred: false
         });
-        pc.probinfoarea.appendChild(pc.fmlInputA);
+        pc.sai.mypc = pc;
+        pc.sai.onchange = function() {
+            this.mypc.whenchanged();
+        }
+        pc.sai.oninput = function() {
+            this.mypc.whenchanged();
+        }
+
+        pc.probinfoarea.appendChild(pc.sai);
         const fmlLabelB = addelem('div', pc.probinfoarea, {
             innerHTML: tr('Formula B')
         });
@@ -142,7 +146,7 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
     }
 }
 
-customElements.define("equivalence-truth-table-creator", EquivalenceTruthTableCreator);
+customElements.define("argument-truth-table-creator", ArgumentTruthTableCreator);
 
 
 

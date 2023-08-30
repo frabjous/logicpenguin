@@ -168,11 +168,24 @@ export default class SymbolicArgumentInput {
 
         // conclusion input field
         concdiv.myinput = FormulaInput.getnew(options);
+        concdiv.appendChild(concdiv.myinput);
+        concdiv.myinput.myelem = elem;
         concdiv.myinput.oninput = function() {
             this.classList.remove('error');
+            if (this?.myelem?.oninput) {
+                this.myelem.oninput();
+            }
         }
-        concdiv.appendChild(concdiv.myinput);
-
+        concdiv.myinput.onchange = function() {
+            if (this?.myelem?.onchange) {
+                this.myelem.onchange();
+            }
+        }
+        concdiv.myinput.onkeydown = function() {
+            if (this?.myelem?.oninput) {
+                this.myelem.oninput();
+            }
+        }
         // assign get argument and clearing functions
         elem.getArgument = SymbolicArgumentInput.getArgument;
         elem.clearme = SymbolicArgumentInput.clearme;
