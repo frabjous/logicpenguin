@@ -2,17 +2,17 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////// creators/formula-truth-table.js /////////////////////
-// class for creating truth table problems for formulas                //
-/////////////////////////////////////////////////////////////////////////
+/////////////////// creators/equivalence-truth-table.js //////////////////
+// class for creating truth table problems for pairs of formulas        //
+//////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import FormulaTruthTable from '../problemtypes/formula-truth-table.js';
+import EquivalenceTruthTable from '../problemtypes/equivalence-truth-table.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
 import FormulaInput from '../ui/formula-input.js';
-import { formulaTable } from '../symbolic/libsemantics.js';
+import { equivTables } from '../symbolic/libsemantics.js';
 
 function getNotationName() {
     let n = window?.contextSettings?.notation ?? 'cambridge';
@@ -20,7 +20,7 @@ function getNotationName() {
     return n;
 }
 
-export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCreator {
+export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
     }
@@ -35,7 +35,7 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
     makeOptions(opts) {
         const questiondiv = addelem('div', this.settingsform);
         const questionlabel = addelem('label', questiondiv, {
-            innerHTML: tr('Taut/Self-Contr/Contingent question') + ' '
+            innerHTML: tr('Equivalence question') + ' '
         });
         this.questioncb = addelem('input', questionlabel, {
             checked: ("question" in opts && opts.question),
@@ -54,25 +54,44 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
 
     makeProblemCreator(problem, answer, isnew) {
         const pc = super.makeProblemCreator(problem, answer, isnew);
-        const fmlLabel = addelem('div', pc.probinfoarea, {
-            innerHTML: tr('Formula')
-        });
         pc.notationname = getNotationName();
+        const fmlLabelA = addelem('div', pc.probinfoarea, {
+            innerHTML: tr('Formula A')
+        });
         pc.Formula = getFormulaClass(pc.notationname);
-        pc.fmlInput = FormulaInput.getnew({
+        pc.fmlInputA = FormulaInput.getnew({
             notation: pc.notationname,
             lazy: true,
             pred: false
         });
-        pc.probinfoarea.appendChild(pc.fmlInput);
-        pc.fmlInput.mypc = pc;
-        pc.fmlInput.oninput = function() { this.mypc.whenchanged(); }
-        pc.fmlInput.onchange = function() { this.mypc.whenchanged(); }
-        pc.fmlInput.onkeydown = function() { this.mypc.whenchanged(); }
-        pc.getProblem = function() { return this.fmlInput.value; }
+        pc.probinfoarea.appendChild(pc.fmlInputA);
+        const fmlLabelB = addelem('div', pc.probinfoarea, {
+            innerHTML: tr('Formula B')
+        });
+        pc.fmlInputB = FormulaInput.getnew({
+            notation: pc.notationname,
+            lazy: true,
+            pred: false
+        });
+        pc.probinfoarea.appendChild(pc.fmlInputB);
+
+        pc.fmlInputA.mypc = pc;
+        pc.fmlInputB.mypc = pc;
+        pc.fmlInputA.oninput = function() { this.mypc.whenchanged(); }
+        pc.fmlInputB.oninput = function() { this.mypc.whenchanged(); }
+        pc.fmlInputA.onchange = function() { this.mypc.whenchanged(); }
+        pc.fmlInputB.onchange = function() { this.mypc.whenchanged(); }
+        pc.fmlInputA.onkeydown = function() { this.mypc.whenchanged(); }
+        pc.fmlInputB.onkeydown = function() { this.mypc.whenchanged(); }
+        pc.getProblem = function() { return { 
+            l: this.fmlInputA.value,
+            r: this.fmlInputB.value
+        }}
         pc.getAnswer = function() {
-            const f = this.Formula.from(this.getProblem());
-            return formulaTable(f, this.notationname);
+            const pr = this.getProblem();
+            const f = this.Formula.from(pr.l);
+            const g = this.Formula.from(pr.r);
+            return equivTables(f, g, this.notationname);
         }
         pc.makeAnswerer = function() {
             if (this.answerer) {
@@ -82,12 +101,13 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
                 }
             }
             const prob = this.getProblem();
-            const f = this.Formula.from(prob);
-            if (f.wellformed) {
+            const fA = this.Formula.from(prob.l);
+            const fB = this.Formula.from(prob.r);
+            if (fA.wellformed && fB.wellformed) {
                 this.ansbelowlabel.style.display = 'block';
                 this.ansbelowlabel.innerHTML = tr('Answer is shown below');
                 this.ansinfoarea.style.display = 'block';
-                this.answerer = addelem('formula-truth-table', this.ansinfoarea);
+                this.answerer = addelem('equivalence-truth-table', this.ansinfoarea);
                 this.answerer.makeProblem(prob, this.mypsc.gatherOptions(), 'save');
                 this.answerer.setIndicator = function() {};
                 this.answerer.processAnswer = function() {};
@@ -96,11 +116,11 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
                     this.mypc.mypsc.makeChanged();
                 };
                 const ans = this.getAnswer();
-                this.answerer.myanswer = ans;
                 const bdivs = this.answerer.getElementsByClassName("buttondiv");
                 for (const bdiv of bdivs) {
                     bdiv.style.display = 'none';
                 }
+                this.answerer.myanswer = ans;
                 this.answerer.getSolution();
 
             } else {
@@ -113,13 +133,16 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
             this.makeAnswerer();
         }
         if (!isnew) {
-            if (problem && problem != '') {
-                pc.fmlInput.value = problem;
+            if (problem?.l && problem?.r) {
+                pc.fmlInputA.value = problem.l;
+                pc.fmlInputB.value = problem.r;
             }
             pc.whenchanged();
         }
     }
 }
 
-customElements.define("formula-truth-table-creator", FormulaTruthTableCreator);
+customElements.define("equivalence-truth-table-creator", EquivalenceTruthTableCreator);
+
+
 

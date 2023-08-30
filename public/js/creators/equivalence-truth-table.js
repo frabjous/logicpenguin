@@ -116,6 +116,10 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
                     this.mypc.mypsc.makeChanged();
                 };
                 const ans = this.getAnswer();
+                const bdivs = this.answerer.getElementsByClassName("buttondiv");
+                for (const bdiv of bdivs) {
+                    bdiv.style.display = 'none';
+                }
                 this.answerer.myanswer = ans;
                 this.answerer.getSolution();
 

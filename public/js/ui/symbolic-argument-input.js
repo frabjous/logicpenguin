@@ -25,10 +25,24 @@ export default class SymbolicArgumentInput {
             opts.notation = this.Formula.syntax.notationname;
         }
         pr.myinput = FormulaInput.getnew( (this.options ?? {}) );
+        pr.myinput.myelem = this;
+        pr.appendChild(pr.myinput);
         pr.myinput.oninput = function() {
             this.classList.remove('error');
+            if (this?.myelem?.oninput) {
+                this.myelem.oninput();
+            }
         }
-        pr.appendChild(pr.myinput);
+        pr.myinput.onchange = function() {
+            if (this?.myelem?.onchange) {
+                this.myelem.onchange();
+            }
+        }
+        pr.myinput.onkeydown = function() {
+            if (this?.myelem?.oninput) {
+                this.myelem.oninput();
+            }
+        }
         pr.myarg = this;
         return pr;
     }
@@ -119,6 +133,7 @@ export default class SymbolicArgumentInput {
             classes: ['symbarginputbutton'],
             onclick: function(e) {
                 this.myelem.addPremise();
+                if (this.myelem.onchange) { this.myelem.onchange(); }
             }
         });
         plusbutton.myelem = elem;
@@ -129,6 +144,7 @@ export default class SymbolicArgumentInput {
             classes: ['symbarginputbutton'],
             onclick: function(e) {
                 this.myelem.removePremise();
+                if (this.myelem.onchange) { this.myelem.onchange(); }
             }
         });
         minusbutton.myelem = elem;
