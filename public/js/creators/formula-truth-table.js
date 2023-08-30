@@ -14,15 +14,6 @@ import getFormulaClass from '../symbolic/formula.js';
 import FormulaInput from '../ui/formula-input.js';
 import { formulaTable } from '../symbolic/libsemantics.js';
 
-const defaultInterp = {
-    A: true,
-    B: true,
-    C: true,
-    X: false,
-    Y: false,
-    Z: false
-}
-
 function getNotationName() {
     let n = window?.contextSettings?.notation ?? 'cambridge';
     if (n == '' || n == 'none') { n = 'cambridge'; }

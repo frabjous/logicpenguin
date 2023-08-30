@@ -79,7 +79,6 @@ libtf.evaluate = function(wff, interp, notationname) {
     return { tv: tv, row:[tv], opspot: 0 }
 }
 
-
 // fills in a truth table for one formula and determines if it
 // is a contradiction or tautology
 export function formulaTable(fml, notationname) {
