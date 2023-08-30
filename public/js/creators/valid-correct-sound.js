@@ -53,7 +53,7 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
     makeOptions(opts) {
         const canttelldiv = addelem('div', this.settingsform);
         const canttelllabel = addelem('label', canttelldiv, {
-            innerHTML: 'Allow “can’t tell” '
+            innerHTML: tr('Allow “can’t tell”') + ' '
         });
         this.canttellcb = addelem('input', canttelllabel, {
             checked: ("allowcanttell" in opts && opts.allowcanttell),

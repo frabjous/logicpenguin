@@ -41,6 +41,26 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
         }
     }
 
+    makeOptions() {
+        const questiondiv = addelem('div', this.settingsform);
+        const questionlabel = addelem('label', canttelldiv, {
+            innerHTML: tr('Taut/Self-Contr/Contingent question') + ' '
+        });
+        this.questioncb = addelem('input', canttelllabel, {
+            checked: ("allowquestion" in opts && opts.allowcanttell),
+            type: 'checkbox',
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                const pcpc = psc.getElementsByClassName("problemcreator");
+                for (const pc of pcpc) {
+                    pc.makeAnswerer();
+                }
+                psc.makeChanged();
+            }
+        });
+    }
+
     makeProblemCreator(problem, answer, isnew) {
         const pc = super.makeProblemCreator(problem, answer, isnew);
         const fmlLabel = addelem('div', pc.probinfoarea, {
@@ -68,8 +88,10 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
             const f = this.Formula.from(prob);
             if (f.wellformed) {
                 this.ansbelowlabel.style.display = 'block';
-                const ans = this.getAnswer();
                 this.ansinfoarea.style.display = 'block';
+                this.answerer = addelem('formula-truth-table', this.ansinfoarea);
+                const ans = this.getAnswer();
+
                 this.ansinfoarea.innerHTML = tr('Answer') + ': ' +
                     ((ans) ? tr('true') : tr('false'))
             } else {
