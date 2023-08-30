@@ -81,11 +81,17 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
         pc.fmlInputB.oninput = function() { this.mypc.whenchanged(); }
         pc.fmlInputA.onchange = function() { this.mypc.whenchanged(); }
         pc.fmlInputB.onchange = function() { this.mypc.whenchanged(); }
-        pc.fmlInput.onkeydown = function() { this.mypc.whenchanged(); }
-        pc.getProblem = function() { return this.fmlInput.value; }
+        pc.fmlInputA.onkeydown = function() { this.mypc.whenchanged(); }
+        pc.fmlInputB.onkeydown = function() { this.mypc.whenchanged(); }
+        pc.getProblem = function() { return { 
+            l: this.fmlInputA.value,
+            r: this.fmlInputB.value
+        }}
         pc.getAnswer = function() {
-            const f = this.Formula.from(this.getProblem());
-            return formulaTable(f, this.notationname);
+            const pr = this.getProblem();
+            const f = this.Formula.from(pr.l);
+            const g = this.Formula.from(pr.r);
+            return equivTables(f, g, this.notationname);
         }
         pc.makeAnswerer = function() {
             if (this.answerer) {
@@ -100,7 +106,7 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
                 this.ansbelowlabel.style.display = 'block';
                 this.ansbelowlabel.innerHTML = tr('Answer is shown below');
                 this.ansinfoarea.style.display = 'block';
-                this.answerer = addelem('formula-truth-table', this.ansinfoarea);
+                this.answerer = addelem('equivalence-truth-table', this.ansinfoarea);
                 this.answerer.makeProblem(prob, this.mypsc.gatherOptions(), 'save');
                 this.answerer.setIndicator = function() {};
                 this.answerer.processAnswer = function() {};
