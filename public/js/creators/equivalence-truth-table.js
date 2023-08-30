@@ -131,6 +131,7 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
         }
         pc.whenchanged = function() {
             this.makeAnswerer();
+            this.mypsc.makeChanged();
         }
         if (!isnew) {
             if (problem?.l && problem?.r) {

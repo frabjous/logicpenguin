@@ -111,6 +111,7 @@ export default class FormulaTruthTableCreator extends LogicPenguinProblemSetCrea
         }
         pc.whenchanged = function() {
             this.makeAnswerer();
+            this.mypsc.makeChanged();
         }
         if (!isnew) {
             if (problem && problem != '') {

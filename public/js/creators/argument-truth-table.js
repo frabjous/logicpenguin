@@ -55,6 +55,7 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
     makeProblemCreator(problem, answer, isnew) {
         const pc = super.makeProblemCreator(problem, answer, isnew);
         pc.notationname = getNotationName();
+        pc.Formula = getFormulaClass(pc.notationname);
         pc.sai = SymbolicArgumentInput.getnew({
             notation: pc.notationname,
             lazy: true,
@@ -69,33 +70,13 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
         }
 
         pc.probinfoarea.appendChild(pc.sai);
-        const fmlLabelB = addelem('div', pc.probinfoarea, {
-            innerHTML: tr('Formula B')
-        });
-        pc.fmlInputB = FormulaInput.getnew({
-            notation: pc.notationname,
-            lazy: true,
-            pred: false
-        });
-        pc.probinfoarea.appendChild(pc.fmlInputB);
 
-        pc.fmlInputA.mypc = pc;
-        pc.fmlInputB.mypc = pc;
-        pc.fmlInputA.oninput = function() { this.mypc.whenchanged(); }
-        pc.fmlInputB.oninput = function() { this.mypc.whenchanged(); }
-        pc.fmlInputA.onchange = function() { this.mypc.whenchanged(); }
-        pc.fmlInputB.onchange = function() { this.mypc.whenchanged(); }
-        pc.fmlInputA.onkeydown = function() { this.mypc.whenchanged(); }
-        pc.fmlInputB.onkeydown = function() { this.mypc.whenchanged(); }
-        pc.getProblem = function() { return { 
-            l: this.fmlInputA.value,
-            r: this.fmlInputB.value
-        }}
+        pc.getProblem = function() { return this.sai.getArgument(); }
         pc.getAnswer = function() {
-            const pr = this.getProblem();
-            const f = this.Formula.from(pr.l);
-            const g = this.Formula.from(pr.r);
-            return equivTables(f, g, this.notationname);
+            const arg = this.getProblem();
+            const cf = this.Formula.from(arg.conc);
+            const pfs = arg.prems.map((f) => (this.Formula.from(f)))l
+            return argumentTables(pfs, cf, this.notationname);
         }
         pc.makeAnswerer = function() {
             if (this.answerer) {
@@ -105,13 +86,11 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
                 }
             }
             const prob = this.getProblem();
-            const fA = this.Formula.from(prob.l);
-            const fB = this.Formula.from(prob.r);
-            if (fA.wellformed && fB.wellformed) {
+            if (prob) {
                 this.ansbelowlabel.style.display = 'block';
                 this.ansbelowlabel.innerHTML = tr('Answer is shown below');
                 this.ansinfoarea.style.display = 'block';
-                this.answerer = addelem('equivalence-truth-table', this.ansinfoarea);
+                this.answerer = addelem('argument-truth-table', this.ansinfoarea);
                 this.answerer.makeProblem(prob, this.mypsc.gatherOptions(), 'save');
                 this.answerer.setIndicator = function() {};
                 this.answerer.processAnswer = function() {};
@@ -135,6 +114,7 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
         }
         pc.whenchanged = function() {
             this.makeAnswerer();
+            this.mypsc.makeChanged();
         }
         if (!isnew) {
             if (problem?.l && problem?.r) {
