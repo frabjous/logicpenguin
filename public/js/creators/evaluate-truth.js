@@ -11,21 +11,81 @@ import EvaluateTruthExercise from '../problemtypes/evaluate-truth.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
-import FormulaInput from 
+import FormulaInput from '../ui/formula-input.js';
+import libtf from '../symbolic/libsemantics.js';
+
+const defaultInterp = {
+    A: true,
+    B: true,
+    C: true,
+    X: false,
+    Y: false,
+    Z: false
+}
+
+function getNotationName() {
+    let n = window?.contextSettings?.notationname ?? 'cambridge';
+    if (n == '' || n == 'none') { n = 'cambridge'; }
+    return n;
+}
 
 export default class EvaluateTruthExerciseCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
     }
 
+    gatherOptions() {
+        return {
+            notation: getNotationName(),
+            interp: defaultInterp
+        }
+    }
+
     makeProblemCreator(problem, answer, isnew) {
         const pc = super.makeProblemCreator(problem, answer, isnew);
         const fmlLabel = addelem('div', pc.probinfoarea, {
-            innerHTML: 'Formula'
+            innerHTML: tr('Formula')
         });
-        pc.notationname = window.contextSettings.notation;
-        pc.Formula = getFormulaClass(this.notationname);
-        pc.fmlInput = 
+        pc.notationname = getNotationName();
+        pc.Formula = getFormulaClass(pc.notationname);
+        pc.fmlInput = FormulaInput({
+            notation: pc.notationname,
+            lazy: true,
+            pred: false
+        });
+        pc.probinfoarea.appendChild(pc.fmlInput);
+        pc.fmlInput.mypc = pc;
+        pc.fmlInput.oninput = function() { this.mypc.whenchanged(); }
+        pc.fmlInput.onchange = function() { this.mypc.whenchanged(); }
+        pc.getProblem = function() { return this.fmlInput.value; }
+        pc.getAnswer = function() {
+            const f = this.Formula.from(getProblem());
+            return libtf.evaluate(f, defaultInterp, this.notationname);
+        }
+        pc.whenchanged = function() {
+            this.ansbelowlabel.style.display = 'none';
+            const prob = this.getProblem();
+            const f = this.Formula.from(prob);
+            if (f.wellformed) {
+                const ans = this.getAnswer();
+                this.ansinfoarea.style.display = 'block';
+                this.ansinfoarea.innerHTML = tr('Answer') + ': ' +
+                    ((ans) ? tr('true') : tr('false'))
+            } else {
+                this.ansinfoarea.style.display = 'none';
+            }
+        }
+        if (!isnew) {
+            if (problem && problem != '') {
+                pc.fmlInput.value = problem;
+            }
+            pc.whenchanged();
+        }
+    }
+
+    postCreate() {
+        this.partialcreditcb.checked = false;
+        this.partialcreditcb.disabled = true;
     }
 
 }
