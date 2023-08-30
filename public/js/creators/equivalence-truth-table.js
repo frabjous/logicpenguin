@@ -101,8 +101,9 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
                 }
             }
             const prob = this.getProblem();
-            const f = this.Formula.from(prob);
-            if (f.wellformed) {
+            const fA = this.Formula.from(prob.l);
+            const fB = this.Formula.from(prob.r);
+            if (fA.wellformed && fB.wellformed) {
                 this.ansbelowlabel.style.display = 'block';
                 this.ansbelowlabel.innerHTML = tr('Answer is shown below');
                 this.ansinfoarea.style.display = 'block';
@@ -128,14 +129,15 @@ export default class EquivalenceTruthTableCreator extends LogicPenguinProblemSet
             this.makeAnswerer();
         }
         if (!isnew) {
-            if (problem && problem != '') {
-                pc.fmlInput.value = problem;
+            if (problem?.l && problem?.r) {
+                pc.fmlInputA.value = problem.l;
+                pc.fmlInputB.value = problem.r;
             }
             pc.whenchanged();
         }
     }
 }
 
-customElements.define("formula-truth-table-creator", FormulaTruthTableCreator);
+customElements.define("equivalence-truth-table-creator", EquivalenceTruthTableCreator);
 
 
