@@ -163,6 +163,11 @@ export default class OldCounterexampleCreator extends LogicPenguinProblemSetCrea
         return pc;
     }
 
+     postCreate() {
+         this.partialcreditcb.checked = false;
+         this.partialcreditcb.disabled = true;
+     }
+
 }
 
 customElements.define("gmh-counterexample-creator", OldCounterexampleCreator);
