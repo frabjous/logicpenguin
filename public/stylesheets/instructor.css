@@ -644,6 +644,7 @@
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator textarea {
     font-size: inherit;
     font-family: inherit;
+    background-color: inherit;
     padding: 4px;
     width: 100%;
     box-sizing: border-box;
