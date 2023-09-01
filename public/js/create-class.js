@@ -214,7 +214,7 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
             this.numberinput.value = probsetinfo.number.toString()
         }
         const numbermoreinfo = addelem('div', numberdiv, {
-            innerHTML: '(' + tr('If number is smaller than the number of ' + 
+            innerHTML: '(' + tr('If number is smaller than the number of ' +
                 'problems below, students will be given a random ' +
                 'selection.') + ')',
             classes: ['settingsnote']
