@@ -464,7 +464,7 @@ a#lplogo:hover span {
 /* when save processing */
 .logicpenguin .saving .problemsavedindicator span {
     color: var(--lpblue);
-    animation: spin 3s infinite linear;
+    animation: spin 1s infinite linear;
 }
 
 .logicpenguin .saving .problemsavedindicator::before {
