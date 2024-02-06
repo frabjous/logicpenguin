@@ -15,6 +15,7 @@
 
 .logicpenguin .spinning {
     animation: spin 3s infinite linear;
+    animation-direction: reverse;
 }
 
 @keyframes fade {
