@@ -72,7 +72,7 @@ export default class DerivationHardegree extends DerivationExercise {
         this.schematic = ((s) => (DerivationHardegree.schematic(s, this.schematicLetters)));
         this.useShowLines = true;
         // different icon for adding subderivation
-        this.icons.addsubderiv = 'variables';
+        this.icons.addsubderiv = 'variables_add';
         super.makeProblem(problem, options, checksave);
     }
 
