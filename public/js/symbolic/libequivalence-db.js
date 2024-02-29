@@ -27,7 +27,6 @@ const useMemory = ((typeof process === 'undefined') ||
 /// FUNCTIONS ///
 
 function applyswitches(str, switches) {
-    console.log('as',(new Date()).toString());
     for (const sw in switches) {
         const cpoint = 120049 + switches[sw].codePointAt(0);
         const tempchar = String.fromCodePoint(cpoint);
@@ -42,6 +41,7 @@ function applyswitches(str, switches) {
 }
 
 export function equivProliferate(f, switches = {}, notationname) {
+    console.log('as',(new Date()).toString());
     const Formula = getFormulaClass(notationname);
 
     const varCP = Formula.syntax.notation.variableRange.codePointAt(0);
