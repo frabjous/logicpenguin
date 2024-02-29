@@ -37,7 +37,10 @@ export default class ArgumentTruthTable extends TruthTable {
         const ans = super.getAnswer();
         if (this.options.question) {
             ans.mcans = this.mcquestion.getAnswer();
-            ans.valid   = (ans.mcans == 0);
+            ans.valid = -1;
+            if (ans.mcans != -1) {
+                ans.valid = (ans.mcans == 0);
+            }
         }
         return ans;
     }

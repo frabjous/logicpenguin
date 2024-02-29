@@ -37,7 +37,10 @@ export default class EquivalenceTruthTable extends TruthTable {
         const ans = super.getAnswer();
         if (this.options.question) {
             ans.mcans = this.mcquestion.getAnswer();
-            ans.equiv   = (ans.mcans == 0);
+            ans.equiv = -1;
+            if (ans.mcans != -1) {
+                ans.equiv = (ans.mcans == 0);
+            }
         }
         return ans;
     }

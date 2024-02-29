@@ -36,8 +36,12 @@ export default class FormulaTruthTable extends TruthTable {
         const ans = super.getAnswer();
         if (this.options.question) {
             ans.mcans = this.mcquestion.getAnswer();
-            ans.taut   = (ans.mcans == 0);
-            ans.contra = (ans.mcans == 2);
+            ans.taut = -1;
+            ans.contra = -1;
+            if (ans.mcans != -1) {
+                ans.taut   = (ans.mcans == 0);
+                ans.contra = (ans.mcans == 2);
+            }
         }
         return ans;
     }
