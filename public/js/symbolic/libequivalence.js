@@ -617,10 +617,8 @@ export function equivtest(fp, fq, notationname) {
     }
 
     // check if already in database
-    console.log("qdb check");
     const quickResult = quickDBCheck(fp, fq, notationname);
     if (quickResult.determinate) { return quickResult; }
-    console.log("done");
 
     // do a tree check
     const Formula = getFormulaClass(notationname);
