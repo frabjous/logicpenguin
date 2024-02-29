@@ -27,6 +27,7 @@ const useMemory = ((typeof process === 'undefined') ||
 /// FUNCTIONS ///
 
 function applyswitches(str, switches) {
+    console.log('as',(new Date()).toString());
     for (const sw in switches) {
         const cpoint = 120049 + switches[sw].codePointAt(0);
         const tempchar = String.fromCodePoint(cpoint);
@@ -41,7 +42,7 @@ function applyswitches(str, switches) {
 }
 
 export function equivProliferate(f, switches = {}, notationname) {
-    console.log('as',(new Date()).toString());
+    console.log('ep',(new Date()).toString());
     const Formula = getFormulaClass(notationname);
 
     const varCP = Formula.syntax.notation.variableRange.codePointAt(0);
@@ -347,7 +348,10 @@ export function equivProliferate(f, switches = {}, notationname) {
         }
 
         // p ↔ q :: (p → q) ∧ (q → p)
-        if (f.op == Formula.syntax.symbols.IFF) {
+        // to avoid circles, do not call on double IFFs
+        if ((f.op == Formula.syntax.symbols.IFF) &&
+            (!(f.right) || f.right.normal.indexOf(Formula.syntax.symbols.IFF) == -1)
+            (!(f.left) || f.left.normal.indexOf(Formula.syntax.symbols.IFF) == -1)) {
             equivs = arrayUnion(equivs,
                 proliferateCombine(
                     Formula.from( l.wrapifneeded() + Formula.syntax.symbols.IFTHEN +
@@ -359,10 +363,12 @@ export function equivProliferate(f, switches = {}, notationname) {
                 )
             );
         }
-
         // p ↔ q :: (p ∧ q) ∨ ¬(p ∨ q)
-        if (f.op == Formula.syntax.symbols.IFF) {
-            equivs = arrayUnion(equivs,
+        // to avoid circles, do not call on double IFFs
+        if ((f.op == Formula.syntax.symbols.IFF) &&
+            (!(f.right) || f.right.normal.indexOf(Formula.syntax.symbols.IFF) == -1)
+            (!(f.left) || f.left.normal.indexOf(Formula.syntax.symbols.IFF) == -1)) {
+                equivs = arrayUnion(equivs,
                 proliferateCombine(
                     Formula.from( l.wrapifneeded() + Formula.syntax.symbols.AND +
                         r.wrapifneeded()),
@@ -406,11 +412,13 @@ export function equivProliferate(f, switches = {}, notationname) {
 }
 
 function issymmetric(op, Formula) {
+    console.log('is',(new Date()).toString());
     return (op == Formula.syntax.symbols.OR || op == Formula.syntax.symbols.AND ||
         op == Formula.syntax.symbols.IFF);
 }
 
 export function loadEquivalents(wffstr, notationname) {
+    console.log('le',(new Date()).toString());
     const Formula = getFormulaClass(notationname);
     //if memory, check the equivDB object, otherwise generate it
     //using equivProliferate
@@ -438,6 +446,7 @@ export function loadEquivalents(wffstr, notationname) {
 }
 
 function proliferateCombine(f, g, op, switches, notationname) {
+    console.log('pC',(new Date()).toString());
     const Formula = getFormulaClass(notationname);
     let results = [];
     const fequivs = equivProliferate(f, switches, notationname);
@@ -447,6 +456,7 @@ function proliferateCombine(f, g, op, switches, notationname) {
             results = arrayUnion(results,
                 [Formula.from(fe.wrapifneeded() + op + ge.wrapifneeded())]
             );
+            console.log('checking issym on ' , f.normal, g.normal, op);
             if (issymmetric(op, Formula)) {
                 results = arrayUnion(results,
                     [Formula.from(ge.wrapifneeded() + op + fe.wrapifneeded())]
@@ -458,6 +468,7 @@ function proliferateCombine(f, g, op, switches, notationname) {
 }
 
 export function saveEquivalents(wffstr, equivs, notationname) {
+    console.log('se',(new Date()).toString());
     // don't crash if called incorrectly
     if ((typeof process == 'undefined') ||
         (!("appsettings" in process)) ||
