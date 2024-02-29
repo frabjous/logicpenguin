@@ -27,6 +27,7 @@ const useMemory = ((typeof process === 'undefined') ||
 /// FUNCTIONS ///
 
 function applyswitches(str, switches) {
+    console.log('as',(new Date()).toString());
     for (const sw in switches) {
         const cpoint = 120049 + switches[sw].codePointAt(0);
         const tempchar = String.fromCodePoint(cpoint);
@@ -50,12 +51,11 @@ export function equivProliferate(f, switches = {}, notationname) {
         String.fromCodePoint(varCP+2)
     ];
 
-
     let equivs = [];
 
     // for atomics, return it with switches applied
     if (!f.op) {
-        return [ 
+        return [
             Formula.from(applyswitches(f.normal, switches)),
         ];
     }
