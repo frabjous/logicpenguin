@@ -353,7 +353,7 @@ export function equivProliferate(f, switches = {}, notationname) {
             equivs = arrayUnion(equivs,
                 proliferateCombine(
                     Formula.from( l.wrapifneeded() + Formula.syntax.symbols.IFTHEN +
-                        r.wrapifneeded()), 
+                        r.wrapifneeded()),
                     Formula.from( r.wrapifneeded() +
                         Formula.syntax.symbols.IFTHEN + l.wrapifneeded()),
                         Formula.syntax.symbols.AND,
