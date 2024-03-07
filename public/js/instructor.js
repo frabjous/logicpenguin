@@ -776,8 +776,10 @@ mainloadfns.studentsmain = async function() {
     users = users.sort(function(a,b) {
         const ainfo = resp.users[a];
         const binfo = resp.users[b];
-        if (ainfo?.roles == "Learner" && binfo?.roles != "Learner") { return -1; }
-        if (binfo?.roles == "Learner" && binfo?.roles != "Learner") { return 1; }
+        if ((ainfo?.roles?.indexOf("Learner") != -1) && 
+            (binfo?.roles?.indexOf("Learner") == -1)) { return -1; }
+        if ((ainfo?.roles?.indexOf("Learner") == -1) && 
+            (binfo?.roles?.indexOf("Learner") != -1)) { return 1; }
         if (("family" in ainfo) && ("family" in binfo)) {
             let fcompare = ainfo.family.localeCompare(binfo.family);
             if (fcompare != 0) { return fcompare; }
