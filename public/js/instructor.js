@@ -824,7 +824,7 @@ mainloadfns.studentsmain = async function() {
         if (shortuserid != userid) {
             shortuserid += '…';
         }
-        nch += '</div><div><strong title="' + userud + '">(' + shortuserid + ')</strong></div>';
+        nch += '</div><div><strong title="' + userid + '">(' + shortuserid + ')</strong></div>';
         namecell.innerHTML = nch;
         // cell for each exericse
         for (const exnum of exnums) {
