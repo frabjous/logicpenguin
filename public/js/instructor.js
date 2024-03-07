@@ -820,7 +820,7 @@ mainloadfns.studentsmain = async function() {
         if (("email" in userinfo) && userinfo.email != '') {
             nch += '</a>';
         }
-        let shortuserid = userid.substring(0,12);
+        let shortuserid = userid.substring(0,10);
         if (shortuserid != userid) {
             shortuserid += '…';
         }
