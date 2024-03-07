@@ -820,7 +820,11 @@ mainloadfns.studentsmain = async function() {
         if (("email" in userinfo) && userinfo.email != '') {
             nch += '</a>';
         }
-        nch += '</div><div><strong>(' + userid + ')</strong></div>';
+        let shortuserid = userid.substring(0,12);
+        if (shortuserid != userid) {
+            shortuserid += '…';
+        }
+        nch += '</div><div><strong title="' + userud + '">(' + shortuserid + ')</strong></div>';
         namecell.innerHTML = nch;
         // cell for each exericse
         for (const exnum of exnums) {
