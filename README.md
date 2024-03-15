@@ -53,7 +53,7 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [ ] Provide an instructor panel for certain things so they don’t have to be done server-side
     - [x] granting extensions
     - [x] seeing student progress
-    - [ ] overriding grades
+    - [x] overriding grades
     - [ ] editing and creating new exercise sets
     - [x] choosing preferred notation
     - [ ] importing from other courses
