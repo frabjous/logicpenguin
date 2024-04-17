@@ -44,7 +44,7 @@ export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCrea
         super();
     }
 
-    gatherOptions(opts) {
+    gatherOptions() {
         return {
             allowcanttell: (this?.canttellcb?.checked)
         }

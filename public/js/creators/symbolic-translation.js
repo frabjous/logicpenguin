@@ -33,7 +33,20 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         super();
     }
 
-    gatherOptions(opts) {
+    disableRadios() {
+        const ii = this.getElementsByTagName("input");
+        for (const inp of ii) {
+            if (inp.type != 'radio') {
+                continue;
+            }
+            inp.disabled = true;
+            inp.title = tr('You cannot change this this after it is set ' +
+                'or problems are created. Create a new problem set ' +
+                'if need be.');
+        }
+    }
+
+    gatherOptions() {
         return {
             pred: (this?.predradio?.checked),
             lazy: (!(this?.predradio?.checked)),
@@ -53,7 +66,13 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
             type: "radio",
             id: radioname + 'sentcb',
             name: radioname,
-            checked: (("pred" in opts) && (opts.pred == false))
+            checked: (("pred" in opts) && (opts.pred == false)),
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.disableRadios();
+                psc.makeChanged();
+            }
         });
         const predlabel = addelem('label', toptionsdiv);
         const predspan = addelem('span', predlabel, {
@@ -63,21 +82,26 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
             type: "radio",
             id: radioname + 'predcb',
             name: radioname,
-            checked: (("pred" in opts) && opts.pred)
+            mypsc: this,
+            checked: (("pred" in opts) && opts.pred),
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.disableRadios();
+                psc.makeChanged();
+            }
         });
-        const canttelllabel = addelem('label', canttelldiv, {
-            innerHTML: tr('Allow “can’t tell”') + ' '
+        if ("pred" in opts) {
+            this.disableRadios();
+        }
+        const falsumlabel = addelem('label', topoptionsdiv, {
+            innerHTML: tr('Allow falsum in translation')
         });
-        this.canttellcb = addelem('input', canttelllabel, {
-            checked: ("allowcanttell" in opts && opts.allowcanttell),
-            type: 'checkbox',
+        this.falsumcb = addelem('input', falsumlabel, {
+            type: "checkbox",
+            checked: (("nofalsum" in opts) && (opts.nofalsum == false)),
             mypsc: this,
             onchange: function() {
                 const psc = this.mypsc;
-                const pcpc = psc.getElementsByClassName("problemcreator");
-                for (const pc of pcpc) {
-                    pc.makeAnswerer();
-                }
                 psc.makeChanged();
             }
         });
