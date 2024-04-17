@@ -8,20 +8,16 @@
 /////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import TranslationExercise from '../problemtypes/symbolic-translation.js';
+//import TranslationExercise from '../problemtypes/symbolic-translation.js';
 import { addelem } from '../common.js';
 import { randomString } from '../misc.js';
 import tr from '../translate.js';
-import multiInputField from '../ui/multifield.js';
+import FormulaInput from '../ui/formula-input.js';
 
 function getNotationName() {
     let n = window?.contextSettings?.notation ?? 'cambridge';
     if (n == '' || n == 'none') { n = 'cambridge'; }
     return n;
-}
-
-function sameProblem(p, q) {
-    return (p == q);
 }
 
 function sufficesForProblem(prob) {
@@ -56,6 +52,7 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
     }
 
     makeOptions(opts) {
+        this.notation = getNotationName();
         const toptionsdiv = addelem('div', this.settingsform);
         const radioname = this.newRadioName();
         const sentlabel = addelem('label', toptionsdiv);
@@ -108,9 +105,41 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
     }
 
     makeProblemCreator(problem, answer, isnew) {
-        if (!("prems" in problem)) { problem.prems = []; }
-        if (!("conc" in problem)) { problem.conc = ''; }
+        if (!problem) { problem = ''; }
+        if (!answer) { answer = ''; }
         const pc = super.makeProblemCreator(problem, answer, isnew);
+        pc.mypsc = this;
+        const totranslabel = addelem('div', pc.probinfoarea, {
+            innerHTML: tr('Statement to translate')
+        });
+        pc.totransinput = addelem('textarea', pc.probinfoarea, {
+            value: problem,
+            mypc: pc,
+            oninput: function() { this.mypc.whenChanged(); },
+            onchange: function() { this.mypc.whenChanged(); }
+        });
+        pc.whenchanged = function() {
+            const nowprob = this.getProblem();
+            if (!sufficesForProbem(nowprob)) { continue; }
+            if (this.answerer) {
+                continue;
+            }
+            this.answerer = addelem('div', this.ansinfoarea);
+            this.answered.label = addelem('div', this.answerer, {
+                innerHTML: tr('Translation') + ':'
+            });
+            this.answerer.fmlinput = FormulaInput.getnew({
+                notation: this.mypsc.notation,
+                pred: (this?.mypsc?.predradio?.checked),
+                lazy: (!!(this?.mypsc?.predradio?.checked))
+            });
+            if (this.mypsc.disableRadios) { this.mypsc.disableRadios(); }
+
+        }
+        pc.getProblem = function() {
+            return this.totransinput.value;
+        }
+
         pc.mip = multiInputField(pc.probinfoarea, 'Premise', problem?.prems ?? [], 2);
         pc.mip.mypc = pc;
         pc.mip.onchange = function() { this.mypc.whenchanged(); }
