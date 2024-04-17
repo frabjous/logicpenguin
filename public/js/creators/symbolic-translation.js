@@ -10,6 +10,7 @@
 import LogicPenguinProblemSetCreator from '../create-class.js';
 import TranslationExercise from '../problemtypes/symbolic-translation.js';
 import { addelem } from '../common.js';
+import { randomString } from '../misc.js';
 import tr from '../translate.js';
 import multiInputField from '../ui/multifield.js';
 
@@ -42,7 +43,28 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
     }
 
     makeOptions(opts) {
-        const canttelldiv = addelem('div', this.settingsform);
+        const toptionsdiv = addelem('div', this.settingsform);
+        const radioname = this.newRadioName();
+        const sentlabel = addelem('label', toptionsdiv);
+        const sentspan = addelem('span', sentlabel, {
+            innerHTML: tr('sentential')
+        });
+        this.sentradio = addelem('input', sentlabel, {
+            type: "radio",
+            id: radioname + 'sentcb',
+            name: radioname,
+            checked: (("pred" in opts) && (opts.pred == false))
+        });
+        const predlabel = addelem('label', toptionsdiv);
+        const predspan = addelem('span', predlabel, {
+            innerHTML: tr('predicate')
+        });
+        this.predradio = addelem('input', {
+            type: "radio",
+            id: radioname + 'predcb',
+            name: radioname,
+            checked: (("pred" in opts) && opts.pred)
+        });
         const canttelllabel = addelem('label', canttelldiv, {
             innerHTML: tr('Allow “can’t tell”') + ' '
         });
@@ -150,6 +172,14 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
             }
         }
         return pc;
+    }
+
+    newRadioName() {
+        let rn = randomString(6);
+        while (this.getElementById(rn + 'sentcb')) {
+            rn = randomString(6);
+        }
+        return rn;
     }
 
 }
