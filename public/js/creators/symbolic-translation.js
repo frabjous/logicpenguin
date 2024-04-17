@@ -3,50 +3,41 @@
 // https://www.gnu.org/licenses/.
 
 /////////////////// creators/valid-correct-sound.js /////////////////////
-// class for creating problems checking validity, factual correctness  //
-// and soundness                                                       //
+// class for creating problems for translating natural language        //
+// statements into symbolic notation                                   //
 /////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import ValidCorrectSound from '../problemtypes/valid-correct-sound.js';
+import TranslationExercise from '../problemtypes/symbolic-translation.js';
 import { addelem } from '../common.js';
 import tr from '../translate.js';
 import multiInputField from '../ui/multifield.js';
 
-function sameProblem(p, q) {
-    if (p?.conc != q?.conc) { return false; }
-    if (p?.prems?.length != q?.prems?.length) { return false; }
-    for (let i=0; i<p?.prems?.length; i++) {
-        if (p?.prems?.[i] != q?.prems?.[i]) { return false; }
-    }
-    return true;
+function getNotationName() {
+    let n = window?.contextSettings?.notation ?? 'cambridge';
+    if (n == '' || n == 'none') { n = 'cambridge'; }
+    return n;
 }
 
-function serverAnswerToUserAnswer(servans) {
-    if (servans.correct === true && servans.valid === true) {
-        servans.sound = true;
-        return servans;
-    }
-    if (servans.correct === false || servans.valid === false) {
-        servans.sound = false;
-        return servans;
-    }
-    servans.sound = -1;
-    return servans;
+function sameProblem(p, q) {
+    return (p == q);
 }
 
 function sufficesForProblem(prob) {
-    return (prob.conc != '' && prob.prems.length > 0);
+    return (prob != '');
 }
 
-export default class ValidCorrectSoundCreator extends LogicPenguinProblemSetCreator {
+export default class TranslationExerciseCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
     }
 
     gatherOptions(opts) {
         return {
-            allowcanttell: (this?.canttellcb?.checked)
+            pred: (this?.predradio?.checked),
+            lazy: (!(this?.predradio?.checked)),
+            notation: (this?.notation ?? 'Cambridge'),
+            nofalsum: (!(this?.falsumcb?.checked))
         }
     }
 
