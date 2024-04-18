@@ -75,7 +75,7 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         const predspan = addelem('span', predlabel, {
             innerHTML: tr('predicate')
         });
-        this.predradio = addelem('input', {
+        this.predradio = addelem('input', predlabel, {
             type: "radio",
             id: radioname + 'predcb',
             name: radioname,
@@ -90,7 +90,7 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         if ("pred" in opts) {
             this.disableRadios();
         }
-        const falsumlabel = addelem('label', topoptionsdiv, {
+        const falsumlabel = addelem('label', toptionsdiv, {
             innerHTML: tr('Allow falsum in translation')
         });
         this.falsumcb = addelem('input', falsumlabel, {
@@ -120,9 +120,9 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         });
         pc.whenchanged = function() {
             const nowprob = this.getProblem();
-            if (!sufficesForProbem(nowprob)) { continue; }
+            if (!sufficesForProbem(nowprob)) { return; }
             if (this.answerer) {
-                continue;
+                return;
             }
             this.makeAnswerer('');
             this.mypsc.makeChanged();
@@ -166,7 +166,7 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
 
     newRadioName() {
         let rn = randomString(6);
-        while (this.getElementById(rn + 'sentcb')) {
+        while (document.getElementById(rn + 'sentcb')) {
             rn = randomString(6);
         }
         return rn;
