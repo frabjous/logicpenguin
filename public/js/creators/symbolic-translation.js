@@ -105,8 +105,8 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
     }
 
     makeProblemCreator(problem, answer, isnew) {
-        if (!problem) { problem = ''; }
-        if (!answer) { answer = ''; }
+        if (!problem || (typeof problem != 'string')) { problem = ''; }
+        if (!answer || (typeof answer != 'string')) { answer = ''; }
         const pc = super.makeProblemCreator(problem, answer, isnew);
         pc.mypsc = this;
         const totranslabel = addelem('div', pc.probinfoarea, {
@@ -118,9 +118,9 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
             oninput: function() { this.mypc.whenChanged(); },
             onchange: function() { this.mypc.whenChanged(); }
         });
-        pc.whenchanged = function() {
+        pc.whenChanged = function() {
             const nowprob = this.getProblem();
-            if (!sufficesForProbem(nowprob)) { return; }
+            if (!sufficesForProblem(nowprob)) { return; }
             if (this.answerer) {
                 return;
             }
@@ -128,10 +128,13 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
             this.mypsc.makeChanged();
         };
         pc.makeAnswerer = function(ans) {
+            if (this.ansbelowlabel) {
+                this.ansbelowlabel.style.display = 'block';
+            }
             this.answerer = addelem('div', this.ansinfoarea, {
                 mypc: this
             });
-            this.answered.label = addelem('div', this.answerer, {
+            this.answerer.label = addelem('div', this.answerer, {
                 innerHTML: tr('Translation') + ':'
             });
             this.answerer.fmlinput = FormulaInput.getnew({
@@ -139,12 +142,13 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
                 pred: (this?.mypsc?.predradio?.checked),
                 lazy: (!!(this?.mypsc?.predradio?.checked))
             });
+            this.answerer.appendChild(this.answerer.fmlinput);
             this.answerer.fmlinput.value = ans;
             this.answerer.fmlinput.mypc = this;
-            this.answered.fmlinput.onchange = function() {
+            this.answerer.fmlinput.onchange = function() {
                 this?.mypc?.mypsc.makeChanged();
             }
-            this.answered.fmlinput.oninput = function() {
+            this.answerer.fmlinput.oninput = function() {
                 this?.mypc?.mypsc.makeChanged();
             }
             // once answers are possible, can no longer change type
