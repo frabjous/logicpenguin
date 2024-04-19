@@ -10,6 +10,7 @@
 import { addelem, htmlEscape } from '../common.js';
 import { randomString } from '../misc.js'
 import tr from '../translate.js'
+import FormulaInput from '../ui/formula-input.js';
 
 
 function newPAMid() {
@@ -18,6 +19,14 @@ function newPAMid() {
         newid = 'proseargmaker' + randomString(8);
     }
     return newid;
+}
+
+function randomid() {
+    let rv = randomString(8);
+    while (document.getElementById(rv)) {
+        rv = randomString(8);
+    }
+    return rv;
 }
 
 export function getProseArgumentMaker(parNode,
@@ -51,7 +60,44 @@ export function getProseArgumentMaker(parNode,
         const statementlbl = addelem('span', statementltd, {
             innerHTML: tr('statement')
         });
+        const postlbl = addelem('span', postltd, {
+            innerHTML: tr('following text')
+        });
+        const preitd = addelem('td', pretr);
+        const statementitd = addelem('td', statementtr);
+        const postitd = addelem('td', posttr);
+        block.preinp = addelem('input', preitd, {
+            type: 'text'
+        });
+        if ("pre" in deets) {
+            block.preinp.value = deets.pre;
+        };
+        block.statementinp = addelem('input', statementitd, {
+            type: 'text'
+        });
+        if ("statement" in deets) {
+            block.statementinp.value = deets.statement;
+        }
+        block.postinp = addelem('input', postitd, {
+            type: 'text'
+        });
+        if ("post" in deets) {
+            block.postinp.value = deets.post;
+        }
+        if (("gettrans" in this.opts) && this.opts.gettrans) {
+            const transtr = addelem('tr', tbdy);
+            const transltd = addelem('td', transtr);
+            const translbl = addelem('span', transltd, {
+                innerHTML: tr('translation')
+            });
+            const transitd = addelem('td', transtr);
+            block.transinp = FormulaInput.getnew(this.opts);
+            transitd.appendChild(block.transinp);
+        }
+        const radiodiv = addelem('div', block);
+        block.concradio = addelem('input', radiodiv, {
 
+        })
 
     }
     // subdiv for each statement
