@@ -67,6 +67,7 @@
 
 .logicpenguin nav ul li {
     display: inline-block;
+    user-select: none;
 }
 
 .logicpenguin nav ul li a,
