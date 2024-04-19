@@ -2,7 +2,7 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////// prose-argument.js ////////////////////////////////////
+/////////////////// prose-argument-maker.js //////////////////////////////////
 // creates boxes for arguments in paragraph form, for, e.g., conclusion //
 // identification problems and similar                                  //
 //////////////////////////////////////////////////////////////////////////
