@@ -9,13 +9,15 @@
 
 import { addelem, htmlEscape } from '../common.js';
 import { randomString } from '../misc.js'
+import tr from '../translate.js'
 
 
 function newPAMid() {
     let newid = 'proseargmaker' + randomString(8);
-    while (document.getElementById(newid)) {
+    while (document?.getElementById(newid)) {
         newid = 'proseargmaker' + randomString(8);
     }
+    return newid;
 }
 
 export function getProseArgumentMaker(parNode,
@@ -27,14 +29,30 @@ export function getProseArgumentMaker(parNode,
     // create a div for the argument
     const argDiv = addelem('div', parNode, {
         classes: ['proseargumentmaker'],
-        opts: ops,
+        opts: opts,
         id: newPAMid()
     });
 
     argDiv.addStatement = function(deets, trans, checked) = function() {
         const block = addelem('div', this, {
-            classes:
-        })
+            classes: ['statementblock']
+        });
+        const tbl = addelem('table', block);
+        const tbdy = addelem('tbody', tbl);
+        const pretr = addelem('tr', tbdy);
+        const statementtr = addelem('tr', tbdy);
+        const posttr = addelem('tr', tbdy);
+        const preltd = addelem('td', pretr);
+        const statementltd = addelem('td', statementtr);
+        const postltd = addelem('td', posttr);
+        const prelbl = addelem('span', preltd, {
+            innerHTML: tr('preceding text')
+        });
+        const statementlbl = addelem('span', statementltd, {
+            innerHTML: tr('statement')
+        });
+
+
     }
     // subdiv for each statement
     for (let sdetails of argdetails) {
