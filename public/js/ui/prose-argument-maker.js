@@ -2,21 +2,41 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////// prose-argument-maker.js //////////////////////////////////
-// creates boxes for arguments in paragraph form, for, e.g., conclusion //
-// identification problems and similar                                  //
-//////////////////////////////////////////////////////////////////////////
+/////////////////// prose-argument-maker.js /////////////////////////////
+// creates an interface for creating prose arguments with a conclusion //
+// translations and pre and post text                                  //
+/////////////////////////////////////////////////////////////////////////
 
 import { addelem, htmlEscape } from '../common.js';
+import { randomString } from '../misc.js'
 
-export function getProseArgument(parNode, argdetails) {
+
+function newPAMid() {
+    let newid = 'proseargmaker' + randomString(8);
+    while (document.getElementById(newid)) {
+        newid = 'proseargmaker' + randomString(8);
+    }
+}
+
+export function getProseArgumentMaker(parNode,
+    argdetails = [], translations = [], conc = -1, opts = {}) {
+    // insert a blank statement if no argument already
+    if (argdetails.length == 0) {
+        argdetails.push({ statement: '' });
+    }
     // create a div for the argument
     const argDiv = addelem('div', parNode, {
-        classes: ['proseargument']
+        classes: ['proseargumentmaker'],
+        opts: ops,
+        id: newPAMid()
     });
-    // each statement gets its own span
-    argDiv.statementSpans = [];
-    let needTN = false;
+
+    argDiv.addStatement = function(deets, trans, checked) = function() {
+        const block = addelem('div', this, {
+            classes:
+        })
+    }
+    // subdiv for each statement
     for (let sdetails of argdetails) {
         // space between statements
         if (needTN) {
