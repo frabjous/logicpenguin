@@ -77,7 +77,6 @@ lti.getLatestLaunch = async function(
         newest = newest.substr(0,40);
     }
     // returns either the filename, or just the key depending on keyonly
-    console.log("got here");
     return newest;
 }
 
@@ -122,7 +121,7 @@ lti.sendScore = async function(consumerkey, contextid, userid, exnum, score) {
             if (err) {
                 const cdir = path.join(datadir, consumerkey);
                 const errfile = path.join(cdir, 'senderrors.json');
-                const trackederrs = [];
+                let trackederrs = [];
                 if (lpfs.isfile(errfile)) {
                     trackederrs = lpfs.loadjson(errfile);
                 }
