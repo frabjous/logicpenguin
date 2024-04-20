@@ -71,18 +71,37 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
         }
 
         pc.getProblem = function() { return this.pam.getStatements(); }
-        pc.getAnswer = function() {
+        pc.getBaseAnswer = function() {
             const rv = {};
             rv.index = pc.pam.getConcNum();
             rv.translations = pc.pam.getTranslations();
-            const cf = this.Formula.from((rv.translations?.[rv.index] ?? ''));
+            return rv;
+        }
+        pc.getTTAnswer = function(concindex, translations) {
+            const cf = this.Formula.from((translations?.[concindex] ?? ''));
             const pfs = [];
-            for (let i=0; i<rv.translations.length; i++) {
-                if (i==rv.index) { continue; }
-                const pf = this.Formula.from((rv.translations[i]));
+            for (let i=0; i<translations.length; i++) {
+                if (i==concindex) { continue; }
+                const pf = this.Formula.from((translations[i]));
                 pfs.push(pf);
             }
-            rv.tables = argumentTables(pfs, cf, this.notationname);
+            return argumentTables(pfs, cf, this.notationname);
+
+        }
+        pc.getAnswer = function() {
+            const rv = this.getBaseAnswer();
+            const argTables = this.getTTAnswer(rv.index, rv.translations);
+            let premsused = 0;
+            rv.tables = [];
+            rv.valid = argTables.valid;
+            for (let i=0; i<rv.translations.length; i++) {
+                if (i==rv.index) {
+                    rv.tables.push(argTables.conc);
+                    continue;
+                }
+                rv.tables.push(argTables.prems[premsused]);
+                premsused++;
+            }
             return rv;
         }
         pc.makeAnswerer = function() {
@@ -134,7 +153,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
                 for (const bdiv of bdivs) {
                     bdiv.style.display = 'none';
                 }
-                this.answerer.myanswer = ans.tables;
+                this.answerer.myanswer = this.getTTAnswer(ans.index, ans.translations);
                 this.answerer.getSolution();
             } else {
                 this.ansbelowlabel.style.display = 'none';
