@@ -441,11 +441,16 @@
     margin-bottom: 0;
 }
 
+.logicpenguin combo-translation-truth-table-creator .statementdeletebutton,
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise {
     float: right;
     display: inline-block;
     color: var(--lpred);
     cursor: pointer;
+}
+
+.logicpenguin combo-translation-truth-table-creator .statementdeletebutton {
+    margin-right: 1rem;
 }
 
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise .material-symbols-outlined {

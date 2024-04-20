@@ -135,7 +135,7 @@ export default function getProseArgumentMaker(parNode,
             innerHTML: '<span class="material-symbols-outlined">delete_forever</span>',
             myargdiv: this,
             myblock: block,
-            classes: 'statementdeletebutton',
+            classes: ['statementdeletebutton'],
             triggerChange: triggerChange,
             title: tr('remove this statement'),
             onclick: function() {
@@ -145,7 +145,7 @@ export default function getProseArgumentMaker(parNode,
         })
         // give each input a listener
         const inps = [block.concradio, block.preinp,
-            block.statement,inp, block.postinp];
+            block.statementinp, block.postinp];
         if ("transinp" in block) {
             inps.push(block.transinp);
         }

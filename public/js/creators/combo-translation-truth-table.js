@@ -53,6 +53,9 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
         const pc = super.makeProblemCreator(problem, answer, isnew);
         pc.notationname = getNotationName();
         pc.Formula = getFormulaClass(pc.notationname);
+        const ststlabel = addelem('div', pc.probinfoarea, {
+            innerHTML: '<strong>Statements</strong>'
+        })
         pc.pam = getProseArgumentMaker(pc.probinfoarea, problem,
             (answer?.translations ?? []), (answer?.index ?? -1), {
             notation: pc.notationname,
@@ -75,7 +78,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             const pfs = [];
             for (let i=0; i<rv.translations.length; i++) {
                 if (i==rv.index) { continue; }
-                const pf = this.Formula.from((rv.trenslations[i]));
+                const pf = this.Formula.from((rv.translations[i]));
                 pfs.push(pf);
             }
             rv.tables = argumentTables(pfs, cf, this.notationname);
@@ -132,7 +135,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             this.mypsc.makeChanged();
         }
         if (!isnew) {
-            this.makeAnswerer();
+            pc.makeAnswerer();
         }
     }
 }
