@@ -2,17 +2,16 @@
 // Public License along with this program. If not, see
 // https://www.gnu.org/licenses/.
 
-/////////////////// creators/argument-truth-table.js /////////////////////
-// class for creating truth table problems for arguments                //
+/////////////////// creators/derivation.js /////////////////////
+// class for creating derivation problems
 //////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import ArgumentTruthTable from '../problemtypes/argument-truth-table.js';
 import { addelem } from '../common.js';
+import { randomString } from '../misc.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
 import  SymbolicArgumentInput from '../ui/symbolic-argument-input.js';
-import { argumentTables } from '../symbolic/libsemantics.js';
 
 function getNotationName() {
     let n = window?.contextSettings?.notation ?? 'cambridge';
@@ -20,36 +19,121 @@ function getNotationName() {
     return n;
 }
 
+function randomId() {
+    let rid = randomString(8);
+    while (document.getElementById(rid)) {
+        rid = randomString(8);
+    }
+    return rid;
+}
+
 export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
     }
 
+    disableLangRadios() {
+        const msg = tr('This cannot be changed once set. Create a new ' +
+            'problem set if need be.');
+        if (this?.sentradio) {
+            this.sentradio.disabled = true;
+            this.sentradio.title = msg;
+            this.sentlabel.title = msg;
+        }
+        if (this?.predradio) {
+            this.predradio.disabled = true;
+            this.predradio.title = msg;
+            this.predlabel.title = msg;
+        }
+    }
+
     gatherOptions() {
         return {
             notation: getNotationName(),
-            question: this.questioncb.checked
+            hints: this.hintscb.checked,
+            checklines: this.linecheckingcb.checked,
+            pred: this.predradio.checked,
+            rulepanel: this.rulepanelcb.checked
         }
     }
 
     makeOptions(opts) {
-        const questiondiv = addelem('div', this.settingsform);
-        const questionlabel = addelem('label', questiondiv, {
-            innerHTML: tr('Equivalence question') + ' '
+        const langdiv = addelem('div', this.settingsform);
+        langdiv.id = randomId();
+        this.sentlabel = addelem('label', langdiv, {
+            innerHTML: tr('sentential'),
+            htmlFor: langdiv.id + 'radiosent'
         });
-        this.questioncb = addelem('input', questionlabel, {
-            checked: ("question" in opts && opts.question),
+        this.sentradio = addelem('input', langdiv, {
+            type: 'radio',
+            id: langdiv.id + 'radiosent',
+            name: langdiv.id + 'radios',
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.disableLangRadios();
+                psc.makeChanged();
+            },
+            checked: (!(opts?.pred))
+        });
+        this.predlabel = addelem('label', langdiv, {
+            innerHTML: tr('predicate'),
+            htmlFor: langdiv.id + 'radiopred'
+        });
+        this.predradio = addelem('input', langdiv, {
+            type: 'radio',
+            id: langdiv.id + 'radiopred',
+            name: langdiv.id + 'radios',
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.disableLangRadios();
+                psc.makeChanged();
+            },
+            checked: (opts?.pred)
+        });
+        const rulepaneldiv = addelem('div', this.settingsform);
+        const rulepanellabel = addelem('label', rulepaneldiv, {
+            innerHTML: tr('Show rule panel') + ' '
+        });
+        this.rulepanelcb = addelem('input', rulepanellabel, {
+            checked: ((!("rulepanel" in opts)) || opts?.rulepanel),
             type: 'checkbox',
             mypsc: this,
             onchange: function() {
                 const psc = this.mypsc;
-                const pcpc = psc.getElementsByClassName("problemcreator");
-                for (const pc of pcpc) {
-                    pc.makeAnswerer();
-                }
                 psc.makeChanged();
             }
         });
+        const linecheckingdiv = addelem('div', this.settingsform);
+        const linecheckinglabel = addelem('label', questiondiv, {
+            innerHTML: tr('Allow line auto-checking') + ' '
+        });
+        this.linecheckingcb = addelem('input', linecheckinglabel, {
+            checked: opts?.checklines,
+            type: 'checkbox',
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.makeChanged();
+            }
+        });
+        const hintsdiv = addelem('div', this.settingsform);
+        const hintslabel = addelem('label', questiondiv, {
+            innerHTML: tr('Provide hints (if available') + ' '
+        });
+        this.hintscb = addelem('input', hintslabel, {
+            checked: opts?.hints,
+            type: 'checkbox',
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.makeChanged();
+            }
+        });
+        if ("pred" in opts) {
+            disableLangRadios();
+        }
     }
 
     makeProblemCreator(problem, answer, isnew) {
@@ -90,8 +174,10 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
                 this.ansbelowlabel.style.display = 'block';
                 this.ansbelowlabel.innerHTML = tr('Answer is shown below');
                 this.ansinfoarea.style.display = 'block';
-                this.answerer = addelem('argument-truth-table', this.ansinfoarea);
-                this.answerer.makeProblem(prob, this.mypsc.gatherOptions(), 'save');
+                this.answerer = addelem('argument-truth-table',
+                    this.ansinfoarea);
+                this.answerer.makeProblem(prob, this.mypsc.gatherOptions(),
+                    'save');
                 this.answerer.setIndicator = function() {};
                 this.answerer.processAnswer = function() {};
                 this.answerer.mypc = this;
@@ -99,7 +185,8 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
                     this.mypc.mypsc.makeChanged();
                 };
                 const ans = this.getAnswer();
-                const bdivs = this.answerer.getElementsByClassName("buttondiv");
+                const bdivs =
+                    this.answerer.getElementsByClassName("buttondiv");
                 for (const bdiv of bdivs) {
                     bdiv.style.display = 'none';
                 }
