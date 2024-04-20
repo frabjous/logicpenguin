@@ -1295,6 +1295,7 @@ window.onhashchange = function() {
     const h = window.location.hash;
     loadhash(h);
 }
+window.errormessage = errormessage;
 
 // start stuff
 

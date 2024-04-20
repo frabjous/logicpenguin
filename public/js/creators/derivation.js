@@ -44,7 +44,7 @@ function sufficesForQ(prob, Formula) {
     if (!("prems" in prob)) { return false; }
     const cf = Formula.from(prob.conc);
     if (!cf.wellformed) { return false; }
-    for (const prem of conc.prems) {
+    for (const prem of prob.prems) {
         const pf = Formula.from(prem);
         if (!pf.wellformed) { return false; }
     }
@@ -191,7 +191,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             ans.autocheck = false;
             return ans;
         }
-        pc.makeAnswerer = async function() {
+        pc.makeAnswerer = async function(answer) {
             const prob = this.getProblem();
             if (("oldanswererprob" in this) &&
                 sameProb(prob, this.oldanswererprob)) { return; }
@@ -213,16 +213,21 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             if (!probtypeloaded) {
                 try {
                     probimport = await import('../problemtypes/' +
-                        this.mypsc.probsetinfo.problemtype + '.js');
+                        this.mypsc.problemtype + '.js');
                         probtypeloaded = true;
                 } catch(err) {
-                    errormessage(tr('Unable to load exercise-type') + ' ' +
-                        this.mypsc.probsetinfo.problemtype + '. ' +
-                        err.toString() );
-                        return;
+                    const msg = tr('Unable to load exercise-type') +
+                        ' ' + this.mypsc.problemtype +
+                        '. ' + err.toString();
+                    if (window.errormessage) {
+                        window.errormessage(msg);
+                    } else {
+                        console.error(msg);
+                    }
+                    return;
                 }
             }
-            this.answerer = addelem(this.mypsc.probsetinfo.problemtype,
+            this.answerer = addelem(this.mypsc.problemtype,
                 this.ansinfoarea);
             this.answerer.makeProblem(prob, this.mypsc.gatherOptions(),
                 'save');
@@ -230,6 +235,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             this.answerer.processAnswer = function() {};
             this.answerer.mypc = this;
             this.answerer.makeChanged = function() {
+                console.log("answerer change");
                 this.mypc.mypsc.makeChanged();
             };
             const bdivs =
@@ -237,8 +243,10 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             for (const bdiv of bdivs) {
                 bdiv.style.display = 'none';
             }
+            if (answer) { this.answerer.restoreAnswer(answer); }
         }
-        pc.whenchanged = function() {
+        pc.whenchanged = function(canchangeanswerer) {
+            console.log("pc changed", (new Date()).getTime());
             this.makeAnswerer();
             this.mypsc.makeChanged();
         }
@@ -257,7 +265,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                     .getElementsByTagName("input")?.[0];
                 if (c) { c.value = problem.conc; }
             }
-            pc.makeAnswerer();
+            pc.makeAnswerer(answer);
         }
     }
 }
