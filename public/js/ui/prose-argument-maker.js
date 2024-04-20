@@ -157,11 +157,13 @@ export function getProseArgumentMaker(parNode,
             this.whenchanged();
         }
     }
+    // add a statement for each statement detail specified
     for (let i = 0; i < argdetails.length ; i++) {
         const deets = argdetails[i];
         const trans = translations?.[i] ?? '';
         argDiv.addStatement(deets, trans, (i == concnum), false);
     }
+    // button for adding statements
     const btndiv = addelem('div', argDiv);
     const addbtn = addelem('button', argDiv, {
         type: 'button',
@@ -172,7 +174,7 @@ export function getProseArgumentMaker(parNode,
             this.myargdiv.addStatement('', '', false, true);
         }
     })
-
+    // collect statement details
     argDiv.getStatements = function() {
         const bb = this.getElementsByClassName("statementblock");
         const rv = [];
@@ -190,6 +192,7 @@ export function getProseArgumentMaker(parNode,
         }
         return rv;
     }
+    // get checked conclusion
     argDiv.getConcNum = function() {
         const bb = this.getElementsByClassName("statementblock");
         for (var i=0; i<bb.length; i++) {
@@ -200,6 +203,7 @@ export function getProseArgumentMaker(parNode,
         }
         return -1;
     }
+    // gather translation info
     argDiv.getTranslations = function() {
         const bb = this.getElementsByClassName("statementblock");
         const rv = [];
