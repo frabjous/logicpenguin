@@ -44,6 +44,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             notation: getNotationName(),
             pred: false,
             lazy: true,
+            question: true,
             nofalsum: true
         }
     }
@@ -56,6 +57,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             (answer?.translations ?? []), (answer?.index ?? -1), {
             notation: pc.notationname,
             gettrans: true,
+            question: true,
             lazy: true,
             pred: false
         });
@@ -80,34 +82,45 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             return rv;
         }
         pc.makeAnswerer = function() {
+            // remove prexistent answerer
             if (this.answerer) {
                 const a = this.answerer;
                 if (a.parentNode) {
                     a.parentNode.removeChild(a);
                 }
             }
+            // get problem and answer
             const prob = this.getProblem();
             const ans = this.getAnswer();
-            if (prob) {
+            // create new answerer if appropriate
+            if (sufficesForQ(prob, ans, this.Formula)) {
                 this.ansbelowlabel.style.display = 'block';
-                this.ansbelowlabel.innerHTML = tr('Answer is shown below');
+                this.ansbelowlabel.innerHTML = tr('Truth table answer is shown below');
                 this.ansinfoarea.style.display = 'block';
                 this.answerer = addelem('argument-truth-table', this.ansinfoarea);
-                this.answerer.makeProblem(prob, this.mypsc.gatherOptions(), 'save');
+                // create truth table problem info
+                const ttprob = {};
+                ttprob.prems = [];
+                for (let i=0; i<ans.translations.length; i++) {
+                    if (i==ans.index) {
+                        ttprob.conc = ans.translations[i];
+                    } else {
+                        ttprob.prems.push(ans.translations[i]);
+                    }
+                }
+                this.answerer.makeProblem(ttprob, this.mypsc.gatherOptions(), 'save');
                 this.answerer.setIndicator = function() {};
                 this.answerer.processAnswer = function() {};
                 this.answerer.mypc = this;
                 this.answerer.makeChanged = function() {
                     this.mypc.mypsc.makeChanged();
                 };
-                const ans = this.getAnswer();
                 const bdivs = this.answerer.getElementsByClassName("buttondiv");
                 for (const bdiv of bdivs) {
                     bdiv.style.display = 'none';
                 }
                 this.answerer.myanswer = ans;
                 this.answerer.getSolution();
-
             } else {
                 this.ansbelowlabel.style.display = 'none';
                 this.ansinfoarea.style.display = 'none';
