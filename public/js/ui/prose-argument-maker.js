@@ -35,7 +35,7 @@ function triggerChange() {
     }
 }
 
-export function getProseArgumentMaker(parNode,
+export default function getProseArgumentMaker(parNode,
     argdetails = [], translations = [], concnum = -1, opts = {}) {
     // insert a blank statement if no argument already
     if (argdetails.length == 0) {
@@ -169,7 +169,7 @@ export function getProseArgumentMaker(parNode,
         type: 'button',
         myargdiv: argDiv,
         innerHTML: '<span class="material-symbols-outlined">' +
-            'add</span> add statement'
+            'add</span> add statement',
         onclick: function() {
             this.myargdiv.addStatement('', '', false, true);
         }

@@ -49,7 +49,7 @@ lpgrading.fullGradingScan = async function() {
 
 // grade a given exercise for a given user
 lpgrading.gradeExercise = async function(
-    consumerkey, contextid, userid, exnum, exinfo) {
+    consumerkey, contextid, userid, exnum, exinfo, allcheat = false) {
     // to allow not passing the exinfo, load it here if need be
     if (!exinfo) {
         exinfo = lpdata.getExerciseInfo(consumerkey, contextid, exnum);
@@ -108,7 +108,7 @@ lpgrading.gradeExercise = async function(
         let newind = await libgrade.checkAnswer(
             probsetinfo.problemtype, question, answer,
             probdata.ans, (probsetinfo?.partialcredit ?? false),
-            (probsetinfo?.points ?? 1), (probsetinfo?.cheat ?? false),
+            (probsetinfo?.points ?? 1), (allcheat || (probsetinfo?.cheat ?? false)),
             (probsetinfo?.options ?? {}));
         // if got false or null back, that's a malfunction; send it to
         // page's indicator
@@ -177,8 +177,10 @@ lpgrading.userGradingScan =
         }
         // grade the exercise, and wait for it to be done before
         // starting a new one
+        // NOTE: since this is past due, we add cheat info
+        // to answers; this may need to be changed in future
         await lpgrading.gradeExercise(
-            consumerkey, contextid, userid, exnum, exinfo);
+            consumerkey, contextid, userid, exnum, exinfo, true);
     }
 }
 
