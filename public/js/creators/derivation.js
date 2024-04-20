@@ -13,6 +13,9 @@ import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
 import  SymbolicArgumentInput from '../ui/symbolic-argument-input.js';
 
+let probimport = {};
+let probtypeloaded = false;
+
 function getNotationName() {
     let n = window?.contextSettings?.notation ?? 'cambridge';
     if (n == '' || n == 'none') { n = 'cambridge'; }
@@ -27,6 +30,15 @@ function randomId() {
     return rid;
 }
 
+function sameProb(a, b) {
+    if (a.conc != b.conc) { return false; }
+    if (a.prems.length != b.prems.length ) { return false; }
+    for (let i=0; i=a.prems.length; i++) {
+        if (a.prems[i] != b.prems[i]) { return false; }
+    }
+    return true;
+}
+
 function sufficesForQ(prob, Formula) {
     if (!("conc" in prob)) { return false; }
     if (!("prems" in prob)) { return false; }
@@ -39,7 +51,7 @@ function sufficesForQ(prob, Formula) {
     return true;
 }
 
-export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCreator {
+export default class DerivationCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
     }
@@ -118,7 +130,7 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
             }
         });
         const linecheckingdiv = addelem('div', this.settingsform);
-        const linecheckinglabel = addelem('label', questiondiv, {
+        const linecheckinglabel = addelem('label', linecheckingdiv, {
             innerHTML: tr('Allow line auto-checking') + ' '
         });
         this.linecheckingcb = addelem('input', linecheckinglabel, {
@@ -131,7 +143,7 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
             }
         });
         const hintsdiv = addelem('div', this.settingsform);
-        const hintslabel = addelem('label', questiondiv, {
+        const hintslabel = addelem('label', hintsdiv, {
             innerHTML: tr('Provide hints (if available') + ' '
         });
         this.hintscb = addelem('input', hintslabel, {
@@ -144,7 +156,7 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
             }
         });
         if ("pred" in opts) {
-            disableLangRadios();
+            this.disableLangRadios();
         }
     }
 
@@ -179,42 +191,52 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
             ans.autocheck = false;
             return ans;
         }
-        pc.makeAnswerer = function() {
+        pc.makeAnswerer = async function() {
+            const prob = this.getProblem();
+            if (("oldanswererprob" in this) &&
+                sameProb(prob, this.oldanswererprob)) { return; }
             if (this.answerer) {
                 const a = this.answerer;
                 if (a.parentNode) {
                     a.parentNode.removeChild(a);
                 }
             }
-            const prob = this.getProblem();
-            if (sufficesForQ(prob, this.Formula)) {
-                this.ansbelowlabel.style.display = 'block';
-                this.ansbelowlabel.innerHTML = tr('Provide answer below');
-                this.ansinfoarea.style.display = 'block';
-                this.answerer = addelem('argument-truth-table',
-                    this.ansinfoarea);
-                this.answerer.makeProblem(prob, this.mypsc.gatherOptions(),
-                    'save');
-                this.answerer.setIndicator = function() {};
-                this.answerer.processAnswer = function() {};
-                this.answerer.mypc = this;
-                this.answerer.makeChanged = function() {
-                    this.mypc.mypsc.makeChanged();
-                };
-                const ans = this.getAnswer();
-                const bdivs =
-                    this.answerer.getElementsByClassName("buttondiv");
-                for (const bdiv of bdivs) {
-                    bdiv.style.display = 'none';
-                }
-                this.answerer.myanswer = ans;
-                this.answerer.getSolution();
-
-            } else {
+            if (!sufficesForQ(prob, this.Formula)) {
                 this.ansbelowlabel.style.display = 'none';
                 this.ansinfoarea.style.display = 'none';
+                return;
             }
-
+            this.oldanswererprob = prob;
+            this.ansbelowlabel.style.display = 'block';
+            this.ansbelowlabel.innerHTML = tr('Provide answer below');
+            this.ansinfoarea.style.display = 'block';
+            if (!probtypeloaded) {
+                try {
+                    probimport = await import('../problemtypes/' +
+                        this.mypsc.probsetinfo.problemtype + '.js');
+                        probtypeloaded = true;
+                } catch(err) {
+                    errormessage(tr('Unable to load exercise-type') + ' ' +
+                        this.mypsc.probsetinfo.problemtype + '. ' +
+                        err.toString() );
+                        return;
+                }
+            }
+            this.answerer = addelem(this.mypsc.probsetinfo.problemtype,
+                this.ansinfoarea);
+            this.answerer.makeProblem(prob, this.mypsc.gatherOptions(),
+                'save');
+            this.answerer.setIndicator = function() {};
+            this.answerer.processAnswer = function() {};
+            this.answerer.mypc = this;
+            this.answerer.makeChanged = function() {
+                this.mypc.mypsc.makeChanged();
+            };
+            const bdivs =
+                this.answerer.getElementsByClassName("buttondiv");
+            for (const bdiv of bdivs) {
+                bdiv.style.display = 'none';
+            }
         }
         pc.whenchanged = function() {
             this.makeAnswerer();
@@ -235,12 +257,12 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
                     .getElementsByTagName("input")?.[0];
                 if (c) { c.value = problem.conc; }
             }
-            pc.whenchanged();
+            pc.makeAnswerer();
         }
     }
 }
 
-customElements.define("argument-truth-table-creator", ArgumentTruthTableCreator);
+customElements.define("derivation-creator", DerivationCreator);
 
 
 
