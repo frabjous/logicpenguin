@@ -27,6 +27,18 @@ function randomId() {
     return rid;
 }
 
+function sufficesForQ(prob, Formula) {
+    if (!("conc" in prob)) { return false; }
+    if (!("prems" in prob)) { return false; }
+    const cf = Formula.from(prob.conc);
+    if (!cf.wellformed) { return false; }
+    for (const prem of conc.prems) {
+        const pf = Formula.from(prem);
+        if (!pf.wellformed) { return false; }
+    }
+    return true;
+}
+
 export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
@@ -142,8 +154,8 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
         pc.Formula = getFormulaClass(pc.notationname);
         pc.sai = SymbolicArgumentInput.getnew({
             notation: pc.notationname,
-            lazy: true,
-            pred: false
+            lazy: (!(this.predradio.checked)),
+            pred: this.predradio.checked
         });
         pc.sai.mypc = pc;
         pc.sai.onchange = function() {
@@ -157,10 +169,15 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
 
         pc.getProblem = function() { return this.sai.getArgument(); }
         pc.getAnswer = function() {
-            const arg = this.getProblem();
-            const cf = this.Formula.from(arg.conc);
-            const pfs = arg.prems.map((f) => (this.Formula.from(f)));
-            return argumentTables(pfs, cf, this.notationname);
+            if (!("answerer" in this)) { return {}; }
+            // close all subderivs
+            for (const sd of this.answerer.getElementsByTagName('sub-derivation')) {
+                sd.classList.add('closed');
+            }
+            const ans = this.answerer.getAnswer();
+            // set autocheck to false
+            ans.autocheck = false;
+            return ans;
         }
         pc.makeAnswerer = function() {
             if (this.answerer) {
@@ -170,9 +187,9 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
                 }
             }
             const prob = this.getProblem();
-            if (prob) {
+            if (sufficesForQ(prob, this.Formula)) {
                 this.ansbelowlabel.style.display = 'block';
-                this.ansbelowlabel.innerHTML = tr('Answer is shown below');
+                this.ansbelowlabel.innerHTML = tr('Provide answer below');
                 this.ansinfoarea.style.display = 'block';
                 this.answerer = addelem('argument-truth-table',
                     this.ansinfoarea);
