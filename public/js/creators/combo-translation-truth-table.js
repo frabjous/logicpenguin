@@ -20,6 +20,20 @@ function getNotationName() {
     return n;
 }
 
+function sufficesForQ(prob, ans, Formula) {
+    if (prob.length < 2) { return false; }
+    if (ans.translations.length != prob.length) { return false; }
+    for (const pr of prob) {
+        if (pr.statement == '') { return false; }
+    }
+    for (const t of ans.translations) {
+        const f = Formula.from(t);
+        if (!f.wellformed) { return false; }
+    }
+    if (ans.index < 0) { return false; }
+    return true;
+}
+
 export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
@@ -38,27 +52,32 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
         const pc = super.makeProblemCreator(problem, answer, isnew);
         pc.notationname = getNotationName();
         pc.Formula = getFormulaClass(pc.notationname);
-        pc.sai = SymbolicArgumentInput.getnew({
+        pc.pam = getProseArgumentMaker(pc.probinfoarea, problem,
+            (answer?.translations ?? []), (answer?.index ?? -1), {
             notation: pc.notationname,
+            gettrans: true,
             lazy: true,
             pred: false
         });
-        pc.sai.mypc = pc;
-        pc.sai.onchange = function() {
-            this.mypc.whenchanged();
-        }
-        pc.sai.oninput = function() {
+        pc.pam.mypc = pc;
+        pc.pam.whenchanged = function() {
             this.mypc.whenchanged();
         }
 
-        pc.probinfoarea.appendChild(pc.sai);
-
-        pc.getProblem = function() { return this.sai.getArgument(); }
+        pc.getProblem = function() { return this.pam.getStatements(); }
         pc.getAnswer = function() {
-            const arg = this.getProblem();
-            const cf = this.Formula.from(arg.conc);
-            const pfs = arg.prems.map((f) => (this.Formula.from(f)));
-            return argumentTables(pfs, cf, this.notationname);
+            const rv = {};
+            rv.index = pc.pam.getConcNum();
+            rv.translations = pc.pam.getTranslations();
+            const cf = this.Formula.from((rv.translations?.[rv.index] ?? ''));
+            const pfs = [];
+            for (let i=0; i<rv.translations.length; i++) {
+                if (i==rv.index) { continue; }
+                const pf = this.Formula.from((rv.trenslations[i]));
+                pfs.push(pf);
+            }
+            rv.tables = argumentTables(pfs, cf, this.notationname);
+            return rv;
         }
         pc.makeAnswerer = function() {
             if (this.answerer) {
@@ -68,6 +87,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
                 }
             }
             const prob = this.getProblem();
+            const ans = this.getAnswer();
             if (prob) {
                 this.ansbelowlabel.style.display = 'block';
                 this.ansbelowlabel.innerHTML = tr('Answer is shown below');
