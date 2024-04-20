@@ -450,13 +450,15 @@
 }
 
 .logicpenguin combo-translation-truth-table-creator .statementdeletebutton {
-    margin-right: 1rem;
+    margin-right: 2rem;
 }
 
+.logicpenguin combo-translation-truth-table-creator .statementdeletebutton .material-symbols-outlined,
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise .material-symbols-outlined {
     cursor: pointer;
 }
 
+.logicpenguin combo-translation-truth-table-creator .statementdeletebutton:hover,
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise:hover {
     color: var(--lpmagenta);
 }
@@ -711,4 +713,13 @@
 
 .logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput .symbolicarginputbuttonrow td {
     text-align: right;
+}
+
+.logicpenguin combo-translation-truth-table-creator .statementblock {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.logicpenguin combo-translation-truth-table-creator .statementblock:nth-child(even) {
+    background-color: var(--lpgray6);
 }

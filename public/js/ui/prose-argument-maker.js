@@ -47,10 +47,11 @@ export default function getProseArgumentMaker(parNode,
         opts: opts,
         id: newPAMid()
     });
+    argDiv.blockarea = addelem('div', argDiv);
 
     argDiv.addStatement = function(deets, trans, concchecked, isnew) {
         // create a block for the statement
-        const block = addelem('div', this, {
+        const block = addelem('div', this.blockarea, {
             classes: ['statementblock'],
             id: randomid()
         });
@@ -171,7 +172,7 @@ export default function getProseArgumentMaker(parNode,
         innerHTML: '<span class="material-symbols-outlined">' +
             'add</span> add statement',
         onclick: function() {
-            this.myargdiv.addStatement('', '', false, true);
+            this.myargdiv.addStatement({}, '', false, true);
         }
     })
     // collect statement details
@@ -197,7 +198,7 @@ export default function getProseArgumentMaker(parNode,
         const bb = this.getElementsByClassName("statementblock");
         for (var i=0; i<bb.length; i++) {
             const bl = bb[i];
-            if (bb?.concradio?.checked) {
+            if (bl?.concradio?.checked) {
                 return i;
             }
         }
