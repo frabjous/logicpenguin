@@ -12,6 +12,7 @@ import { addelem } from '../common.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
 import getProseArgumentMaker from '../ui/prose-argument-maker.js';
+import { getProseArgument } from '../ui/prose-argument.js';
 import { argumentTables } from '../symbolic/libsemantics.js';
 
 function getNotationName() {
@@ -92,6 +93,12 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
                     a.parentNode.removeChild(a);
                 }
             }
+            if (this.showpara) {
+                const p = this.showpara;
+                if (p.parentNode) {
+                    p.parentNode.removeChild(p);
+                }
+            }
             // get problem and answer
             const prob = this.getProblem();
             const ans = this.getAnswer();
@@ -99,7 +106,12 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             if (sufficesForQ(prob, ans, this.Formula)) {
                 this.ansbelowlabel.style.display = 'block';
                 this.ansinfoarea.style.display = 'block';
-                this.ansbelowlabel.innerHTML = tr('Truth table answer is shown below');
+                this.ansbelowlabel.innerHTML = tr('Answer is shown below');
+                this.showpara = addelem('div', this.ansinfoarea);
+                const prosearg = getProseArgument(this.showpara, prob);
+                if (prosearg?.statementSpans?.[ans.index]) {
+                    prosearg.statementSpans[ans.index].classList.add('isconclusion');
+                }
                 this.answerer = addelem('argument-truth-table', this.ansinfoarea);
                 // create truth table problem info
                 const ttprob = {};

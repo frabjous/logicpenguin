@@ -729,3 +729,8 @@
     position: relative;
     top: 0.3rem;
 }
+
+.logicpenguin combo-translation-truth-table-creator .proseargument .proseargstatement.isconclusion {
+    color: var(--lpblue);
+    text-decoration: underline;
+}
