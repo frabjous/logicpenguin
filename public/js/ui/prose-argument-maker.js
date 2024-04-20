@@ -173,5 +173,43 @@ export function getProseArgumentMaker(parNode,
         }
     })
 
+    argDiv.getStatements = function() {
+        const bb = this.getElementsByClassName("statementblock");
+        const rv = [];
+        for (const bl of bb) {
+            const details = {};
+            if (!("statementinp" in bl)) { continue; }
+            details.statement= bl.statementinp.value;
+            if (bl.preinp.value != '') {
+                details.pre = bl.preinp.value;
+            }
+            if (bl.postinp.value != '') {
+                details.post = bl.postinp.value;
+            }
+            rv.push(details);
+        }
+        return rv;
+    }
+    argDiv.getConcNum = function() {
+        const bb = this.getElementsByClassName("statementblock");
+        for (var i=0; i<bb.length; i++) {
+            const bl = bb[i];
+            if (bb?.concradio?.checked) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    argDiv.getTranslations = function() {
+        const bb = this.getElementsByClassName("statementblock");
+        const rv = [];
+        for (const bl of bb) {
+            const details = {};
+            if (!("transinp" in bl)) { continue; }
+            rv.push(bl.transinp.value);
+        }
+        return rv;
+    }
+
     return argDiv;
 }
