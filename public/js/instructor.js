@@ -367,18 +367,22 @@ async function loadexercise(exhash) {
     // TODO: more here
     exblock.addProbSetCreator = async function(probsetinfo, problems, answers, putbefore = false) {
         const problemtype = probsetinfo.problemtype;
-        if (!(problemtype in problemSetCreators)) {
+        let shproblemtype = problemtype;
+        if (shproblemtype.substr(0,11) == 'derivation-') {
+            shproblemtype = 'derivation';
+        }
+        if (!(shproblemtype in problemSetCreators)) {
             try {
                 LP.loadCSS(problemtype);
-                const imported = await import('/js/creators/' + problemtype + '.js');
-                problemSetCreators[problemtype] = imported.default;
+                const imported = await import('/js/creators/' + shproblemtype + '.js');
+                problemSetCreators[shproblemtype] = imported.default;
             } catch(err) {
                 errormessage(tr('ERROR loading script for creating problem type') +
-                    ' ' + problemtype + ': ' + err.toString());
+                    ' ' + shproblemtype + ': ' + err.toString());
                 return;
             }
         }
-        const problemsetcreator = addelem(problemtype + '-creator', this.psetdiv);
+        const problemsetcreator = addelem(shproblemtype + '-creator', this.psetdiv);
         problemsetcreator.makeProblemSetCreator(probsetinfo, problems, answers);
         problemsetcreator.myexblock = this;
         if (putbefore) {
@@ -394,8 +398,17 @@ async function loadexercise(exhash) {
     }
     exblock.addPSCDialog = function(putbefore) {
         showdialog(async function() {
+            let probtype = this.problemtypeinput.value;
+            if (probtype == 'derivation') {
+                if (!window?.contextSettings?.system) {
+                    errormessage(tr('Cannot create derivation exercise if no deductive system set in settings.'));
+                    return;
+                }
+                probtype = 'derivation-' + window.contextSettings.system;
+            }
+            const newprobinfo = { problemtype: probtype };
             const psc = await this.exblock.addProbSetCreator(
-                { problemtype: this.problemtypeinput.value }, [], [], this.putbefore
+                newprobinfo, [], [], this.putbefore
             );
             psc.makeChanged();
             renumberProblemSets('#' + psc.myexblock.id);
@@ -776,9 +789,9 @@ mainloadfns.studentsmain = async function() {
     users = users.sort(function(a,b) {
         const ainfo = resp.users[a];
         const binfo = resp.users[b];
-        if ((ainfo?.roles?.indexOf("Learner") != -1) && 
+        if ((ainfo?.roles?.indexOf("Learner") != -1) &&
             (binfo?.roles?.indexOf("Learner") == -1)) { return -1; }
-        if ((ainfo?.roles?.indexOf("Learner") == -1) && 
+        if ((ainfo?.roles?.indexOf("Learner") == -1) &&
             (binfo?.roles?.indexOf("Learner") != -1)) { return 1; }
         if (("family" in ainfo) && ("family" in binfo)) {
             let fcompare = ainfo.family.localeCompare(binfo.family);
@@ -1295,4 +1308,3 @@ if (starthash == '' &&
 loadhash(starthash);
 
 export default LPinstr;
-
