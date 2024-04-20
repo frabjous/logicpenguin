@@ -723,3 +723,9 @@
 .logicpenguin combo-translation-truth-table-creator .statementblock:nth-child(even) {
     background-color: var(--lpgray6);
 }
+
+.logicpenguin .proseargumentmaker button .material-symbols-outlined {
+    cursor: pointer;
+    position: relative;
+    top: 0.3rem;
+}

@@ -115,6 +115,7 @@ export default function getProseArgumentMaker(parNode,
             const transitd = addelem('td', transtr);
             block.transinp = FormulaInput.getnew(this.opts);
             transitd.appendChild(block.transinp);
+            block.transinp.value = trans;
             block.transinp.id = block.id + '-transinp';
             block.transinp.myargdiv = this;
         }
@@ -140,8 +141,8 @@ export default function getProseArgumentMaker(parNode,
             triggerChange: triggerChange,
             title: tr('remove this statement'),
             onclick: function() {
-                this.triggerChange();
                 this.myblock.parentNode.removeChild(this.myblock);
+                this.triggerChange();
             }
         })
         // give each input a listener
@@ -209,7 +210,6 @@ export default function getProseArgumentMaker(parNode,
         const bb = this.getElementsByClassName("statementblock");
         const rv = [];
         for (const bl of bb) {
-            const details = {};
             if (!("transinp" in bl)) { continue; }
             rv.push(bl.transinp.value);
         }
