@@ -95,8 +95,8 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             // create new answerer if appropriate
             if (sufficesForQ(prob, ans, this.Formula)) {
                 this.ansbelowlabel.style.display = 'block';
-                this.ansbelowlabel.innerHTML = tr('Truth table answer is shown below');
                 this.ansinfoarea.style.display = 'block';
+                this.ansbelowlabel.innerHTML = tr('Truth table answer is shown below');
                 this.answerer = addelem('argument-truth-table', this.ansinfoarea);
                 // create truth table problem info
                 const ttprob = {};
@@ -119,7 +119,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
                 for (const bdiv of bdivs) {
                     bdiv.style.display = 'none';
                 }
-                this.answerer.myanswer = ans;
+                this.answerer.myanswer = ans.tables;
                 this.answerer.getSolution();
             } else {
                 this.ansbelowlabel.style.display = 'none';
@@ -132,21 +132,7 @@ export default class ComboTransTruthTableCreator extends LogicPenguinProblemSetC
             this.mypsc.makeChanged();
         }
         if (!isnew) {
-            if ("prems" in problem && problem.prems.length > 0) {
-                const pr = pc.sai.getElementsByClassName("symbargpremise")[0]
-                    .getElementsByTagName("input")?.[0];
-                if (pr) { pr.value = problem.prems[0]; }
-                for (let i=1; i<problem.prems.length; i++) {
-                    const npr = pc.sai.addPremise();
-                    npr.myinput.value = problem.prems[i];
-                }
-            }
-            if ("conc" in problem && problem.conc != '') {
-                const c = pc.sai.getElementsByClassName("symbargconc")[0]
-                    .getElementsByTagName("input")?.[0];
-                if (c) { c.value = problem.conc; }
-            }
-            pc.whenchanged();
+            this.makeAnswerer();
         }
     }
 }
