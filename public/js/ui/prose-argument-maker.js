@@ -48,11 +48,13 @@ export function getProseArgumentMaker(parNode,
         id: newPAMid()
     });
 
-    argDiv.addStatement = function(deets, trans, concchecked) = function() {
+    argDiv.addStatement = function(deets, trans, concchecked, isnew) {
+        // create a block for the statement
         const block = addelem('div', this, {
             classes: ['statementblock'],
             id: randomid()
         });
+        // create a table for most fields
         const tbl = addelem('table', block);
         const tbdy = addelem('tbody', tbl);
         const pretr = addelem('tr', tbdy);
@@ -76,6 +78,7 @@ export function getProseArgumentMaker(parNode,
         const preitd = addelem('td', pretr);
         const statementitd = addelem('td', statementtr);
         const postitd = addelem('td', posttr);
+        // create input fields; fill in values
         block.preinp = addelem('input', preitd, {
             type: 'text',
             id: block.id + '-preinp',
@@ -100,6 +103,7 @@ export function getProseArgumentMaker(parNode,
         if ("post" in deets) {
             block.postinp.value = deets.post;
         }
+        // create translation field if specified by options
         if (("gettrans" in this.opts) && this.opts.gettrans) {
             const transtr = addelem('tr', tbdy);
             const transltd = addelem('td', transtr);
@@ -113,6 +117,7 @@ export function getProseArgumentMaker(parNode,
             block.transinp.id = block.id + '-transinp';
             block.transinp.myargdiv = this;
         }
+        // box to check if conclusion
         const radiodiv = addelem('div', block);
         block.concradio = addelem('input', radiodiv, {
             type: 'radio',
@@ -125,6 +130,20 @@ export function getProseArgumentMaker(parNode,
             innerHTML: tr('this is the conclusion'),
             htmlFor: block.id + '-concinp'
         });
+        // button to remove statement
+        block.delbtn = addelem('div', radiodiv, {
+            innerHTML: '<span class="material-symbols-outlined">delete_forever</span>',
+            myargdiv: this,
+            myblock: block,
+            classes: 'statementdeletebutton',
+            triggerChange: triggerChange,
+            title: tr('remove this statement'),
+            onclick: function() {
+                this.triggerChange();
+                this.myblock.parentNode.removeChild(this.myblock);
+            }
+        })
+        // give each input a listener
         const inps = [block.concradio, block.preinp,
             block.statement,inp, block.postinp];
         if ("transinp" in block) {
@@ -134,12 +153,25 @@ export function getProseArgumentMaker(parNode,
             inp.onchange = triggerChange;
             inp.oninput = triggerChange;
         }
+        if (isnew && this.whenchanged) {
+            this.whenchanged();
+        }
     }
     for (let i = 0; i < argdetails.length ; i++) {
         const deets = argdetails[i];
         const trans = translations?.[i] ?? '';
-        argDiv.addStatement(deets, trans, (i == concnum));
+        argDiv.addStatement(deets, trans, (i == concnum), false);
     }
+    const btndiv = addelem('div', argDiv);
+    const addbtn = addelem('button', argDiv, {
+        type: 'button',
+        myargdiv: argDiv,
+        innerHTML: '<span class="material-symbols-outlined">' +
+            'add</span> add statement'
+        onclick: function() {
+            this.myargdiv.addStatement('', '', false, true);
+        }
+    })
 
     return argDiv;
 }
