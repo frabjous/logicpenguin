@@ -39,10 +39,17 @@ export default class DerivationHardegree extends DerivationExercise {
     // in justifications, certain letters auto-uppercase
     justKeydownExtra(e, elem) {
         if (e.ctrlKey || e.altKey) { return; }
-        // e for ∃
+        // e for ∃ except in Rep
         if (((e.key == 'e') || (e.key == 'E')) && (this.options.pred)) {
-            e.preventDefault();
-            elem.insertHere(this.symbols.EXISTS);
+            const pos = elem.selectionStart;
+            let bef = '';
+            if (pos > 0) {
+                bef = elem.value.at(pos-1);
+            }
+            if (bef != 'R') {
+                e.preventDefault();
+                elem.insertHere(this.symbols.EXISTS);
+            }
         }
         // a for ∀, if notation uses quantifier
         if ((e.key == 'a') && (this.options.pred) &&
@@ -51,11 +58,23 @@ export default class DerivationHardegree extends DerivationExercise {
             elem.insertHere(this.symbols.FORALL);
         }
         // should be determined by rule set
-        if (/^[oiucdnp]$/.test(e.key)) {
+        if (/^[oiucdn]$/.test(e.key)) {
             e.preventDefault();
             elem.insertHere(e.key.toUpperCase());
         }
-        if (e.key == 'a' && !this?.options?.pred && this.selectionStart == 0) {
+        // keep p as lowercase in Rep, otherwise uppercase
+        if (e.key == 'p') {
+            const pos = elem.selectionStart;
+            let bef = '';
+            if (pos > 1) {
+                bef = elem.value.at(pos-2) + elem.value.at(pos-1);
+            }
+            if (bef != 'Re') {
+                e.preventDefault();
+                elem.insertHere('P');
+            }
+        }
+        if (e.key == 'a' && !this?.options?.pred && elem.selectionStart == 0) {
             e.preventDefault();
             elem.insertHere('A');
         }
