@@ -332,9 +332,11 @@ export default class DerivationCheck {
             }
         }
         let errMsg = '';
+        if ((rule.assumptionrule) && (forms.length == 0)) {
+            errMsg = 'Assumption used outside a type of derivation that allows assumptions.'
+        }
         for (const form of forms) {
             const thisformfit =  (new formFit(rule, rulename, form, line, Formula));
-            if (rule.assumptionrule) { console.log('here'); }
             const fitresult = thisformfit.result();
             if (fitresult.success) {
                 // check whether the rule uses a name it shouldn't because
@@ -402,7 +404,7 @@ export default class DerivationCheck {
         }
         //TODO: thorough check
         if (errMsg == '') {
-            let errMsg = 'the line';
+            errMsg = 'the line';
             let isare = 'is';
             if (line.citedlines.length > 0) {
                 isare = 'are';
@@ -419,9 +421,8 @@ export default class DerivationCheck {
             errMsg += ' ' + isare + ' not of the right form for ' +
                 this.rulechecked + ' to apply';
         }
-        console.log('errmsg=',errMsg)
         const categ = (line.isshowline) ? 'completion' : 'rule';
-        this.adderror(line.n, categ, 'high', '==' + errMsg);
+        this.adderror(line.n, categ, 'high', errMsg);
         return line;
     }
 
