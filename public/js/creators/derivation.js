@@ -51,6 +51,17 @@ function sufficesForQ(prob, Formula) {
     return true;
 }
 
+function fixAnsChecks(obj) {
+    if ("c" in obj) {
+        obj.c = "unchecked";
+    }
+    if ("parts" in obj && Array.isArray(obj.parts)) {
+        for (const part of obj.parts) {
+            fixAnsChecks(part);
+        }
+    }
+}
+
 export default class DerivationCreator extends LogicPenguinProblemSetCreator {
     constructor() {
         super();
@@ -195,6 +206,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             const ans = this.answerer.getAnswer();
             // set autocheck to false
             ans.autocheck = false;
+            fixAnsChecks(ans);
             return ans;
         }
         pc.makeAnswerer = async function(answer) {

@@ -95,6 +95,7 @@ export function chargeup(probelem) {
         const forceSave = (ind.successstatus == 'correct' && !this.ishinting);
         ind.successstatus = 'edited';
         ind.savedstatus = 'unsaved';
+        ind.fromautocheck = true;
         if (!this.isRestoring) {
             this.setIndicator(ind);
         }
@@ -191,7 +192,7 @@ export function chargeup(probelem) {
         }
         this.setComment('<span class="regularhint"><strong>' +
             tr('Hint.') + ' </strong>' +
-            '<span>' + 
+            '<span>' +
             ((skippingBackUp) ? (htmlEscape(tr('Let’s go back to line ')) +
                 (i+1).toString() + ', and complete it. ') : '') +
             htmlEscape(tr(new hardegreeDerivationHint(probinfoToUse,
