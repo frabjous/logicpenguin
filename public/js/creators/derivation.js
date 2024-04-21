@@ -251,7 +251,6 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             this.answerer.mypc = this;
             // temporarily set makeChanged to nothing
             // while restoring
-            this.answerer.makeChanged = function() {};
             const bdivs =
                 this.answerer.getElementsByClassName("buttondiv");
             for (const bdiv of bdivs) {
@@ -264,7 +263,12 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 }
             }
             // now allow changes to affect set
-            this.answerer.makeChanged = function() {
+            this.answerer.makeChanged = function(rnc, allt) {
+                this.renumberLines(rnc);
+                if (allt && rnc && this?.autocheck &&
+                    this?.checkLines && !this?.ishinting) {
+                        this.startAutoCheckTimer();
+                }
                 this.mypc.mypsc.makeChanged();
             };
 
