@@ -95,10 +95,11 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             mypsc: this,
             onchange: function() {
                 const psc = this.mypsc;
+                psc.newStarter();
                 psc.disableLangRadios();
                 psc.makeChanged();
             },
-            checked: (!(opts?.pred))
+            checked: (("pred" in opts) && !opts.pred)
         });
         this.predlabel = addelem('label', langdiv, {
             innerHTML: tr('predicate'),
@@ -111,6 +112,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             mypsc: this,
             onchange: function() {
                 const psc = this.mypsc;
+                psc.newStarter();
                 psc.disableLangRadios();
                 psc.makeChanged();
             },
@@ -262,7 +264,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 }
             }
         }
-        pc.whenchanged = function(canchangeanswerer) {
+        pc.whenchanged = function() {
             this.makeAnswerer();
             this.mypsc.makeChanged();
         }
@@ -282,6 +284,16 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 if (c) { c.value = problem.conc; }
             }
             pc.makeAnswerer(answer);
+        }
+    }
+
+    newStarter() {
+        const pcpc = this.getElementsByClassName("problemcreator");
+        if (pcpc.length == 1) {
+            pcpc[0].parentNode.removeChild(pcpc[0]);
+            this.makeProblemCreator({}, {}, true);
+            this.renumberProblems();
+            this.makeChanged();
         }
     }
 }

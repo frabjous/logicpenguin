@@ -487,7 +487,8 @@ async function loadexercise(exhash) {
             }
             this.innerHTML = '<span class="material-symbols-outlined ' +
                 'spining">sync</span> saving …';
-            const resp = await editorquery(req);
+            //const resp = await editorquery(req);
+            console.log(req);
             this.innerHTML = tr('save exercise');
             if (!resp) { return; }
             infomessage('Exercise saved.');

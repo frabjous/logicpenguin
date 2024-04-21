@@ -23,7 +23,7 @@ export default class DerivationHardegree extends DerivationExercise {
 
     addSubDerivHook(subderiv) {
         const l = subderiv.addLine(subderiv.target, true);
-        if (!this.isRestoring) {
+        if (!this.isRestoring && !this.settingUp) {
             l.input.focus();
         }
     }
