@@ -334,6 +334,7 @@ export default class DerivationCheck {
         let errMsg = '';
         for (const form of forms) {
             const thisformfit =  (new formFit(rule, rulename, form, line, Formula));
+            if (rule.assumptionrule) { console.log('here'); }
             const fitresult = thisformfit.result();
             if (fitresult.success) {
                 // check whether the rule uses a name it shouldn't because
@@ -418,8 +419,9 @@ export default class DerivationCheck {
             errMsg += ' ' + isare + ' not of the right form for ' +
                 this.rulechecked + ' to apply';
         }
+        console.log('errmsg=',errMsg)
         const categ = (line.isshowline) ? 'completion' : 'rule';
-        this.adderror(line.n, categ, 'high', errMsg);
+        this.adderror(line.n, categ, 'high', '==' + errMsg);
         return line;
     }
 
