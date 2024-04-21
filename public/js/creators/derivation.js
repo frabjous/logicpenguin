@@ -33,7 +33,7 @@ function randomId() {
 function sameProb(a, b) {
     if (a.conc != b.conc) { return false; }
     if (a.prems.length != b.prems.length ) { return false; }
-    for (let i=0; i=a.prems.length; i++) {
+    for (let i=0; i<a.prems.length; i++) {
         if (a.prems[i] != b.prems[i]) { return false; }
     }
     return true;
@@ -179,7 +179,11 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
 
         pc.probinfoarea.appendChild(pc.sai);
 
-        pc.getProblem = function() { return this.sai.getArgument(); }
+        pc.getProblem = function() {
+            const sga = this.sai.getArgument();
+            if (!sga) { return { prems: [], conc: '' }; }
+            return sga;
+        }
         pc.getAnswer = function() {
             if (!("answerer" in this)) { return {}; }
             // close all subderivs
@@ -193,8 +197,18 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
         }
         pc.makeAnswerer = async function(answer) {
             const prob = this.getProblem();
-            if (("oldanswererprob" in this) &&
-                sameProb(prob, this.oldanswererprob)) { return; }
+            const issame = (("oldanswererprob" in this) &&
+                sameProb(prob, this.oldanswererprob));
+            this.oldanswererprob = prob;
+            if (!("origprob" in this)) {
+                this.origprob = prob;
+                if (answer) {
+                    this.origanswer = answer;
+                } else {
+                    this.origanswer = false;
+                }
+            }
+            if (issame) { return; }
             if (this.answerer) {
                 const a = this.answerer;
                 if (a.parentNode) {
@@ -206,7 +220,6 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 this.ansinfoarea.style.display = 'none';
                 return;
             }
-            this.oldanswererprob = prob;
             this.ansbelowlabel.style.display = 'block';
             this.ansbelowlabel.innerHTML = tr('Provide answer below');
             this.ansinfoarea.style.display = 'block';
@@ -235,7 +248,6 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             this.answerer.processAnswer = function() {};
             this.answerer.mypc = this;
             this.answerer.makeChanged = function() {
-                console.log("answerer change");
                 this.mypc.mypsc.makeChanged();
             };
             const bdivs =
@@ -244,9 +256,13 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 bdiv.style.display = 'none';
             }
             if (answer) { this.answerer.restoreAnswer(answer); }
+            if (sameProb(prob, this.origprob)) {
+                if (this.origanswer) {
+                    this.answerer.restoreAnswer(this.origanswer);
+                }
+            }
         }
         pc.whenchanged = function(canchangeanswerer) {
-            console.log("pc changed", (new Date()).getTime());
             this.makeAnswerer();
             this.mypsc.makeChanged();
         }

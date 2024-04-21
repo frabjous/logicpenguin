@@ -329,7 +329,7 @@
 .logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.blank:hover {
     background-color: var(--lpgray1);
 }
-    
+
 .logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.meinongian:hover {
     background-color: var(--lpgray1);
     color: var(--lpgray4);
@@ -370,7 +370,7 @@
 
 .logicpenguin.rulepanel table.ruleclicktable > tbody > tr > td.excluded:hover {
     color: var(--lpbgblack);
-    background-color: var(--lpgray1);gv
+    background-color: var(--lpgray1);
 }
 
 .logicpenguin.rulepanel .ruledisplayform {
