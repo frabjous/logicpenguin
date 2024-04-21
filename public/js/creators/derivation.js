@@ -246,9 +246,18 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 this.ansinfoarea);
             this.answerer.makeProblem(prob, this.mypsc.gatherOptions(),
                 'save');
-            this.answerer.setIndicator = function() {};
+            try {
+                const charger = await import('../supercharge/' +
+                    this.mypsc.problemtype + '.js');
+                if (charger.chargeup) {
+                    charger.chargeup(this.answerer);
+                }
+            } catch(err) {};
+            //this.answerer.setIndicator = function() {};
             this.answerer.processAnswer = function() {};
             this.answerer.mypc = this;
+            this.answerer.myquestion = prob;
+            this.answerer.myanswer = {};
             // temporarily set makeChanged to nothing
             // while restoring
             const bdivs =
@@ -263,12 +272,9 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 }
             }
             // now allow changes to affect set
+            this.answerer.oldMakeChanged = this.answerer.makeChanged;
             this.answerer.makeChanged = function(rnc, allt) {
-                this.renumberLines(rnc);
-                if (allt && rnc && this?.autocheck &&
-                    this?.checkLines && !this?.ishinting) {
-                        this.startAutoCheckTimer();
-                }
+                this.oldMakeChanged(rnc, allt);
                 this.mypc.mypsc.makeChanged();
             };
 

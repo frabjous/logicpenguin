@@ -169,6 +169,7 @@ export default class LogicPenguinProblem extends HTMLElement {
         if (s != 'unsaved') {
             this.classList.add(s);
         }
+        if (!this?.indicator) { return; }
         if (s in LogicPenguinProblem.statusIcons) {
             this.indicator.saved.innerHTML =
                 '<span class="material-symbols-outlined"' +
@@ -184,6 +185,7 @@ export default class LogicPenguinProblem extends HTMLElement {
         if (s != 'unanswered') {
             this.classList.add(s);
         }
+        if (!this?.indicator) { return; }
         if (s in LogicPenguinProblem.statusIcons) {
             this.indicator.success.innerHTML =
                 '<span class="material-symbols-outlined">' +
