@@ -421,7 +421,9 @@ export default class DerivationCheck {
             errMsg += ' ' + isare + ' not of the right form for ' +
                 this.rulechecked + ' to apply';
         }
-        const categ = (line.isshowline) ? 'completion' : 'rule';
+        const categ = (line.isshowline &&
+            (errMsg.indexOf('what is needed') != -1))
+            ? 'completion' : 'rule';
         this.adderror(line.n, categ, 'high', errMsg);
         return line;
     }
@@ -1041,7 +1043,9 @@ export class formFit {
                 if (newnesstrigger) {
                     msg += ' — did you remember to use a new name?';
                 }
-                this.message = msg;
+                if (!this?.message || this.message == '') {
+                    this.message = msg;
+                }
             } else {
                 if (this.line.citedsubderivs.length > 1) {
                     this.message = 'the cited subderivations do not contain what is ' +
