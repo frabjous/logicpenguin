@@ -3,7 +3,7 @@
 // https://www.gnu.org/licenses/.
 
 /////////////////////////lpages.js/////////////////////////////////////
-// Serves the HTML files and fills in their templates with the 
+// Serves the HTML files and fills in their templates with the
 // relevant data
 //////////////////////////////////////////////////////////////////////
 
@@ -106,7 +106,9 @@ export async function getexercise(consumerkey, contextid, userid, exnum,
         let genexerciseanswers = '';
         [ exerciseproblems, allanswersjson ] = makeProblemSets(
             userdir, exdir, exnum, numprobslist);
-        if (exerciseproblems === false) { return false; }
+        if (exerciseproblems === false) {
+            return false;
+        }
     }
     // if problems already exist and answers are needed
     // read them from answers file
@@ -121,6 +123,7 @@ export async function getexercise(consumerkey, contextid, userid, exnum,
             return false;
         }
     }
+
     // can include all answers if past due
     if (pastdue) {
         exerciseanswers = allanswersjson;
@@ -156,7 +159,6 @@ export async function getexercise(consumerkey, contextid, userid, exnum,
     // fill problems, answers
     fillins.exerciseproblems = exerciseproblems.trim();
     fillins.exerciseanswers = exerciseanswers.trim();
-
     // get data for restoring old answers if needed
     const restoredir = path.join(userdir, 'saved');
     if (!lpfs.ensuredir(restoredir)) { return false; }

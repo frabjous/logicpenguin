@@ -244,8 +244,9 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             }
             this.answerer = addelem(this.mypsc.problemtype,
                 this.ansinfoarea);
-            this.answerer.makeProblem(prob, this.mypsc.gatherOptions(),
-                'save');
+                const aopts = this.mypsc.gatherOptions();
+                aopts.checklines = true;
+            this.answerer.makeProblem(prob, aopts, 'save');
             try {
                 const charger = await import('../supercharge/' +
                     this.mypsc.problemtype + '.js');
