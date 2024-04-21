@@ -39,7 +39,7 @@ import { getpagetext, getexercise, getinstructorpage, getlecture } from './app/l
 // create debugger context
 const debug = debugM('logic-penguin');
 //
-// ___  ___ _ ____   _____ _ __ 
+// ___  ___ _ ____   _____ _ __
 /// __|/ _ \ '__\ \ / / _ \ '__|
 //\__ \  __/ |   \ V /  __/ |
 //|___/\___|_|    \_/ \___|_|
@@ -92,7 +92,8 @@ if (!("disablecors" in appsettings) || (!appsettings.disablecors)) {
 
 // middleware that parses requests with Content-Type = application.json
 // and creates req.body object with the result of the parsing
-app.use(express.json());
+// must set higher payload for large requests
+app.use(express.json({limit: '5mb'}));
 
 // middleware that parses requests with
 // Content-Type = application/x-www-form-urlencoded

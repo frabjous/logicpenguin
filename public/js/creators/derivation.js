@@ -249,9 +249,9 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             this.answerer.setIndicator = function() {};
             this.answerer.processAnswer = function() {};
             this.answerer.mypc = this;
-            this.answerer.makeChanged = function() {
-                this.mypc.mypsc.makeChanged();
-            };
+            // temporarily set makeChanged to nothing
+            // while restoring
+            this.answerer.makeChanged = function() {};
             const bdivs =
                 this.answerer.getElementsByClassName("buttondiv");
             for (const bdiv of bdivs) {
@@ -263,6 +263,11 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                     this.answerer.restoreAnswer(this.origanswer);
                 }
             }
+            // now allow changes to affect set
+            this.answerer.makeChanged = function() {
+                this.mypc.mypsc.makeChanged();
+            };
+
         }
         pc.whenchanged = function() {
             this.makeAnswerer();
