@@ -146,7 +146,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
         });
         const hintsdiv = addelem('div', this.settingsform);
         const hintslabel = addelem('label', hintsdiv, {
-            innerHTML: tr('Provide hints (if available') + ' '
+            innerHTML: tr('Provide hints (if available)') + ' '
         });
         this.hintscb = addelem('input', hintslabel, {
             checked: opts?.hints,
@@ -258,7 +258,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 bdiv.style.display = 'none';
             }
             if (answer) { this.answerer.restoreAnswer(answer); }
-            if (sameProb(prob, this.origprob)) {
+            else if (sameProb(prob, this.origprob)) {
                 if (this.origanswer) {
                     this.answerer.restoreAnswer(this.origanswer);
                 }
@@ -300,6 +300,13 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             this.renumberProblems();
             this.makeChanged();
         }
+    }
+
+    postCreate() {
+        const pcpc = this.getElementsByClassName("problemcreator");
+        if (pcpc.length < 2) { return; }
+        if (!this.predradio.checked) { this.sentradio.checked = true; }
+        this.disableLangRadios();
     }
 }
 
