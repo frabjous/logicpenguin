@@ -403,16 +403,13 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 const errline = this.linesByNum[parseInt(lnstr)];
                 if (!errline) { continue; }
                 if (!errline.classList.contains("derivationshowline")) {
-                    let baderr = true;
-                    if ((ind.fromautocheck) &&
-                        (parseInt(lnstr) == (this.linesByNum.length -1) &&
-                        (errline.input.value == '' || errline.input.value == '')) {
-                        baderr = false;
+                    if ((ind?.fromautocheck) &&
+                        (parseInt(lnstr) == (this.linesByNum.length -1)) &&
+                        (errline.input.value == '' || errline.jinput.value == '')) {
+                        continue;
                     }
-                    if (baderr) {
-                        onlygooderrors = false;
-                        break;
-                    }
+                    onlygooderrors = false;
+                    break;
                 }
 
                 for (const category in ind.errors[lnstr]) {

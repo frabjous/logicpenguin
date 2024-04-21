@@ -437,7 +437,8 @@ export default class DerivationCheck {
                 }
             } else {
                 if (line.s.trim() == '') {
-                    this.adderror(line.n, "syntax", "medium", "formula field left blank");
+                    this.adderror(line.n, "completion", "medium", "formula field left blank");
+                    continue;
                 } else {
                     // todo? change "low" here?
                     this.adderror(line.n, "syntax", "low", f.syntaxerrors);
@@ -449,7 +450,7 @@ export default class DerivationCheck {
         }
         // loop through again to check actual rules
         for (const line of deriv.lines) {
-            if (line.rulechecked) {
+            if (line?.rulechecked) {
                 this.checkRule(line);
             }
         }
@@ -666,7 +667,7 @@ export default class DerivationCheck {
                     if (sdline == line) { continue; }
                     if (!this.errors[sdline.n]) { continue; }
                     const itserrcats = Object.keys(this.errors[sdline.n]);
-                    if (itserrcats.length == 1 && 
+                    if (itserrcats.length == 1 &&
                         itserrcats[0] == 'completion') {
                         isInc = true;
                         continue;
