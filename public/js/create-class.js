@@ -325,6 +325,3 @@ export default class LogicPenguinProblemSetCreator extends HTMLElement {
         }
     }
 }
-
-
-
