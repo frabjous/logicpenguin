@@ -88,6 +88,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             hints: this.hintscb.checked,
             checklines: this.linecheckingcb.checked,
             pred: this.predradio.checked,
+            lazy: (!this.predradio.checked),
             rulepanel: this.rulepanelcb.checked
         }
     }
