@@ -734,3 +734,15 @@
     color: var(--lpblue);
     text-decoration: underline;
 }
+
+.logicpenguin div.rulesubsetselector label {
+    display: inline-block;
+    white-space: nowrap;
+    border: 0.5px solid var(--lpgray4);
+    padding: 0 0.3rem 0.3rem 0.3rem;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+    margin-bottom: 0.3rem;
+    width: 4.5rem;
+    text-align: center;
+}

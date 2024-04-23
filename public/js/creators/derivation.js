@@ -90,16 +90,34 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             this.predradio.title = msg;
             this.predlabel.title = msg;
         }
+        if (this?.sentradio?.checked) {
+            const cbcb = this.getElementsByClassName("rulecb");
+            for (const cb of cbcb) {
+                if (cb.pred) {
+                    cb.checked = false;
+                    cb.disabled = true;
+                }
+            }
+        }
     }
 
     gatherOptions() {
-        opts = {
+        const opts = {
             notation: getNotationName(),
             hints: this.hintscb.checked,
             checklines: this.linecheckingcb.checked,
             pred: this.predradio.checked,
             lazy: (!this.predradio.checked),
             rulepanel: this.rulepanelcb.checked
+        }
+        if (this.rulepanelsubsetcb.checked) {
+            opts.useonlyrules = [];
+            const cbcb = this.getElementsByClassName("rulecb");
+            for (const cb of cbcb) {
+                if (cb.checked) {
+                    opts.useonlyrules.push(cb.myrule);
+                }
+            }
         }
         return opts;
     }
@@ -214,13 +232,13 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             }
         });
         this.rulesubsetselectordiv = addelem('div', this.settingsform, {
-            class: ['rulesubsetselector']
+            classes: ['rulesubsetselector']
         });
         this.rulesubsetselectordiv.showme = function (b) {
             if (b) {
                 this.style.display = 'block';
             } else {
-                this.style.display = 'block';
+                this.style.display = 'none';
             }
         }
         this.rulesubsetselectordiv.showme(
@@ -236,13 +254,15 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
         }
         for (const rulename in ruleset) {
             if (ruleset[rulename].hidden) { continue; }
-            const rlbl = addelem('label', rulesubsetselectordiv, {
+            const rlbl = addelem('label', this.rulesubsetselectordiv, {
                 innerHTML: htmlEscape(rulename)
             });
             const rcb = addelem('input', rlbl, {
                 type: 'checkbox',
                 mypsc: this,
                 myrule: rulename,
+                classes: ["rulecb"],
+                pred: (ruleset?.[rulename]?.pred),
                 onchange: function() {
                     this.mypsc.makeChanged();
                 },
