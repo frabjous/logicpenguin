@@ -176,7 +176,7 @@ export default class DerivationCheck {
         const realrules = [];
         for (const rule of citedrules) {
             if ((!(rule in this.rules)) || this.rules[rule].meinongian) {
-                this.adderror(line.n, 'justification', 'high', 'cites a rule (' + rule +
+                this.adderror(line.n, 'rule', 'high', 'cites a rule (' + rule +
                     ') that does not exist');
             } else {
                 realrules.push(rule);
