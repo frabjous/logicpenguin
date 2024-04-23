@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 import LogicPenguinProblemSetCreator from '../create-class.js';
-import { addelem } from '../common.js';
+import { addelem, htmlEscape } from '../common.js';
 import { randomString } from '../misc.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
@@ -24,6 +24,13 @@ function getNotationName() {
     if (n == '' || n == 'none') { n = 'cambridge'; }
     return n;
 }
+
+function getSystemName() {
+    let n = window?.contextSettings?.system ?? 'hardegree';
+    if (n == '' || n == 'none') { n = 'hardegree'; }
+    return n;
+}
+
 
 function randomId() {
     let rid = randomString(8);
@@ -206,8 +213,47 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
                 psc.makeChanged();
             }
         });
-
-
+        this.rulesubsetselectordiv = addelem('div', this.settingsform, {
+            class: ['rulesubsetselector']
+        });
+        this.rulesubsetselectordiv.showme = function (b) {
+            if (b) {
+                this.style.display = 'block';
+            } else {
+                this.style.display = 'block';
+            }
+        }
+        this.rulesubsetselectordiv.showme(
+            this.rulepanelsubsetcb.checked
+        );
+        const systemname = getSystemName();
+        // TODO: make this more flexible?
+        let ruleset = {};
+        if (systemname == 'hardegree') {
+            ruleset = getHardegreeRuleset(getNotationName());
+        } else {
+            ruleset = getForallxRules(systemname, getNotationName());
+        }
+        for (const rulename in ruleset) {
+            if (ruleset[rulename].hidden) { continue; }
+            const rlbl = addelem('label', rulesubsetselectordiv, {
+                innerHTML: htmlEscape(rulename)
+            });
+            const rcb = addelem('input', rlbl, {
+                type: 'checkbox',
+                mypsc: this,
+                myrule: rulename,
+                onchange: function() {
+                    this.mypsc.makeChanged();
+                },
+                checked: (!(
+                    (("excluderules" in opts) &&
+                        opts.excluderules.indexOf(rulename) >= 0) ||
+                    (("useonlyrules" in opts) &&
+                        opts.useonlyrules.indexOf(rulename) == -1)
+                ))
+            })
+        }
     }
 
     makeProblemCreator(problem, answer, isnew) {
