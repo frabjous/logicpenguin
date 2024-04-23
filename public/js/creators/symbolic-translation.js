@@ -47,15 +47,17 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
             pred: (this?.predradio?.checked),
             lazy: (!(this?.predradio?.checked)),
             notation: (this?.notation ?? 'Cambridge'),
+            hints: (this?.hintscb?.checked),
             nofalsum: (!(this?.falsumcb?.checked))
         }
     }
 
     makeOptions(opts) {
         this.notation = getNotationName();
-        const toptionsdiv = addelem('div', this.settingsform);
+        const toptionsdiv = this.settingsform;
         const radioname = this.newRadioName();
-        const sentlabel = addelem('label', toptionsdiv);
+        const langdiv = addelem('div', toptionsdiv);
+        const sentlabel = addelem('label', langdiv);
         const sentspan = addelem('span', sentlabel, {
             innerHTML: tr('sentential')
         });
@@ -71,7 +73,7 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
                 psc.makeChanged();
             }
         });
-        const predlabel = addelem('label', toptionsdiv);
+        const predlabel = addelem('label', langdiv);
         const predspan = addelem('span', predlabel, {
             innerHTML: tr('predicate')
         });
@@ -90,7 +92,21 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         if ("pred" in opts) {
             this.disableRadios();
         }
-        const falsumlabel = addelem('label', toptionsdiv, {
+        const hdiv = addelem('div', toptionsdiv);
+        const hintslabel = addelem('label', hdiv, {
+            innerHTML: tr('Allow hints')
+        });
+        this.hintscb = addelem('input', hintslabel, {
+            type: "checkbox",
+            checked: (("hints" in opts) && (opts.hints)),
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.makeChanged();
+            }
+        });
+        const fdiv = addelem('div', toptionsdiv);
+        const falsumlabel = addelem('label', fdiv, {
             innerHTML: tr('Allow falsum in translation')
         });
         this.falsumcb = addelem('input', falsumlabel, {
