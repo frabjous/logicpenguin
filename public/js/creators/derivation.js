@@ -11,7 +11,10 @@ import { addelem } from '../common.js';
 import { randomString } from '../misc.js';
 import tr from '../translate.js';
 import getFormulaClass from '../symbolic/formula.js';
-import  SymbolicArgumentInput from '../ui/symbolic-argument-input.js';
+import SymbolicArgumentInput from '../ui/symbolic-argument-input.js';
+import getHardegreeRuleset from '../checkers/rules/hardegree-rules.js';
+import getForallxRules from '../checkers/rules/forallx-rules.js';
+
 
 let probimport = {};
 let probtypeloaded = false;
@@ -83,7 +86,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
     }
 
     gatherOptions() {
-        return {
+        opts = {
             notation: getNotationName(),
             hints: this.hintscb.checked,
             checklines: this.linecheckingcb.checked,
@@ -91,6 +94,7 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             lazy: (!this.predradio.checked),
             rulepanel: this.rulepanelcb.checked
         }
+        return opts;
     }
 
     makeOptions(opts) {
@@ -130,19 +134,6 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             },
             checked: (opts?.pred)
         });
-        const rulepaneldiv = addelem('div', this.settingsform);
-        const rulepanellabel = addelem('label', rulepaneldiv, {
-            innerHTML: tr('Show rule panel') + ' '
-        });
-        this.rulepanelcb = addelem('input', rulepanellabel, {
-            checked: ((!("rulepanel" in opts)) || opts?.rulepanel),
-            type: 'checkbox',
-            mypsc: this,
-            onchange: function() {
-                const psc = this.mypsc;
-                psc.makeChanged();
-            }
-        });
         const linecheckingdiv = addelem('div', this.settingsform);
         const linecheckinglabel = addelem('label', linecheckingdiv, {
             innerHTML: tr('Allow line auto-checking') + ' '
@@ -172,6 +163,51 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
         if ("pred" in opts) {
             this.disableLangRadios();
         }
+        const rulepaneldiv = addelem('div', this.settingsform);
+        const rulepanellabel = addelem('label', rulepaneldiv, {
+            innerHTML: tr('Show rule panel') + ' '
+        });
+        this.rulepanelcb = addelem('input', rulepanellabel, {
+            checked: ((!("rulepanel" in opts)) || opts?.rulepanel),
+            type: 'checkbox',
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                if (this.checked) {
+                    if (psc.rulepanelsubsetcb) {
+                        psc.rulepanelsubsetcb.disabled = false;
+                    } else {
+                        psc.rulepanelsubsetcb.checked = false;
+                        psc.rulepanelsubsetcb.onchange();
+                        psc.rulepanelsubsetcb.disabled = true;
+                    }
+                }
+                psc.makeChanged();
+            }
+        });
+        const rulepanelsubsetdiv = addelem('div', this.settingsform);
+        const rulepanelsubsetlabel = addelem('label', rulepanelsubsetdiv, {
+            innerHTML: tr('Show only certain rules in panel') + ' '
+        });
+        this.rulepanelsubsetcb = addelem('input', rulepanelsubsetlabel, {
+            checked: (this.rulepanelcb.checked && (
+                ("excluderules" in opts) ||
+                ("useonlyrules" in opts)
+            )),
+            type: 'checkbox',
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                if (this.checked && psc?.rulesubsetselectordiv) {
+                    psc.rulesubsetselectordiv.showme(true);
+                } else {
+                    psc.rulesubsetselectordiv.showme(false);
+                }
+                psc.makeChanged();
+            }
+        });
+
+
     }
 
     makeProblemCreator(problem, answer, isnew) {
