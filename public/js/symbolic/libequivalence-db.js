@@ -28,11 +28,13 @@ const useMemory = ((typeof process === 'undefined') ||
 
 function applyswitches(str, switches) {
     for (const sw in switches) {
+        if (!(switches[sw]?.codePointAt)) { continue; }
         const cpoint = 120049 + switches[sw].codePointAt(0);
         const tempchar = String.fromCodePoint(cpoint);
         str = str.replaceAll(sw, tempchar);
     }
     for (const sw in switches) {
+        if (!(switches[sw]?.codePointAt)) { continue; }
         const cpoint = 120049 + switches[sw].codePointAt(0);
         const tempchar = String.fromCodePoint(cpoint);
         str = str.replaceAll(tempchar, switches[sw]);
@@ -83,7 +85,7 @@ export function equivProliferate(f, switches = {}, notationname) {
         // for other negations we start by proliferating
         // what it's a negation of
         const baseEquivs = equivProliferate(r, switches, notationname);
-        equivs = baseEquivs.map((w) => 
+        equivs = baseEquivs.map((w) =>
             (Formula.from(Formula.syntax.symbols.NOT + w.wrapifneeded())));
 
         // negation of negation
@@ -193,7 +195,9 @@ export function equivProliferate(f, switches = {}, notationname) {
         const r = f.right;
 
         // get bound variable
-        const v = f.boundvar
+        const v = f.boundvar ?? false;
+        // guard against no bound variable
+        if (!v) { return equivs; }
 
         // real bound var after switches
         let v_to_use = v;
@@ -385,13 +389,13 @@ export function equivProliferate(f, switches = {}, notationname) {
         }
 
         // ¬p → p :: p
-        if (f.op == Formula.syntax.symbols.IFTHEN && l?.op && l?.right && 
+        if (f.op == Formula.syntax.symbols.IFTHEN && l?.op && l?.right &&
             l.op == Formula.syntax.symbols.NOT && (l.right.normal == r.normal)) {
             equivs = arrayUnion(equivs, equivProliferate(r, switches, notationname));
         }
 
         // p → ¬p :: ¬p
-        if (f.op == Formula.syntax.symbols.IFTHEN && r?.op && r?.right && 
+        if (f.op == Formula.syntax.symbols.IFTHEN && r?.op && r?.right &&
             r.op == Formula.syntax.symbols.NOT && (l.normal == r.right.normal)) {
             equivs = arrayUnion(equivs, equivProliferate(r, switches, notationname));
         }
