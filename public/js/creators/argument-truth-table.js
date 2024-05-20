@@ -35,7 +35,7 @@ export default class ArgumentTruthTableCreator extends LogicPenguinProblemSetCre
     makeOptions(opts) {
         const questiondiv = addelem('div', this.settingsform);
         const questionlabel = addelem('label', questiondiv, {
-            innerHTML: tr('Equivalence question') + ' '
+            innerHTML: tr('Validity question') + ' '
         });
         this.questioncb = addelem('input', questionlabel, {
             checked: ("question" in opts && opts.question),

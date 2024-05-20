@@ -38,7 +38,7 @@ secret will be generated and printed.
 }
 
 // give help if requested, then quit
-if (/-*[Hh](elp)?/.test(process.argv[2])) {
+if (/^-*[Hh](elp)?$/.test(process.argv[2])) {
     showHelp();
     process.exit(0);
 }
