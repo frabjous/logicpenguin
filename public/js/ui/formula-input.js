@@ -279,7 +279,7 @@ export default class FormulaInput {
         // v's and wedges become disjunctions
         if (e.key == 'v' || e.key == 'V' || e.key == '∨') {
             // don't do when pasting
-            if (e.ctrlKey) { return; }
+            if (e.ctrlKey || e.metaKey) { return; }
             e.preventDefault();
             this.insOp('OR');
             return;
@@ -422,7 +422,7 @@ export default class FormulaInput {
         }
 
         // lazy mode; lowercase letters become uppercase
-        if (!e.ctrlKey && !e.altKey && !this.pred &&
+        if (!e.ctrlKey && !e.metaKey && !e.altKey && !this.pred &&
             !this.justify && this.lazy &&
             !this.classList.contains("justification")) {
             if (/^[a-z]$/.test(e.key)) {
@@ -451,7 +451,7 @@ function makeSymbolWidgetFor(notationname) {
         }
         // check if already created
         if (notationname in window.symbolwidgets) {
-            return window.symbolwidgets[notionname]; 
+            return window.symbolwidgets[notionname];
         }
 
         // create new widget
@@ -501,7 +501,7 @@ function makeSymbolWidgetFor(notationname) {
             }
             for (const q of ['FORALL', 'EXISTS']) {
                 if (this.buttonfor[q]) {
-                    if (elem.pred && (!( q == 'FORALL' && 
+                    if (elem.pred && (!( q == 'FORALL' &&
                     (this.syntax.notation.quantifierForm.search('\\?') >= 0)) )) {
                         this.buttonfor[q].classList.remove("hidden");
                     } else {
