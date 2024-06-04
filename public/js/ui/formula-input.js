@@ -309,12 +309,16 @@ export default class FormulaInput {
                 e.preventDefault();
                 this.autoChange(/\s*=$/,'','',/^\s*/,'');
                 this.insOp('IFF');
-            }
+            } else
             // /= becomes nonindentity
             if (/\/$/.test(this.value.substr(0,this.selectionStart))) {
                 e.preventDefault();
-                this.autoChange(/\s*\/$/,' ','≠',/^\s*/,' ');
+                this.autoChange(/\s*\/$/,' ','≠ ',/^\s*/,'');
 
+            } else {
+                // regular = is padded with spaces
+                e.preventDefault();
+                this.autoChange(/\s*$/,' ','= ',/^\s*/,'');
             }
         }
 
@@ -370,9 +374,9 @@ export default class FormulaInput {
 
         if (e.key == '/') {
             // /= becomes nonindentity
-            if (/=$/.test(this.value.substr(0,this.selectionStart))) {
+            if (/=\s*$/.test(this.value.substr(0,this.selectionStart))) {
                 e.preventDefault();
-                this.autoChange(/\s*=$/,' ','≠',/^\s*/,' ');
+                this.autoChange(/\s*=\s*$/,' ','≠ ',/^\s*/,'');
             }
 
             // \/ becomes disjunction
