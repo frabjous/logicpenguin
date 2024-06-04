@@ -507,7 +507,7 @@ function makeSymbolWidgetFor(notationname) {
             td.onpointerdown = function(e) {
                 e.preventDefault();
             }
-            td.onclick = () => {
+            td.onclick = function(e) {
                 if (!this?.myWidget?.targetInput) { return; }
                 symbolwidget.targetInput.insOp(td.myOp);
                 // note: insOp will trigger makeChanged
@@ -524,10 +524,7 @@ function makeSymbolWidgetFor(notationname) {
         nitd.onmousedown = function(e) {
             e.preventDefault();
         }
-        nitd.onpointerdown = function(e) {
-            e.preventDefault();
-        }
-        nitd.onclick = () => {
+        nitd.onclick = (e) => {
             if (!this?.myWidget?.targetInput) { return; }
             if (this?.myWidget?.targetInput?.classList?.contains('justification')) {
                 symbolwidget.targetInput.autoChange(/ $/,' ','≠',/^\s*/,'');

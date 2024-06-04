@@ -324,6 +324,15 @@ export default class DerivationHardegree extends DerivationExercise {
                     classes: ['ruledisplayconclusion','symbolic'],
                     innerHTML: htmlEscape(this.schematic(thisform.conc))
                 });
+                if (("differsatmostby" in thisform) &&
+                    (thisform.conc == thisform.differsatmostby[0])) {
+                        conccell.innerHTML = htmlEscape(
+                            this.schematic(thisform.differsatmostby[1]) + ' [' +
+                            this.schematic(thisform.differsatmostby[3]) +
+                            '/' +
+                            this.schematic(thisform.differsatmostby[2]) +
+                            ']');
+                    }
                 if (thisform.mustbenew) {
                     addelem('div', formblock, {
                         classes:['rulenote'],
@@ -362,11 +371,15 @@ export default class DerivationHardegree extends DerivationExercise {
         if (sca=='𝒸') {
             scb = '𝒹';
         }
-        if (s == 'a = a') {
-            return sca + ' = ' + sca;
+        if (/[ab] [=≠] [ba]/.test(s)) {
+            return s.replace(/a/g, sca)
+                .replace(/b/g, scb);
         }
-        if (s == 'a = b') {
-            return sca + ' = ' + scb;
+        if (s == 'a') {
+            return sca;
+        }
+        if (s == 'b') {
+            return scb;
         }
         return s.replace(/Ax/g, scA + scx)
             .replace(/A/g, scA)
