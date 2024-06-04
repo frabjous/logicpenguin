@@ -96,6 +96,7 @@ LP.sampler = function(opts) {
     const tflarginp = SymbolicArgumentInput.getnew({
         notation: opts.notation,
         nofalsum: (!!opts?.nofalsum),
+        nnnidentity: false,
         lazy: true,
         pred: false
     });
@@ -104,6 +105,7 @@ LP.sampler = function(opts) {
     const folarginp = SymbolicArgumentInput.getnew({
         notation: opts.notation,
         nofalsum: (!!opts?.nofalsum),
+        nonidentity: (!!opts?.nonindentity),
         pred: true,
         lazy: false
     });

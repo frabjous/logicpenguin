@@ -503,6 +503,21 @@ function makeSymbolWidgetFor(notationname) {
                 // note: insOp will trigger makeChanged
             };
         }
+        const nitd = addelem('td', tre, {});
+        symbolwidget.buttonfor.NONIDENTITY = nitd;
+        nitd.mywidget = symbolwidget;
+        nitd.myOp = 'NONIDENTITY';
+        nitd.innerHTML = '≠';
+        nitd.title = tr('Insert ≠');
+        nitd.tabIndex = -1;
+        nitd.classList.add('symbolwidgetbutton');
+        nitd.onmousedown = function(e) {
+            e.preventDefault();
+        }
+        nitd.onclick = () => {
+            if (!symbolwidget.targetInput) { return; }
+            symbolwidget.targetInput.autoChange(/\s*=\s*$/,' ','≠ ',/^\s*/,'');
+        }
         // function to show up for a given input; may have options to
         // show or hide falsum, or show or hide quantifier symbols
         symbolwidget.showfor = function(elem) {
@@ -523,6 +538,15 @@ function makeSymbolWidgetFor(notationname) {
                     } else {
                         this.buttonfor[q].classList.add("hidden");
                     }
+                }
+            }
+            if (!elem.pred || !(elem?.nonidentity)) {
+                if (this?.buttonfor?.NONIDENTITY){
+                    this.buttonfor.NONIDENTITY.classList.add('hidden')
+                }
+            } else {
+                 if (this?.buttonfor?.NONIDENTITY){
+                    this.buttonfor.NONIDENTITY.classList.remove('hidden')
                 }
             }
         }
