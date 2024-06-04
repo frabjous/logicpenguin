@@ -60,7 +60,7 @@ export default class TruthTable extends LogicPenguinProblem {
                 }
                 if (table.isright) {
                     const cbcell = addelem('td', tre, {
-                        classes: [ 'ttcbcell' ] 
+                        classes: [ 'ttcbcell' ]
                     });
                     tre.rowcheckbox = addelem('input', cbcell, {
                         type: 'checkbox', myrow: tre, myprob: this,
@@ -297,7 +297,7 @@ export default class TruthTable extends LogicPenguinProblem {
     }
 
     // redoes cell borders; requires data on checkboxes already collected
-    // this is stupid complicated, but I cannot find anything else 
+    // this is stupid complicated, but I cannot find anything else
     // that works very well
     redoTableBorders(table, rows, columns) {
         const trtr = table.tbody.getElementsByTagName("tr");
@@ -458,8 +458,9 @@ export default class TruthTable extends LogicPenguinProblem {
         // break statement into cells with manufactured regex
         let rstr = '[(\\[{]*';
         rstr += '[' + syntax.notation.predicatesRange;
-        // this probably wouldn't be adequate for (x) quantifiers, but you
-        // can't do a truth table with quantifiers anyway
+        // this probably wouldn't be adequate for (x) quantifiers,
+        // or for identity, but but you can't do a truth table in
+        // predicate logic anyway
         for (const o in operators) { rstr += o; }
         rstr += '][' + syntax.notation.constantsRange +
             syntax.notation.variableRange + ']*';

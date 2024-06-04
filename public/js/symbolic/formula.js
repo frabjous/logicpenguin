@@ -413,7 +413,7 @@ function generateFormulaClass(notationname) {
             // change this to accommodate complex terms
             this._pletter = match[0];
             const pos = match.index;
-            if (pos != 0 && this._pletter != '=') {
+            if (pos != 0 && this._pletter != '=' && this._pletter != '≠') {
                 this.syntaxError('unexpected characters appear before the ' +
                     'letter ' + this._pletter);
             }
@@ -421,6 +421,11 @@ function generateFormulaClass(notationname) {
                 this.syntaxError('the identity relation symbol = occurs ' +
                     'in an unexpected place');
             }
+            if (pos != 2 && this._pletter == '≠') {
+                this.syntaxError('the nonidentity symbol ≠ occurs ' +
+                    'in an unexpected place');
+            }
+
             return this._pletter;
         }
 
@@ -584,9 +589,11 @@ function generateFormulaClass(notationname) {
                 this._wellformed = false;
             }
             // identity should have exactly two terms
-            if (this.pletter == '=' && this.terms.length != 2) {
-                this.syntaxError('uses the identity predicate “=” without ' +
-                    'exactly one term on each side');
+            if ((this.pletter == '=' || this.pletter == '≠')
+                    && this.terms.length != 2) {
+                this.syntaxError('uses the identity predicate “=” or ' +
+                    'nonindentity predicate “≠” without exactly one ' +
+                    'term on each side');
             }
             // shouldn't have any errors from checking pletter and terms
             for (let prob in this._syntaxerrors) {
@@ -644,8 +651,8 @@ function generateFormulaClass(notationname) {
             }
             let atomicstr = pletter + termstr;
             // identity is different
-            if (terms.length == 2 && pletter == '=') {
-                atomicstr = terms[0] + ' = ' + terms[1];
+            if (terms.length == 2 && (pletter == '=' || pletter == '≠' )) {
+                atomicstr = terms[0] + ' ' + pletter + ' ' + terms[1];
             }
             return atomicstr;
         }

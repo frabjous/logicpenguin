@@ -34,7 +34,7 @@ const notations = {
         FALSUM  : '⊥',
         constantsRange: 'a-t',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-W',
+        predicatesRange: '=≠A-W',
         schematicLetters: 'XX𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-zu-w'
@@ -50,7 +50,7 @@ const notations = {
         FALSUM  : '⊥',
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: true,
         variableRange: 'x-zs-w'
@@ -66,7 +66,7 @@ const notations = {
         FALSUM  : '⊥',
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: '𝑨𝑨𝒙𝒄𝒄',
         useTermParensCommas: false,
         variableRange: 'x-zs-w'
@@ -81,7 +81,7 @@ const notations = {
         EXISTS  : '∃',
         FALSUM  : '↯',
         constantsRange: 'a-w',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         quantifierForm: '(Q?x)',
         schematicLetters: 'pℱ𝓍𝒸𝒸',
         useTermParensCommas: false,
@@ -98,7 +98,7 @@ const notations = {
         FALSUM  : '⊥',
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: '𝒳ℱ𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
@@ -114,7 +114,7 @@ const notations = {
         FALSUM  : '⊥',
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
@@ -129,7 +129,7 @@ const notations = {
         EXISTS  : '∃',
         FALSUM  : '✖',
         constantsRange: 'a-w',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         quantifierForm: 'Qx',
         schematicLetters: '𝒜𝒜𝓍𝒶𝓃',
         useTermParensCommas: false,
@@ -146,7 +146,7 @@ const notations = {
         FALSUM  : '※',
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
@@ -162,7 +162,7 @@ const notations = {
         FALSUM  : '※',
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: true,
         variableRange: 'x-zs-w'
@@ -178,7 +178,7 @@ const notations = {
         FALSUM  : '⊥',
         constantsRange: 'a-r',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: '𝒜𝒜𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-zs-w'
@@ -194,7 +194,7 @@ const notations = {
         FALSUM  : '※',
         constantsRange: 'a-w',
         quantifierForm: 'Qx',
-        predicatesRange: '=A-Z',
+        predicatesRange: '=≠A-Z',
         schematicLetters: 'ΦΦ𝓍𝒸𝒸',
         useTermParensCommas: false,
         variableRange: 'x-z'
