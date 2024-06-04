@@ -313,10 +313,13 @@ export default class FormulaInput {
             // /= becomes nonindentity
             if (/\/$/.test(this.value.substr(0,this.selectionStart))) {
                 e.preventDefault();
-                this.autoChange(/\s*\/$/,' ','≠ ',/^\s*/,'');
-
-            } else {
-                // regular = is padded with spaces
+                if (this.classList.contains('justification')) {
+                    this.autoChange(/\/$/,'','≠',/^\s*/,'');
+                } else {
+                    this.autoChange(/\s*\/$/,' ','≠ ',/^\s*/,'');
+                }
+            } else if (!(this?.classList.contains('justification'))) {
+                // regular = is padded with spaces, except when justifying
                 e.preventDefault();
                 this.autoChange(/\s*$/,' ','= ',/^\s*/,'');
             }
@@ -376,7 +379,11 @@ export default class FormulaInput {
             // /= becomes nonindentity
             if (/=\s*$/.test(this.value.substr(0,this.selectionStart))) {
                 e.preventDefault();
-                this.autoChange(/\s*=\s*$/,' ','≠ ',/^\s*/,'');
+                if (this.classList.contains('justification')) {
+                    this.autoChange(/=\s*$/,'','≠',/^\s*/,'');
+                } else {
+                    this.autoChange(/\s*=\s*$/,' ','≠ ',/^\s*/,'');
+                }
             }
 
             // \/ becomes disjunction
@@ -497,15 +504,18 @@ function makeSymbolWidgetFor(notationname) {
             td.onmousedown = function(e) {
                 e.preventDefault();
             }
+            td.onpointerdown = function(e) {
+                e.preventDefault();
+            }
             td.onclick = () => {
-                if (!symbolwidget.targetInput) { return; }
+                if (!this?.myWidget?.targetInput) { return; }
                 symbolwidget.targetInput.insOp(td.myOp);
                 // note: insOp will trigger makeChanged
             };
         }
         const nitd = addelem('td', tre, {});
         symbolwidget.buttonfor.NONIDENTITY = nitd;
-        nitd.mywidget = symbolwidget;
+        nitd.myWidget = symbolwidget;
         nitd.myOp = 'NONIDENTITY';
         nitd.innerHTML = '≠';
         nitd.title = tr('Insert ≠');
@@ -514,9 +524,16 @@ function makeSymbolWidgetFor(notationname) {
         nitd.onmousedown = function(e) {
             e.preventDefault();
         }
+        nitd.onpointerdown = function(e) {
+            e.preventDefault();
+        }
         nitd.onclick = () => {
-            if (!symbolwidget.targetInput) { return; }
-            symbolwidget.targetInput.autoChange(/\s*=\s*$/,' ','≠ ',/^\s*/,'');
+            if (!this?.myWidget?.targetInput) { return; }
+            if (this?.myWidget?.targetInput?.classList?.contains('justification')) {
+                symbolwidget.targetInput.autoChange(/ $/,' ','≠',/^\s*/,'');
+            } else {
+                symbolwidget.targetInput.autoChange(/\s*$/,' ','≠ ',/^\s*/,'');
+            }
         }
         // function to show up for a given input; may have options to
         // show or hide falsum, or show or hide quantifier symbols
