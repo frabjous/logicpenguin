@@ -214,6 +214,12 @@ function generateFormulaClass(notationname) {
                     let v = this.boundvar ?? '';
                     o = Formula.syntax.mkquantifier(v, o);
                 }
+                // wrap parens after monadic op with identity
+                if (!(this?.right?.op) && (this?.right?.pletter == '=' ||
+                    this?.right?.pletter == '≠')) {
+                        this._normal = o+ '(' + rightstr + ')';
+                        return this._normal;
+                }
                 this._normal = o + rightstr;
                 return this._normal;
             }
@@ -627,11 +633,22 @@ function generateFormulaClass(notationname) {
                 const r = Formula.from(this.right.instantiate(variable, term));
                 // put quantifier with different variable back on right side
                 if (Formula.syntax.isquant(this.op)) {
+                    if (!(this.right.op) && (this.right.pletter == '=' ||
+                        this.right.pletter == '≠')) {
+                            return Formula.syntax.mkquantifier(
+                                this.boundvar, this.op
+                            ) + '(' + r.normal + ')';
+                    }
                     return Formula.syntax.mkquantifier(
                         this.boundvar, this.op
                     ) + r.wrapifneeded();
                 }
                 // monadic operator not a quantifier is just it plus right side.
+                // except if identity
+                if (!(this.right.op) && (this.right.pletter == '=' ||
+                    this.right.pletter == '≠')) {
+                        return this.op + '(' + r.normal + ')';
+                    }
                 return this.op + r.wrapifneeded();
             }
             // zero place op, nothing to do
@@ -794,3 +811,8 @@ export default function getFormulaClass(notationname) {
     formulaClasses[notationname] = fClass;
     return fClass;
 }
+
+const fml = getFormulaClass('hardegree');
+const f = fml.from('∃y(a=a)')
+const i = fml.from('a=a');
+console.log(fml.isInstanceOf(i,f))
