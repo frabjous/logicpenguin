@@ -1119,8 +1119,8 @@ export class formFit {
             assigns[schema.normal] = f.normal;
         }
         // check for identity; which must also be what it is mapped to
-        if (schema.pletter == '=') {
-            if (!f.pletter || f.pletter != '=') {
+        if (schema.pletter == '=' || schema.pletter == '≠') {
+            if (!f.pletter || f.pletter != schema.pletter) {
                 return false;
             }
             // terms in an identity schema must be precisely what's there
