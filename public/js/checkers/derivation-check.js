@@ -826,6 +826,7 @@ export class formFit {
         for (const n of this.form.mustbenew) {
             if (!this?.assigns?.[n] || this?.assigns?.[n]?.length < 1) { continue; }
             const newname = this.assigns[n][0];
+            console.log(this.assigns[n]);
             if (!newname) { continue; }
             if (!this.isNewAt(newname, this.line)) { return false; }
         }
@@ -1185,7 +1186,7 @@ export class formFit {
                 }
             } else {
                 // t is a constant
-                const consts = arrayUnion([],f.terms.filter(
+                const consts = arrayUnion(['✪'],f.terms.filter(
                     (x) => (!syntax.isvar(x))
                 ));
                 if (t in assigns) {
