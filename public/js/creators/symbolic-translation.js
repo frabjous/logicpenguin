@@ -46,6 +46,7 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         return {
             pred: (this?.predradio?.checked),
             lazy: (!(this?.predradio?.checked)),
+            identity: (this?.identitycb?.checked),
             notation: (this?.notation ?? 'Cambridge'),
             hints: (this?.hintscb?.checked),
             nofalsum: (!(this?.falsumcb?.checked))
@@ -92,9 +93,11 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         if ("pred" in opts) {
             this.disableRadios();
         }
+        const iddiv = addelem('div',toptionsdiv);
+        const iddlabel = addelem('')
         const hdiv = addelem('div', toptionsdiv);
         const hintslabel = addelem('label', hdiv, {
-            innerHTML: tr('Allow hints')
+            innerHTML: tr('Allow hints') + ' '
         });
         this.hintscb = addelem('input', hintslabel, {
             type: "checkbox",

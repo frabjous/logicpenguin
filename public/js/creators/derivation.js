@@ -110,6 +110,9 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             lazy: (!this.predradio.checked),
             rulepanel: this.rulepanelcb.checked
         }
+        if ("identitycb" in this) {
+            opts.identity = (this.identitycb.checked);
+        }
         if (this.rulepanelsubsetcb.checked) {
             opts.useonlyrules = [];
             const cbcb = this.getElementsByClassName("rulecb");
@@ -159,6 +162,22 @@ export default class DerivationCreator extends LogicPenguinProblemSetCreator {
             },
             checked: (opts?.pred)
         });
+        if (getSystemName() == 'hardegree') {
+            const identitydiv = addelem('div', this.settingsform);
+            const identitylabel = addelem('label', identitydiv, {
+                innerHTML: tr('Include identity rules') + ' '
+            });
+            this.identitycb = addelem('input', identitylabel,{
+                checked: (opts?.identity),
+                type: 'checkbox',
+                mypsc: this,
+                onchange: function() {
+                    const psc = this.mypsc;
+                    psc.makeChanged();
+                }
+
+            });
+        }
         const linecheckingdiv = addelem('div', this.settingsform);
         const linecheckinglabel = addelem('label', linecheckingdiv, {
             innerHTML: tr('Allow line auto-checking') + ' '
