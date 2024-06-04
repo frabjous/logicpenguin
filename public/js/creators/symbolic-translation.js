@@ -93,8 +93,6 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         if ("pred" in opts) {
             this.disableRadios();
         }
-        const iddiv = addelem('div',toptionsdiv);
-        const iddlabel = addelem('')
         const hdiv = addelem('div', toptionsdiv);
         const hintslabel = addelem('label', hdiv, {
             innerHTML: tr('Allow hints') + ' '
@@ -110,7 +108,7 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
         });
         const fdiv = addelem('div', toptionsdiv);
         const falsumlabel = addelem('label', fdiv, {
-            innerHTML: tr('Allow falsum in translation')
+            innerHTML: tr('Include falsum in symbol buttons ') + ' '
         });
         this.falsumcb = addelem('input', falsumlabel, {
             type: "checkbox",
@@ -121,6 +119,20 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
                 psc.makeChanged();
             }
         });
+        const iddiv = addelem('div',toptionsdiv);
+        const idlabel = addelem('label',iddiv, {
+            innerHTML: tr('Include ≠ in symbols buttons') + ' '
+        });
+        this.identitycb = addelem('input', idlabel, {
+            type: "checkbox",
+            checked: (!!(opts?.identity)),
+            mypsc: this,
+            onchange: function() {
+                const psc = this.mypsc;
+                psc.makeChanged();
+            }
+        })
+
     }
 
     makeProblemCreator(problem, answer, isnew) {
@@ -158,7 +170,9 @@ export default class TranslationExerciseCreator extends LogicPenguinProblemSetCr
             });
             this.answerer.fmlinput = FormulaInput.getnew({
                 notation: this.mypsc.notation,
+                identity: (this?.mypsc?.identitycb?.checked),
                 pred: (this?.mypsc?.predradio?.checked),
+                nofalsum: (!(this?.mypsc?.falsumcb?.checked)),
                 lazy: (!!(this?.mypsc?.predradio?.checked))
             });
             this.answerer.appendChild(this.answerer.fmlinput);
