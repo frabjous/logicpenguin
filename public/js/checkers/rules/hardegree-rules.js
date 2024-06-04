@@ -27,6 +27,7 @@ const hardegreeRules = {
     "✖O"  : { forms: [ { prems: ["✖"], conc: "A" } ] },
     "∀O"  : { pred: true, forms: [ { prems: ["∀xAx"], conc: "Aa", subst: {"x":"a"} } ] },
     "∃O"  : { pred: true, forms: [ { prems: ["∃xAx"], conc: "An", mustbenew: ["n"], subst: {"x":"n"} } ] },
+    "=O" : { pred: true, identity: true, forms: [ { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","b","a"] }, { prems: ["a = b", "A"], conc: "B", differsatmostby: ["B","A","a","b"] } ] },
     "R"   : { forms: [ { prems: ["A"], conc: "A" } ] },
     "~→O" : { forms: [ { prems: ["~(A → B)"], conc: "A & ~B" } ] },
     "~∨O" : { forms: [ { prems: ["~(A ∨ B)"], conc: "~A" }, { prems: ["~(A ∨ B)"], conc: "~B" } ] },

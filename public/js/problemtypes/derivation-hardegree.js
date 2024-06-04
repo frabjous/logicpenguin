@@ -355,12 +355,27 @@ export default class DerivationHardegree extends DerivationExercise {
         const scx = lta[2];
         const sca = lta[3];
         const scn = lta[4];
+        let scb = '𝒷';
+        if (sca == '𝒄') {
+            scb = '𝒅';
+        }
+        if (sca=='𝒸') {
+            scb = '𝒹';
+        }
+        if (s == 'a = a') {
+            return sca + ' = ' + sca;
+        }
+        if (s == 'a = b') {
+            return sca + ' = ' + scb;
+        }
         return s.replace(/Ax/g, scA + scx)
             .replace(/A/g, scA)
             .replace(/B/g, scB)
             .replace(/C/g, scC)
             .replace(/x/g, scx)
             .replace(/a/g,' [' + sca + '/' + scx + ']')
+            .replace(/b/g,' [' + scb + '/' + scx + ']')
+            .replace(/d/g,' [' + scb + '/' + scx + ']')
             .replace(/n/g,' [' + scn + '/' + scx + ']');
     }
 
