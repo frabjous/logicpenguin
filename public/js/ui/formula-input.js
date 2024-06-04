@@ -318,6 +318,17 @@ export default class FormulaInput {
                 } else {
                     this.autoChange(/\s*\/$/,' ','≠ ',/^\s*/,'');
                 }
+            // equal following = also nonindentity
+            } else if (this.value[this.selectionStart -1] ==
+                this.symbols.NOT) {
+                e.preventDefault();
+                if (this.classList.contains('justification')) {
+                    const regex = new RegExp(this.symbols.NOT + '$');
+                    this.autoChange(regex,'','≠',/^\s*/,'');
+                } else {
+                    const regex = new RegExp('\\s*' + this.symbols.NOT + '$');
+                    this.autoChange(regex,' ','≠ ',/^\s*/,'');
+                }
             } else if (!(this?.classList.contains('justification'))) {
                 // regular = is padded with spaces, except when justifying
                 e.preventDefault();
@@ -524,7 +535,10 @@ function makeSymbolWidgetFor(notationname) {
         nitd.onmousedown = function(e) {
             e.preventDefault();
         }
-        nitd.onclick = (e) => {
+        nitd.onpointerdown = function(e) {
+            e.preventDefault();
+        }
+        nitd.onclick = function(e) {
             if (!this?.myWidget?.targetInput) { return; }
             if (this?.myWidget?.targetInput?.classList?.contains('justification')) {
                 symbolwidget.targetInput.autoChange(/ $/,' ','≠',/^\s*/,'');
