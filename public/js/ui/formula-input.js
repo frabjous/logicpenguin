@@ -303,12 +303,18 @@ export default class FormulaInput {
             return;
         }
 
-        // == becomes biconditional
         if (e.key == '=') {
+            // == becomes biconditional
             if (/=$/.test(this.value.substr(0,this.selectionStart))) {
                 e.preventDefault();
                 this.autoChange(/\s*=$/,'','',/^\s*/,'');
                 this.insOp('IFF');
+            }
+            // /= becomes nonindentity
+            if (/\/$/.test(this.value.substr(0,this.selectionStart))) {
+                e.preventDefault();
+                this.autoChange(/\s*\/$/,' ','≠',/^\s*/,' ');
+
             }
         }
 
@@ -362,8 +368,14 @@ export default class FormulaInput {
             return;
         }
 
-        // \/ also becomes disjunction
         if (e.key == '/') {
+            // /= becomes nonindentity
+            if (/=$/.test(this.value.substr(0,this.selectionStart))) {
+                e.preventDefault();
+                this.autoChange(/\s*=$/,' ','≠',/^\s*/,' ');
+            }
+
+            // \/ becomes disjunction
             if ((this.selectionStart > 0) &&
                 (this.value.at(this.selectionStart - 1) == '\\')) {
                 e.preventDefault();
