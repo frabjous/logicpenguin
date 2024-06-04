@@ -63,7 +63,7 @@ function fillInTo(probinfo, i) {
 export function chargeup(probelem) {
     // if an answer is set to "true", it just means allow cheating
     // and no actual show answer is possible
-    if (probelem.myanswer !== true) {
+    if (probelem.myanswer !== true && probelem.allowcheats) {
         probelem.showansButton = addelem('button', probelem.buttonDiv, {
             innerHTML: tr('show answer'),
             type: 'button',
@@ -75,6 +75,7 @@ export function chargeup(probelem) {
     }
 
     probelem.checkLines = async function() {
+        if (!this.options.checklines && !this.options.hints) { return; }
         const question = this.myquestion;
         const answer = this.myanswer;
         const givenans = this.getAnswer();
@@ -112,19 +113,21 @@ export function chargeup(probelem) {
         }
     }
 
-    probelem.hintButton = addelem('button', probelem.buttonDiv, {
-        innerHTML: tr('give hint'),
-        type: 'button',
-        myprob: probelem,
-        onmousedown: function(e) {
-            e.preventDefault();
-        },
-        onclick: function(e) {
-            // may need to register line
-            e.preventDefault();
-            this.myprob.giveHint();
-        }
-    });
+    if (probelem.options.hints) {
+        probelem.hintButton = addelem('button', probelem.buttonDiv, {
+            innerHTML: tr('give hint'),
+            type: 'button',
+            myprob: probelem,
+            onmousedown: function(e) {
+                e.preventDefault();
+            },
+            onclick: function(e) {
+                // may need to register line
+                e.preventDefault();
+                this.myprob.giveHint();
+            }
+        });
+    }
 
     probelem.giveHint = async function() {
         //do a check first

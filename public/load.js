@@ -188,13 +188,6 @@ LP.makeProblems = async function(parentid, exerciseinfo,
                 probsetinfo.problemtype, problem, probsetinfo.points,
                 options, checksave
             );
-            if (!problemelem) {
-                console.log("ptype", probsetinfo.problemtype);
-                console.log("problem", problem);
-                console.log("points", probsetinfo.points);
-                console.log("options", options);
-                console.log("checksavE", checksave);
-            }
             if (!problemitem) { return false; }
             problemitem.append(problemelem);
             problemelem.myprobsetnumber = probsetnum;
@@ -205,10 +198,18 @@ LP.makeProblems = async function(parentid, exerciseinfo,
             problemelem.myquestionnumber = questionnumber;
             problemelem.id = parentid + probsetnum + 'n' + ctr;
             // check if self-answerable
+            let charged = false;
+            problemelem.allowcheats = false;
             if (exerciseanswers && ((typeof exerciseanswers?.[probsetnum]?.
                 [ctr]) !== 'undefined') && exerciseanswers?.[probsetnum]
                 ?.[ctr] !== null) {
                 problemelem.myanswer = exerciseanswers[probsetnum][ctr];
+                LP.superCharge(probsetinfo.problemtype, problemelem);
+                charged = true;
+                problemelem.allowcheats = true;
+            }
+            if (!charged && (probsetinfo?.options?.checklines ||
+                probsetinfo?.options?.hints)) {
                 LP.superCharge(probsetinfo.problemtype, problemelem);
             }
             // check if unsavable
