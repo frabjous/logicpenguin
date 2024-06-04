@@ -540,7 +540,7 @@ function makeSymbolWidgetFor(notationname) {
                     }
                 }
             }
-            if (!elem.pred || !(elem?.nonidentity)) {
+            if (!elem.pred || !(elem?.identity)) {
                 if (this?.buttonfor?.NONIDENTITY){
                     this.buttonfor.NONIDENTITY.classList.add('hidden')
                 }

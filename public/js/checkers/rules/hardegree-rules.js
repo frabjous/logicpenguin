@@ -18,6 +18,7 @@ const hardegreeRules = {
     "✖I"  : { forms: [ { prems: ["A", "~A"], conc: "✖" } ] },
     "∀I"  : { pred: true, meinongian: true, hint: "To establish a ∀-statement, use UD in a subderivation for it, even if you have to write in a SHOW-line yourself." },
     "∃I"  : { pred: true, forms: [ { prems: ["Aa"], conc: "∃xAx", subst: {"x":"a"} } ] },
+    "=I"  : { pred: true, identity: true, forms: [ { prems: [], conc: 'a = a' } ]},
     "Ass" : { assumptionrule: true },
     "→O"  : { forms: [ { prems: ["A → C", "A"], conc: "C" }, { prems: ["A → C", "~C"], conc: "~A" } ] },
     "∨O"  : { forms: [ { prems: ["A ∨ B", "~A"], conc: "B" }, { prems: ["A ∨ B", "~B"], conc: "A" } ] },
