@@ -180,9 +180,13 @@ export default class DerivationHardegree extends DerivationExercise {
         let tre;
         let ctr=0;
         // add each rule
+        const identity = (!!(this?.options?.identity));
         for (const rule in rules) {
             if (rules[rule].hidden) { continue; }
-            if (ctr % 8 == 0) {
+            if ((!identity) && rules[rule].identity) {
+                continue;
+            }
+            if (ctr % ((identity) ? 9 : 8) == 0) {
                 tre = addelem('tr', tbody, {});
             }
             const td = addelem('td', tre, {
@@ -228,7 +232,7 @@ export default class DerivationHardegree extends DerivationExercise {
         }
         rp.schematic = this.schematic;
         rp.displayrule = function(rule) {
-            const ruleinfo = this.ruleset[rule];
+            const ruleinfo = this?.ruleset?.[rule];
             if (!ruleinfo) { return; }
             this.currentrule = rule;
             rp.innernamecell.innerHTML = htmlEscape(rule);
