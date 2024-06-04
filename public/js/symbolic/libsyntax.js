@@ -104,6 +104,7 @@ function inputfix(s) {
     }
     // … and identity
     rv = rv.replaceAll('=',' = ');
+    rv = rv.replaceAll('≠',' ≠ ');
     return rv;
 }
 

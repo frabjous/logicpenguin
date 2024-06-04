@@ -240,8 +240,10 @@ function generateFormulaClass(notationname) {
             // put them together
             let atomicstr = pletter + termsstr;
             // identity is different
-            if ((terms.length == 2) && (pletter == '=')) {
-                atomicstr = this.terms[0] + ' = ' + this.terms[1];
+            if ((terms.length == 2) &&
+                (pletter == '=' || pletter == '≠')) {
+                atomicstr = this.terms[0] + ' ' + pletter + ' '
+                    + this.terms[1];
             }
             // return value
             this._normal = atomicstr;
@@ -727,7 +729,7 @@ function generateFormulaClass(notationname) {
         }
 
         // function for checking if something is an instance
-        // of a qauntified formula
+        // of a quantified formula
         static isInstanceOf(i, f) {
             // formula must apply the quantifier to something
             if (!f.right) { return false; }
@@ -792,4 +794,3 @@ export default function getFormulaClass(notationname) {
     formulaClasses[notationname] = fClass;
     return fClass;
 }
-
