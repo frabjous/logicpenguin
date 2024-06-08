@@ -811,8 +811,3 @@ export default function getFormulaClass(notationname) {
     formulaClasses[notationname] = fClass;
     return fClass;
 }
-
-const fml = getFormulaClass('hardegree');
-const f = fml.from('∃y(a=a)')
-const i = fml.from('a=a');
-console.log(fml.isInstanceOf(i,f))
