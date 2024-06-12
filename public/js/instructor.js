@@ -99,16 +99,16 @@ function addExerciseItem(exnum, exinfo) {
     const launchlinkdiv = addelem('div',div, {
         classes: ['exlaunchlinkdiv'],
         innerHTML: '<span class="material-symbols-outlined">link</span>' +
-            'LMS LTI Tool Launch URL: <span class="launchlink">' +
+            tr('LMS LTI Tool Launch URL') + ': <span class="launchlink">' +
             launchlinkurl + '</span> ' + '<span class="material-symbols' +
-            '-outlined copylink" title="copy url" ' +
+            '-outlined copylink" title="' + tr('copy url') + '" ' +
             'onclick="navigator.clipboard.writeText(\'' +
             launchlinkurl + '\')">content_copy</span>'
     });
     const bdiv = addelem('div', div, { classes: ['exlistbuttons'] });
     const editbutton = addelem('button', bdiv, {
         type: 'button',
-        innerHTML: 'edit exercise ' + exnum,
+        innerHTML: tr('edit exercise') + ' ' + exnum,
         myexnum: exnum,
         onclick: function() {
             window.location.hash = '#exercise-' + this.myexnum;
@@ -175,7 +175,7 @@ async function instructorquery(req = {}) {
     }
     if (resp?.error) {
         errormessage('Problem reported by server: ' +
-            (resp?.errMsg ?? 'unknown error'));
+            (resp?.errMsg ?? tr('unknown error')));
         return false;
     }
     return resp;
@@ -209,7 +209,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
     // short name row
     const snlabeld = addelem('td', snrow);
     const snlabel = addelem('label', snlabeld, {
-        innerHTML: 'Short name',
+        innerHTML: tr('Short name'),
         title: tr('The short name occurs as part of the URL and ' +
             'should only consist of letters and digits.'),
         htmlFor: idbase + '-exinfoform-shortname'
@@ -220,15 +220,15 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         id: idbase + '-exinfoform-shortname',
         name: idbase + '-exinfoform-shortname',
         type: 'text',
-        placeholder: 'short name for url',
+        placeholder: tr('short name for url'),
         value: ((exnum == 'new') ? '' : exnum),
         mydiv: div
     });
     // long name row
     const ltlabeld = addelem('td', ltrow);
     const ltlabel = addelem('label', ltlabeld, {
-        innerHTML: 'Full title',
-        title: 'The full title appears at the top of the exercise page',
+        innerHTML: tr('Full title'),
+        title: tr('The full title appears at the top of the exercise page'),
         htmlFor: idbase + '-exinfoform-fulltitle'
     });
     const ltcell = addelem('td', ltrow);
@@ -236,14 +236,14 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         id: idbase + '-exinfoform-fulltitle',
         name: idbase + '-exinfoform-fulltitle',
         type: 'text',
-        placeholder: 'full exercise title',
+        placeholder: tr('full exercise title'),
         value: (exinfo?.longtitle ?? ''),
         mydiv: div
     });
     // due time row
     const duelabeld = addelem('td', duerow);
     const duelabel = addelem('label', duelabeld, {
-        innerHTML: 'When due',
+        innerHTML: tr('When due'),
         htmlFor: idbase + '-exinfoform-duetime'
     });
     const duecell = addelem('td', duerow);
@@ -257,7 +257,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
     // misc row
     const misclabeld = addelem('td', miscrow);
     const misclabel = addelem('label', misclabeld, {
-        innerHTML: 'Start #',
+        innerHTML: tr('Start #'),
         htmlFor: idbase + '-exinfoform-startnum'
     });
     const misccell = addelem('td', miscrow);
@@ -269,7 +269,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         mydiv: div
     });
     const savablelabel = addelem('label', misccell, {
-        innerHTML: 'Savable',
+        innerHTML: tr('Savable'),
         htmlFor: idbase + '-exinfoform-savable'
     });
     div.savablecheckbox = addelem('input', misccell, {
@@ -280,7 +280,7 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
         mydiv: div
     });
     const servergradedlabel = addelem('label', misccell, {
-        innerHTML: 'Graded on server',
+        innerHTML: tr('Graded on server'),
         htmlFor: idbase + '-exinfoform-servergraded'
     });
     div.servergradedcheckbox = addelem('input', misccell, {
@@ -350,7 +350,7 @@ async function loadexercise(exhash) {
     const breadcrumb = addelem('div', exblock, {
         innerHTML: '<a href="#exercisesmain"><span class="' +
             'material-symbols-outlined">arrow_back_ios</span>' +
-            'Return to Exercise List</a>',
+            tr('Return to Exercise List') + '</a>',
         classes: ['breadcrumb']
     });
     const hdr = addelem('h2', exblock, {
@@ -362,14 +362,14 @@ async function loadexercise(exhash) {
         exnum: exnum
     }
     exdiv.innerHTML = '<span class="material-symbols-outlined ' +
-        'spinning">sync</span> loading …';
+        'spinning">sync</span> ' + tr('loading') + ' …';
     const resp = await instructorquery(req);
     exdiv.innerHTML = '';
     if (!resp) { return; }
     if (!("exinfo" in resp) || !("answers" in resp) ||
         !("problems" in resp)) {
-        errormessage(tr('Invalid response from server when ' +
-            'requesting information about exercise.'));
+        errormessage('Invalid response from server when ' +
+            'requesting information about exercise.');
         return;
     }
     const exinfoholder = addelem('div', exdiv, {
@@ -393,8 +393,8 @@ async function loadexercise(exhash) {
                     + shproblemtype + '.js');
                 problemSetCreators[shproblemtype] = imported.default;
             } catch(err) {
-                errormessage(tr('ERROR loading script for creating ' +
-                    'problem type') + ' ' + shproblemtype + ': ' +
+                errormessage('ERROR loading script for creating ' +
+                    'problem type ' + shproblemtype + ': ' +
                     err.toString());
                 return;
             }
@@ -421,8 +421,8 @@ async function loadexercise(exhash) {
             let probtype = this.problemtypeinput.value;
             if (probtype == 'derivation') {
                 if (!window?.contextSettings?.system) {
-                    errormessage(tr('Cannot create derivation exercise ' +
-                        'if no deductive system set in settings.'));
+                    errormessage('Cannot create derivation exercise ' +
+                        'if no deductive system set in settings.');
                     return;
                 }
                 probtype = 'derivation-' + window.contextSettings.system;
@@ -462,8 +462,8 @@ async function loadexercise(exhash) {
             this.exblock.renumberProblemSets();
         }, 'Remove problem set', 'remove', 'removing');
         theDialog.psc = psc;
-        theDialog.maindiv.innerHTML = 'Do you really wish to remove ' +
-            'this problem set? This cannot be undone.';
+        theDialog.maindiv.innerHTML = tr('Do you really wish to remove ' +
+            'this problem set? This cannot be undone.');
         theDialog.exblock = this;
     }
     const btndiv = addelem('div', exdiv, {
@@ -699,7 +699,7 @@ mainloadfns.settingsmain = async function() {
     // deductive system choice
     const sysrow = addelem('tr', tbdy);
     const syslbl = addelem('td', sysrow, {
-        innerHTML: 'Deductive system'
+        innerHTML: tr('Deductive system')
     });
     const syscell = addelem('td', sysrow);
     const sysinput = addelem('select', syscell, {
@@ -757,7 +757,7 @@ mainloadfns.settingsmain = async function() {
             query: 'savecontextsettings',
             contextSettings
         });
-        btn.innerHTML = 'save';
+        btn.innerHTML = tr('save');
         if (!resp) {
             btn.disabled = false;
             return;
@@ -987,9 +987,10 @@ mainloadfns.studentsmain = async function() {
                     innerHTML: '<span class="material-symbols-outlined">' +
                         'restart_alt</span>',
                     classes: ['resetbutton'],
-                    title: tr('click to reset exercise')
+                    title: tr('click to reset exercise'),
                     myexnum: exnum,
                     myuserid: userid,
+                    myfamily: userinfo?.family ?? false,
                     onclick: function() {
                         showdialog(async function(){
                             const req = {
@@ -998,7 +999,22 @@ mainloadfns.studentsmain = async function() {
                                 extexnum: this.exnum
                             }
                             const resetresp = await instructorquery(req);
+                            if (!resetresp) { return; }
+                            const btn = this.resetbtn;
+                            btn.classList.add('disabled');
+                            btn.title = tr('already reset');
                         }, 'Reset exercise', 'reset', 'resetting');
+                        addelem('div', theDialog.maindiv, {
+                            innerHTML: tr('Reset') + ' ' + this.myexnum +
+                                ' ' + tr('for') +  ((this.myfamily) ?
+                                this.myfamily : this.myuserid) + '? (' +
+                                tr('Warning: this will eliminate all ' +
+                                    'progress made.') + ')',
+
+                        });
+                        theDialog.userid = this.myuserid;
+                        theDialog.exnum = this.myexnum;
+                        theDialog.resetbtn = this;
                     }
                 });
 
@@ -1196,30 +1212,30 @@ function showdialog(fn, htext = '', blabel = 'confirm', bwait = 'wait') {
     theDialog.closebtn = addelem('div', theDialog.hdr, {
         innerHTML: '<span class="material-symbols-outlined">close</span>',
         classes: ['closebutton'],
-        title: 'close dialog',
+        title: tr('close dialog'),
         onclick: function() { theDialog.close(); }
     });
     if (htext != '') {
         theDialog.hdrspan = addelem('span', theDialog.hdr, {
-            innerHTML: htext
+            innerHTML: tr(htext)
         });
     }
     theDialog.fn = fn;
     theDialog.cancelbtn = addelem('button', theDialog.ftr, {
         type: 'button',
-        innerHTML: 'cancel',
+        innerHTML: tr('cancel'),
         onclick: function() { theDialog.close(); }
     });
     theDialog.confirmbutton = addelem('button', theDialog.ftr, {
         type: 'button',
-        innerHTML: blabel,
+        innerHTML: tr(blabel),
         loadtext: bwait,
         origtext: blabel,
         onclick: async function() {
             this.innerHTML = '<span class="material-symbols-outlined ' +
-                'spinning">sync</span> ' + this.loadtext + ' …';
+                'spinning">sync</span> ' + tr(this.loadtext) + ' …';
             await theDialog.fn();
-            this.innerHTML = this.origtext;
+            this.innerHTML = tr(this.origtext);
             theDialog.close();
         }
     });
