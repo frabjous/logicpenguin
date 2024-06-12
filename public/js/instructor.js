@@ -45,32 +45,40 @@ function addExerciseItem(exnum, exinfo) {
     const duetimeinfo = addelem('span', duetimepart, {
         innerHTML: timerinfo
     });
-    const savablepart = addelem('div', exinfodiv, { classes: ['exinfopart'] });
+    const savablepart = addelem('div', exinfodiv, {
+        classes: ['exinfopart']
+    });
     const savablelabel = addelem('span', savablepart, {
         innerHTML: '<span class="material-symbols-outlined">save</span>' +
             tr('Savable') + ': '
     });
     const savableinfo = addelem('span', savablepart, {
-        innerHTML: ((("savable" in exinfo) && (exinfo.savable)) ? 'yes' : 'no')
+        innerHTML: ((("savable" in exinfo) && (exinfo.savable))
+            ? 'yes' : 'no')
     });
 
-    const servergradedpart = addelem('div', exinfodiv, { classes: ['exinfopart'] });
+    const servergradedpart = addelem('div', exinfodiv, {
+        classes: ['exinfopart']
+    });
     const servergradedlabel = addelem('span', servergradedpart, {
         innerHTML: '<span class="material-symbols-outlined">dns</span>' +
             tr('Server graded') + ': '
     });
     const servergradedinfo = addelem('span', servergradedpart, {
-        innerHTML: ((("servergraded" in exinfo) && (exinfo.servergraded)) ? 'yes' : 'no')
+        innerHTML: ((("servergraded" in exinfo)
+            && (exinfo.servergraded)) ? 'yes' : 'no')
     });
-    const probsetpart = addelem('div', exinfodiv, { classes: ['exinfopart'] });
+    const probsetpart = addelem('div', exinfodiv, {
+        classes: ['exinfopart']
+    });
     const numsets = (exinfo?.problemsets?.length ?? 0);
     let pseticon = 'filter_' + numsets.toString();
     if (numsets == 0) { pseticon = 'filter_none'; }
     if (numsets > 9) { pseticon = 'filter_9_plus'; }
     const probsetlabel = addelem('span', probsetpart, {
         innerHTML: '<span class="material-symbols-outlined">' + pseticon +
-            '</span>' + ((numsets != 1) ? tr('Problem sets') : tr('Problem set')) +
-            ' (' + numsets.toString()  + '): '
+            '</span>' + ((numsets != 1) ? tr('Problem sets') :
+            tr('Problem set')) + ' (' + numsets.toString()  + '): '
     });
     const ptypes = {};
     for (const pset of exinfo?.problemsets) {
@@ -110,7 +118,8 @@ function addExerciseItem(exnum, exinfo) {
         classes: ['deleteexercise'],
         title: tr('delete this exercise'),
         myexnum: exnum,
-        innerHTML: '<span class="material-symbols-outlined">delete_forever</span>',
+        innerHTML: '<span class="material-symbols-outlined">' +
+            'delete_forever</span>',
         onclick: function() {
             showdialog(async function() {
                 const req = {
@@ -174,7 +183,8 @@ async function editorquery(req = {}) {
 
 // setting the message area at the top to an error message
 function errormessage(msg) {
-    makemessage('error', '<span class="material-symbols-outlined">emergency_home</span> <span class="errortitle">' +
+    makemessage('error', '<span class="material-symbols-outlined">' +
+        'emergency_home</span> <span class="errortitle">' +
         tr('ERROR') + '</span>: ' + tr(msg));
 }
 
@@ -200,7 +210,8 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
     const snlabeld = addelem('td', snrow);
     const snlabel = addelem('label', snlabeld, {
         innerHTML: 'Short name',
-        title: 'The short name occurs as part of the URL and should only consist of letters and digits.',
+        title: tr('The short name occurs as part of the URL and ' +
+            'should only consist of letters and digits.'),
         htmlFor: idbase + '-exinfoform-shortname'
     });
     const sncell = addelem('td', snrow);
@@ -324,7 +335,8 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
 
 // setting the message area at the top to a informational message
 function infomessage(msg) {
-    makemessage('info', '<span class="material-symbols-outlined">info</span> ' + tr(msg));
+    makemessage('info', '<span class="material-symbols-outlined">' +
+        'info</span> ' + tr(msg));
 }
 
 async function loadexercise(exhash) {
@@ -354,8 +366,10 @@ async function loadexercise(exhash) {
     const resp = await editorquery(req);
     exdiv.innerHTML = '';
     if (!resp) { return; }
-    if (!("exinfo" in resp) || !("answers" in resp) || !("problems" in resp)) {
-        errormessage(tr('Invalid response from server when requesting information about exercise.'));
+    if (!("exinfo" in resp) || !("answers" in resp) ||
+        !("problems" in resp)) {
+        errormessage(tr('Invalid response from server when ' +
+            'requesting information about exercise.'));
         return;
     }
     const exinfoholder = addelem('div', exdiv, {
@@ -365,7 +379,8 @@ async function loadexercise(exhash) {
     const pshdr = addelem('h2', exdiv, { innerHTML: tr('Problem sets') });
     exblock.psetdiv = addelem('div', exdiv);
     // TODO: more here
-    exblock.addProbSetCreator = async function(probsetinfo, problems, answers, putbefore = false) {
+    exblock.addProbSetCreator = async function
+        (probsetinfo, problems, answers, putbefore = false) {
         const problemtype = probsetinfo.problemtype;
         let shproblemtype = problemtype;
         if (shproblemtype.substr(0,11) == 'derivation-') {
@@ -374,16 +389,20 @@ async function loadexercise(exhash) {
         if (!(shproblemtype in problemSetCreators)) {
             try {
                 LP.loadCSS(problemtype);
-                const imported = await import('/js/creators/' + shproblemtype + '.js');
+                const imported = await import('/js/creators/'
+                    + shproblemtype + '.js');
                 problemSetCreators[shproblemtype] = imported.default;
             } catch(err) {
-                errormessage(tr('ERROR loading script for creating problem type') +
-                    ' ' + shproblemtype + ': ' + err.toString());
+                errormessage(tr('ERROR loading script for creating ' +
+                    'problem type') + ' ' + shproblemtype + ': ' +
+                    err.toString());
                 return;
             }
         }
-        const problemsetcreator = addelem(shproblemtype + '-creator', this.psetdiv);
-        problemsetcreator.makeProblemSetCreator(probsetinfo, problems, answers);
+        const problemsetcreator =
+            addelem(shproblemtype + '-creator', this.psetdiv);
+        problemsetcreator.makeProblemSetCreator(
+            probsetinfo, problems, answers);
         problemsetcreator.myexblock = this;
         if (putbefore) {
             putbefore.parentNode.insertBefore(problemsetcreator, putbefore);
@@ -394,14 +413,16 @@ async function loadexercise(exhash) {
         const probsetinfo = resp.exinfo.problemsets[i];
         const setproblems = resp.problems[i];
         const setanswers = resp.answers[i];
-        await exblock.addProbSetCreator(probsetinfo, setproblems, setanswers, false);
+        await exblock.addProbSetCreator(probsetinfo,
+            setproblems, setanswers, false);
     }
     exblock.addPSCDialog = function(putbefore) {
         showdialog(async function() {
             let probtype = this.problemtypeinput.value;
             if (probtype == 'derivation') {
                 if (!window?.contextSettings?.system) {
-                    errormessage(tr('Cannot create derivation exercise if no deductive system set in settings.'));
+                    errormessage(tr('Cannot create derivation exercise ' +
+                        'if no deductive system set in settings.'));
                     return;
                 }
                 probtype = 'derivation-' + window.contextSettings.system;
@@ -467,7 +488,8 @@ async function loadexercise(exhash) {
             const allproblems = [];
             const allanswers = [];
             const exdata = exblock.exinfoform.gatherinfo();
-            const pscpsc = exblock.getElementsByClassName("problemsetcreator");
+            const pscpsc =
+                exblock.getElementsByClassName("problemsetcreator");
             for (const psc of pscpsc) {
                 const [info, problems, answers] = psc.gatherInfo();
                 if (!("problemsets" in exdata.exinfo)) {
@@ -658,10 +680,12 @@ mainloadfns.settingsmain = async function() {
         );
         if (notation?.quantifierForm.indexOf('?') != -1) {
             notationdisplay += notation.quantifierForm.replace(/Q\?/g,'') +
-                ' ' + notation.quantifierForm.replace(/Q\?/g, notation?.EXISTS ?? '');
+                ' ' + notation.quantifierForm.replace(/Q\?/g,
+                notation?.EXISTS ?? '');
         } else {
-            notationdisplay += notation.quantifierForm.replace(/Q/g, notation.FORALL) +
-                ' ' + notation.quantifierForm.replace(/Q/g, notation.EXISTS)
+            notationdisplay += notation.quantifierForm.replace(/Q/g,
+                notation.FORALL) + ' ' + notation.quantifierForm
+                .replace(/Q/g, notation.EXISTS);
         }
         const notopt = addelem('option', notinput, {
             value: notationname,
