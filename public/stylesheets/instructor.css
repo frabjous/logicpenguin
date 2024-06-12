@@ -249,16 +249,25 @@
     color: var(--lpgray3);
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a {
     color: var(--lpblue);
     cursor: pointer;
 }
 
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton:hover span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a:hover span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a:hover {
     color: var(--lpcyan);
 }
+
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton.disabled span.material-symbols-outlined,
+.logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton.disabled:hover span.material-symbols-outlined {
+    color: var(--lpgray3);
+    cursor: default;
+}
+
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton {

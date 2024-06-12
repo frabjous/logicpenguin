@@ -982,42 +982,48 @@ mainloadfns.studentsmain = async function() {
                 scorediv.title = '';
                 scorediv.onclick = function(){}
             }
-            if ("launch" in exinfo && exinfo.launch) {
-                const resetbtn = addelem('span', btndiv, {
-                    innerHTML: '<span class="material-symbols-outlined">' +
-                        'restart_alt</span>',
-                    classes: ['resetbutton'],
-                    title: tr('click to reset exercise'),
-                    myexnum: exnum,
-                    myuserid: userid,
-                    myfamily: userinfo?.family ?? false,
-                    onclick: function() {
-                        showdialog(async function(){
-                            const req = {
-                                query: 'resetexercise',
-                                extuserid: this.userid,
-                                extexnum: this.exnum
-                            }
-                            const resetresp = await instructorquery(req);
-                            if (!resetresp) { return; }
-                            const btn = this.resetbtn;
-                            btn.classList.add('disabled');
-                            btn.title = tr('already reset');
-                        }, 'Reset exercise', 'reset', 'resetting');
-                        addelem('div', theDialog.maindiv, {
-                            innerHTML: tr('Reset') + ' ' + this.myexnum +
-                                ' ' + tr('for') +  ((this.myfamily) ?
-                                this.myfamily : this.myuserid) + '? (' +
-                                tr('Warning: this will eliminate all ' +
-                                    'progress made.') + ')',
+            const resetbtn = addelem('span', btndiv, {
+                innerHTML: '<span class="material-symbols-outlined">' +
+                    'restart_alt</span>',
+                classes: ['resetbutton'],
+                title: tr('click to reset exercise'),
+                myexnum: exnum,
+                myuserid: userid,
+                myfamily: userinfo?.family ?? false,
+                disableme: function() {
+                    this.classList.add('disabled');
+                    this.title = tr('nothing to reset')
+                },
+                onclick: function() {
+                    if (this.classList.contains('disabled')) { return; }
+                    showdialog(async function() {
+                        const req = {
+                            query: 'resetexercise',
+                            resetuserid: this.userid,
+                            resetexnum: this.exnum
+                        }
+                        const resetresp = await instructorquery(req);
+                        if (!resetresp) { return; }
+                        const btn = this.resetbtn;
+                        if (btn?.disableme) { btn.disableme(); }
+                        btn.title = tr('already reset');
+                    }, 'Reset exercise', 'reset', 'resetting');
+                    addelem('div', theDialog.maindiv, {
+                        innerHTML: tr('Reset') + ' ' + this.myexnum +
+                            ' ' + tr('for') + ' ' + ((this.myfamily) ?
+                            this.myfamily : this.myuserid) + '? (' +
+                            tr('Warning: this will eliminate all ' +
+                                'progress made.') + ')',
 
-                        });
-                        theDialog.userid = this.myuserid;
-                        theDialog.exnum = this.myexnum;
-                        theDialog.resetbtn = this;
-                    }
-                });
+                    });
+                    theDialog.userid = this.myuserid;
+                    theDialog.exnum = this.myexnum;
+                    theDialog.resetbtn = this;
+                }
+            });
 
+            if (!("launch" in exinfo) || (!exinfo.launch)) {
+                resetbtn.disableme();
             }
             const deadlinebtn = addelem('span', btndiv, {
                 innerHTML: '<span class="material-symbols-outlined">' +
