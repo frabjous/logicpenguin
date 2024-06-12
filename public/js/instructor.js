@@ -126,7 +126,7 @@ function addExerciseItem(exnum, exinfo) {
                     query: 'deleteexercise',
                     exnum: this.exnum
                 }
-                const resp = editorquery(req);
+                const resp = instructorquery(req);
                 if (!resp) { return; }
                 byid('exercisesmain').myexlist.update();
             }, 'Delete exercise', 'delete', 'deleting');
@@ -148,7 +148,7 @@ window.clearmessage = clearmessage;
 
 // function for interacting with server; better and more modern
 // than current student-server interaction
-async function editorquery(req = {}) {
+async function instructorquery(req = {}) {
     req.reqtype = 'instructorrequest';
     req.consumerkey = window.consumerkey;
     req.contextid = window.contextid;
@@ -363,7 +363,7 @@ async function loadexercise(exhash) {
     }
     exdiv.innerHTML = '<span class="material-symbols-outlined ' +
         'spinning">sync</span> loading …';
-    const resp = await editorquery(req);
+    const resp = await instructorquery(req);
     exdiv.innerHTML = '';
     if (!resp) { return; }
     if (!("exinfo" in resp) || !("answers" in resp) ||
@@ -509,7 +509,7 @@ async function loadexercise(exhash) {
             }
             this.innerHTML = '<span class="material-symbols-outlined ' +
                 'spining">sync</span> saving …';
-            const resp = await editorquery(req);
+            const resp = await instructorquery(req);
             this.innerHTML = tr('save exercise');
             if (!resp) { return; }
             infomessage('Exercise saved.');
@@ -580,7 +580,7 @@ mainloadfns.settingsmain = async function() {
         return false;
     }
     // get systems from server
-    let systemsresponse = await editorquery({ query: 'getsystemnames' });
+    let systemsresponse = await instructorquery({ query: 'getsystemnames' });
     if (!systemsresponse) { return false; }
     const systems = systemsresponse?.systems ?? [];
     // section header
@@ -708,8 +708,8 @@ mainloadfns.settingsmain = async function() {
         onchange: function() {
             this.mybtn.disabled = false;
             clearmessage();
-            if ((this.value != '') &&
-                (this.myninput.value == '' || this.myninput.value == 'none')) {
+            if ((this.value != '') && (this.myninput.value == '' ||
+                this.myninput.value == 'none')) {
                 this.myninput.value = this.value;
             }
         }
@@ -743,15 +743,20 @@ mainloadfns.settingsmain = async function() {
         contextSettings.instructor = this.insinput.value;
         contextSettings.notation = this.notinput.value;
         contextSettings.system = this.sysinput.value;
-        if ((contextSettings.system != 'none' && contextSettings.system != '') &&
-            (contextSettings.notation == 'none' || contextSettings.notation == '')) {
+        if ((contextSettings.system != 'none' &&
+            contextSettings.system != '') &&
+            (contextSettings.notation == 'none' ||
+            contextSettings.notation == '')) {
             this.notinput.classList.add('invalid');
             return;
         }
         btn.disabled = true;
-        btn.innerHTML = '<span class="material-symbols-outlined spinning">' +
-            'sync</span> saving …';
-        const resp = editorquery({ query: 'savecontextsettings', contextSettings });
+        btn.innerHTML = '<span class="material-symbols-outlined ' +
+            'spinning">sync</span> saving …';
+        const resp = instructorquery({
+            query: 'savecontextsettings',
+            contextSettings
+        });
         btn.innerHTML = 'save';
         if (!resp) {
             btn.disabled = false;
@@ -770,7 +775,7 @@ mainloadfns.studentsmain = async function() {
     // clear out
     m.innerHTML = '';
     // get data on students
-    const resp = await editorquery({ query: 'allstudentinfo' });
+    const resp = await instructorquery({ query: 'allstudentinfo' });
     if (!resp) { return false; }
     const hdr = addelem('h2', m, { innerHTML: tr('Students') });
     const tbl = addelem('table', m, { classes: ['studentstable'] });
@@ -863,7 +868,8 @@ mainloadfns.studentsmain = async function() {
         if (shortuserid != userid) {
             shortuserid += '…';
         }
-        nch += '</div><div><strong title="' + userid + '">(' + shortuserid + ')</strong></div>';
+        nch += '</div><div><strong title="' + userid + '">(' +
+            shortuserid + ')</strong></div>';
         namecell.innerHTML = nch;
         // cell for each exericse
         for (const exnum of exnums) {
@@ -879,14 +885,16 @@ mainloadfns.studentsmain = async function() {
                 myfamily: userinfo?.family ?? false,
                 onclick: function() {
                     showdialog(async function() {
-                        const newscore = (parseFloat(this.overridescoreinput.value) / 100);
+                        const newscore = (parseFloat(
+                            this.overridescoreinput.value) / 100
+                        );
                         const req = {
                             query: 'overridescore',
                             scoreuserid: this.userid,
                             scoreexnum: this.exnum,
                             newscore: newscore
                         }
-                        const orresp = await editorquery(req);
+                        const orresp = await instructorquery(req);
                         if (!orresp) { return; }
                         const scorediv = this.scorediv;
                         scorediv.myscore = newscore;
@@ -897,21 +905,25 @@ mainloadfns.studentsmain = async function() {
                         }
                         scorediv.classList.add('overridden');
                         if (scorediv.title.indexOf('(overridden) ') == -1) {
-                            scorediv.title = '(overridden) ' + scorediv.title;
+                            scorediv.title = '(overridden) '
+                                + scorediv.title;
                         }
 
                     }, 'Override score', 'override', 'overriding');
                     addelem('div', theDialog.maindiv, {
                         innerHTML: 'Override ' + this.myexnum + ' for ' +
-                            ((this.myfamily) ? this.myfamily : this.myuserid)
+                            ((this.myfamily) ?
+                                this.myfamily : this.myuserid)
                     });
                     const scoreholder = addelem('div', theDialog.maindiv, {
                         classes: ['overridescoreholder']
                     });
-                    theDialog.overridescoreinput = addelem('input', scoreholder, {
-                        type: 'number',
-                        step: '0.1',
-                        value: (((this?.myscore * 100).toFixed(1).toString()) ?? '0')
+                    theDialog.overridescoreinput =
+                        addelem('input', scoreholder, {
+                            type: 'number',
+                            step: '0.1',
+                            value: (((this?.myscore * 100)
+                                .toFixed(1).toString()) ?? '0')
                     });
                     addelem('span', scoreholder, { innerHTML: '%' });
                     theDialog.userid = this.myuserid;
@@ -951,9 +963,11 @@ mainloadfns.studentsmain = async function() {
             });
             let llh = '<span class="material-symbols-outlined">' +
                 launchicon + '</span>';
+            /* OLD: save icon if info saved
             if (exinfo?.saved) {
                 llh += '<span class="material-symbols-outlined">save</span>'
             }
+            */
             launchlink.innerHTML = llh;
             if (launchtag == 'a') {
                 launchlink.href = window.location.protocol + '//' +
@@ -968,11 +982,34 @@ mainloadfns.studentsmain = async function() {
                 scorediv.title = '';
                 scorediv.onclick = function(){}
             }
+            if ("launch" in exinfo && exinfo.launch) {
+                const resetbtn = addelem('span', btndiv, {
+                    innerHTML: '<span class="material-symbols-outlined">' +
+                        'restart_alt</span>',
+                    classes: ['resetbutton'],
+                    title: tr('click to reset exercise')
+                    myexnum: exnum,
+                    myuserid: userid,
+                    onclick: function() {
+                        showdialog(async function(){
+                            const req = {
+                                query: 'resetexercise',
+                                extuserid: this.userid,
+                                extexnum: this.exnum
+                            }
+                            const resetresp = await instructorquery(req);
+                        }, 'Reset exercise', 'reset', 'resetting');
+                    }
+                });
+
+            }
             const deadlinebtn = addelem('span', btndiv, {
                 innerHTML: '<span class="material-symbols-outlined">' +
                     'timer</span>',
                 classes: ['extensionbutton'],
-                title: 'due ' + (new Date(resp.exercises[exnum])).toLocaleString() + '; click to grant extension',
+                title: tr('due') + ' ' + (new Date(resp.exercises[exnum]))
+                    .toLocaleString() + '; ' +
+                    tr('click to grant extension'),
                 duetime: resp.exercises[exnum],
                 extensiontime: -1,
                 myexnum: exnum,
@@ -984,29 +1021,33 @@ mainloadfns.studentsmain = async function() {
                             query: 'grantextension',
                             extuserid: this.userid,
                             extexnum: this.exnum,
-                            ts: (new Date(this.extensiontimeinput.value)).getTime()
+                            ts: (new Date(this.extensiontimeinput.value))
+                                .getTime()
                         }
-                        const extresp = await editorquery(req);
+                        const extresp = await instructorquery(req);
                         if (!extresp) { return; }
                         const btn = this.extensionbutton;
                         btn.classList.add('activeextension');
-                        btn.title = 'extended till ' +
+                        btn.title = tr('extended till') + ' ' +
                             (new Date(req.ts)).toLocaleString() +
-                            ' (click to change)';
+                            ' (' + tr('click to change') + ')';
                         btn.extensiontime = req.ts;
 
                     }, 'Grant extension', 'confirm', 'granting');
                     addelem('div', theDialog.maindiv, {
-                        innerHTML: 'Extend ' + this.myexnum + ' for ' +
-                            ((this.myfamily) ? this.myfamily : this.myuserid) +
-                            ' until …'
+                        innerHTML: tr('Extend') + ' ' + this.myexnum +
+                            ' ' + tr('for') + ' ' +
+                            ((this.myfamily) ? this.myfamily :
+                                this.myuserid) + ' ' + tr('until') + '…'
                     });
                     const dtholder = addelem('div', theDialog.maindiv, {
                         classes: ['datetimeinputholder']
                     });
-                    theDialog.extensiontimeinput = addelem('input', dtholder, {
+                    theDialog.extensiontimeinput =
+                        addelem('input', dtholder, {
                         type: 'datetime-local',
-                        value: ((this.extensiontime != -1) ? tsToInp(this.extensiontime) :
+                        value: ((this.extensiontime != -1) ?
+                            tsToInp(this.extensiontime) :
                             tsToInp(this.duetime))
                     });
                     theDialog.userid = this.myuserid;
@@ -1016,9 +1057,9 @@ mainloadfns.studentsmain = async function() {
             });
             if (exinfo?.extension) {
                 deadlinebtn.classList.add('activeextension');
-                deadlinebtn.title = 'extended till ' +
+                deadlinebtn.title = tr('extended till') + ' ' +
                     (new Date(exinfo.extension)).toLocaleString() +
-                    ' (click to change)';
+                    ' (' + tr('click to change') + ')';
                 deadlinebtn.extensiontime = exinfo.extension;
             }
         }
@@ -1058,7 +1099,7 @@ mainloadfns.exercisesmain = async function() {
                     query: 'exerciseinfo',
                     exdata: exdata
                 }
-                const resp = await editorquery(req);
+                const resp = await instructorquery(req);
                 if (!resp) { return; }
                 byid('exercisesmain').myexlist.update();
                 //switch to viewing new exercise
@@ -1104,7 +1145,8 @@ function renumberProblemSets(exhash) {
     for (let i=0; i<pscpsc.length; i++) {
         const psc = pscpsc[i];
         if (psc?.pslabel) {
-            psc.pslabel.innerHTML = tr('Problem set') + ' ' + (i+1).toString();
+            psc.pslabel.innerHTML = tr('Problem set') + ' ' +
+                (i+1).toString();
         }
         if (psc?.moveAboveBtn) {
             // remove old options
@@ -1274,7 +1316,7 @@ async function updateExerciseList() {
         li.parentNode.removeChild(li);
     }
     // fetch info
-    const resp = await editorquery({ query: 'allexerciseinfo' });
+    const resp = await instructorquery({ query: 'allexerciseinfo' });
     if (!resp) { return false; }
     // function to add exercises
     this.addExerciseItem = addExerciseItem;
