@@ -349,6 +349,68 @@ qr.overridescore = async function(req) {
     return { success: true };
 }
 
+qr.resetexercise = async function(req) {
+    for (const reqqy of ["consumerkey", "contextid", "resetuserid",
+        "resetexnum"]) {
+        if (!(reqqy in req)) {
+            return { error: true, errMsg: 'Insufficient information ' +
+                'provided to reset exercise.' }
+        }
+    }
+    const userdir = lpdata.userdir(req.consumerkey, req.contextid,
+        req.resetuserid, false);
+    if (!userdir) {
+        return { error: true, errMsg: 'Cannot find directory for user.' }
+    }
+    const exnum = req.resetexnum;
+    const answersfile = path.join(userdir, 'answers', exnum + '.json');
+    const problemsfile = path.join(userdir, 'problems', exnum + '.json');
+    const savedfile = path.join(userdir, 'saved', exnum + '.json');
+    const resetdir = path.join(userdir, 'resets');
+    if (!lpfs.ensuredir(resetdir)) {
+        return { error: true, errMsg: 'Could not create reset directory.' }
+    }
+    const ts = (new Date()).getTime().toString();
+    if (lpfs.isfile(answersfile)) {
+    console.log("HERE")
+        if (!lpfs.rename(answersfile,
+            path.join(
+                resetdir, 'reset-' + exnum + '-' + ts + '-answers.json'
+            )
+        )) {
+            return {
+                error: true,
+                errMsg: 'Could not back up old answers file.'
+            }
+        }
+    }
+    if (lpfs.isfile(problemsfile)) {
+        if (!lpfs.rename(problemsfile,
+            path.join(
+                resetdir, 'reset-' + exnum + '-' + ts + '-problems.json'
+            )
+        )) {
+            return {
+                error: true,
+                errMsg: 'Could not back up old problems file.'
+            }
+        }
+    }
+    if (lpfs.isfile(savedfile)) {
+        if (!lpfs.rename(savedfile,
+            path.join(
+                resetdir, 'reset-' + exnum + '-' + ts + '-saved.json'
+            )
+        )) {
+            return {
+                error: true,
+                errMsg: 'Could not back up old saved answers file.'
+            }
+        }
+    }
+    return { success: true };
+}
+
 qr.savecontextsettings = async function(req) {
     if (!("contextSettings" in req)) {
         return {

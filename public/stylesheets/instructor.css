@@ -201,6 +201,7 @@
 .logicpenguin main #studentsmain table.studentstable tbody td {
     text-align: right;
     padding: 0.2rem 0.4rem 0.2rem 0;
+    white-space: nowrap;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore {
