@@ -49,7 +49,7 @@ const hardegreeRules = {
     "UD"  : { pred: true, showrule: true, forms: [ { conc: "∀xAx", subst: {"x":"n"}, subderivs: [ { "needs": ["An"], wantsasnew: ["n"], subshowrequired: true } ] } ] },
     "∃D"  : { pred: true, showrule: true, isnew: true, forms: [ { conc: "∃xAx", subderivs: [ { "needs": ["✖"], "allows": "~∃xAx" } ] } ] },
     "=D" : { showrule: true, pred: true, identity: true, isnew: true, meinongian: true, hint: "Identity statements can be shown with =I and other rules." },
-    "≠D" : { showrule: true, forms: [ { conc: "a ≠ b", subderivs: [ { "needs": ["✖"], "allows": "a = b" } ] } ], isnew: true },
+    "≠D" : { identity: true, showrule: true, forms: [ { conc: "a ≠ b", subderivs: [ { "needs": ["✖"], "allows": "a = b" } ] } ], isnew: true },
     "~D"  : { showrule: true, forms: [ { conc: "~A", subderivs: [ { "needs": ["✖"], "allows": "A" } ] } ], isnew: true, hidden: true },
     "∨D"  : { showrule: true, forms: [ { conc: "A ∨ B", subderivs: [ { "needs": ["✖"], "allows": "~(A ∨ B)" } ] } ], isnew: true, hidden: true },
     "Rep" : { isnew: true, hidden: true, forms: [ { prems: ["A"], conc: "A" } ] },
