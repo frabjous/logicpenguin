@@ -186,7 +186,7 @@ export default class DerivationHardegree extends DerivationExercise {
             if ((!identity) && rules[rule].identity) {
                 continue;
             }
-            if (ctr % ((identity) ? 9 : 8) == 0) {
+            if (ctr % ((identity) ? 10 : 8) == 0) {
                 tre = addelem('tr', tbody, {});
             }
             const td = addelem('td', tre, {
