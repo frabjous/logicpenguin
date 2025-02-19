@@ -43,27 +43,27 @@ if ("LOGIC_PENGUIN_DATA_DIR" in process.env) {
 
 if ("LOGIC_PENGUIN_DEFAULT_CONSUMER" in process.env) {
     appsettings.defaultconsumer =
-        process.env. LOGIC_PENGUIN_DEFAULT_CONSUMER;
+        process.env.LOGIC_PENGUIN_DEFAULT_CONSUMER;
 }
 
 if ("LOGIC_PENGUIN_DEFAULT_CONTEXT" in process.env) {
     appsettings.defaultcontext =
-        process.env. LOGIC_PENGUIN_DEFAULT_CONTEXT;
+        process.env.LOGIC_PENGUIN_DEFAULT_CONTEXT;
 }
 
 if ("LOGIC_PENGUIN_DEFAULT_STUDENT" in process.env) {
     appsettings.defaultstudent =
-        process.env. LOGIC_PENGUIN_DEFAULT_STUDENT;
+        process.env.LOGIC_PENGUIN_DEFAULT_STUDENT;
 }
 
 if ("LOGIC_PENGUIN_DEFAULT_NOTATION" in process.env) {
     appsettings.defaultnotation =
-        process.env. LOGIC_PENGUIN_DEFAULT_NOTATION;
+        process.env.LOGIC_PENGUIN_DEFAULT_NOTATION;
 }
 
 if ("LOGIC_PENGUIN_DEFAULT_URL" in process.env) {
     appsettings.defaulturl =
-        process.env. LOGIC_PENGUIN_DEFAULT_URL;
+        process.env.LOGIC_PENGUIN_DEFAULT_URL;
 }
 
 if ("LOGIC_PENGUIN_GRACEPERIOD" in process.env) {

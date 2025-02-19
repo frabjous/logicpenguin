@@ -1138,7 +1138,11 @@ export class SubDerivation extends HTMLElement {
     }
 
     restoreLine(line, info) {
-        if (line?.jinput) { line.jinput.value = info.j; };
+        if (line?.jinput) {
+          // we run justification fix in case was saved before
+          // was auto-fixed
+          line.jinput.value = JustificationInput.justFix(info.j);
+        };
         if (line?.input) { line.input.value = info.s; };
         if (info?.n && info?.n != '' && line?.numbox) {
             line.numbox.innerHTML = info.n;
