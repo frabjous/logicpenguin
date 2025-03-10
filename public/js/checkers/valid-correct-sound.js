@@ -8,7 +8,7 @@
 
 // determine soundness from the other characteristics
 function soundnesswhen(valid, correct) {
-    const issound = ((valid === true) && (correct === true));
+    let issound = ((valid === true) && (correct === true));
     if ((valid) && (correct === -1)) {
         issound = -1;
     }
