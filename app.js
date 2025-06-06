@@ -109,6 +109,7 @@ app.use(express.static('public'));
 
 // exercise launch request
 app.post('/launch/:exnum', async function(req, res) {
+  console.log('x',req.originalUrl, req.url)
   // check consumerkey and check against consumer secret
   const consumerkey = req.body?.oauth_consumer_key ?? false;
   if (!consumerkey) {
