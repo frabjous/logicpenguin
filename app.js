@@ -109,7 +109,17 @@ app.use(express.static('public'));
 
 // exercise launch request
 app.post('/launch/:exnum', async function(req, res) {
-  console.log('x',req.originalUrl, req.url)
+  // use hostname of proxy
+  if (req.headers['x-forwarded-host'] &&
+    req.headers.host != req.headers['x-forwarded-host']) {
+    req.headers.host = req.headers['x-forwarded-host'];
+  }
+  // use pre-proxy protocol
+  if (req.headers['x-forwarded-proto'] &&
+    req.protocol != req.headers['x-forwarded-proto']) {
+      req.protocol = req.headers['x-forwarded-proto'];
+  }
+  console.log('---->', req.headers.host)
   // check consumerkey and check against consumer secret
   const consumerkey = req.body?.oauth_consumer_key ?? false;
   if (!consumerkey) {
