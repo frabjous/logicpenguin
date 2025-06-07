@@ -69,7 +69,8 @@ app.use(morgan(
 ));
 
 // use original url when behind a proxy
-app.enable('trust proxy', true);
+app.enable('trust proxy');
+app.set('trust proxy', true);
 
 // redirect http to https if both are enabled
 if (httpsenabled && httpenabled) {
@@ -109,6 +110,7 @@ app.use(express.static('public'));
 
 // exercise launch request
 app.post('/launch/:exnum', async function(req, res) {
+
   // use hostname of proxy
   if (req.headers['x-forwarded-host'] &&
     req.headers.host != req.headers['x-forwarded-host']) {
@@ -119,7 +121,7 @@ app.post('/launch/:exnum', async function(req, res) {
     req.protocol != req.headers['x-forwarded-proto']) {
       req.protocol = req.headers['x-forwarded-proto'];
   }
-  console.log('---->', req.headers.host)
+
   // check consumerkey and check against consumer secret
   const consumerkey = req.body?.oauth_consumer_key ?? false;
   if (!consumerkey) {
