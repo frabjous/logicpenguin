@@ -351,6 +351,19 @@ process.on('SIGTERM', () => {
     });
   }
 });
+process.on('SIGINT', () => {
+  debug('SIGINT signal received: closing HTTP/S server');
+  if (httpenabled) {
+    httpserver.close(() => {
+      debug('HTTP server closed')
+    });
+  }
+  if (httpsenabled) {
+    httpsserver.close(() => {
+      debug('HTTPS server closed')
+    });
+  }
+});
 
 // handle specific listen errors with friendly messages
 function onError(error) {
