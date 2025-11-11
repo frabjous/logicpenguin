@@ -2,30 +2,30 @@
 
 /* LogicPenguin font */
 @font-face {
-    font-family: LogicPenguin;
-    src: url("../font/LogicPenguin-Math.otf") format("opentype");
+  font-family: LogicPenguin;
+  src: url("../font/LogicPenguin-Math.otf") format("opentype");
 }
 
 /* simple animations */
 
 @keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(360deg);}
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
 }
 
 .logicpenguin .spinning {
-    animation: spin 3s infinite linear;
-    animation-direction: reverse;
+  animation: spin 3s infinite linear;
+  animation-direction: reverse;
 }
 
 @keyframes fade {
-    from {color:transparent;}
-    to {color:inherit;}
+  from {color:transparent;}
+  to {color:inherit;}
 }
 
 @keyframes flip {
-    from {transform:rotateX(0deg);}
-    to {transform:rotateX(180deg);}
+  from {transform:rotateX(0deg);}
+  to {transform:rotateX(180deg);}
 }
 
 /*//////////////////*/
@@ -33,96 +33,97 @@
 /*////////////////*/
 
 :root {
-    --lpblack:       #383a42;   --lpbgblack:   #282c34;
-    --lpred:         #e45649;   --lpbgred:     #f6d3d6;
-    --lpgreen:       #50a14f;   --lpbggreen:   #e0edd7;
-    --lpyellow:      #c18401;   --lpbgyellow:  #ecdab3;
-    --lpblue:        #0184bc;   --lpbgblue:    #d0e7fa;
-    --lpmagenta:     #a626a4;   --lpbgmagenta: #eed7f5;
-    --lpcyan:        #0997b3;   --lpbgcyan:    #cce9ed;
-    --lpwhite:       #fafafa;   --lpbgwhite:   #e4e5e6;
-    --lpgray1:       #464950;   --lpgray4:     #a0a2a5;
-    --lpgray2:       #64676d;   --lpgray5:     #bebfc1;
-    --lpgray3:       #828489;   --lpgray6:     #dcdddd;
+  --lpblack:       #383a42;   --lpbgblack:   #282c34;
+  --lpred:         #e45649;   --lpbgred:     #f6d3d6;
+  --lpgreen:       #50a14f;   --lpbggreen:   #e0edd7;
+  --lpyellow:      #c18401;   --lpbgyellow:  #ecdab3;
+  --lpblue:        #0184bc;   --lpbgblue:    #d0e7fa;
+  --lpmagenta:     #a626a4;   --lpbgmagenta: #eed7f5;
+  --lpcyan:        #0997b3;   --lpbgcyan:    #cce9ed;
+  --lpwhite:       #fafafa;   --lpbgwhite:   #e4e5e6;
+  --lpgray1:       #464950;   --lpgray4:     #a0a2a5;
+  --lpgray2:       #64676d;   --lpgray5:     #bebfc1;
+  --lpgray3:       #828489;   --lpgray6:     #dcdddd;
 }
 /*////////////////////////////////*/
 /* basic settings universal to LP */
 /*////////////////////////////////*/
 
 .logicpenguin {
-    all: revert-layer;
-    font-size: 20px;
-    font-family:
-        'Fira Sans', 'Fira Sans',
-        'LogicPenguin',
-        'Noto Sans', 'Noto Sans Math',
-        'FreeSans',
-        'Segoe UI',
-        'DejaVu Sans',
-        'Libertinus Sans',
-        'Libertinus Math',
-        'STIX', 'STIXGeneral',
-        'Cambria',
-        'Lucida Sans Unicode',
-        'Droid Sans', 'Droid Sans Fallback',
-        sans-serif;
-    background-color: var(--lpwhite);
-    color: var(--lpblack);
+  all: revert-layer;
+  font-size: 20px;
+  font-family:
+    'Fira Sans', 'Fira Sans',
+    'LogicPenguin',
+    'Noto Sans', 'Noto Sans Math',
+    'FreeSans',
+    'Segoe UI',
+    'DejaVu Sans',
+    'Libertinus Sans',
+    'Libertinus Math',
+    'STIX', 'STIXGeneral',
+    'Cambria',
+    'Lucida Sans Unicode',
+    'Droid Sans', 'Droid Sans Fallback',
+    sans-serif;
+  background-color: var(--lpwhite);
+  color: var(--lpblack);
 }
 
 .logicpenguin #savenotice {
-    margin-top: 4ex;
-    font-size: 90%;
-    color: var(--lpgray1);
+  margin-top: 4ex;
+  font-size: 90%;
+  color: var(--lpgray1);
 }
 
 .logicpenguin.symbolinsertwidget {
-    background-color: transparent;
-    z-index: 10;
+  background-color: transparent;
+  z-index: 10;
 }
 
 /* link color */
 .logicpenguin a,
 .logicpenguin a:link,
 .logicpenguin a:visited {
-    color: var(--lpblue);
+  color: var(--lpblue);
 }
 
 .logicpenguin a:hover,
 .logicpenguin a:link:hover,
 .logicpenguin a:visited:hover {
-    color: var(--lpcyan);
+  color: var(--lpcyan);
 }
 
 .logicpenguin a.fakebutton {
-    text-decoration: underline;
-    cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .logicpenguin a.fakebutton:hover {
-    color: var(--lpcyan);
+  color: var(--lpcyan);
 }
 
 .logicpenguin button {
-    font-family:
-        'Fira Sans', 'Fira Sans',
-        'LogicPenguin',
-        'Noto Sans', 'Noto Sans Math',
-        'FreeSans',
-        'Segoe UI',
-        'DejaVu Sans',
-        'Libertinus Sans',
-        'Libertinus Math',
-        'STIX', 'STIXGeneral',
-        'Cambria',
-        'Lucida Sans Unicode',
-        'Droid Sans', 'Droid Sans Fallback',
-        sans-serif;
+  font-family:
+    'Fira Sans', 'Fira Sans',
+    'LogicPenguin',
+    'Noto Sans', 'Noto Sans Math',
+    'FreeSans',
+    'Segoe UI',
+    'DejaVu Sans',
+    'Libertinus Sans',
+    'Libertinus Math',
+    'STIX', 'STIXGeneral',
+    'Cambria',
+    'Lucida Sans Unicode',
+    'Droid Sans', 'Droid Sans Fallback',
+    sans-serif;
 }
 
 /* use LogicPenguin font in symbolic contexts */
+.logicpenguin .math,
 .logicpenguin .symbolic {
-    font-family: 'LogicPenguin', 'Fira Sans',
+  font-family: 'LogicPenguin', 'Fira Sans',
     'Noto Sans', 'Noto Sans Math',
     'FreeSans',
     'Segoe UI Symbol', 'Segoe UI',
@@ -137,17 +138,17 @@
 
 /* material icons generally */
 .logicpenguin span.material-symbols-outlined {
-    cursor: default;
-    user-select: none;
+  cursor: default;
+  user-select: none;
 }
 
 /* hidden elements */
 .logicpenguin .hidden {
-    display: none !important;
+  display: none !important;
 }
 .logicpenguin .invisible {
-    visibility: hidden !important;
-    cursor: none !important;
+  visibility: hidden !important;
+  cursor: none !important;
 }
 
 /*////////////////////////////////*/
@@ -156,84 +157,84 @@
 
 /* logo */
 a#lplogo, a#lplogo:link, a#lplogo:visited, a#lplogo:active {
-    float: right;
-    display: inline-block;
-    margin-right: 1em;
-    margin-left: 1em;
-    text-decoration: none;
-    color: var(--lpmagenta);
-    cursor: pointer;
-    font-size: 130%;
-    font-weight: 200;
-    vertical-align: middle;
+  float: right;
+  display: inline-block;
+  margin-right: 1em;
+  margin-left: 1em;
+  text-decoration: none;
+  color: var(--lpmagenta);
+  cursor: pointer;
+  font-size: 130%;
+  font-weight: 200;
+  vertical-align: middle;
 }
 
 a#lplogo img {
-    width: 100px;
+  width: 100px;
 }
 
 a#lplogo span {
-    display: none;
-    position: relative;
-    right: -100px;
-    bottom: 10px;
+  display: none;
+  position: relative;
+  right: -100px;
+  bottom: 10px;
 }
 
 a#lplogo:hover span {
-    display: inline;
+  display: inline;
 }
 
 /* exercise title */
 .logicpenguin h1 {
-    font-weight: 900;
-    font-size: 200%;
-    color: var(--lpmagenta);
-    text-shadow: 4px 4px 15px var(--lpgray5);
-    text-decoration: underline;
-    text-decoration-color: var(--lpgray4);
-    text-decoration-thickness: 1px;
+  font-weight: 900;
+  font-size: 200%;
+  color: var(--lpmagenta);
+  text-shadow: 4px 4px 15px var(--lpgray5);
+  text-decoration: underline;
+  text-decoration-color: var(--lpgray4);
+  text-decoration-thickness: 1px;
 }
 
 /* exercise set description */
 .logicpenguin h2 {
-    font-style: italic;
-    font-weight: 200;
-    font-size: 180%;
-    color: var(--lpyellow);
+  font-style: italic;
+  font-weight: 200;
+  font-size: 180%;
+  color: var(--lpyellow);
 }
 
 .logicpenguin h3 {
-    color: var(--lpblue);
-    margin-bottom: 1ex;
-    font-weight: 500;
+  color: var(--lpblue);
+  margin-bottom: 1ex;
+  font-weight: 500;
 }
 
 /* lecture links */
 .logicpenguin .lecturelink {
-    margin-top: 2ex;
-    margin-bottom: 2ex;
+  margin-top: 2ex;
+  margin-bottom: 2ex;
 }
 
 /* instructions */
 .logicpenguin .instructions::before {
-    content: 'Instructions: ';
-    font-style: italic;
-    color: var(--lpgray2);
+  content: 'Instructions: ';
+  font-style: italic;
+  color: var(--lpgray2);
 }
 
 .logicpenguin .problem {
-    display: block;
+  display: block;
 }
 
 .logicpenguin .problemlist li {
-    margin-bottom: 4ex;
+  margin-bottom: 4ex;
 }
 
 .logicpenguin.sampleproblem ol,
 .logicpenguin .sampleproblem ol {
-    list-style-type: none;
-    margin-left: 0;
-    padding-left: 0;
+  list-style-type: none;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 
@@ -242,24 +243,24 @@ a#lplogo:hover span {
 /*////////////////////*/
 
 .logicpenguin .problemstatusindicator {
-    text-align: center;
-    margin-top: 0.7ex;
-    border: 2px solid var(--lpgray4);
-    background-color: var(--lpgray6);
-    border-radius: 5ex;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    padding-bottom: 0.65ex;
-    padding-top: 0.4ex;
-    font-size: 75%;
-    min-height: 3ex;
-    color: var(--lpgray2);
-    text-transform: uppercase;
-    transition: background-color 1s;
+  text-align: center;
+  margin-top: 0.7ex;
+  border: 2px solid var(--lpgray4);
+  background-color: var(--lpgray6);
+  border-radius: 5ex;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-bottom: 0.65ex;
+  padding-top: 0.4ex;
+  font-size: 75%;
+  min-height: 3ex;
+  color: var(--lpgray2);
+  text-transform: uppercase;
+  transition: background-color 1s;
 }
 
 .logicpenguin .problemstatusindicator span.material-symbols-outlined {
-    font-size: 180%;
+  font-size: 180%;
 }
 
 /** COLOR OF INDICATOR **/
@@ -268,331 +269,331 @@ a#lplogo:hover span {
 .logicpenguin .saved.unknown .problemstatusindicator,
 .logicpenguin .unknown .problemstatusindicator,
 .logicpenguin .saved .problemstatusindicator {
-    background-color: var(--lpbgyellow);
+  background-color: var(--lpbgyellow);
 }
 
 /* when correct or saved+correct */
 .logicpenguin .saved.correct .problemstatusindicator,
 .logicpenguin .correct .problemstatusindicator {
-    background-color: var(--lpbggreen);
+  background-color: var(--lpbggreen);
 }
 
 /* when incorrect or saved+incorrect */
 .logicpenguin .saved.incorrect .problemstatusindicator,
 .logicpenguin .incorrect .problemstatusindicator {
-    background-color: var(--lpbgred);
+  background-color: var(--lpbgred);
 }
 
 /* when malfunctioning */
 .logicpenguin .malfunction .problemstatusindicator {
-    background-color: var(--lpred);
-    color: var(--lpwhite);
+  background-color: var(--lpred);
+  color: var(--lpwhite);
 }
 
 /* when saved indeterminate */
 .logicpenguin .indeterminate .problemstatusindicator,
 .logicpenguin .saved.indeterminate .problemstatusindicator {
-    background-color: var(--lpbgmagenta);
+  background-color: var(--lpbgmagenta);
 }
 
 /* when error saving */
 .logicpenguin .saveerror .problemstatusindicator {
-    background-color: var(--lpyellow);
-    color: var(--lpwhite);
+  background-color: var(--lpyellow);
+  color: var(--lpwhite);
 }
 
 /* point indicator */
 .logicpenguin .problempointsindicator {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    position: relative;
-    top: 0.63ex;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  position: relative;
+  top: 0.63ex;
 }
 
 /* message */
 .logicpenguin .problemindicatormessage {
-    text-transform: none;
-    position: relative;
-    top: 0.63ex;
+  text-transform: none;
+  position: relative;
+  top: 0.63ex;
 }
 
 /* SUCCESS INDICATOR */
 
 .logicpenguin .problemsuccessindicator {
-    color: var(--lpgray3);
-    display: inline-block;
-    float: left;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+  color: var(--lpgray3);
+  display: inline-block;
+  float: left;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 /* when unanswered */
 .logicpenguin .problemsuccessindicator span {
-    color: var(--lpgray6);
+  color: var(--lpgray6);
 }
 
 .logicpenguin .problemsuccessindicator::after {
-    content: 'unanswered';
-    position: relative;
-    bottom: 1.05ex;
-    left: 0.5em;
+  content: 'unanswered';
+  position: relative;
+  bottom: 1.05ex;
+  left: 0.5em;
 }
 
 /* when processing */
 .logicpenguin .checking .problemsuccessindicator span {
-    color: var(--lpblue);
-    animation: flip 1s infinite linear;
-    animation-direction: alternate;
+  color: var(--lpblue);
+  animation: flip 1s infinite linear;
+  animation-direction: alternate;
 }
 
 .logicpenguin .checking .problemsuccessindicator::after {
-    content: 'checking';
+  content: 'checking';
 }
 
 .logicpenguin .unknown .problemsuccessindicator::after {
-    content: 'score tbd';
+  content: 'score tbd';
 }
 
 .logicpenguin .unknown .problemsuccessindicator span {
-    color: var(--lpgray4);
+  color: var(--lpgray4);
 }
 
 /* when correct */
 .logicpenguin .correct .problemsuccessindicator span {
-    color: var(--lpgreen);
+  color: var(--lpgreen);
 }
 
 .logicpenguin .correct .problemsuccessindicator::after {
-    content: 'correct';
+  content: 'correct';
 }
 
 /* when edited */
 .logicpenguin .edited .problemsuccessindicator span {
-    color: var(--lpwhite);
+  color: var(--lpwhite);
 }
 
 .logicpenguin .edited .problemsuccessindicator::after {
-    content: 'edited';
+  content: 'edited';
 }
 
 .logicpenguin .edited.saveerror .problemsuccessindicator::after {
-    color: var(--lpwhite);
+  color: var(--lpwhite);
 }
 
 /* when incorrect */
 .logicpenguin .incorrect .problemsuccessindicator span {
-    color: var(--lpred);
+  color: var(--lpred);
 }
 
 .logicpenguin .incorrect .problemsuccessindicator::after {
-    content: 'incorrect';
+  content: 'incorrect';
 }
 
 /* when indeterminate */
 .logicpenguin .indeterminate .problemsuccessindicator span {
-    color: var(--lpmagenta);
+  color: var(--lpmagenta);
 }
 
 .logicpenguin .indeterminate .problemsuccessindicator::after {
-    content: 'computer could not determine';
-    color: var(--lpmagenta);
+  content: 'computer could not determine';
+  color: var(--lpmagenta);
 }
 
 /* when malfunctioning */
 .logicpenguin .malfunction .problemsuccessindicator span {
-    color: var(--lpbgyellow);
-    background-color: var(--lpred);
+  color: var(--lpbgyellow);
+  background-color: var(--lpred);
 }
 
 .logicpenguin .malfunction .problemsuccessindicator::after {
-    content: 'malfunction';
-    color: var(--lpbgyellow);
+  content: 'malfunction';
+  color: var(--lpbgyellow);
 }
 
 /* SAVED INDICATOR */
 
 .logicpenguin .problemsavedindicator {
-    color: var(--lpgray2);
-    display: inline-block;
-    float: right;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+  color: var(--lpgray2);
+  display: inline-block;
+  float: right;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 
 }
 
 /* when unsaved */
 .logicpenguin .problemsavedindicator span {
-    color: var(--lpgray6);
+  color: var(--lpgray6);
 }
 
 .logicpenguin .problemsavedindicator::before {
-    content: 'unsaved';
-    position: relative;
-    bottom: 1.05ex;
-    right: 0.5em;
+  content: 'unsaved';
+  position: relative;
+  bottom: 1.05ex;
+  right: 0.5em;
 }
 
 /* when malfunctioning */
 .logicpenguin .malfunction .problemsavedindicator span {
-    color: var(--lpbgyellow);
-    background-color: var(--lpred);
+  color: var(--lpbgyellow);
+  background-color: var(--lpred);
 }
 
 .logicpenguin .malfunction .problemsavedindicator::before {
-    color: var(--lpbgyellow);
-    content: 'malfunction';
+  color: var(--lpbgyellow);
+  content: 'malfunction';
 }
 
 /* when saved */
 .logicpenguin .saved .problemsavedindicator span {
-    color: var(--lpgray2);
+  color: var(--lpgray2);
 }
 
 .logicpenguin .saved .problemsavedindicator::before {
-    content: 'saved'
+  content: 'saved'
 }
 
 /* when error saving */
 .logicpenguin .saveerror .problemsavedindicator span {
-    color: var(--lpbgred);
+  color: var(--lpbgred);
 }
 
 .logicpenguin .saveerror .problemsavedindicator::before {
-    content: 'error saving';
-    color: var(--lpbgred);
+  content: 'error saving';
+  color: var(--lpbgred);
 }
 
 /* when save processing */
 .logicpenguin .saving .problemsavedindicator span {
-    color: var(--lpblue);
-    animation: spin 1s infinite linear;
+  color: var(--lpblue);
+  animation: spin 1s infinite linear;
 }
 
 .logicpenguin .saving .problemsavedindicator::before {
-    content: 'saving';
+  content: 'saving';
 }
 
 /* when cannot be saved */
 .logicpenguin .unsavable .problemsavedindicator span {
-    color: var(--lpgray3);
+  color: var(--lpgray3);
 }
 
 .logicpenguin .unsavable .problemsavedindicator::before {
-    content: '';
+  content: '';
 }
 
 .logicpenguin input[type="checkbox"],
 .logicpenguin input[type="radio"] {
-    width: 1.5rem;
-    height: 1.5rem;
-    accent-color: var(--lpblue);
-    cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--lpblue);
+  cursor: pointer;
 }
 
 .logicpenguin input[type="radio"] {
-    position: relative;
-    top: 0.25ex;
-    margin-right: 0.8rem;
+  position: relative;
+  top: 0.25ex;
+  margin-right: 0.8rem;
 }
 
 .logicpenguin input[type="radio"] + label {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .logicpenguin .infobox table {
-    border-collapse: collapse;
-    border-style: solid;
-    border-width: 2px;
+  border-collapse: collapse;
+  border-style: solid;
+  border-width: 2px;
 }
 
 .logicpenguin .infobox table.info {
-    border-color: var(--lpcyan);
+  border-color: var(--lpcyan);
 }
 
 .logicpenguin .infobox table.warning {
-    border-color: var(--lpyellow);
+  border-color: var(--lpyellow);
 }
 
 .logicpenguin .infobox table.error {
-    border-color: var(--lpred);
+  border-color: var(--lpred);
 }
 
 .logicpenguin .infobox table td:first-child {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    vertical-align: middle;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  vertical-align: middle;
 }
 
 .logicpenguin .infobox table td:first-child span.material-symbols-outlined {
-    font-size: 180%;
+  font-size: 180%;
 }
 
 .logicpenguin .infobox table.info td:first-child {
-    color: var(--lpblue);
-    background-color: var(--lpbgcyan);
+  color: var(--lpblue);
+  background-color: var(--lpbgcyan);
 }
 
 .logicpenguin .infobox table.warning td:first-child {
-    color: var(--lpred);
-    background-color: var(--lpbgyellow);
+  color: var(--lpred);
+  background-color: var(--lpbgyellow);
 }
 
 .logicpenguin .infobox table.error td:first-child {
-    color: var(--lpbgyellow);
-    background-color: var(--lpred);
+  color: var(--lpbgyellow);
+  background-color: var(--lpred);
 }
 
 .logicpenguin .infobox table.error td:first-child span.material-symbols-outlined {
-    animation: fade 0.8s infinite ease-out;
-    animation-direction: alternate;
-    animation-delay: 1s;
+  animation: fade 0.8s infinite ease-out;
+  animation-direction: alternate;
+  animation-delay: 1s;
 }
 
 .logicpenguin .infobox table td:first-child {
-    padding-top: 0.5ex;
+  padding-top: 0.5ex;
 }
 
 .logicpenguin .infobox table td:last-child {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    padding-top: 1ex;
-    padding-bottom: 0.5ex;
-    color: var(--lpgray2);
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 1ex;
+  padding-bottom: 0.5ex;
+  color: var(--lpgray2);
 }
 
 .logicpenguin button,
 .logicpenguin .buttondiv button {
-    background-color: var(--lpblue);
-    color: var(--lpgray6);
-    border: none;
-    padding: 1ex;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-right: 1em;
-    margin-top: 1ex;
-    margin-bottom: 1ex;
-    font-size: inherit;
+  background-color: var(--lpblue);
+  color: var(--lpgray6);
+  border: none;
+  padding: 1ex;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 1em;
+  margin-top: 1ex;
+  margin-bottom: 1ex;
+  font-size: inherit;
 }
 
 .logicpenguin .symbolicargumentinput td button {
-    padding-left: 0.3em;
-    padding-right: 0.3em;
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
-    margin-right: 0.5em;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  margin-right: 0.5em;
 }
 
 .logicpenguin button:hover,
 .logicpenguin .buttondiv button:hover {
-    background-color: var(--lpcyan);
-    color: var(--lpwhite);
+  background-color: var(--lpcyan);
+  color: var(--lpwhite);
 }
 
 .logicpenguin button:active,
 .logicpenguin .buttondiv button:active {
-    background-color: var(--lpmagenta);
-    color: var(--lpwhite);
+  background-color: var(--lpmagenta);
+  color: var(--lpwhite);
 }
 
 .logicpenguin button:disabled,
@@ -601,84 +602,86 @@ a#lplogo:hover span {
 .logicpenguin .buttondiv button:disabled,
 .logicpenguin .buttondiv button:disabled:hover,
 .logicpenguin .buttondiv button[disabled]:hover {
-    background-color: var(--lpgray5);
-    color: var(--lpgray6);
-    cursor: default;
+  background-color: var(--lpgray5);
+  color: var(--lpgray6);
+  cursor: default;
 }
 
 .logicpenguin input {
-    background-color: var(--lpwhite);
-    color: var(--lpblack);
+  background-color: var(--lpwhite);
+  color: var(--lpblack);
 }
 
 .logicpenguin input.formulainput {
-    font-size: inherit;
-    padding: 4px;
-    width: 22em;
-    border: 2px solid var(--lpgray4);
-    outline: 1px solid transparent;
+  font-size: inherit;
+  padding: 4px;
+  width: 22em;
+  border: 2px solid var(--lpgray4);
+  outline: 1px solid transparent;
 }
 
 .logicpenguin input.formulainput:focus {
-    border: 2px solid var(--lpblue);
-    outline: 1px solid var(--lpblue);
-    background-color: var(--lpbgblue);
+  border: 2px solid var(--lpblue);
+  outline: 1px solid var(--lpblue);
+  background-color: var(--lpbgblue);
 }
 
+
+
 .logicpenguin.symbolinsertwidget {
-    display: inline-block;
-    position: fixed;
-    left: 5px;
-    bottom: 5px;
-    font-size: 25px;
+  display: inline-block;
+  position: fixed;
+  left: 5px;
+  bottom: 5px;
+  font-size: 25px;
 }
 
 .symbolinsertwidget table {
-    border-spacing: 4px;
-    border-collapse: separate;
+  border-spacing: 4px;
+  border-collapse: separate;
 }
 
 .symbolinsertwidget td {
-    width: 1.4em;
-    height: 1.4em;
-    text-align: center;
-    vertical-align: middle;
-    border-radius: 6px;
-    cursor: pointer;
-    background-color: var(--lpgray1);
-    color: var(--lpbgwhite);
+  width: 1.4em;
+  height: 1.4em;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: var(--lpgray1);
+  color: var(--lpbgwhite);
 }
 
 .symbolinsertwidget td:hover {
-    background-color: var(--lpblack);
-    color: var(--lpbgmagenta);
+  background-color: var(--lpblack);
+  color: var(--lpbgmagenta);
 }
 
 /* progress bar */
 
 .logicpenguin .lpprogressbar table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    width: 100%;
-    border: 2px ridge var(--lpgray3);
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+  border: 2px ridge var(--lpgray3);
 }
 
 .logicpenguin .lpprogressbar table td {
-    height: 3ex;
-    color: var(--lpbgwhite);
-    text-align: center;
-    vertical-align: middle;
+  height: 3ex;
+  color: var(--lpbgwhite);
+  text-align: center;
+  vertical-align: middle;
 }
 
 .logicpenguin .lpprogressbar table .pbcorrectcell {
-    background-color: var(--lpgreen);
+  background-color: var(--lpgreen);
 }
 .logicpenguin .lpprogressbar table .pbincorrectcell {
-    background-color: var(--lpred);
+  background-color: var(--lpred);
 }
 .logicpenguin .lpprogressbar table .pbsavedcell {
-    background-color: var(--lpyellow);
+  background-color: var(--lpyellow);
 }
 .logicpenguin .lpprogressbar table .pbunansweredcell {
-    background-color: var(--lpgray6);
+  background-color: var(--lpgray6);
 }

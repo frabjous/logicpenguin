@@ -13,3 +13,5 @@ fallback/
 public/.well-known/
 # site settings file
 settings.json
+# multieditor rep
+public/multiedit/

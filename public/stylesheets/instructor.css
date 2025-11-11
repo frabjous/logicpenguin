@@ -1,94 +1,98 @@
 @charset 'utf-8';
 
 .logicpenguin #contexttitle {
-    display: none;
+  display: none;
+}
+
+.logicpenguin #lecturesembedarea {
+  margin-bottom: 2rem;
 }
 
 .logicpenguin #messagearea {
-    display: none;
-    margin-bottom: 1rem;
-    border: 3px solid transparent;
-    padding: 0.5rem;
+  display: none;
+  margin-bottom: 1rem;
+  border: 3px solid transparent;
+  padding: 0.5rem;
 }
 
 .logicpenguin #messagearea .material-symbols-outlined {
-    position: relative;
-    top: 0.3rem;
-    margin-right: 0.5rem;
+  position: relative;
+  top: 0.3rem;
+  margin-right: 0.5rem;
 }
 
 .logicpenguin #messagearea.info {
-    border: 3px solid var(--lpcyan);
+  border: 3px solid var(--lpcyan);
 }
 
 .logicpenguin #messagearea.info .material-symbols-outlined {
-    color: var(--lpblue);
+  color: var(--lpblue);
 }
 
 .logicpenguin #messagearea.loading {
-    border: 3px solid transparent;
+  border: 3px solid transparent;
 }
 
 .logicpenguin #messagearea.loading .material-symbols-outlined {
-    color: var(--lpmagenta);
+  color: var(--lpmagenta);
 }
 
 .logicpenguin #messagearea.error {
-    border: 3px solid var(--lpred);
+  border: 3px solid var(--lpred);
 }
 
 .logicpenguin #messagearea.error .material-symbols-outlined {
-    color: var(--lpred);
+  color: var(--lpred);
 }
 
 .logicpenguin #messagearea.error .errortitle {
-    color: var(--lpred);
-    font-weight: bold;
+  color: var(--lpred);
+  font-weight: bold;
 }
 
 .logicpenguin footer {
-    margin: 1rem 0 0 0;
-    border-top: 1px solid var(--lpgray5);
+  margin: 1rem 0 0 0;
+  border-top: 1px solid var(--lpgray5);
 }
 
 .logicpenguin footer > p {
-    margin: 0.2rem 0 0 0;
+  margin: 0.2rem 0 0 0;
 }
 
 .logicpenguin nav {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .logicpenguin nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .logicpenguin nav ul li {
-    display: inline-block;
-    user-select: none;
+  display: inline-block;
+  user-select: none;
 }
 
 .logicpenguin nav ul li a,
 .logicpenguin nav ul li a:link,
 .logicpenguin nav ul li a:visited {
-    padding: 0.7rem 0.9rem 0.7rem 0.9rem;
-    display: inline-block;
-    text-decoration: none;
-    background-color: var(--lpblue);
-    color: var(--lpgray6);
-    border-radius: 6px;
-    margin-right: 1rem;
-    margin-bottom: 0.5rem;
-    border: 2px solid transparent;
+  padding: 0.7rem 0.9rem 0.7rem 0.9rem;
+  display: inline-block;
+  text-decoration: none;
+  background-color: var(--lpblue);
+  color: var(--lpgray6);
+  border-radius: 6px;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  border: 2px solid transparent;
 }
 
 .logicpenguin nav ul li a:hover,
 .logicpenguin nav ul li a:link:hover,
 .logicpenguin nav ul li a:visited:hover {
-    background-color: var(--lpcyan);
-    color: var(--lpwhite);
+  background-color: var(--lpcyan);
+  color: var(--lpwhite);
 }
 
 .logicpenguin nav ul li a.current,
@@ -97,662 +101,915 @@
 .logicpenguin nav ul li a.current:hover,
 .logicpenguin nav ul li a.current:link:hover,
 .logicpenguin nav ul li a.current:visited:hover {
-    background-color: var(--lpwhite);
-    color: var(--lpblue);
-    border: 2px solid var(--lpblue);
-    cursor: default;
+  background-color: var(--lpwhite);
+  color: var(--lpblue);
+  border: 2px solid var(--lpblue);
+  cursor: default;
 }
 
 .logicpenguin main div.mainarea {
-    display: none;
+  display: none;
 }
 
 .logicpenguin main input {
-    font-size: inherit;
-    padding: 4px;
-    width: 22em;
-    border: 2px solid var(--lpgray4);
-    outline: 1px solid transparent;
+  font-size: inherit;
+  padding: 4px;
+  width: 22em;
+  border: 2px solid var(--lpgray4);
+  outline: 1px solid transparent;
 }
 
 .logicpenguin main input:focus {
-    border: 2px solid var(--lpblue);
-    outline: 1px solid var(--lpblue);
-    background-color: var(--lpbgblue);
+  border: 2px solid var(--lpblue);
+  outline: 1px solid var(--lpblue);
+  background-color: var(--lpbgblue);
+}
+
+.logicpenguin main input[type=file]:active {
+  outline: none;
+}
+
+.logicpenguin main input[type=file]:focus,
+.logicpenguin main input[type=file] {
+  border: none;
+  outline: one;
+  background-color: inherit;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.logicpenguin main input[type=file]::file-selector-button {
+  display: inline-block;
+  background-color: var(--lpblue);
+  color: var(--lpgray6);
+  padding: 0.7rem 1rem;
+  font-weight: bold;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logicpenguin main input[type=file]:hover::file-selector-button {
+  background-color: var(--lpcyan);
+  color: var(--lpwhite);
 }
 
 .logicpenguin main select {
-    font-size: inherit;
-    padding: 4px;
-    width: 22em;
-    border: 2px solid var(--lpgray4);
-    outline: 1px solid transparent;
-    background-color: var(--lpwhite);
-    box-sizing: content-box;
+  font-size: inherit;
+  padding: 4px;
+  width: 22em;
+  border: 2px solid var(--lpgray4);
+  outline: 1px solid transparent;
+  background-color: var(--lpwhite);
+  box-sizing: content-box;
 }
 
 .logicpenguin main select.invalid {
-    border: 2px solid var(--lpred);
-    outline: 1px solid var(--lpred);
-    background-color: var(--lpbgred);
+  border: 2px solid var(--lpred);
+  outline: 1px solid var(--lpred);
+  background-color: var(--lpbgred);
 }
 
 .logicpenguin main select,
 .logicpenguin main select.symbolic {
-    color: inherit;
+  color: inherit;
 }
 
 .logicpenguin main #settingsmain table {
-    border-spacing: 0;
-    border-collapse: collapse;
+  border-spacing: 0;
+  border-collapse: collapse;
 }
 
 .logicpenguin main #settingsmain table td {
-    vertical-align: text-bottom;
-    padding-bottom: 0.5rem;
+  vertical-align: text-bottom;
+  padding-bottom: 0.5rem;
 }
 
 .logicpenguin main #settingsmain table td:first-child {
-    text-align: right;
-    padding-right: 0.5rem;
+  text-align: right;
+  padding-right: 0.5rem;
 }
 
 .logicpenguin main #settingsmain table tfoot td:first-child {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 .logicpenguin main #settingsmain table tfoot td:first-child button {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .logicpenguin main #settingsmain table tfoot td:first-child button .material-symbols-outlined {
-    position: relative;
-    top: 0.3rem;
+  position: relative;
+  top: 0.3rem;
 }
 
 .logicpenguin main #studentsmain table.studentstable {
-    border-spacing: 0;
-    border-collapse: collapse;
+  border-spacing: 0;
+  border-collapse: collapse;
 }
 
 .logicpenguin main #studentsmain table.studentstable th {
-    font-weight: normal;
-    color: var(--lpgreen);
-    text-align: center;
-    padding: 0.2rem 0.4rem 0.2rem 0;
+  font-weight: normal;
+  color: var(--lpgreen);
+  text-align: center;
+  padding: 0.2rem 0.4rem 0.2rem 0;
 }
 
 .logicpenguin main #studentsmain table.studentstable thead th {
-    border-bottom: 1px solid var(--lpmagenta);
+  border-bottom: 1px solid var(--lpmagenta);
 }
 
 .logicpenguin main #studentsmain table.studentstable tfoot th {
-    border-top: 1px solid var(--lpmagenta);
+  border-top: 1px solid var(--lpmagenta);
 }
 
 .logicpenguin main #studentsmain table.studentstable thead th:first-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .logicpenguin main #studentsmain table.studentstable tfoot th:first-child {
-    border-top: none;
+  border-top: none;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td {
-    text-align: right;
-    padding: 0.2rem 0.4rem 0.2rem 0;
-    white-space: nowrap;
+  text-align: right;
+  padding: 0.2rem 0.4rem 0.2rem 0;
+  white-space: nowrap;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore {
-    user-select: none;
-    cursor: pointer;
+  user-select: none;
+  cursor: pointer;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore.overridden {
-    color: var(--lpred);
+  color: var(--lpred);
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.studenttablescore.disabled {
-    cursor: default;
+  cursor: default;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td:first-child {
-    padding-left: 0;
+  padding-left: 0;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td:first-child a,
 .logicpenguin main #studentsmain table.studentstable tbody td:first-child a:link,
 .logicpenguin main #studentsmain table.studentstable tbody td:first-child a:visited {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody tr:nth-child(2n) td {
-    background-color: var(--lpbggreen);
+  background-color: var(--lpbggreen);
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody tr:nth-child(2n) td:first-child {
-    background-color: inherit;
+  background-color: inherit;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent td:first-child,
 .logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent td,
 .logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent:nth-child(2n) td:first-child,
 .logicpenguin main #studentsmain table.studentstable tbody tr.nonstudent:nth-child(2n) td {
-    background-color: var(--lpbgmagenta);
+  background-color: var(--lpbgmagenta);
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td span.material-symbols-outlined {
-    font-size: 80%;
+  font-size: 80%;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons {
-    color: var(--lpgray3);
+  color: var(--lpgray3);
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a {
-    color: var(--lpblue);
-    cursor: pointer;
+  color: var(--lpblue);
+  cursor: pointer;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton:hover span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a:hover span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons a:hover {
-    color: var(--lpcyan);
+  color: var(--lpcyan);
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton.disabled span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.resetbutton.disabled:hover span.material-symbols-outlined {
-    color: var(--lpgray3);
-    cursor: default;
+  color: var(--lpgray3);
+  cursor: default;
 }
 
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton span.material-symbols-outlined,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton.activeextension:hover,
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton:hover {
-    color: var(--lpcyan);
+  color: var(--lpcyan);
 }
 
 .logicpenguin main #studentsmain table.studentstable tbody td div.cellbuttons span.extensionbutton.activeextension {
-    color: var(--lpyellow);
+  color: var(--lpyellow);
 }
 
 .logicpenguin dialog {
-    border-radius: 1rem;
-    border: 2px solid var(--lpmagenta);
-    padding: 0.5rem 2rem 1rem 2rem;
+  border-radius: 1rem;
+  border: 2px solid var(--lpmagenta);
+  padding: 0.5rem 2rem 1rem 2rem;
+  max-width: 100%;
 }
 
 .logicpenguin dialog .closebutton {
-    display: inline-block;
-    color: var(--lpblack);
-    cursor: pointer;
-    float: right;
+  display: inline-block;
+  color: var(--lpblack);
+  cursor: pointer;
+  float: right;
 }
 
 .logicpenguin dialog .closebutton .material-symbols-outlined {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .logicpenguin dialog .closebutton:hover {
-    color: var(--lpred);
+  color: var(--lpred);
 }
 
 .logicpenguin dialog div.header {
-    padding-top: 1rem;
-    color: var(--lpmagenta);
-    margin-bottom: 1rem;
+  padding-top: 1rem;
+  color: var(--lpmagenta);
+  margin-bottom: 1rem;
 }
 
 .logicpenguin dialog div.header,
 .logicpenguin dialog div.footer {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .logicpenguin dialog div.footer {
-    margin: 1rem 0 0 0;
-    border-top: none;
-    text-align: right;
+  margin: 1rem 0 0 0;
+  border-top: none;
+  text-align: right;
+}
+
+.logicpenguin dialog div.footer.centerbutton {
+  text-align: center;
 }
 
 .logicpenguin dialog div.footer button {
-    margin: 0 0 0 1rem;
+  margin: 0 0 0 1rem;
+}
+
+.logicpenguin dialog div.footer.centerbutton button {
+  margin: 0 0 0 0;
 }
 
 .logicpenguin dialog div.footer button .material-symbols-outlined {
-    position: relative;
-    top: 0.3rem;
+  position: relative;
+  top: 0.3rem;
 }
 
 .logicpenguin dialog div.overridescoreholder,
 .logicpenguin dialog div.datetimeinputholder {
-    margin: 0.5rem 0 0.5rem 0;
+  margin: 0.5rem 0 0.5rem 0;
 }
 
 
 .logicpenguin div.exinfoform input[type="datetime-local"],
 .logicpenguin dialog input[type="datetime-local"] {
-    font-size: 125%;
-    padding: 0.3rem;
-    font-family: inherit;
+  font-size: 125%;
+  padding: 0.3rem;
+  font-family: inherit;
 }
 
 
 .logicpenguin div.exinfoform input[type="number"],
 .logicpenguin dialog input[type="number"] {
-    font-size: 125%;
-    padding: 0.3rem;
-    font-family: inherit;
-    width: 5rem;
-    margin-right: 0.2rem;
-    text-align: center;
+  font-size: 125%;
+  padding: 0.3rem;
+  font-family: inherit;
+  width: 5rem;
+  margin-right: 0.2rem;
+  text-align: center;
 }
 
 .logicpenguin dialog div.exinfoform input[type="text"],
 .logicpenguin div.exinfoform input[type="text"],
 .logicpenguin dialog div.exinfoform input[type="datetime-local"],
 .logicpenguin div.exinfoform input[type="datetime-local"] {
-    width: 26rem;
+  width: 26rem;
+}
+
+.logicpenguin dialog textarea.htmlfrag {
+  resize: none;
+  width: 40rem;
+  max-width: 100%;
+  height: 20rem;
+}
+
+.logicpenguin ol.editlecturelist a.fakebutton:link,
+.logicpenguin ol.editlecturelist a.fakebutton:visited,
+.logicpenguin ol.editlecturelist a.fakebutton {
+  display: inline-block;
+  background-color: var(--lpblue);
+  color: var(--lpgray6);
+  border: none;
+  text-decoration: none;
+  padding: 1ex;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 1em;
+  margin-top: 1ex;
+  margin-bottom: 1ex;
+  font-size: inherit;
+}
+
+.logicpenguin ol.editlecturelist a.fakebutton:link:hover,
+.logicpenguin ol.editlecturelist a.fakebutton:visited:hover,
+.logicpenguin ol.editlecturelist a.fakebutton:hover {
+  background-color: var(--lpcyan);
+  color: var(--lpwhite);
 }
 
 .logicpenguin div.exinfoform input[type="text"],
 .logicpenguin dialog div.exinfoform input[type="text"] {
-    font-family: inherit;
-    font-size: 125%;
-    padding: 0.3rem;
+  font-family: inherit;
+  font-size: 125%;
+  padding: 0.3rem;
 }
 
+.logicpenguin .lectureblock .metadata input[type="text"].invalid,
 .logicpenguin div.exinfoform input[type="text"].invalid {
-    background-color: var(--lpbgred);
-    border: 2px solid var(--lpred);
-    outline: 1px solid var(--lpred);
+  background-color: var(--lpbgred);
+  border: 2px solid var(--lpred);
+  outline: 1px solid var(--lpred);
 }
 
 .logicpenguin div.exinfoform input[type="checkbox"],
 .logicpenguin dialog div.exinfoform input[type="checkbox"] {
-    font-size: 115%;
-    margin-right: 1rem;
-    position: relative;
-    top: 0.3rem;
+  font-size: 115%;
+  margin-right: 1rem;
+  position: relative;
+  top: 0.3rem;
 }
 
 .logicpenguin div.exinfoform input[type="number"],
 .logicpenguin dialog div.exinfoform input[type="number"] {
-    margin-right: 1rem;
+  margin-right: 1rem;
 }
 
 .logicpenguin dialog select.problemtypeselect {
-    font-family: inherit;
-    font-size: inherit;
-    padding: 4px;
-    background-color: inherit;
-    width: 14rem;
-    margin-top: 0.5rem;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 4px;
+  background-color: inherit;
+  width: 14rem;
+  margin-top: 0.5rem;
 }
 
 .logicpenguin div.exinfoform table td:first-child {
-    text-align: right;
-    padding-right: 0.5rem;
+  text-align: right;
+  padding-right: 0.5rem;
 }
 
 .logicpenguin ul.allexerciselist {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .logicpenguin ul.allexerciselist li > div {
-    border: 2px solid var(--lpgray4);
-    margin-bottom: 2.5rem;
-    box-shadow: 5px 5px 5px var(--lpgray5);
+  border: 2px solid var(--lpgray4);
+  margin-bottom: 2.5rem;
+  box-shadow: 5px 5px 5px var(--lpgray5);
 }
 
 .logicpenguin ul.allexerciselist li .material-symbols-outlined {
-    position: relative;
-    top: 0.3rem;
+  position: relative;
+  top: 0.3rem;
 }
 
 .logicpenguin ul.allexerciselist li div.exnumtitle {
-    background-color: var(--lpbgcyan);
-    color: var(--lpblue);
-    font-weight: bold;
-    padding: 1rem 2rem 0.5rem 2rem;
+  background-color: var(--lpbgcyan);
+  color: var(--lpblue);
+  font-weight: bold;
+  padding: 1rem 2rem 0.5rem 2rem;
 }
 
 .logicpenguin ul.allexerciselist li div.exinfo {
-    padding: 0.5rem 2rem 0.5rem 2rem;
+  padding: 0.5rem 2rem 0.5rem 2rem;
 }
 
 .logicpenguin ul.allexerciselist li div.exinfo div.exinfopart {
-    display: inline-block;
-    color: var(--lpgreen);
-    margin-right: 1rem;
+  display: inline-block;
+  color: var(--lpgreen);
+  margin-right: 1rem;
 }
 
 .logicpenguin ul.allexerciselist li div.exinfo div.exinfopart span:first-child {
-    color: var(--lpmagenta);
+  color: var(--lpmagenta);
 }
 
 .logicpenguin ul.allexerciselist li div.exlistbuttons {
-    padding: 0.5rem 2rem 0.5rem 2rem;
+  padding: 0.5rem 2rem 0.5rem 2rem;
 }
 
 .logicpenguin div.newexbtndiv button,
 .logicpenguin ul.allexerciselist li div.exlistbuttons button {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
+.logicpenguin .lecturecomponent .deletelecturecomponent,
 .logicpenguin combo-translation-truth-table-creator .statementdeletebutton,
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise {
-    float: right;
-    display: inline-block;
-    color: var(--lpred);
-    cursor: pointer;
+  float: right;
+  display: inline-block;
+  color: var(--lpred);
+  cursor: pointer;
 }
 
 .logicpenguin combo-translation-truth-table-creator .statementdeletebutton {
-    margin-right: 2rem;
+  margin-right: 2rem;
 }
 
+.logicpenguin .lecturecomponent .deletelecturecomponent .material-symbols-outlined,
 .logicpenguin combo-translation-truth-table-creator .statementdeletebutton .material-symbols-outlined,
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise .material-symbols-outlined {
-    cursor: pointer;
+  cursor: pointer;
 }
 
+.logicpenguin .lecturecomponent .deletelecturecomponent:hover,
 .logicpenguin combo-translation-truth-table-creator .statementdeletebutton:hover,
 .logicpenguin ul.allexerciselist li div.exlistbuttons div.deleteexercise:hover {
-    color: var(--lpmagenta);
+  color: var(--lpmagenta);
 }
 
 .logicpenguin div.newexbtndiv button {
-    padding: 1rem 2rem 1rem 2rem;
+  padding: 1rem 2rem 1rem 2rem;
 }
 
 .logicpenguin ul.allexerciselist li div.exlaunchlinkdiv {
-    padding: 0.5rem 2rem 0.5rem 2rem;
-    color: var(--lpmagenta);
+  padding: 0.5rem 2rem 0.5rem 2rem;
+  color: var(--lpmagenta);
 }
 
 .logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.launchlink {
-    color: var(--lpgreen);
+  color: var(--lpgreen);
 }
 
+.logicpenguin ol.editlecturelist li span.copylink,
 .logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.copylink {
-    cursor: pointer;
-    color: var(--lpblue);
+  cursor: pointer;
+  color: var(--lpblue);
 }
 
+.logicpenguin ol.editlecturelist li span.copylink:hover,
 .logicpenguin ul.allexerciselist li div.exlaunchlinkdiv span.copylink:hover {
-    color: var(--lpcyan);
+  color: var(--lpcyan);
 }
 
 .logicpenguin .exerciseblock button.fixedbutton {
-    position: sticky;
-    padding: 1rem 2rem 1rem 2rem;
-    bottom: 0.5rem;
+  position: sticky;
+  padding: 1rem 2rem 1rem 2rem;
+  bottom: 0.5rem;
 }
 
-.logicpenguin .exerciseblock .breadcrumb a
-.logicpenguin .exerciseblock .breadcrumb a:link,
-.logicpenguin .exerciseblock .breadcrumb a:visited {
-    text-decoration: none;
+.logicpenguin ol.editlecturelist li span.copylink {
+  position: relative;
+  top: 0.3rem;
+  left: 1rem;
+}
+
+.logicpenguin .breadcrumb a
+.logicpenguin .breadcrumb a:link,
+.logicpenguin .breadcrumb a:visited {
+  text-decoration: none;
 }
 
 .logicpenguin .exerciseblock button.fixedbutton .material-symbols-outlined,
-.logicpenguin .exerciseblock .breadcrumb .material-symbols-outlined {
-    position: relative;
-    top: 0.3rem;
+.logicpenguin .breadcrumb .material-symbols-outlined {
+  position: relative;
+  top: 0.3rem;
+  cursor: pointer;
+}
+
+.logicpenguin #lectureslistarea button .material-symbols-outlined {
+  position: relative;
+  top: 0.3rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logicpenguin .lectureblock article {
+  background-color: var(--lpgray6);
+  border: 2px solid var(--lpgray4);
+  box-shadow: 5px 5px 5px var(--lpgray5);
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.logicpenguin .lectureblock article label.pagetitlelabel {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.logicpenguin .lectureblock article input.pagetitleinput {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.logicpenguin .lectureblock article input.pagenameinput {
+  display: inline-block;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  width: 8rem;
+  text-align: center;
+}
+
+.logicpenguin .lectureblock .lecturecomponentdivider {
+  background-color: var(--lpbgblue);
+  padding: 0.2rem 0.5rem;;
+  margin: 0.3rem 0;
+  border: 1px solid var(--lpgray3);
+  border-radius: 0.5rem;
+  clear: both;
+}
+
+.logicpenguin .lectureblock .lecturecomponentdivider label {
+  margin-right: 1rem;
+}
+
+.logicpenguin .lectureblock .lecturecomponentdivider select {
+  width: 13rem;
+}
+
+.logicpenguin .lectureblock .lecturecomponent .lectcomponentlabel {
+  color: var(--lpgreen);
+  font-weight: bold;
+}
+
+
+.logicpenguin .lectureblock .lecturecomponent.heading select {
+  width: 7rem;
+  margin-left: 1rem;
+}
+
+.logicpenguin .lectureblock .lecturecomponent.heading label.headercontentlabel {
+  display: block;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.logicpenguin .lectureblock .lecturecomponent.heading input.headercontent {
+  width: 95%;
+  max-width: 95%;
+  margin-bottom: 1rem;
+}
+
+.logicpenguin .lectureblock .lecturecomponent.image .previewer {
+  clear: both;
+  margin: 1rem 0;
+}
+
+.logicpenguin .lectureblock .lecturecomponent.image label {
+  display: block;
+}
+
+.logicpenguin .lectureblock .lecturecomponent.image img {
+  max-width: 100%;
+}
+
+.logicpenguin .lectureblock .lecturecomponent.sampleproblems .samplecreator {
+  margin-top: 2rem;
+  clear: both;
+}
+
+.logicpenguin .lectureblock .lecturecomponent.content .multieditor {
+  margin: 2rem 0.5rem;
+  border: 1px solid var(--lpgray2);
+  max-width: 100rem;
+}
+
+.logicpenguin .multieditornote .math,
+.logicpenguin .multieditor .math {
+  font-style: normal;
+  border: 2px dotted var(--lpgreen);
+  background-color: var(--lpbggreen);
+}
+
+.logicpenguin main .multieditor input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+}
+
+.logicpenguin main .multieditor fieldset label {
+  margin-right: 1rem;
+}
+
+.logicpenguin .multieditornote {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--lpgray1);
+}
+
+.logicpenguin .multieditornote .material-symbols-outlined {
+  position: relative;
+  top: 0.2rem;
+  font-style: normal;
+  font-size: 1.1rem;
 }
 
 .logicpenguin .problemsetcreator > button {
-    margin: 1rem 0 0.5rem 0;
+  margin: 1rem 0 0.5rem 0;
 }
 
 .logicpenguin .problemsetcreator > article {
-    border: 2px solid var(--lpgray4);
-    box-shadow: 5px 5px 5px var(--lpgray5);
-    padding: 0;
+  border: 2px solid var(--lpgray4);
+  box-shadow: 5px 5px 5px var(--lpgray5);
+  padding: 0;
 }
 
-.logicpenguin .problemsetcreator > article > header {
-    margin: 0;
-    padding: 0 0 0.5rem 0;
-    background-color: var(--lpgray6);
+.logicpenguin .problemsetcreator > article > heading {
+  margin: 0;
+  padding: 0 0 0.5rem 0;
+  background-color: var(--lpgray6);
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider {
-    padding: 0.5rem 1rem 0.5rem 1rem;
-    background-color: var(--lpbgblue);
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  background-color: var(--lpbgblue);
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider br {
-    clear: both;
-    margin: 0;
-    padding: 0;
+  clear: both;
+  margin: 0;
+  padding: 0;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider h3 {
-    margin: 0.5rem 0;
+  margin: 0.5rem 0;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdividerbuttons {
-    display: inline-block;
-    float: right;
+  display: inline-block;
+  float: right;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetsettings {
-    margin: 2rem 1rem 1rem 1rem;
-    border: 2px solid var(--lpmagenta);
-    border-radius: 1rem;
-    padding: 1rem 2rem;
-    background-color: var(--lpwhite);
+  margin: 2rem 1rem 1rem 1rem;
+  border: 2px solid var(--lpmagenta);
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  background-color: var(--lpwhite);
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetsettings > div {
-    margin: 0.5rem 0rem 0.5rem 0rem;
+  margin: 0.5rem 0rem 0.5rem 0rem;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetsettings .problemsetproblemtypelabel {
-    color: var(--lpmagenta);
+  color: var(--lpmagenta);
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetsettings .problemsetproblemtype {
-    color: var(--lpgreen);
+  color: var(--lpgreen);
 }
 
 .logicpenguin .problemsetcreator > article > header input[type="text"],
 .logicpenguin .problemsetcreator > article > header textarea {
-    width: 100%;
-    box-sizing: border-box;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .logicpenguin .problemsetcreator > article > header textarea {
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-    height: 7rem;
-    resize: none;
-    padding: 4px;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  height: 7rem;
+  resize: none;
+  padding: 4px;
 }
 
 .logicpenguin .problemsetcreator > article > header input[type="number"] {
-    width: 5rem;
-    text-align: center;
-    margin-right: 1rem;
+  width: 5rem;
+  text-align: center;
+  margin-right: 1rem;
 }
 
 .logicpenguin .problemsetcreator > article > header input[type="checkbox"] {
-    position: relative;
-    top: 0.2rem;
+  position: relative;
+  top: 0.2rem;
 }
 
 .logicpenguin .problemsetcreator > article > header .settingsnote {
-    font-size: 90%;
-    font-style: italic;
+  font-size: 90%;
+  font-style: italic;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider select {
-    width: 12rem;
-    text-align: center;
+  width: 12rem;
+  text-align: center;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdeletebtn {
-    color: var(--lpred);
-    cursor: pointer;
-    position: relative;
-    top: 0.3rem;
+  color: var(--lpred);
+  cursor: pointer;
+  position: relative;
+  top: 0.3rem;
 }
 
 .logicpenguin .problemsetcreator > article > header .problemsetdivider .problemsetdeletebtn:hover {
-    color: var(--lpmagenta);
+  color: var(--lpmagenta);
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea {
-    padding: 2rem;
+  padding: 2rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator {
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--lpgray5);
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  border-bottom: 1px solid var(--lpgray5);
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator > div:first-child {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator > div:first-child span {
-    color: var(--lpgray3);
+  color: var(--lpgray3);
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletefloat {
-    display: inline-block;
-    float: right;
+  display: inline-block;
+  float: right;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn .material-symbols-outlined {
-    position: relative;
-    top: 0.3rem;
+  position: relative;
+  top: 0.3rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn .material-symbols-outlined,
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn {
-    color: var(--lpred);
-    cursor: pointer;
+  color: var(--lpred);
+  cursor: pointer;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn .material-symbols-outlined:hover,
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .problemcreatordeletebtn:hover {
-    color: var(--lpmagenta);
+  color: var(--lpmagenta);
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator .provideanswerbelow {
-    color: var(--lpgreen);
-    margin: 1rem 0;
+  color: var(--lpgreen);
+  margin: 1rem 0;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreatorarea .problemcreator textarea {
-    font-size: inherit;
-    font-family: inherit;
-    background-color: inherit;
-    padding: 4px;
-    width: 100%;
-    box-sizing: border-box;
-    resize: none;
-    color: inherit;
-    height: 5rem;
+  font-size: inherit;
+  font-family: inherit;
+  background-color: inherit;
+  padding: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+  color: inherit;
+  height: 5rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemsetcreatorbuttondiv {
-    margin: 0 2rem;
+  padding: 0 2rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .fielddiv,
 .logicpenguin .problemsetcreator > article .problemcreator .multifieldinput .fielddiv {
-    margin: 0.5rem 0;
+  margin: 0.5rem 0;
 }
 
 .logicpenguin main .problemsetcreator > article .problemcreator .fielddiv input,
 .logicpenguin main .problemsetcreator > article .problemcreator .multifieldinput input {
-    width: 100%;
+  width: 100%;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .multifieldinput button {
-    cursor: pointer;
-    padding: 0.3rem;
+  cursor: pointer;
+  padding: 0.3rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .multifieldinput button span.material-symbols-outlined {
-    cursor: pointer;
-    position: relative;
-    top: 0.2rem;
+  cursor: pointer;
+  position: relative;
+  top: 0.2rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .multifieldinput .buttondiv {
-    text-align: right;
+  text-align: right;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .padabove {
-    margin-top: 1rem;
+  margin-top: 1rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput td:first-child {
-    padding-right: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput input {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput button {
-    padding-top: 0.1rem;
-    margin-top: 0;
+  padding-top: 0.1rem;
+  margin-top: 0;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput button:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .logicpenguin .problemsetcreator > article .problemcreator .symbolicargumentinput .symbolicarginputbuttonrow td {
-    text-align: right;
+  text-align: right;
+}
+
+.logicpenguin .samplecreator .problemsetcreator > button {
+  margin-top: 0;
+  padding: 0;
+}
+
+.logicpenguin .samplecreator .samplecreatorptchooser label {
+  margin-top: 0.5rem;
+}
+
+.logicpenguin .samplecreator .samplecreatorptchooser {
+  margin-bottom: 1rem;
+}
+
+.logicpenguin .samplecreator .pscdescription,
+.logicpenguin .samplecreator .pscinstructions,
+.logicpenguin .samplecreator .pscnumber,
+.logicpenguin .samplecreator .pscpoints,
+.logicpenguin .samplecreator .pscimmediate,
+.logicpenguin .samplecreator .pscmanual,
+.logicpenguin .samplecreator .problemsetcreator > button,
+.logicpenguin .samplecreator .problemsetdivider,
+.logicpenguin .samplecreator .problemcreatortopstrip {
+  display: none;
+}
+
+.logicpenguin .samplecreator .problemsetcreator > article  {
+  background-color: var(--lpgray6);
+}
+
+.logicpenguin .samplecreator .problemsetcreator > article .problemcreatorarea,
+.logicpenguin .samplecreator .problemsetcreator > article .problemsetcreatorbuttondiv {
+  background-color: var(--lpwhite);
 }
 
 .logicpenguin combo-translation-truth-table-creator .statementblock {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .logicpenguin combo-translation-truth-table-creator .statementblock:nth-child(even) {
-    background-color: var(--lpgray6);
+  background-color: var(--lpgray6);
+}
+
+.logicpenguin equivalence-truth-table-creator input {
+  margin-bottom: 0.5rem;
 }
 
 .logicpenguin .proseargumentmaker button .material-symbols-outlined {
-    cursor: pointer;
-    position: relative;
-    top: 0.3rem;
+  cursor: pointer;
+  position: relative;
+  top: 0.3rem;
 }
 
 .logicpenguin combo-translation-truth-table-creator .proseargument .proseargstatement.isconclusion {
-    color: var(--lpblue);
-    text-decoration: underline;
+  color: var(--lpblue);
+  text-decoration: underline;
 }
 
 .logicpenguin div.rulesubsetselector label {
-    display: inline-block;
-    white-space: nowrap;
-    border: 0.5px solid var(--lpgray4);
-    padding: 0 0.3rem 0.3rem 0.3rem;
-    border-radius: 0.5rem;
-    margin-right: 1rem;
-    margin-bottom: 0.3rem;
-    width: 4.5rem;
-    text-align: center;
+  display: inline-block;
+  white-space: nowrap;
+  border: 0.5px solid var(--lpgray4);
+  padding: 0 0.3rem 0.3rem 0.3rem;
+  border-radius: 0.5rem;
+  margin-right: 1rem;
+  margin-bottom: 0.3rem;
+  width: 4.5rem;
+  text-align: center;
+}
+
+dialog article.symbolpicker {
+  max-width: 50rem;
 }

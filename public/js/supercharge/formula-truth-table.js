@@ -10,6 +10,7 @@
 import { addelem } from '../common.js';
 
 export function chargeup(probelem) {
+    if (probelem?.noshowanswer) return;
     probelem.showansButton = addelem('button', probelem.buttonDiv, {
         innerHTML: 'show answer',
         type: 'button',

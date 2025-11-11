@@ -5,7 +5,7 @@
 
 🐧 Logic Penguin 🐧 aims to be a flexible, extensible, open source, and self-hostable framework for online exercises for introductory logic problems, and interfaces with LMS systems such as [moodle](https://moodle.org/) and [canvas](https://www.instructure.com/canvas) using the [LTI protocol](https://www.imsglobal.org/activity/learning-tools-interoperability).
 
-It is all written in javascript so code can be shared browser-side and server-side.
+It is all written in JavaScript so code can be shared browser-side and server-side.
 
 An [express.js](https://expressjs.com/)-based web-server is included to handle the LTI Tool Provider side of things, save and score exercises, submit grades, etc.
 
@@ -19,17 +19,17 @@ The project bears some similarities to the [Carnap.io](https://carnap.io) projec
 
 Working examples of the problems and their interface can be found embedded in my own publicly accessible interactive lecture notes for my [Phil 110 sections](https://logic.umasscreate.net) at UMass.
 
-For truth tables: <https://logicpenguin.com/lectures/kck/34254/2>
+For truth tables: <https://logicpenguin.com/lectures/kck/samp/2>
 
-For symbolic translations (scroll near to bottom): <https://logicpenguin.com/lectures/kck/34254/8>
+For symbolic translations (scroll near to bottom): <https://logicpenguin.com/lectures/kck/samp/8>
 
-For Kalish-Montague style derivations using Hardegree’s system: <https://logicpenguin.com/lectures/kck/34254/12>
+For Kalish-Montague style derivations using Hardegree’s system: <https://logicpenguin.com/lectures/kck/samp/12>
 
 Obviously, the examples do not allow for saving answers since they do not use the LMS login.
 
 ## Progress roadmap and todo
 
-- [x] Implement the core ES6 Javascript Class modules shared by all the exercise types
+- [x] Implement the core ES6 JavaScript Class modules shared by all the exercise types
 - [x] Implement all exercise types necessary for Hardegree’s [*Symbolic Logic: A First Course*](https://courses.umass.edu/phil110-gmh/MAIN/IHome-5.htm) for [UMass Phil 110 (Intro to Logic)](https://logic.umasscreate.net), including correctness checkers for all problem types
     - [x] Multiple choice, including true/false
     - [x] Conclusion identification in prose arguments
@@ -54,8 +54,10 @@ Obviously, the examples do not allow for saving answers since they do not use th
     - [x] granting extensions
     - [x] seeing student progress
     - [x] overriding grades
-    - [ ] editing and creating new exercise sets
+    - [x] editing and creating new exercise sets
     - [x] choosing preferred notation
+    - [ ] tool for creating html fragments for embedding sample problems in other pages
+    - [ ] create lecture notes hosted by LogicPenguin
     - [ ] importing from other courses
     - [ ] translate exercises between notations
 - [ ] Implement and convert existing other kinds of exercises, as used, e.g., in [UMass Phil 105 (Practical Reasoning)](https://logic.umasscreate.net/reasoning/), including non-automatically-graded varieties
@@ -72,20 +74,9 @@ Obviously, the examples do not allow for saving answers since they do not use th
 - [ ] Enforce choice of parentheses around terms and commas between them? Or is laissez faire better?
 - [x] Improve the equivalence checker for predicate logic to reduce the number of indeterminate answers when there are multiple quantifiers and polyadic predicates (already done multiple times, but can always be better)
 
-<!--
-Private todo:
-
-[x] - Archive convertold
-[ ] - Finish Formula overhaul
-[ ] - Overhaul how embedded lecture problems work to require less of load.js
-[ ] = Archive equiv tests, or update for initial generation
-[ ] = figure out what to do with scripty.js
-
--->
-
 ## License
 
-Logic Penguin is copyright © 2023 by Kevin C. Klement. This is free software, which can be redistributed and/or modified under the terms of the [GNU General Public License (GPL), version 3](https://www.gnu.org/licenses/gpl.html).
+Logic Penguin is copyright © 2023–2025 by Kevin C. Klement. This is free software, which can be redistributed and/or modified under the terms of the [GNU General Public License (GPL), version 3](https://www.gnu.org/licenses/gpl.html).
 
 Penguin logo and icon adapted from a free licensed image by Hannah Hill: <https://freepngimg.com/author/hannahhil-5479>.
 

@@ -14,7 +14,7 @@ import tr from '../translate.js';
 // but we want the problem "charged up" anyway
 // then there shouldn't be a show answer button
 export function chargeup(probelem) {
-    if (probelem?.myanswer && probelem.myanswer !== true) {
+    if (probelem?.myanswer && probelem.myanswer !== true&& !probelem?.noshowanswer) {
         probelem.showansButton = addelem('button', probelem.buttonDiv, {
             innerHTML: tr('show answer'),
             type: 'button',

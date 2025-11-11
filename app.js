@@ -96,7 +96,7 @@ if (!("disablecors" in appsettings) || (!appsettings.disablecors)) {
 // middleware that parses requests with Content-Type = application.json
 // and creates req.body object with the result of the parsing
 // must set higher payload for large requests
-app.use(express.json({limit: '5mb'}));
+app.use(express.json({limit: '25mb'}));
 
 // middleware that parses requests with
 // Content-Type = application/x-www-form-urlencoded
@@ -161,7 +161,6 @@ app.post('/launch/:exnum', async function(req, res) {
     }
     // instructorpage is special
     if (req.params.exnum == 'instructorpage') {
-      console.log(req.body.roles);
       if (req.body.roles.indexOf('Instructor') == -1) {
         return res.status(403).send(getpagetext('403.html', {
           message: 'Non-instructor attempt to access instructor-only page.'
@@ -194,13 +193,13 @@ app.get('/developmenttest/:exnum',
     const userid = appsettings.defaultstudent;
     const launchid = 'developmenttest';
     if (!lpauth.verifylaunch(consumerkey, contextid, userid, exnum,
-                             launchid)) {
+      launchid)) {
       return res.status(403).send(getpagetext('403.html', {
         message: 'Invalid launch id for user and exercise'
       }));
     }
     const exercisepage = await getexercise( consumerkey, contextid,
-                                            userid, exnum, launchid);
+      userid, exnum, launchid);
     if (!exercisepage) {
       return res.status(404).send(getpagetext('404.html',{}));
     }
@@ -239,13 +238,13 @@ app.get('/instructor/:consumerkey/:contextid/:userid/:launchid',
     const userid = req.params.userid;
     const launchid = req.params.launchid;
     if (!lpauth.verifylaunch(consumerkey, contextid, userid,
-                             'instructorpage', launchid)) {
+      'instructorpage', launchid)) {
       return res.status(403).send(getpagetext('403.html', {
         message: 'Invalid attempt to access instructor page.'
       }));
     }
     const instructorpage = await getinstructorpage(consumerkey,
-                                                   contextid, userid, launchid);
+      contextid, userid, launchid);
     if (!instructorpage) {
       return res.status(404).send(getpagetext('404.html',{}));
     }
