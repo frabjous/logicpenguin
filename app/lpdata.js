@@ -77,6 +77,25 @@ lpdata.grantExtension = function(
     );
 }
 
+lpdata.namefromlaunch = function(consumerkey, contextid, userid, exnum, launchid) {
+  const launchfile = path.join(
+    datadir,
+    consumerkey,
+    contextid,
+    'users',
+    userid,
+    'launches',
+    `${exnum}-${launchid}.json`
+  );
+  const launchinfo = lpfs.loadjson(launchfile);
+  if (!launchinfo) return 'Name unknown';
+  if (launchinfo?.fullname) return launchinfo.fullname;
+  if (launchinfo?.given && launchinfo?.family) {
+    return `${launchinfo.given} ${launchinfo.family}`;
+  }
+  return 'Name unknown';
+}
+
 // save an answer and the state of the answer for a given user
 lpdata.recordAnswer = function(consumerkey, contextid, userid, exnum,
     elemid, state) {
@@ -163,6 +182,34 @@ lpdata.whenPastDue = function(consumerkey, contextid, userid, exnum,
     if (extdeadline) { rv = extdeadline; }
     // return the time due (milliseconds since epoch)
     return rv;
+}
+
+lpdata.userextensions = async function(consumerkey, contextid, userid) {
+  const extensiondir = path.join(datadir, consumerkey, contextid, 'users', userid, 'extensions');
+  const extensionfiles = await lpfs.filesin(extensiondir);
+  if (!extensionfiles || extensionfiles.length == 0) return {};
+  const extensions = {};
+  for (const file of extensionfiles) {
+    const dd = lpfs.loadjson(path.join(extensiondir, file));
+    if (!dd) continue;
+    const shortname = path.basename(file, '.json');
+    extensions[shortname] = dd;
+  }
+  return extensions;
+}
+
+lpdata.usergrades = async function(consumerkey, contextid, userid) {
+  const scoresdir = path.join(datadir, consumerkey, contextid, 'users', userid, 'scores');
+  const scoresfiles = await lpfs.filesin(scoresdir);
+  if (!scoresfiles || scoresfiles.length == 0) return {};
+  const scores = {};
+  for (const file of scoresfiles) {
+    const score = lpfs.loadjson(path.join(scoresdir, file));
+    if (!score && score !== 0) continue;
+    const shortname = path.basename(file, '.json');
+    scores[shortname] = score;
+  }
+  return scores;
 }
 
 export default lpdata;

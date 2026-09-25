@@ -1,0 +1,90 @@
+@charset 'utf-8';
+
+.logicpenguin .gradetable {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.logicpenguin .gradetable thead th {
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  vertical-align: bottom;
+}
+
+.logicpenguin .gradetable tbody tr:nth-child(odd) {
+  background-color: var(--lpgray6);
+}
+
+
+.logicpenguin .gradetable tbody td {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  height: 2rem;
+}
+
+.logicpenguin .gradetable tbody td.extended {
+  color: var(--lpblue);
+  font-style: italic;
+}
+.logicpenguin .gradetable tbody td.score,
+.logicpenguin .gradetable tbody td.hypcell {
+  text-align: center;
+}
+
+.logicpenguin .gradetable tbody td.notyet {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--lpgray2);
+}
+
+.logicpenguin .gradetable input[type="number"] {
+  font-size: inherit;
+  padding: 0.2rem;
+  font-family: inherit;
+  width: 4rem;
+  text-align: center;
+  border-radius: 0.2rem;
+  border-color: var(--lpgray5);
+  outline-color: var(--lpblue);
+}
+
+.logicpenguin .gradeavgs {
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: var(--lpbgyellow);
+  display: inline-block;
+}
+
+.gradeavgs table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.gradeavgs table td:first-child {
+  padding-right: 2rem;
+}
+
+.gradeavgs table td:last-child {
+  font-weight: bold;
+}
+
+.gradeavgs table em {
+  color: var(--lpmagenta);
+}
+
+.gradeavgs table .average {
+  color: var(--lpgreen);
+}
+
+.gradeavgs table .finalgrade {
+  color: var(--lpblue);
+}
+
+@media only screen and (max-width: 540px) {
+  :root, html, html.logicpenguin, body.logicpenguin {
+    font-size: 12px;
+  }
+}

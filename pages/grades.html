@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Logic Penguin Grades Page">
+    <meta name="keywords" content="logic,exercises,students,grades">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <title>Grades | Logic Penguin</title>
+    <!-- LP stylesheet in case no exercises -->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/common.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/grades.css">
+    <script>
+      window.consumerkey = '⟨logicpenguin:consumerkey⟩';
+      window.contextid = '⟨logicpenguin:contextid⟩';
+      window.userid = '⟨logicpenguin:userid⟩';
+      window.launchid = '⟨logicpenguin:launchid⟩';
+      window.gradesinfo = ⟨logicpenguin:gradesinfo⟩;
+    </script>
+    <script type="module">
+      import LPgrades from '/js/grades.js';
+    </script>
+  </head>
+  <body class="logicpenguin">
+    <header>
+      <a id="lplogo" href="https://logicpenguin.com"
+        title="Visit the logic penguin homepage"
+        target="_blank">
+        <span>Powered by Logic Penguin</span>
+        <img src="/images/logicpenguin.png" id="lplogoimg"
+          alt="LogicPenguin">
+      </a>
+      <h1 id="pagetitle">LogicPenguin Grades</h1>
+      <h3 id="studentname"></h3>
+    </header>
+    </div>
+    <main id="gradesmain">
+    </main>
+  </body>
+</html>

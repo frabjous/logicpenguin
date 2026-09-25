@@ -34,7 +34,7 @@ import lpfs from './app/lpfs.js'; // also creates process.lpfs
 import lpgrading from './app/lpgrading.js';
 import lplti from './app/lplti.js';
 import lprequesthandler from './app/lprequesthandler.js';
-import { getpagetext, getexercise, getinstructorpage, getlecture } from './app/lppages.js';
+import { getgradespage, getpagetext, getexercise, getinstructorpage, getlecture } from './app/lppages.js';
 
 // create debugger context
 const debug = debugM('logic-penguin');
@@ -171,6 +171,12 @@ app.post('/launch/:exnum', async function(req, res) {
         userid + '/' + launchid;
       return res.redirect(redirectloc);
     }
+    // grades page is special
+    if (req.params.exnum == 'grades') {
+      const graderedirect = `https://${req.headers.host}/grades/` +
+        `${consumerkey}/${contextid}/${userid}/${launchid}`;
+      return res.redirect(graderedirect);
+    }
     // redirect to actual exercise
     const redirectloc = 'https://' + req.headers.host +
       '/exercises/' + consumerkey + '/' + contextid + '/' +
@@ -249,6 +255,28 @@ app.get('/instructor/:consumerkey/:contextid/:userid/:launchid',
       return res.status(404).send(getpagetext('404.html',{}));
     }
     return res.send(instructorpage);
+  }
+);
+
+// grades page, typically redirected from lti launch
+app.get('/grades/:consumerkey/:contextid/:userid/:launchid',
+  async function(req, res) {
+    const consumerkey = req.params.consumerkey;
+    const contextid = req.params.contextid;
+    const userid = req.params.userid;
+    const launchid = req.params.launchid;
+    if (!lpauth.verifylaunch(consumerkey, contextid, userid,
+      'grades', launchid)) {
+      return res.status(403).send(getpagetext('403.html', {
+        message: 'Invalid attempt to access grades page.'
+      }));
+    }
+    const gradespage = await getgradespage(consumerkey,
+      contextid, userid, launchid);
+    if (!gradespage) {
+      return res.status(404).send(getpagetext('404.html',{}));
+    }
+    return res.send(gradespage);
   }
 );
 

@@ -24,9 +24,10 @@ export function filltemplate(template, fillins) {
   return rv;
 }
 
+
 // gets an exercise html file with necessary info
 export async function getexercise(consumerkey, contextid, userid, exnum,
-                                  launchid) {
+    launchid) {
   // fill the template in with these
   const fillins = { consumerkey, contextid, userid, exnum, launchid };
 
@@ -39,7 +40,7 @@ export async function getexercise(consumerkey, contextid, userid, exnum,
   let exinfo = {};
   try {
     exinfojson = await fs.promises.readFile(exinfofile,
-                                            { encoding: 'utf8' });
+      { encoding: 'utf8' });
     exinfo = JSON.parse(exinfojson);
   } catch(err) {
     return false;
@@ -176,6 +177,52 @@ export async function getexercise(consumerkey, contextid, userid, exnum,
   fillins.restoredata = restoredata.trim();
   // fill in template, return text
   return getpagetext('exercise.html', fillins);
+}
+
+export async function getexercisesinfo(consumerkey, contextid) {
+  const exdir = path.join(datadir, consumerkey, contextid, 'exercises');
+  const allfiles = await lpfs.filesin(exdir);
+  const exfiles = allfiles.filter((f) => (f.endsWith('-info.json')));
+  const allexinfo = {};
+  for (const exfile of exfiles) {
+    const exinfo = lpfs.loadjson(path.join(exdir,exfile));
+    if (!exinfo) continue;
+    if (!exinfo?.duetime) continue;
+    if (!(exinfo.duetime > 0)) continue;
+    const shortname = exfile.replace(/.*\//,'').replace(/-.*/,'');
+    allexinfo[shortname] = {
+      duetime: exinfo.duetime,
+      longtitle: exinfo?.longtitle ?? 'Untitled exercise'
+    }
+  }
+  return allexinfo;
+}
+
+export async function getgradesinfo(consumerkey, contextid, userid, launchid) {
+  const gradesinfo = {};
+  gradesinfo.allexercises = await getexercisesinfo(consumerkey, contextid);
+  gradesinfo.usergrades = await lpdata.usergrades(consumerkey, contextid, userid);
+  gradesinfo.extensions = await lpdata.userextensions(consumerkey, contextid, userid);
+  gradesinfo.settings = getgradespagesettings(consumerkey, contextid);
+  gradesinfo.name = lpdata.namefromlaunch(consumerkey, contextid, userid, 'grades', launchid);
+  return gradesinfo;
+}
+
+export async function getgradespage(
+  consumerkey, contextid, userid, exnum, launchid
+) {
+  const fillins = { consumerkey, contextid, userid, exnum, launchid };
+  const gradesinfo = await getgradesinfo(consumerkey, contextid, userid, launchid);
+  fillins.gradesinfo = JSON.stringify(gradesinfo);
+  return getpagetext('grades.html', fillins);
+}
+
+export function getgradespagesettings(consumerkey, contextid) {
+  const gradessettingsfile = path.join(
+    datadir, consumerkey, contextid, 'grades-settings.json'
+  );
+  const gsettings = lpfs.loadjson(gradessettingsfile) || {};
+  return gsettings;
 }
 
 // gets the instructor page for a given course/context
@@ -322,12 +369,12 @@ function makeProblemSets(userdir, exdir, exnum, numprobslist) {
   // save in background asynchronously?
   try {
     fs.promises.writeFile(userprobfile, probjson,
-                          { encoding: 'utf8', mode: 0o644 });
+      { encoding: 'utf8', mode: 0o644 });
     fs.promises.writeFile(useransfile, ansjson,
-                          { encoding: 'utf8', mode: 0o644 });
+      { encoding: 'utf8', mode: 0o644 });
   } catch(err) {
     console.error('Error saving new problem sets/answer files: ' +
-                  err.toString());
+      err.toString());
   }
 
   // return json text

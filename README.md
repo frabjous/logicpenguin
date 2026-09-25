@@ -76,7 +76,7 @@ Obviously, the examples do not allow for saving answers since they do not use th
 
 ## License
 
-Logic Penguin is copyright © 2023–2025 by Kevin C. Klement. This is free software, which can be redistributed and/or modified under the terms of the [GNU General Public License (GPL), version 3](https://www.gnu.org/licenses/gpl.html).
+Logic Penguin is copyright © 2023–2026 by Kevin C. Klement. This is free software, which can be redistributed and/or modified under the terms of the [GNU General Public License (GPL), version 3](https://www.gnu.org/licenses/gpl.html).
 
 Penguin logo and icon adapted from a free licensed image by Hannah Hill: <https://freepngimg.com/author/hannahhil-5479>.
 

@@ -89,7 +89,6 @@ lpfs.loadfile = function(filename) {
   return rv;
 }
 
-
 // loads a json file and return its content as an object after parsing it
 lpfs.loadjson = function(filename) {
   try {
