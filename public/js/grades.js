@@ -175,6 +175,8 @@ LPgrades.showtable =function() {
       }
       return aex.duetime - bex.duetime;
     }
+  ).filter(
+    (exnum) => (!((settings?.excluded ?? []).includes(exnum)))
   );
   for (const exnum of exnums) {
     tbody.addrow(exnum);

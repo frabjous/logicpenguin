@@ -56,30 +56,31 @@
   padding: 1rem;
   background-color: var(--lpbgyellow);
   display: inline-block;
+  margin-top: 1rem;
 }
 
-.gradeavgs table {
+.logicpenguin  .gradeavgs table {
   border-spacing: 0;
   border-collapse: collapse;
 }
 
-.gradeavgs table td:first-child {
+.logicpenguin  .gradeavgs table td:first-child {
   padding-right: 2rem;
 }
 
-.gradeavgs table td:last-child {
+.logicpenguin .gradeavgs table td:last-child {
   font-weight: bold;
 }
 
-.gradeavgs table em {
+.logicpenguin .gradeavgs table em {
   color: var(--lpmagenta);
 }
 
-.gradeavgs table .average {
+.logicpenguin .gradeavgs table .average {
   color: var(--lpgreen);
 }
 
-.gradeavgs table .finalgrade {
+.logicpenguin .gradeavgs table .finalgrade {
   color: var(--lpblue);
 }
 

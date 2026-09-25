@@ -272,7 +272,7 @@ app.get('/grades/:consumerkey/:contextid/:userid/:launchid',
       }));
     }
     const gradespage = await getgradespage(consumerkey,
-      contextid, userid, launchid);
+      contextid, userid, 'grades', launchid);
     if (!gradespage) {
       return res.status(404).send(getpagetext('404.html',{}));
     }

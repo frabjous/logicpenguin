@@ -12,11 +12,11 @@ import {randomString} from './misc.js';
 import tr from './translate.js';
 import multieditor from "../multiedit/multieditor.mjs"
 
-
 // initialize stuff
 const LPinstr = {};
 const mainAreasLoaded = {};
 const problemSetCreators = {};
+let listedExNums = [];
 
 // convenience constants
 const addelem = LP.addelem;
@@ -448,6 +448,10 @@ function addLectureDivider() {
   return divider;
 }
 
+function dataurl(doctext, mimetype = 'text/csv') {
+  return `data:${mimetype};charset=UTF-8,${encodeURIComponent(doctext)}`;
+}
+
 // setting the message area at the top to an error message
 function errormessage(msg) {
   makemessage('error', '<span class="material-symbols-outlined">' +
@@ -599,6 +603,49 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
   }
   return div;
 }
+
+// collect info needed for csv exports from table
+function gatherScores() {
+  const scorecells = document.getElementsByClassName("studenttablescore");
+  const allscores = {};
+  for (const scorecell of scorecells) {
+    const userid = scorecell.myuserid;
+    const exnum = scorecell.myexnum;
+    if (!(userid in allscores)) {
+      allscores[userid] = {
+        studentname: scorecell.mystudentname
+      }
+    }
+    if (scorecell.innerHTML == '—' || !("myscore" in scorecell)) {
+      continue;
+    }
+    allscores[userid][exnum] = scorecell.myscore;
+  }
+  return allscores;
+}
+
+function genericCSV() {
+  let csv = 'name,id,' + listedExNums.join(',') + "\n";
+  const scoreinfo = gatherScores();
+  const sortedids = Object.keys(scoreinfo).sort(
+    (a,b) => (scoreinfo[a].studentname.localeCompare(
+      scoreinfo[b].studentname
+    ))
+  );
+  for (const id of sortedids) {
+    const scores = scoreinfo[id];
+    csv += `"${scores.studentname}",`;
+    csv += `"${id}",`;
+    csv += listedExNums.map(
+      (exnum) => (
+        (exnum in scores) ? scores[exnum].toString() : ''
+      )
+    ).join(',');
+    csv += "\n";
+  }
+  return csv;
+}
+window.genericCSV = genericCSV;
 
 // setting the message area at the top to a informational message
 function infomessage(msg) {
@@ -1182,6 +1229,7 @@ mainloadfns.studentsmain = async function() {
     if (anum != bnum) { return anum - bnum; }
     return a.localeCompare(b);
   });
+  listedExNums = exnums;
   for (const exnum of exnums) {
     const thcell = addelem('th', thr, { innerHTML: exnum });
     const tfcell = addelem('th', tfr, { innerHTML: exnum });
@@ -1240,16 +1288,18 @@ mainloadfns.studentsmain = async function() {
     if (("email" in userinfo) && userinfo.email != '') {
       nch += '<a href="mailto:' + userinfo.email + '">';
     }
+    let studentname = '';
     if ("family" in userinfo && userinfo.family != '') {
-      nch += userinfo.family;
+      studentname += userinfo.family;
       if (("given" in userinfo) && userinfo.given != '') {
-        nch += ', ' + userinfo.given;
+        studentname += ', ' + userinfo.given;
       }
     } else {
       if (("email" in userinfo) && userinfo.email != '') {
-        nch += userinfo.email;
+        studentname += userinfo.email;
       }
     }
+    nch += studentname;
     if (("email" in userinfo) && userinfo.email != '') {
       nch += '</a>';
     }
@@ -1272,6 +1322,7 @@ mainloadfns.studentsmain = async function() {
         myexnum: exnum,
         myuserid: userid,
         myfamily: userinfo?.family ?? false,
+        mystudentname: studentname,
         onclick: function() {
           showdialog(async function() {
             const newscore = (parseFloat(
@@ -1475,6 +1526,22 @@ mainloadfns.studentsmain = async function() {
       }
     }
   }
+  const btndiv = addelem('div', m, {
+    classes: ["buttondiv"]
+  });
+  const csvdlbtn = addelem('button', btndiv, {
+    type: "button",
+    innerHTML: tr("download generic csv file"),
+    onclick: function() {
+      const csv = genericCSV();
+      const filename = (new Date())
+        .toLocaleString()
+        .replaceAll(/[^0-9a-zA-Z]+/g,'-')
+        + '.csv'
+      const url = dataurl(csv, 'text/csv');
+      startDownload(url, filename)
+    }
+  })
   return true;
 }
 
@@ -2037,6 +2104,29 @@ async function showmain(area) {
   } else {
     clearmessage();
   }
+}
+
+function startDownload(url, filename = false) {
+  // should be in browser context with a document
+  if (!document) { return false; }
+  // if no filename given, get from url
+  if (filename === false) {
+    const urlsplit = url.split('/');
+    const fnpart = urlsplit[url.split.length - 1];
+    filename = fnpart.split('?')[0];
+  }
+  if (!filename || filename.length == 0) {
+    filename = 'download';
+  }
+  // create link element with appropriate properties
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  // add it to body, click it, then remove it
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  return true;
 }
 
 function tsToInp(ts) {
