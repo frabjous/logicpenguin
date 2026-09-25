@@ -29,7 +29,7 @@ function addrow(exnum) {
   });
   let hasscore = false;
   let scorestr = tr('(not due yet)');
-  if (exnum in usergrades) {
+  if (exnum in (usergrades ?? {})) {
     trow.score = usergrades[exnum];
     scorestr = prettyScore(trow.score, true);
     hasscore = true;
@@ -87,6 +87,7 @@ function gradeAverage(usedrop, usehyps) {
   if (usedrop && settings?.drop) {
     allscores = allscores.slice(settings.drop);
   }
+  if (allscores.length < 1) return 'n/a';
   // boost average slightly to accommodate js errors
   const avg = (allscores.reduce((a,b)=>(a+b))/allscores.length)
     + 0.000001;
