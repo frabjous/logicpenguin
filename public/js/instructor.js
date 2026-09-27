@@ -17,6 +17,7 @@ const LPinstr = {};
 const mainAreasLoaded = {};
 const problemSetCreators = {};
 let listedExNums = [];
+let exLongTitles = {};
 
 // convenience constants
 const addelem = LP.addelem;
@@ -604,6 +605,81 @@ function exinfoform(parnode, exnum = 'new', exinfo = {}) {
   return div;
 }
 
+function fillCanvasCSV(csv) {
+  const lpscores = gatherScores();
+  const parsedCSV = parseCSV(csv);
+  if (!parsedCSV) return null;
+
+  // determine which column in CSV corresponds to which exercise
+  // or possibly identifies user
+  const exerciseindexes = {};
+  const identifierindexes = [];
+  for (let i=0; i<parsedCSV[0].length; i++) {
+    // regularize exercise titles by making lowercase
+    // and stripping parentheticals
+    let extitle = parsedCSV[0][i]
+      .toLowerCase()
+      .replace(/\s*[\(\[\{].*/,'');
+    if (extitle == 'id' ||
+        extitle == 'sis login id' ||
+       extitle == 'sis user id') {
+      identifierindexes.push(i);
+      continue;
+    }
+    if ((extitle !== '') && (extitle in (exLongTitles ?? {}))) {
+      const exnum = exLongTitles[extitle];
+      exerciseindexes[exnum] = i;
+    }
+  }
+  const pointspossible = parsedCSV[1];
+
+  // loop through lines 3 till end
+  for (let i=2; i<parsedCSV.length; i++) {
+    // try to identify user comparing against LTI id
+    // or email
+    let userid = null;
+    for (const ii of identifierindexes) {
+      if (parsedCSV[i][ii] in lpscores) {
+        userid = parsedCSV[i][ii];
+        break;
+      }
+      for (const checkeduserid in lpscores) {
+        const email = lpscores[checkeduserid]?.email;
+        if (!email || email == '') continue;
+        if (parsedCSV[i][ii] == email) {
+          userid = checkeduserid;
+          break;
+        }
+      }
+      if (userid) break;
+    }
+    if (!userid) continue;
+    // user found, modify scores
+    const userScores = lpscores[userid];
+    for (const exnum in exerciseindexes) {
+      const targetIndex = exerciseindexes[exnum];
+      if (!(exnum in userScores)) continue;
+      const score = userScores[exnum];
+      if (isNaN(score)) continue;
+      let points = parseInt(pointspossible[targetIndex]);
+      if (isNaN(points)) points = 100;
+      const newscore = score * points;
+      parsedCSV[i][targetIndex] = newscore.toFixed(5).replace(/\.?0+$/, '');
+    }
+  }
+
+  // convert back to csv
+  const newcsv = parsedCSV.map(
+    (r) => (
+      r.map(
+        (c) => ((c.includes(',')) ? `"${c}"` : c)
+      ).join(',')
+    )
+  ).join('\n') + '\n'
+
+  return newcsv;
+}
+
 // collect info needed for csv exports from table
 function gatherScores() {
   const scorecells = document.getElementsByClassName("studenttablescore");
@@ -613,10 +689,11 @@ function gatherScores() {
     const exnum = scorecell.myexnum;
     if (!(userid in allscores)) {
       allscores[userid] = {
-        studentname: scorecell.mystudentname
+        studentname: scorecell.mystudentname,
+        email: scorecell.myemail
       }
     }
-    if (scorecell.innerHTML == '—' || !("myscore" in scorecell)) {
+    if (scorecell.innerHTML.includes('—') || !("myscore" in scorecell)) {
       continue;
     }
     allscores[userid][exnum] = scorecell.myscore;
@@ -625,7 +702,7 @@ function gatherScores() {
 }
 
 function genericCSV() {
-  let csv = 'name,id,' + listedExNums.join(',') + "\n";
+  let csv = 'name,id,email,' + listedExNums.join(',') + "\n";
   const scoreinfo = gatherScores();
   const sortedids = Object.keys(scoreinfo).sort(
     (a,b) => (scoreinfo[a].studentname.localeCompare(
@@ -636,6 +713,7 @@ function genericCSV() {
     const scores = scoreinfo[id];
     csv += `"${scores.studentname}",`;
     csv += `"${id}",`;
+    csv += `"${scores.email}",`;
     csv += listedExNums.map(
       (exnum) => (
         (exnum in scores) ? scores[exnum].toString() : ''
@@ -645,7 +723,6 @@ function genericCSV() {
   }
   return csv;
 }
-window.genericCSV = genericCSV;
 
 // setting the message area at the top to a informational message
 function infomessage(msg) {
@@ -1230,6 +1307,7 @@ mainloadfns.studentsmain = async function() {
     return a.localeCompare(b);
   });
   listedExNums = exnums;
+  exLongTitles = resp?.longtitles ?? {};
   for (const exnum of exnums) {
     const thcell = addelem('th', thr, { innerHTML: exnum });
     const tfcell = addelem('th', tfr, { innerHTML: exnum });
@@ -1321,6 +1399,7 @@ mainloadfns.studentsmain = async function() {
         ) ? (' for ' + userinfo.family) : ''),
         myexnum: exnum,
         myuserid: userid,
+        myemail: userinfo?.email ?? '',
         myfamily: userinfo?.family ?? false,
         mystudentname: studentname,
         onclick: function() {
@@ -1534,14 +1613,38 @@ mainloadfns.studentsmain = async function() {
     innerHTML: tr("download generic csv file"),
     onclick: function() {
       const csv = genericCSV();
-      const filename = (new Date())
+      const filename = `LogicPenguin-scores-` +
+        (new Date())
         .toLocaleString()
         .replaceAll(/[^0-9a-zA-Z]+/g,'-')
         + '.csv'
       const url = dataurl(csv, 'text/csv');
-      startDownload(url, filename)
+      startDownload(url, filename);
     }
+  });
+  const canvascsvdiv = addelem('div', btndiv, {
+    classes: ["canvasupload"]
+  });
+  const canvcacscvlabel = addelem('label', canvascsvdiv, {
+    innerHTML: tr('Fill in existing Canvas gradebook csv file') +
+      ' (<a href="https://github.com/frabjous/blob/main/doc/updating-canvas-csv-files.md" target="_blank">' +
+      tr('see instructions') + '</a>)',
+    htmlFor: "canvasupload"
   })
+  const canvasUploadBtn = addelem('input', canvascsvdiv, {
+    type: "file",
+    id: "canvasupload",
+    accept: ".csv",
+    process: async function(e) {
+      const file = this?.files?.item(0);
+      if (!file) return;
+      const csv = await file.text();
+      if (!csv) return;
+      prepareCanvasCSV(csv);
+    },
+    onchange: function(e) { this.process(e); },
+    onsubmit: function(e) { this.process(e); }
+  });
   return true;
 }
 
@@ -1819,6 +1922,41 @@ function makeSampleCreator(isembed = false) {
   return sc;
 }
 
+function parseCSV(csv) {
+  const csvlines = csv.split('\n')
+    .filter((l)=>(l.includes(',')))
+    .map((l)=>(l.trimRight()));
+  if (csvlines.length < 3) {
+    errormessage('Unable to parse CSV file.')
+    return null;
+  }
+  const csvfields = csvlines.map(
+    (l) => (parseCSVline(l))
+  );
+  return csvfields;
+}
+
+function parseCSVline(l) {
+  let fields = [];
+  let currfield = '';
+  let quoteson = false;
+  for (let i=0; i<l.length; i++) {
+    const c = l.charAt(i);
+    if (c == '"') {
+      quoteson = !quoteson;
+      continue;
+    }
+    if (c=="," && !quoteson) {
+      fields.push(currfield);
+      currfield = '';
+      continue;
+    }
+    currfield += c;
+  }
+  fields.push(currfield);
+  return fields;
+}
+
 function parseSampleProbHtml(html) {
   if (!html) return {};
   const probs = html.split('LP.embed(')
@@ -1850,6 +1988,26 @@ function parseSampleProbHtml(html) {
     answers.push(pr?.answer ?? {});
   }
   return {probsetinfo, problems, answers};
+}
+
+function prepareCanvasCSV(csv) {
+  const newcsv = fillCanvasCSV(csv);
+  if (!newcsv) return;
+  showdialog(
+    async function() {
+      const url = dataurl(theDialog.csvtext, 'text/csv');
+      const filename = 'LogicPenguin-updated-canvas-gradebook-' +
+        (new Date()).toLocaleString()
+        .replaceAll(/[^0-9a-zA-Z]+/g,'-')
+        + '.csv'
+      startDownload(url, filename);
+    },
+    'Canvas gradebook csv updated<br>with LogicPenguin scores.',
+    'download updated csv',
+    'downloading'
+  );
+  theDialog.csvtext = newcsv;
+  // TODO
 }
 
 function renumberProblemSets(exhash) {

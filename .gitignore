@@ -16,3 +16,5 @@ settings.json
 # multieditor rep
 public/multiedit/
 public/gradestest.html
+# preview files
+doc/*.html

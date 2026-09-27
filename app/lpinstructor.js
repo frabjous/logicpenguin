@@ -59,7 +59,8 @@ qr.allstudentinfo = async function(req) {
   // only look at -info files
   exfiles = exfiles.filter((f) => (f.substr(-10) == '-info.json'));
   info.exercises = {};
-  // read exercises for the duetime
+  info.longtitles = {};
+  // read exercises for the duetime and longtitle
   for (const fn of exfiles) {
     const ffn = path.join(exdir, fn);
     const exinfo = lpfs.loadjson(ffn);
@@ -69,6 +70,9 @@ qr.allstudentinfo = async function(req) {
     if (exinfo?.savable &&
         (("duetime" in exinfo) && (exinfo.duetime > 0))) {
       info.exercises[exnum] = exinfo.duetime;
+    }
+    if (exinfo?.longtitle) {
+      info.longtitles[exinfo.longtitle.toLowerCase()] = exnum;
     }
   }
   // read list of students

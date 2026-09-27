@@ -132,7 +132,7 @@
 .logicpenguin main input[type=file]:focus,
 .logicpenguin main input[type=file] {
   border: none;
-  outline: one;
+  outline: none;
   background-color: inherit;
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -592,6 +592,19 @@
 .logicpenguin .breadcrumb a:link,
 .logicpenguin .breadcrumb a:visited {
   text-decoration: none;
+}
+
+.logicpenguin div.canvasupload {
+  margin-top: 1rem;
+}
+
+.logicpenguin main div.canvasupload input[type="file"] {
+  margin-top: 0;
+  padding: 0.2rem 0 0 0;
+}
+
+.logicpenguin .canvasupload label {
+  display: block;
 }
 
 .logicpenguin .exerciseblock button.fixedbutton .material-symbols-outlined,
