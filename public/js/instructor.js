@@ -1627,7 +1627,7 @@ mainloadfns.studentsmain = async function() {
   });
   const canvcacscvlabel = addelem('label', canvascsvdiv, {
     innerHTML: tr('Fill in existing Canvas gradebook csv file') +
-      ' (<a href="https://github.com/frabjous/blob/main/doc/updating-canvas-csv-files.md" target="_blank">' +
+      ' (<a href="https://github.com/frabjous/logicpenguin/blob/main/doc/updating-canvas-csv-files.md" target="_blank">' +
       tr('see instructions') + '</a>)',
     htmlFor: "canvasupload"
   })
