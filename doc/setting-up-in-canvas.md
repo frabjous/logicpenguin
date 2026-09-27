@@ -13,7 +13,7 @@ You will need to obtain two pieces of information from the server’s administra
 
 Before any external tool or exercise can be launched from Canvas, a Canvas “app configuration” must be created.
 
-In your Canvas course page (as an instructor), there should be a “Settings” link in the course-specific menu (sometimes hidden behind a hamburger menu button, 󰍜). Navigate to this page.
+In your Canvas course page (as an instructor), there should be a “Settings” link in the course-specific menu (sometimes hidden behind a hamburger menu button, ). Navigate to this page.
 
 Click the “Apps” tab at the top, and then the “View App Configurations” button near the upper right.
 
