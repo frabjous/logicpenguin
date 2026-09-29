@@ -45,6 +45,10 @@ table {
     padding-right: 1ex;
 }
 
+table.radiotable tr td:has(input) {
+  white-space: nowrap;
+}
+
 .counterexample table tr:last-child td {
     padding-bottom: 1ex;
 }

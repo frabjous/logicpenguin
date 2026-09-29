@@ -56,3 +56,7 @@ table {
 .vcsradiotable label {
     margin-right: 0.8em;
 }
+
+.vcsradiotable tr td:has(input) {
+  white-space: nowrap;
+}
