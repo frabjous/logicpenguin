@@ -45,8 +45,9 @@ lpauth.newlaunch = function(reqbody, exnum) {
     const launchid = randomString(40);
     const launchfile = path.join(launchdir, exnum + '-' +
         launchid + '.json');
-    if (!lpfs.savejson(launchfile, { exnum, fullname, roles, source_did,
-        service_url, email, returnurl, activities, family, given })) {
+    if (!lpfs.savejson(launchfile, { exnum, userid, fullname, roles,
+        source_did, service_url, email, returnurl, activities, family,
+        given })) {
         return false;
     }
     // return the random string
@@ -68,10 +69,16 @@ lpauth.verifylaunch = function (consumerkey, contextid, userid, exnum,
     const launchfile = path.join(userdir, 'launches', exnum + '-' +
         launchid + '.json');
     if (!lpfs.isfile(launchfile)) { return false; }
+    // ensure the launch record actually belongs to the requested user,
+    // so that one user cannot access another user's data by simply
+    // changing the userid parameter
+    const launchinfo = lpfs.loadjson(launchfile);
+    if (!launchinfo) { return false; }
+    if (("userid" in launchinfo) && (launchinfo.userid !== userid)) {
+        return false;
+    }
     // to access instructor page must be instructor
     if (exnum == 'instructorpage') {
-        const launchinfo = lpfs.loadjson(launchfile);
-        if (!launchinfo) { return false; }
         if (!("roles" in launchinfo)) { return false; }
         if (launchinfo.roles.indexOf('Instructor') == -1) { return false; }
     }
