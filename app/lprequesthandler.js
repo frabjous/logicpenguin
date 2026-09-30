@@ -14,9 +14,48 @@ import lpauth from './lpauth.js';
 import lpinstructor from './lpinstructor.js';
 import libgrade from '../public/js/libgrade.js';
 import path from 'node:path';
+const datadir = process.appsettings.datadir;
 
 // initialize return object
 const lprequesthandler = {};
+
+async function logActivity(opts) {
+  const {
+    consumerkey,
+    contextid,
+    pastes,
+    userid,
+    launchfile,
+    description
+  } = opts;
+  for (const req of [
+    consumerkey,
+    contextid,
+    userid,
+    launchfile
+  ]) {
+    if (!req) return false;
+  }
+  if (!description) description = 'unknown activity logged';
+  const ffn = path.join(
+    datadir,
+    consumerkey,
+    contextid,
+    'users',
+    userid,
+    'launches',
+    launchfile
+  );
+  const launchinfo = lpfs.loadjson(ffn);
+  if (!launchinfo) return false;
+  if (!launchinfo?.activities) launchfile.activities = {};
+  const ts = Date.now().toString();
+  launchinfo.activities[ts] = description;
+  if (pastes) launchinfo.pastes = pastes;
+  const saveres = lpfs.savejson(ffn, launchinfo);
+  console.log(saveres, ffn, launchinfo)
+  return saveres;
+}
 
 // generic function for returning an error
 function errResponse(msg) {
@@ -48,7 +87,7 @@ lprequesthandler.saveAnswer = async function(reqobj) {
 
     // ensure we have all needed data
     const { probset, num, elemid, timestamp, state, launchid, exnum,
-            userid, contextid, consumerkey } = reqobj;
+            userid, contextid, consumerkey, pastes } = reqobj;
     if (!(probset >= 0) || !(num >= 0) || !timestamp || !state || !elemid ||
         !launchid || !exnum || !userid || !contextid || !consumerkey) {
         return errResponse('Inadequate information provided to save answer.');
@@ -146,7 +185,15 @@ lprequesthandler.saveAnswer = async function(reqobj) {
         lpdata.saveindeterminate({ consumerkey, contextid, userid,
             exnum, elemid, state } );
     }
-    // report to browser
+    // log activity in backgroun
+    logActivity({
+      consumerkey,
+      contextid,
+      pastes,
+      userid,
+      launchfile: `${exnum}-${launchid}.json`,
+      description: `saved answer for ${exnum} set ${probset.toString()} num ${num.toString()}`
+    });
     return {
         error: false,
         elemid: elemid,
