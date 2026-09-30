@@ -53,7 +53,6 @@ async function logActivity(opts) {
   launchinfo.activities[ts] = description;
   if (pastes) launchinfo.pastes = pastes;
   const saveres = lpfs.savejson(ffn, launchinfo);
-  console.log(saveres, ffn, launchinfo)
   return saveres;
 }
 
