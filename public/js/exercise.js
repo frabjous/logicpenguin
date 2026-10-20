@@ -79,6 +79,10 @@ window.addEventListener('load', async function() {
 
 // keep track of pastes for cheat detection
 window.numpastes = 0;
+window.numcopies = 0;
 window.addEventListener('paste', function() {
   window.numpastes++;
-})
+});
+window.addEventListener('copy', function() {
+  window.numcopies++;
+});

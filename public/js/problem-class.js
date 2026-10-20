@@ -251,6 +251,7 @@ export default class LogicPenguinProblem extends HTMLElement {
         elemid: this.id,
         timestamp: timestamp,
         pastes: window?.numpastes ?? 0,
+        copies: window?.numcopies ?? 0,
         state: state
       });
       return;

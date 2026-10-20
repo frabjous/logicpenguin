@@ -24,6 +24,7 @@ async function logActivity(opts) {
     consumerkey,
     contextid,
     pastes,
+    copies,
     userid,
     launchfile,
     description
@@ -52,6 +53,7 @@ async function logActivity(opts) {
   const ts = Date.now().toString();
   launchinfo.activities[ts] = description;
   if (pastes) launchinfo.pastes = pastes;
+  if (copies) launchinfo.copies = copies;
   const saveres = lpfs.savejson(ffn, launchinfo);
   return saveres;
 }
@@ -86,7 +88,7 @@ lprequesthandler.saveAnswer = async function(reqobj) {
 
     // ensure we have all needed data
     const { probset, num, elemid, timestamp, state, launchid, exnum,
-            userid, contextid, consumerkey, pastes } = reqobj;
+            userid, contextid, consumerkey, pastes, copies } = reqobj;
     if (!(probset >= 0) || !(num >= 0) || !timestamp || !state || !elemid ||
         !launchid || !exnum || !userid || !contextid || !consumerkey) {
         return errResponse('Inadequate information provided to save answer.');
@@ -189,6 +191,7 @@ lprequesthandler.saveAnswer = async function(reqobj) {
       consumerkey,
       contextid,
       pastes,
+      copies,
       userid,
       launchfile: `${exnum}-${launchid}.json`,
       description: `saved answer for ${exnum} set ${probset.toString()} num ${num.toString()}`
