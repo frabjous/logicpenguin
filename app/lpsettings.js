@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 process.chdir(path.dirname(__dirname));
 
 // try to read settings from files
-const appsettings = lpfs.loadjson('settings.json');
+let appsettings = lpfs.loadjson('settings.json');
 if (!appsettings) {
     appsettings = {}
 }
